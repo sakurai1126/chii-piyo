@@ -68,7 +68,7 @@
 | ユニットテスト(バックエンド) | JUnit | Java/Spring Bootの標準的なテストフレームワークであるため |
 
 ## 設計ドキュメント
-- [アーキテクチャ図](docs/architecture/)（未作成）
+- [アーキテクチャ設計書](docs/architecture.md)
 - [ER図](docs/er-diagram/)（未作成）
 - [画面遷移図](docs/screen-flow.md)（未作成）
 - [API仕様](docs/api/)（未作成）
