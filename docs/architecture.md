@@ -150,6 +150,6 @@ graph TB
 ## その他設計ドキュメント
 - [テーブル定義書](./table-definition.md)
 - [ER図](./er-diagram.md)
-- [画面遷移図](./screen-flow.md)（未作成）
+- [画面設計書](./screen-spec.md)
 - [API仕様](./api/)（未作成）
 - [シーケンス図](./sequence/)（未作成）
