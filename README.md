@@ -69,7 +69,7 @@
 - [アーキテクチャ設計書](docs/architecture.md)
 - [テーブル定義書](docs/table-definition.md)
 - [ER図](docs/er-diagram.md)
-- [画面遷移図](docs/screen-flow.md)（未作成）
+- [画面設計書](docs/screen-spec.md)
 - [API仕様](docs/api/)（未作成）
 - [シーケンス図](docs/sequence/)（未作成）
 
