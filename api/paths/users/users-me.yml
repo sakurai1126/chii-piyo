@@ -1,0 +1,58 @@
+get:
+  tags:
+    - userManagement
+  summary: ログインユーザーの情報を取得
+  # 操作ID: この操作の一意な識別子を指定、Generatorで生成したコードのメソッド名に使用される
+  operationId: getMe
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+  responses:
+    "200":
+      description: ユーザー情報
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            $ref: "../../components/schemas/users.yml#/UserResponseDto"
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "404":
+      $ref: "../../components/responses.yml#/NotFound"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"
+
+put:
+  tags:
+    - userManagement
+  summary: ログインユーザーの情報を更新
+  operationId: updateMe
+  # 自動生成されるコードの中で、リクエストボディ（送信データ）を受け取る引数の名前を指定
+  x-codegen-request-body-name: UserUpdateData
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+  # リクエストボディ: 作成するデータの内容を指定
+  requestBody:
+    description: 更新するユーザー情報
+    content:
+      application/json;charset=UTF-8:
+        schema:
+          $ref: "../../components/schemas/users.yml#/UserUpdateRequestDto"
+    required: true
+  responses:
+    "200":
+      description: 更新後のユーザー情報
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            $ref: "../../components/schemas/users.yml#/UserResponseDto"
+    "400":
+      $ref: "../../components/responses.yml#/BadRequest"
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "404":
+      $ref: "../../components/responses.yml#/NotFound"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"
