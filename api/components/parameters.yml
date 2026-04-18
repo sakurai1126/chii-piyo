@@ -1,0 +1,124 @@
+# ヘッダー ----------------------------------------
+# リクエストがブラウザの標準的な遷移ではなくAJAXなどから送られたものであることをサーバーに示す
+XRequestedWith:
+  name: X-Requested-With
+  # in: ヘッダー、クエリパラメータ、パスのどこに含まれるか
+  in: header
+  # 必須設定: このヘッダーがないとエラーになる
+  required: true
+  # schema: データの型やデフォルト値を定義する
+  schema:
+    # type: 値の種類
+    type: string
+    # default: クライアントが値を省略した際に自動でセットされる値
+    default: XMLHttpRequest
+
+# パスパラメータ ----------------------------------------
+ResourceId:
+  name: id
+  in: path
+  description: リソースの一意な識別子
+  required: true
+  schema:
+    type: integer
+    format: int64
+
+MediaId:
+  name: mediaId
+  in: path
+  description: メディアの一意な識別子
+  required: true
+  schema:
+    type: integer
+    format: int64
+
+MemberId:
+  name: memberId
+  in: path
+  description: メンバーの一意な識別子
+  required: true
+  schema:
+    type: integer
+    format: int64
+
+# クエリパラメータ ----------------------------------------
+PageOffset:
+  name: offset
+  in: query
+  description: 取得開始位置
+  required: false
+  schema:
+    type: integer
+    default: 0
+    minimum: 0
+
+PageLimit:
+  name: limit
+  in: query
+  description: 取得件数
+  required: false
+  schema:
+    type: integer
+    default: 20
+    minimum: 1
+    maximum: 100
+
+MediaTypeFilter:
+  name: mediaType
+  in: query
+  description: メディア種別で絞り込み
+  required: false
+  schema:
+    type: string
+    enum:
+      - PHOTO
+      - VIDEO
+
+AlbumIdFilter:
+  name: albumId
+  in: query
+  description: アルバムIDで絞り込み
+  required: false
+  schema:
+    type: integer
+    format: int64
+
+TagIdFilter:
+  name: tagId
+  in: query
+  description: タグIDで絞り込み
+  required: false
+  schema:
+    type: integer
+    format: int64
+
+DateFrom:
+  name: dateFrom
+  in: query
+  description: 検索開始日
+  required: false
+  schema:
+    type: string
+    format: date
+
+DateTo:
+  name: dateTo
+  in: query
+  description: 検索終了日
+  required: false
+  schema:
+    type: string
+    format: date
+
+RecordTypeFilter:
+  name: recordType
+  in: query
+  description: 育児記録種別で絞り込み
+  required: false
+  schema:
+    type: string
+    enum:
+      - MEAL
+      - MILK
+      - DIAPER
+      - HEALTH
