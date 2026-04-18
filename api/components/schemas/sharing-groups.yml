@@ -70,7 +70,7 @@ SharingGroupMemberResponseDto:
     userIconUrl:
       type: ["string", "null"]
       description: プロフィール画像URL
-      example: "https://example.com/icnullon.png"
+      example: "https://example.com/icon.png"
     createdAt:
       type: string
       format: date-time
