@@ -92,8 +92,17 @@ TagIdFilter:
     type: integer
     format: int64
 
-DateFrom:
-  name: dateFrom
+SharingGroupIdFilter:
+  name: sharingGroupId
+  in: query
+  description: 共有範囲グループIDで絞り込み
+  required: false
+  schema:
+    type: integer
+    format: int64
+
+StartDate:
+  name: startDate
   in: query
   description: 検索開始日
   required: false
@@ -101,8 +110,8 @@ DateFrom:
     type: string
     format: date
 
-DateTo:
-  name: dateTo
+EndDate:
+  name: endDate
   in: query
   description: 検索終了日
   required: false
