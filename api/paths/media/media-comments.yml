@@ -1,0 +1,59 @@
+get:
+  tags:
+    - mediaCommentManagement
+  summary: メディアのコメント一覧を取得
+  operationId: getMediaComments
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+    - $ref: "../../components/parameters.yml#/MediaId"
+  responses:
+    "200":
+      description: コメント一覧
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            type: array
+            items:
+              $ref: "../../components/schemas/media.yml#/MediaCommentResponseDto"
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "404":
+      $ref: "../../components/responses.yml#/NotFound"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"
+
+post:
+  tags:
+    - mediaCommentManagement
+  summary: メディアにコメントを追加
+  operationId: createMediaComment
+  x-codegen-request-body-name: MediaCommentData
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+    - $ref: "../../components/parameters.yml#/MediaId"
+  requestBody:
+    description: コメント内容
+    content:
+      application/json;charset=UTF-8:
+        schema:
+          $ref: "../../components/schemas/media.yml#/MediaCommentRequestDto"
+    required: true
+  responses:
+    "201":
+      description: コメントの追加に成功
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            $ref: "../../components/schemas/media.yml#/MediaCommentResponseDto"
+    "400":
+      $ref: "../../components/responses.yml#/BadRequest"
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "404":
+      $ref: "../../components/responses.yml#/NotFound"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"
