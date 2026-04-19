@@ -110,20 +110,12 @@ paths:
     $ref: "./paths/first-records/first-records.yml"
   /first-records/{id}:
     $ref: "./paths/first-records/first-records-detail.yml"
-  /first-records/{id}/media:
-    $ref: "./paths/first-records/first-records-media.yml"
-  /first-records/{id}/media/{mediaId}:
-    $ref: "./paths/first-records/first-records-media-detail.yml"
 
   # ことばの記録
   /word-records:
     $ref: "./paths/word-records/word-records.yml"
   /word-records/{id}:
     $ref: "./paths/word-records/word-records-detail.yml"
-  /word-records/{id}/media:
-    $ref: "./paths/word-records/word-records-media.yml"
-  /word-records/{id}/media/{mediaId}:
-    $ref: "./paths/word-records/word-records-media-detail.yml"
 
   # ゴミ箱
   /trash:
