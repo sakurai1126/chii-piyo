@@ -239,5 +239,5 @@ erDiagram
 - [アーキテクチャ設計書](./architecture.md)
 - [テーブル定義書](./table-definition.md)
 - [画面設計書](./screen-spec.md)
-- [API仕様](./api/)（未作成）
+- [API仕様](./openapi.yaml)
 - [シーケンス図](./sequence/)（未作成）

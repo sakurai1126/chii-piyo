@@ -392,5 +392,5 @@
 - [アーキテクチャ設計書](./architecture.md)
 - [ER図](./er-diagram.md)
 - [画面設計書](./screen-spec.md)
-- [API仕様](./api/)（未作成）
+- [API仕様](./openapi.yaml)
 - [シーケンス図](./sequence/)（未作成）

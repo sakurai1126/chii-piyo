@@ -45,5 +45,5 @@
 - [アーキテクチャ設計書](./architecture.md)
 - [テーブル定義書](./table-definition.md)
 - [ER図](./er-diagram.md)
-- [API仕様](./api/)（未作成）
+- [API仕様](./openapi.yaml)
 - [シーケンス図](./sequence/)（未作成）

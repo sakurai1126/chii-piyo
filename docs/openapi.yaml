@@ -1,0 +1,2857 @@
+openapi: 3.1.1
+info:
+  title: ちいぴよ API
+  description: 子供の写真・動画管理及び育児記録管理アプリケーションのAPI定義
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api/v1
+security:
+  - BearerAuth: []
+tags:
+  - name: userManagement
+    description: ユーザー情報管理
+  - name: sharingGroupManagement
+    description: 共有範囲グループ管理
+  - name: mediaManagement
+    description: 写真・動画管理
+  - name: mediaCommentManagement
+    description: 写真・動画へのコメント管理
+  - name: tagManagement
+    description: タグ管理
+  - name: favoriteManagement
+    description: お気に入り管理
+  - name: albumManagement
+    description: アルバム管理
+  - name: careRecordManagement
+    description: 育児記録管理
+  - name: growthRecordManagement
+    description: 身長・体重記録管理
+  - name: firstRecordManagement
+    description: はじめて記録管理
+  - name: wordRecordManagement
+    description: ことばの記録管理
+  - name: trashManagement
+    description: ゴミ箱管理
+paths:
+  /users/me:
+    get:
+      tags:
+        - userManagement
+      summary: ログインユーザーの情報を取得
+      operationId: getMe
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+      responses:
+        '200':
+          description: ユーザー情報
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/UserResponseDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+    put:
+      tags:
+        - userManagement
+      summary: ログインユーザーの情報を更新
+      operationId: updateMe
+      x-codegen-request-body-name: UserUpdateData
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+      requestBody:
+        description: 更新するユーザー情報
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/UserUpdateRequestDto'
+        required: true
+      responses:
+        '200':
+          description: 更新後のユーザー情報
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/UserResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+  /users/{id}/role:
+    put:
+      tags:
+        - userManagement
+      summary: ログインユーザーの権限を更新
+      operationId: updateRole
+      x-codegen-request-body-name: UserUpdateRoleData
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+      requestBody:
+        description: 更新するユーザー情報
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/UserRoleUpdateRequestDto'
+        required: true
+      responses:
+        '200':
+          description: 更新後のユーザー情報
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/UserResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+  /sharing-groups:
+    get:
+      tags:
+        - sharingGroupManagement
+      summary: 共有グループ一覧を取得
+      operationId: getSharingGroups
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+      responses:
+        '200':
+          description: 共有グループ一覧
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SharingGroupResponseDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+    post:
+      tags:
+        - sharingGroupManagement
+      summary: 共有グループを新規作成
+      operationId: createSharingGroup
+      x-codegen-request-body-name: SharingGroupData
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+      requestBody:
+        description: 作成する共有グループ情報
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/SharingGroupRequestDto'
+        required: true
+      responses:
+        '201':
+          description: 作成された共有グループ
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/SharingGroupResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+  /sharing-groups/{id}:
+    get:
+      tags:
+        - sharingGroupManagement
+      summary: 共有グループをID指定で取得
+      operationId: getSharingGroup
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+      responses:
+        '200':
+          description: 共有グループ情報
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/SharingGroupResponseDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+    put:
+      tags:
+        - sharingGroupManagement
+      summary: 共有グループを更新
+      operationId: updateSharingGroup
+      x-codegen-request-body-name: SharingGroupData
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+      requestBody:
+        description: 更新する共有グループ情報
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/SharingGroupRequestDto'
+        required: true
+      responses:
+        '200':
+          description: 更新された共有グループ
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/SharingGroupResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+    delete:
+      tags:
+        - sharingGroupManagement
+      summary: 共有グループを削除
+      operationId: deleteSharingGroup
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+      responses:
+        '204':
+          description: 共有グループの削除に成功
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+  /sharing-groups/{id}/members:
+    get:
+      tags:
+        - sharingGroupManagement
+      summary: 共有グループのメンバー一覧を取得
+      operationId: getSharingGroupMembers
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+      responses:
+        '200':
+          description: メンバー一覧
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SharingGroupMemberResponseDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+    post:
+      tags:
+        - sharingGroupManagement
+      summary: 共有グループにメンバーを追加
+      operationId: addSharingGroupMember
+      x-codegen-request-body-name: SharingGroupMemberData
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+      requestBody:
+        description: 追加するメンバー情報
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/SharingGroupMemberRequestDto'
+        required: true
+      responses:
+        '201':
+          description: メンバーの追加に成功
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/SharingGroupMemberResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+  /sharing-groups/{id}/members/{memberId}:
+    delete:
+      tags:
+        - sharingGroupManagement
+      summary: 共有グループからメンバーを削除
+      operationId: removeSharingGroupMember
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+        - $ref: '#/components/parameters/MemberId'
+      responses:
+        '204':
+          description: メンバーの削除に成功
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+  /media:
+    get:
+      tags:
+        - mediaManagement
+      summary: メディア一覧を取得
+      operationId: getMediaList
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/PageOffset'
+        - $ref: '#/components/parameters/PageLimit'
+        - $ref: '#/components/parameters/MediaTypeFilter'
+        - $ref: '#/components/parameters/AlbumIdFilter'
+        - $ref: '#/components/parameters/TagIdFilter'
+        - $ref: '#/components/parameters/SharingGroupIdFilter'
+        - $ref: '#/components/parameters/StartDate'
+        - $ref: '#/components/parameters/EndDate'
+      responses:
+        '200':
+          description: メディア一覧
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/MediaListResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+    post:
+      tags:
+        - mediaManagement
+      summary: メディアのメタデータを登録し署名付きアップロードURLを取得
+      operationId: createMedia
+      x-codegen-request-body-name: MediaUploadData
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+      requestBody:
+        description: アップロードするメディアのメタデータ
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/MediaUploadRequestDto'
+        required: true
+      responses:
+        '201':
+          description: メタデータ登録成功、署名付きURLを返却
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/MediaUploadResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+  /media/{id}:
+    get:
+      tags:
+        - mediaManagement
+      summary: メディアをID指定で1件取得
+      operationId: getMedia
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+      responses:
+        '200':
+          description: メディア情報
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/MediaResponseDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+    put:
+      tags:
+        - mediaManagement
+      summary: メディア情報を更新
+      operationId: updateMedia
+      x-codegen-request-body-name: MediaUpdateData
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+      requestBody:
+        description: 更新するメディア情報
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/MediaUpdateRequestDto'
+        required: true
+      responses:
+        '200':
+          description: 更新されたメディア情報
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/MediaResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+    delete:
+      tags:
+        - mediaManagement
+      summary: メディアを削除
+      description: ゴミ箱に移動し30日間保持
+      operationId: deleteMedia
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+      responses:
+        '204':
+          description: メディアの削除に成功
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+  /media/{mediaId}/comments:
+    get:
+      tags:
+        - mediaCommentManagement
+      summary: メディアのコメント一覧を取得
+      operationId: getMediaComments
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/MediaId'
+      responses:
+        '200':
+          description: コメント一覧
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MediaCommentResponseDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+    post:
+      tags:
+        - mediaCommentManagement
+      summary: メディアにコメントを追加
+      operationId: createMediaComment
+      x-codegen-request-body-name: MediaCommentData
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/MediaId'
+      requestBody:
+        description: コメント内容
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/MediaCommentRequestDto'
+        required: true
+      responses:
+        '201':
+          description: コメントの追加に成功
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/MediaCommentResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+  /media/{mediaId}/comments/{id}:
+    put:
+      tags:
+        - mediaCommentManagement
+      summary: コメントを更新
+      operationId: updateMediaComment
+      x-codegen-request-body-name: MediaCommentData
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/MediaId'
+        - $ref: '#/components/parameters/ResourceId'
+      requestBody:
+        description: 更新するコメント内容
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/MediaCommentRequestDto'
+        required: true
+      responses:
+        '200':
+          description: 更新されたコメント
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/MediaCommentResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+    delete:
+      tags:
+        - mediaCommentManagement
+      summary: コメントを削除
+      operationId: deleteMediaComment
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/MediaId'
+        - $ref: '#/components/parameters/ResourceId'
+      responses:
+        '204':
+          description: コメントの削除に成功
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+  /media/{mediaId}/tags:
+    put:
+      tags:
+        - tagManagement
+      summary: メディアのタグを一括更新
+      operationId: updateMediaTags
+      x-codegen-request-body-name: MediaTagsData
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/MediaId'
+      requestBody:
+        description: 紐付けるタグIDの一覧
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/MediaTagsUpdateRequestDto'
+        required: true
+      responses:
+        '200':
+          description: 更新後のタグ一覧
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TagResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+  /tags:
+    get:
+      tags:
+        - tagManagement
+      summary: タグ一覧を取得
+      operationId: getTags
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+      responses:
+        '200':
+          description: タグ一覧
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TagResponseDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+    post:
+      tags:
+        - tagManagement
+      summary: タグを作成
+      operationId: createTag
+      x-codegen-request-body-name: TagData
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+      requestBody:
+        description: 作成するタグ情報
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/TagRequestDto'
+        required: true
+      responses:
+        '201':
+          description: 作成されたタグ
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/TagResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+  /favorites:
+    get:
+      tags:
+        - favoriteManagement
+      summary: お気に入りメディア一覧を取得
+      operationId: getFavorites
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/PageOffset'
+        - $ref: '#/components/parameters/PageLimit'
+      responses:
+        '200':
+          description: お気に入りメディア一覧
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/FavoriteMediaListResponseDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+  /favorites/{mediaId}:
+    post:
+      tags:
+        - favoriteManagement
+      summary: メディアをお気に入りに追加
+      operationId: addFavorite
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/MediaId'
+      responses:
+        '201':
+          description: お気に入りの追加に成功
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+    delete:
+      tags:
+        - favoriteManagement
+      summary: メディアをお気に入りから削除
+      operationId: removeFavorite
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/MediaId'
+      responses:
+        '204':
+          description: お気に入りの削除に成功
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+  /albums:
+    get:
+      tags:
+        - albumManagement
+      summary: アルバム一覧を取得
+      operationId: getAlbums
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+      responses:
+        '200':
+          description: アルバム一覧
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AlbumResponseDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+    post:
+      tags:
+        - albumManagement
+      summary: アルバムを作成
+      operationId: createAlbum
+      x-codegen-request-body-name: AlbumData
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+      requestBody:
+        description: 作成するアルバム情報
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/AlbumRequestDto'
+        required: true
+      responses:
+        '201':
+          description: 作成されたアルバム
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/AlbumResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+  /albums/{id}:
+    get:
+      tags:
+        - albumManagement
+      summary: アルバムをID指定で取得
+      operationId: getAlbum
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+      responses:
+        '200':
+          description: アルバム情報
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/AlbumResponseDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+    put:
+      tags:
+        - albumManagement
+      summary: アルバムを更新
+      operationId: updateAlbum
+      x-codegen-request-body-name: AlbumData
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+      requestBody:
+        description: 更新するアルバム情報
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/AlbumRequestDto'
+        required: true
+      responses:
+        '200':
+          description: 更新されたアルバム
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/AlbumResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+    delete:
+      tags:
+        - albumManagement
+      summary: アルバムを削除
+      operationId: deleteAlbum
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+      responses:
+        '204':
+          description: アルバムの削除に成功
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+  /albums/{id}/media:
+    post:
+      tags:
+        - albumManagement
+      summary: アルバムにメディアを追加
+      operationId: addAlbumMedia
+      x-codegen-request-body-name: AlbumMediaData
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+      requestBody:
+        description: 追加するメディアID一覧
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/AlbumMediaAddRequestDto'
+        required: true
+      responses:
+        '204':
+          description: メディアの追加に成功
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+  /care-records:
+    get:
+      tags:
+        - careRecordManagement
+      summary: 育児記録一覧を取得
+      operationId: getCareRecords
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/RecordTypeFilter'
+        - $ref: '#/components/parameters/StartDate'
+        - $ref: '#/components/parameters/EndDate'
+      responses:
+        '200':
+          description: 育児記録一覧
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/CareRecordListResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+    post:
+      tags:
+        - careRecordManagement
+      summary: 育児記録を登録
+      operationId: createCareRecord
+      x-codegen-request-body-name: CareRecordData
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+      requestBody:
+        description: 登録する育児記録情報
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/CareRecordRequestDto'
+        required: true
+      responses:
+        '201':
+          description: 作成された育児記録
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/CareRecordResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+  /care-records/{id}:
+    get:
+      tags:
+        - careRecordManagement
+      summary: 育児記録をID指定で1件取得
+      operationId: getCareRecord
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+      responses:
+        '200':
+          description: 育児記録情報
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/CareRecordResponseDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+    put:
+      tags:
+        - careRecordManagement
+      summary: 育児記録を更新
+      operationId: updateCareRecord
+      x-codegen-request-body-name: CareRecordData
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+      requestBody:
+        description: 更新する育児記録情報
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/CareRecordRequestDto'
+        required: true
+      responses:
+        '200':
+          description: 更新された育児記録
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/CareRecordResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+    delete:
+      tags:
+        - careRecordManagement
+      summary: 育児記録を削除
+      operationId: deleteCareRecord
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+      responses:
+        '204':
+          description: 育児記録の削除に成功
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+  /growth-records:
+    get:
+      tags:
+        - growthRecordManagement
+      summary: 身長・体重記録一覧を取得
+      operationId: getGrowthRecords
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/StartDate'
+        - $ref: '#/components/parameters/EndDate'
+      responses:
+        '200':
+          description: 身長・体重記録一覧
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GrowthRecordResponseDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+    post:
+      tags:
+        - growthRecordManagement
+      summary: 身長・体重記録を登録
+      operationId: createGrowthRecord
+      x-codegen-request-body-name: GrowthRecordData
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+      requestBody:
+        description: 登録する身長・体重記録情報
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/GrowthRecordRequestDto'
+        required: true
+      responses:
+        '201':
+          description: 作成された身長・体重記録
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/GrowthRecordResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+  /growth-records/{id}:
+    get:
+      tags:
+        - growthRecordManagement
+      summary: 身長・体重記録をID指定で1件取得
+      operationId: getGrowthRecord
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+      responses:
+        '200':
+          description: 身長・体重記録情報
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/GrowthRecordResponseDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+    put:
+      tags:
+        - growthRecordManagement
+      summary: 身長・体重記録を更新
+      operationId: updateGrowthRecord
+      x-codegen-request-body-name: GrowthRecordData
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+      requestBody:
+        description: 更新する身長・体重記録情報
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/GrowthRecordRequestDto'
+        required: true
+      responses:
+        '200':
+          description: 更新された身長・体重記録
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/GrowthRecordResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+    delete:
+      tags:
+        - growthRecordManagement
+      summary: 身長・体重記録を削除
+      operationId: deleteGrowthRecord
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+      responses:
+        '204':
+          description: 身長・体重記録の削除に成功
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+  /first-records:
+    get:
+      tags:
+        - firstRecordManagement
+      summary: はじめて記録一覧を取得
+      operationId: getFirstRecords
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+      responses:
+        '200':
+          description: はじめて記録一覧
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FirstRecordResponseDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+    post:
+      tags:
+        - firstRecordManagement
+      summary: はじめて記録を登録
+      operationId: createFirstRecord
+      x-codegen-request-body-name: FirstRecordData
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+      requestBody:
+        description: 登録するはじめて記録情報
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/FirstRecordRequestDto'
+        required: true
+      responses:
+        '201':
+          description: 作成されたはじめて記録
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/FirstRecordResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+  /first-records/{id}:
+    get:
+      tags:
+        - firstRecordManagement
+      summary: はじめて記録をID指定で1件取得
+      operationId: getFirstRecord
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+      responses:
+        '200':
+          description: はじめて記録情報
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/FirstRecordResponseDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+    put:
+      tags:
+        - firstRecordManagement
+      summary: はじめて記録を更新
+      operationId: updateFirstRecord
+      x-codegen-request-body-name: FirstRecordData
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+      requestBody:
+        description: 更新するはじめて記録情報
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/FirstRecordRequestDto'
+        required: true
+      responses:
+        '200':
+          description: 更新されたはじめて記録
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/FirstRecordResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+    delete:
+      tags:
+        - firstRecordManagement
+      summary: はじめて記録を削除
+      operationId: deleteFirstRecord
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+      responses:
+        '204':
+          description: はじめて記録の削除に成功
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+  /word-records:
+    get:
+      tags:
+        - wordRecordManagement
+      summary: ことばの記録一覧を取得
+      operationId: getWordRecords
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+      responses:
+        '200':
+          description: ことばの記録一覧
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WordRecordResponseDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+    post:
+      tags:
+        - wordRecordManagement
+      summary: ことばの記録を登録
+      operationId: createWordRecord
+      x-codegen-request-body-name: WordRecordData
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+      requestBody:
+        description: 登録することばの記録情報
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/WordRecordRequestDto'
+        required: true
+      responses:
+        '201':
+          description: 作成されたことばの記録
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/WordRecordResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+  /word-records/{id}:
+    get:
+      tags:
+        - wordRecordManagement
+      summary: ことばの記録をID指定で1件取得
+      operationId: getWordRecord
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+      responses:
+        '200':
+          description: ことばの記録情報
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/WordRecordResponseDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+    put:
+      tags:
+        - wordRecordManagement
+      summary: ことばの記録を更新
+      operationId: updateWordRecord
+      x-codegen-request-body-name: WordRecordData
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+      requestBody:
+        description: 更新することばの記録情報
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/WordRecordRequestDto'
+        required: true
+      responses:
+        '200':
+          description: 更新されたことばの記録
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/WordRecordResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+    delete:
+      tags:
+        - wordRecordManagement
+      summary: ことばの記録を削除
+      operationId: deleteWordRecord
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+      responses:
+        '204':
+          description: ことばの記録の削除に成功
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+  /trash:
+    get:
+      tags:
+        - trashManagement
+      summary: ゴミ箱内のアイテム一覧を取得
+      operationId: getTrashItems
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/PageOffset'
+        - $ref: '#/components/parameters/PageLimit'
+      responses:
+        '200':
+          description: ゴミ箱アイテム一覧
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/TrashItemListResponseDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+    delete:
+      tags:
+        - trashManagement
+      summary: ゴミ箱の中身をすべて空にする
+      operationId: emptyTrash
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+      responses:
+        '204':
+          description: すべてのアイテムの完全削除に成功
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+  /trash/{id}:
+    delete:
+      tags:
+        - trashManagement
+      summary: ゴミ箱からアイテムを完全に削除
+      operationId: deleteTrashItem
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+      responses:
+        '204':
+          description: 完全削除に成功
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+  /trash/{id}/restore:
+    post:
+      tags:
+        - trashManagement
+      summary: ゴミ箱からアイテムを復元
+      operationId: restoreTrashItem
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+      responses:
+        '200':
+          description: 復元されたメディア情報
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/MediaResponseDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Cognitoで取得したJWTトークンを指定
+  parameters:
+    XRequestedWith:
+      name: X-Requested-With
+      in: header
+      required: true
+      schema:
+        type: string
+        default: XMLHttpRequest
+    ResourceId:
+      name: id
+      in: path
+      description: リソースの一意な識別子
+      required: true
+      schema:
+        type: integer
+        format: int64
+    MemberId:
+      name: memberId
+      in: path
+      description: メンバーの一意な識別子
+      required: true
+      schema:
+        type: integer
+        format: int64
+    PageOffset:
+      name: offset
+      in: query
+      description: 取得開始位置
+      required: false
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+    PageLimit:
+      name: limit
+      in: query
+      description: 取得件数
+      required: false
+      schema:
+        type: integer
+        default: 20
+        minimum: 1
+        maximum: 100
+    MediaTypeFilter:
+      name: mediaType
+      in: query
+      description: メディア種別で絞り込み
+      required: false
+      schema:
+        type: string
+        enum:
+          - PHOTO
+          - VIDEO
+    AlbumIdFilter:
+      name: albumId
+      in: query
+      description: アルバムIDで絞り込み
+      required: false
+      schema:
+        type: integer
+        format: int64
+    TagIdFilter:
+      name: tagId
+      in: query
+      description: タグIDで絞り込み
+      required: false
+      schema:
+        type: integer
+        format: int64
+    SharingGroupIdFilter:
+      name: sharingGroupId
+      in: query
+      description: 共有範囲グループIDで絞り込み
+      required: false
+      schema:
+        type: integer
+        format: int64
+    StartDate:
+      name: startDate
+      in: query
+      description: 検索開始日
+      required: false
+      schema:
+        type: string
+        format: date
+    EndDate:
+      name: endDate
+      in: query
+      description: 検索終了日
+      required: false
+      schema:
+        type: string
+        format: date
+    MediaId:
+      name: mediaId
+      in: path
+      description: メディアの一意な識別子
+      required: true
+      schema:
+        type: integer
+        format: int64
+    RecordTypeFilter:
+      name: recordType
+      in: query
+      description: 育児記録種別で絞り込み
+      required: false
+      schema:
+        type: string
+        enum:
+          - MEAL
+          - MILK
+          - DIAPER
+          - HEALTH
+  schemas:
+    ErrorResponseDto:
+      type: object
+      description: エラーレスポンス
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          description: エラーコード
+          example: BAD_REQUEST
+        message:
+          type: string
+          description: エラーメッセージ
+          example: リクエストが不正です
+    UserResponseDto:
+      type: object
+      description: ユーザー情報
+      required:
+        - id
+        - cognitoUserId
+        - displayName
+        - email
+        - userIconUrl
+        - isDarkMode
+        - isEasyMode
+        - role
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: ユーザーID
+          example: 1
+        cognitoUserId:
+          type: string
+          description: Cognito ユーザーID
+          example: abc123-def456
+        displayName:
+          type: string
+          description: 表示名
+          example: ママ
+        email:
+          type: string
+          format: email
+          description: メールアドレス
+          example: parent@example.com
+        userIconUrl:
+          type:
+            - string
+            - 'null'
+          description: プロフィール画像URL
+          example: https://example.com/icon.png
+        isDarkMode:
+          type: boolean
+          description: ダークモードフラグ
+          example: false
+        isEasyMode:
+          type: boolean
+          description: 簡易閲覧モードフラグ
+          example: false
+        role:
+          type: string
+          description: 権限ロール
+          enum:
+            - ADMIN
+            - VIEWER
+          example: ADMIN
+        createdAt:
+          type: string
+          format: date-time
+          description: 作成日時
+          example: '2026-01-01T00:00:00Z'
+        updatedAt:
+          type: string
+          format: date-time
+          description: 更新日時
+          example: '2026-01-01T00:00:00Z'
+    UserUpdateRequestDto:
+      type: object
+      description: ユーザー情報更新リクエスト
+      properties:
+        displayName:
+          type: string
+          description: 表示名
+          example: ママ
+          minLength: 1
+          maxLength: 100
+        userIconUrl:
+          type:
+            - string
+            - 'null'
+          description: プロフィール画像URL
+          example: https://example.com/icon.png
+          maxLength: 500
+        isDarkMode:
+          type: boolean
+          description: ダークモードフラグ
+        isEasyMode:
+          type: boolean
+          description: 簡易閲覧モードフラグ
+    UserRoleUpdateRequestDto:
+      type: object
+      description: ユーザー権限更新リクエスト
+      properties:
+        role:
+          type: string
+          description: 権限ロール
+          enum:
+            - ADMIN
+            - VIEWER
+          example: ADMIN
+    SharingGroupMemberResponseDto:
+      type: object
+      description: 共有グループメンバー情報
+      required:
+        - id
+        - userId
+        - displayName
+        - userIconUrl
+        - createdAt
+      properties:
+        userId:
+          type: integer
+          format: int64
+          description: ユーザーID
+          example: 2
+        displayName:
+          type: string
+          description: ユーザー表示名
+          example: ママ
+        userIconUrl:
+          type:
+            - string
+            - 'null'
+          description: プロフィール画像URL
+          example: https://example.com/icon.png
+        createdAt:
+          type: string
+          format: date-time
+          description: 作成日時
+          example: '2026-01-01T00:00:00Z'
+    SharingGroupResponseDto:
+      type: object
+      description: 共有グループ情報
+      required:
+        - id
+        - name
+        - members
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: グループID
+          example: 1
+        name:
+          type: string
+          description: グループ名
+          example: 家族全員
+        members:
+          type: array
+          description: グループメンバー一覧
+          items:
+            $ref: '#/components/schemas/SharingGroupMemberResponseDto'
+        createdAt:
+          type: string
+          format: date-time
+          description: 作成日時
+          example: '2026-01-01T00:00:00Z'
+        updatedAt:
+          type: string
+          format: date-time
+          description: 更新日時
+          example: '2026-01-01T00:00:00Z'
+    SharingGroupRequestDto:
+      type: object
+      description: 共有グループ作成・更新リクエスト
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: グループ名
+          minLength: 1
+          maxLength: 100
+          example: 家族全員
+    SharingGroupMemberRequestDto:
+      type: object
+      description: 共有グループメンバー追加リクエスト
+      required:
+        - userId
+      properties:
+        userId:
+          type: integer
+          format: int64
+          description: 追加するユーザーID
+          example: 2
+    TagResponseDto:
+      type: object
+      description: タグ情報
+      required:
+        - id
+        - name
+        - createdAt
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: タグID
+          example: 1
+        name:
+          type: string
+          description: タグ名
+          example: お出かけ
+        createdAt:
+          type: string
+          format: date-time
+          description: 作成日時
+          example: '2026-01-01T00:00:00Z'
+    MediaResponseDto:
+      type: object
+      description: メディア情報
+      required:
+        - id
+        - uploadedBy
+        - mediaType
+        - originalFilename
+        - contentType
+        - fileSize
+        - width
+        - height
+        - s3Key
+        - thumbnailS3Key
+        - takenAt
+        - albumId
+        - sharingGroupId
+        - uploadStatus
+        - tags
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: メディアID
+          example: 1
+        uploadedBy:
+          type: integer
+          format: int64
+          description: アップロードしたユーザーID
+          example: 1
+        mediaType:
+          type: string
+          description: メディア種別
+          enum:
+            - PHOTO
+            - VIDEO
+          example: PHOTO
+        originalFilename:
+          type: string
+          description: ファイル名
+          example: IMG_20260101.jpg
+        contentType:
+          type: string
+          description: MIMEタイプ
+          example: image/jpeg
+        fileSize:
+          type: integer
+          format: int64
+          description: ファイルサイズ（バイト）
+          example: 2048000
+        width:
+          type:
+            - integer
+            - 'null'
+          description: 幅（ピクセル）
+          example: 1920
+        height:
+          type:
+            - integer
+            - 'null'
+          description: 高さ（ピクセル）
+          example: 1080
+        s3Key:
+          type: string
+          description: S3オブジェクトキー
+          example: media/2026/01/01/abc123.jpg
+        thumbnailS3Key:
+          type:
+            - string
+            - 'null'
+          description: サムネイルのS3キー
+          example: thumbnails/2026/01/01/abc123.jpg
+        takenAt:
+          type:
+            - string
+            - 'null'
+          format: date
+          description: 撮影日
+          example: '2026-01-01'
+        albumId:
+          type:
+            - integer
+            - 'null'
+          format: int64
+          description: 所属アルバムID
+          example: 1
+        sharingGroupId:
+          type: integer
+          format: int64
+          description: 共有範囲グループID
+          example: 1
+        uploadStatus:
+          type: string
+          description: アップロード状況
+          enum:
+            - PROCESSING
+            - COMPLETED
+            - FAILED
+          example: COMPLETED
+        tags:
+          type: array
+          description: 付与されているタグ一覧
+          items:
+            $ref: '#/components/schemas/TagResponseDto'
+        isFavorite:
+          type: boolean
+          description: お気に入り済みフラグ
+          example: false
+        createdAt:
+          type: string
+          format: date-time
+          description: 作成日時
+          example: '2026-01-01T00:00:00Z'
+        updatedAt:
+          type: string
+          format: date-time
+          description: 更新日時
+          example: '2026-01-01T00:00:00Z'
+    MediaListResponseDto:
+      type: object
+      description: メディア一覧レスポンス
+      required:
+        - items
+        - totalCount
+        - hasNext
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/MediaResponseDto'
+        totalCount:
+          type: integer
+          format: int64
+          description: 総件数
+          example: 150
+        hasNext:
+          type: boolean
+          description: 次のページが存在するかどうか
+          example: true
+    MediaUploadRequestDto:
+      type: object
+      description: メディアアップロードリクエスト
+      required:
+        - mediaType
+        - originalFilename
+        - contentType
+        - fileSize
+        - sharingGroupId
+      properties:
+        mediaType:
+          type: string
+          description: メディア種別
+          enum:
+            - PHOTO
+            - VIDEO
+          example: PHOTO
+        originalFilename:
+          type: string
+          description: ファイル名
+          maxLength: 255
+          example: IMG_20260101.jpg
+        contentType:
+          type: string
+          description: MIMEタイプ
+          maxLength: 100
+          example: image/jpeg
+        fileSize:
+          type: integer
+          format: int64
+          description: ファイルサイズ（バイト）
+          example: 2048000
+        width:
+          type:
+            - integer
+            - 'null'
+          description: 幅（ピクセル）
+        height:
+          type:
+            - integer
+            - 'null'
+          description: 高さ（ピクセル）
+        takenAt:
+          type:
+            - string
+            - 'null'
+          format: date
+          description: 撮影日
+          example: '2026-01-01'
+        albumId:
+          type:
+            - integer
+            - 'null'
+          format: int64
+          description: 所属アルバムID
+        sharingGroupId:
+          type: integer
+          format: int64
+          description: 共有範囲グループID
+          example: 1
+    MediaUploadResponseDto:
+      type: object
+      description: メディアアップロードレスポンス
+      required:
+        - mediaId
+        - presignedUrl
+      properties:
+        mediaId:
+          type: integer
+          format: int64
+          description: 作成されたメディアID
+          example: 1
+        presignedUrl:
+          type: string
+          description: S3アップロード用の署名付きURL
+          example: https://s3.amazonaws.com/bucket/...
+    MediaUpdateRequestDto:
+      type: object
+      description: メディア更新リクエスト
+      properties:
+        albumId:
+          type:
+            - integer
+            - 'null'
+          format: int64
+          description: 所属アルバムID
+        sharingGroupId:
+          type: integer
+          format: int64
+          description: 共有範囲グループID
+    MediaCommentResponseDto:
+      type: object
+      description: メディアコメント情報
+      required:
+        - id
+        - mediaId
+        - userId
+        - displayName
+        - userIconUrl
+        - content
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: コメントID
+          example: 1
+        userId:
+          type: integer
+          format: int64
+          description: コメントしたユーザーID
+          example: 1
+        displayName:
+          type: string
+          description: コメントしたユーザーの表示名
+          example: パパ
+        userIconUrl:
+          type:
+            - string
+            - 'null'
+          description: プロフィール画像URL
+          example: https://example.com/icon.png
+        content:
+          type: string
+          description: コメント本文
+          example: かわいい！
+        createdAt:
+          type: string
+          format: date-time
+          description: 作成日時
+          example: '2026-01-01T00:00:00Z'
+        updatedAt:
+          type: string
+          format: date-time
+          description: 更新日時
+          example: '2026-01-01T00:00:00Z'
+    MediaCommentRequestDto:
+      type: object
+      description: コメント作成・更新リクエスト
+      required:
+        - content
+      properties:
+        content:
+          type: string
+          description: コメント本文
+          minLength: 1
+          example: かわいい！
+    MediaTagsUpdateRequestDto:
+      type: object
+      description: メディアのタグ一括更新リクエスト
+      required:
+        - tagIds
+      properties:
+        tagIds:
+          type: array
+          description: 紐付けるタグIDの一覧
+          items:
+            type: integer
+            format: int64
+          example:
+            - 1
+            - 2
+            - 3
+    TagRequestDto:
+      type: object
+      description: タグ作成リクエスト
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: タグ名
+          minLength: 1
+          maxLength: 100
+          example: お出かけ
+    FavoriteMediaListResponseDto:
+      type: object
+      description: お気に入りメディア一覧レスポンス
+      required:
+        - items
+        - totalCount
+        - hasNext
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/MediaResponseDto'
+        totalCount:
+          type: integer
+          format: int64
+          description: 総件数
+          example: 10
+        hasNext:
+          type: boolean
+          description: 次のページが存在するかどうか
+          example: true
+    AlbumResponseDto:
+      type: object
+      description: アルバム情報
+      required:
+        - id
+        - title
+        - coverMediaUrls
+        - photoCount
+        - videoCount
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: アルバムID
+          example: 1
+        title:
+          type: string
+          description: アルバムタイトル
+          example: 2026年お正月
+        coverMediaUrls:
+          type: array
+          description: カバー画像のURLリスト（アルバム内の最新の写真のURLを最大3件返す）
+          items:
+            type:
+              - string
+              - 'null'
+            description: カバー画像のURL
+            example: https://example.com/cover.jpg
+        photoCount:
+          type: integer
+          description: アルバム内写真数
+          example: 15
+        videoCount:
+          type: integer
+          description: アルバム内動画数
+          example: 15
+        createdAt:
+          type: string
+          format: date-time
+          description: 作成日時
+          example: '2026-01-01T00:00:00Z'
+        updatedAt:
+          type: string
+          format: date-time
+          description: 更新日時
+          example: '2026-01-01T00:00:00Z'
+    AlbumRequestDto:
+      type: object
+      description: アルバム作成・更新リクエスト
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          description: アルバムタイトル
+          minLength: 1
+          maxLength: 200
+          example: 保育園の運動会
+    AlbumMediaAddRequestDto:
+      type: object
+      description: アルバムへのメディア追加リクエスト
+      required:
+        - mediaIds
+      properties:
+        mediaIds:
+          type: array
+          description: 追加するメディアIDの一覧
+          items:
+            type: integer
+            format: int64
+          example:
+            - 1
+            - 2
+            - 3
+    MealDetailDto:
+      type: object
+      description: 食事記録の詳細
+      required:
+        - note
+      properties:
+        note:
+          type:
+            - string
+            - 'null'
+          description: 食事内容・メモ
+          example: おかゆと野菜ペースト
+    MilkDetailDto:
+      type: object
+      description: ミルク記録の詳細
+      required:
+        - amountMl
+        - note
+      properties:
+        amountMl:
+          type:
+            - integer
+            - 'null'
+          description: 量（ml）
+          example: 200
+        note:
+          type:
+            - string
+            - 'null'
+          description: メモ・備考
+          example: よく飲んだ
+    DiaperDetailDto:
+      type: object
+      description: 排泄記録の詳細
+      required:
+        - diaperType
+        - note
+      properties:
+        diaperType:
+          type: string
+          description: 排泄種別
+          enum:
+            - WET
+            - DIRTY
+          example: WET
+        note:
+          type:
+            - string
+            - 'null'
+          description: メモ・備考
+    HealthDetailDto:
+      type: object
+      description: 体調記録の詳細
+      required:
+        - temperature
+        - note
+      properties:
+        temperature:
+          type:
+            - number
+            - 'null'
+          format: double
+          description: 体温
+          example: 36.5
+        note:
+          type:
+            - string
+            - 'null'
+          description: メモ・備考
+          example: 元気
+    CareRecordResponseDto:
+      type: object
+      description: 育児記録情報
+      required:
+        - id
+        - recordedBy
+        - recordType
+        - recordedAt
+        - mealDetail
+        - milkDetail
+        - diaperDetail
+        - healthDetail
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 育児記録ID
+          example: 1
+        recordedBy:
+          type: integer
+          format: int64
+          description: 記録者のユーザーID
+          example: 1
+        recordType:
+          type: string
+          description: 記録種別
+          enum:
+            - MEAL
+            - MILK
+            - DIAPER
+            - HEALTH
+          example: MILK
+        recordedAt:
+          type: string
+          format: date-time
+          description: 記録日時
+          example: '2026-01-01T08:00:00Z'
+        mealDetail:
+          anyOf:
+            - $ref: '#/components/schemas/MealDetailDto'
+            - type: 'null'
+        milkDetail:
+          anyOf:
+            - $ref: '#/components/schemas/MilkDetailDto'
+            - type: 'null'
+        diaperDetail:
+          anyOf:
+            - $ref: '#/components/schemas/DiaperDetailDto'
+            - type: 'null'
+        healthDetail:
+          anyOf:
+            - $ref: '#/components/schemas/HealthDetailDto'
+            - type: 'null'
+        createdAt:
+          type: string
+          format: date-time
+          description: 作成日時
+          example: '2026-01-01T00:00:00Z'
+        updatedAt:
+          type: string
+          format: date-time
+          description: 更新日時
+          example: '2026-01-01T00:00:00Z'
+    CareRecordListResponseDto:
+      type: object
+      description: 育児記録一覧レスポンス
+      required:
+        - items
+        - totalCount
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CareRecordResponseDto'
+        totalCount:
+          type: integer
+          format: int64
+          description: 総件数
+          example: 50
+    CareRecordRequestDto:
+      type: object
+      description: 育児記録作成・更新リクエスト
+      required:
+        - recordType
+        - recordedAt
+        - mealDetail
+        - milkDetail
+        - diaperDetail
+        - healthDetail
+      properties:
+        recordType:
+          type: string
+          description: 記録種別
+          enum:
+            - MEAL
+            - MILK
+            - DIAPER
+            - HEALTH
+          example: MILK
+        recordedAt:
+          type: string
+          format: date-time
+          description: 記録日時
+          example: '2026-01-01T08:00:00Z'
+        mealDetail:
+          anyOf:
+            - $ref: '#/components/schemas/MealDetailDto'
+            - type: 'null'
+        milkDetail:
+          anyOf:
+            - $ref: '#/components/schemas/MilkDetailDto'
+            - type: 'null'
+        diaperDetail:
+          anyOf:
+            - $ref: '#/components/schemas/DiaperDetailDto'
+            - type: 'null'
+        healthDetail:
+          anyOf:
+            - $ref: '#/components/schemas/HealthDetailDto'
+            - type: 'null'
+    GrowthRecordResponseDto:
+      type: object
+      description: 身長・体重記録情報
+      required:
+        - id
+        - measurementDate
+        - height
+        - weight
+        - note
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 記録ID
+          example: 1
+        measurementDate:
+          type: string
+          format: date
+          description: 測定日
+          example: '2026-01-01'
+        height:
+          type:
+            - number
+            - 'null'
+          format: double
+          description: 身長（cm）
+          example: 75.5
+        weight:
+          type:
+            - number
+            - 'null'
+          format: double
+          description: 体重（kg）
+          example: 9.5
+        note:
+          type:
+            - string
+            - 'null'
+          description: メモ
+        createdAt:
+          type: string
+          format: date-time
+          description: 作成日時
+          example: '2026-01-01T00:00:00Z'
+        updatedAt:
+          type: string
+          format: date-time
+          description: 更新日時
+          example: '2026-01-01T00:00:00Z'
+    GrowthRecordRequestDto:
+      type: object
+      description: 身長・体重記録作成・更新リクエスト
+      required:
+        - measurementDate
+        - height
+        - weight
+        - note
+      properties:
+        measurementDate:
+          type: string
+          format: date
+          description: 測定日
+          example: '2026-01-01'
+        height:
+          type:
+            - number
+            - 'null'
+          format: double
+          description: 身長（cm）
+          example: 75.5
+        weight:
+          type:
+            - number
+            - 'null'
+          format: double
+          description: 体重（kg）
+          example: 9.5
+        note:
+          type:
+            - string
+            - 'null'
+          description: メモ
+    FirstRecordResponseDto:
+      type: object
+      description: はじめて記録情報
+      required:
+        - id
+        - title
+        - achievedDate
+        - comment
+        - media
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 記録ID
+          example: 1
+        title:
+          type: string
+          description: タイトル
+          example: はじめての寝返り
+        achievedDate:
+          type: string
+          format: date
+          description: 達成日
+          example: '2026-03-15'
+        comment:
+          type:
+            - string
+            - 'null'
+          description: コメント
+          example: 6ヶ月で初めてできた
+        media:
+          type: array
+          description: 紐付けされたメディア一覧
+          items:
+            $ref: '#/components/schemas/MediaResponseDto'
+        createdAt:
+          type: string
+          format: date-time
+          description: 作成日時
+          example: '2026-01-01T00:00:00Z'
+        updatedAt:
+          type: string
+          format: date-time
+          description: 更新日時
+          example: '2026-01-01T00:00:00Z'
+    FirstRecordRequestDto:
+      type: object
+      description: はじめて記録作成・更新リクエスト
+      required:
+        - title
+        - achievedDate
+        - comment
+        - mediaIds
+      properties:
+        title:
+          type: string
+          description: タイトル
+          minLength: 1
+          maxLength: 100
+          example: はじめての寝返り
+        achievedDate:
+          type: string
+          format: date
+          description: 達成日
+          example: '2026-03-15'
+        comment:
+          type:
+            - string
+            - 'null'
+          description: コメント
+        mediaIds:
+          type: array
+          description: 紐付けるメディアIDの配列
+          items:
+            type: integer
+            format: int64
+          example:
+            - 1001
+            - 1002
+    WordRecordResponseDto:
+      type: object
+      description: ことばの記録情報
+      required:
+        - id
+        - word
+        - recordedDate
+        - comment
+        - media
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 記録ID
+          example: 1
+        word:
+          type: string
+          description: ことば
+          example: まんま
+        recordedDate:
+          type: string
+          format: date
+          description: 記録日
+          example: '2026-04-01'
+        comment:
+          type:
+            - string
+            - 'null'
+          description: コメント
+          example: ごはんの時に言った
+        media:
+          type: array
+          description: 紐付けされたメディア一覧
+          items:
+            $ref: '#/components/schemas/MediaResponseDto'
+        createdAt:
+          type: string
+          format: date-time
+          description: 作成日時
+          example: '2026-01-01T00:00:00Z'
+        updatedAt:
+          type: string
+          format: date-time
+          description: 更新日時
+          example: '2026-01-01T00:00:00Z'
+    WordRecordRequestDto:
+      type: object
+      description: ことばの記録作成・更新リクエスト
+      required:
+        - word
+        - recordedDate
+        - comment
+        - mediaIds
+      properties:
+        word:
+          type: string
+          description: ことば
+          minLength: 1
+          maxLength: 100
+          example: まんま
+        recordedDate:
+          type: string
+          format: date
+          description: 記録日
+          example: '2026-04-01'
+        comment:
+          type:
+            - string
+            - 'null'
+          description: コメント
+        mediaIds:
+          type: array
+          description: 紐付けるメディアIDの配列
+          items:
+            type: integer
+            format: int64
+          example:
+            - 1001
+            - 1002
+    TrashItemResponseDto:
+      type: object
+      description: ゴミ箱アイテム情報
+      required:
+        - id
+        - mediaId
+        - deletedBy
+        - expiresAt
+        - createdAt
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: ゴミ箱ID
+          example: 1
+        mediaId:
+          type: integer
+          format: int64
+          description: メディアID
+          example: 10
+        media:
+          $ref: '#/components/schemas/MediaResponseDto'
+        deletedBy:
+          type: integer
+          format: int64
+          description: 削除したユーザーID
+          example: 1
+        expiresAt:
+          type: string
+          format: date-time
+          description: 完全削除予定日時
+          example: '2026-02-01T00:00:00Z'
+        createdAt:
+          type: string
+          format: date-time
+          description: 作成日時
+          example: '2026-01-01T00:00:00Z'
+    TrashItemListResponseDto:
+      type: object
+      description: ゴミ箱一覧レスポンス
+      required:
+        - items
+        - totalCount
+        - hasNext
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrashItemResponseDto'
+        totalCount:
+          type: integer
+          format: int64
+          description: 総件数
+          example: 5
+        hasNext:
+          type: boolean
+          description: 次のページが存在するかどうか
+          example: true
+  responses:
+    DefaultErrors:
+      description: 予期しないエラーが発生
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            $ref: '#/components/schemas/ErrorResponseDto'
+    Unauthorized:
+      description: 認証エラー
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            $ref: '#/components/schemas/ErrorResponseDto'
+    NotFound:
+      description: 指定されたリソースが見つからない
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            $ref: '#/components/schemas/ErrorResponseDto'
+    InternalServerError:
+      description: サーバー内部でエラー発生
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            $ref: '#/components/schemas/ErrorResponseDto'
+    BadRequest:
+      description: 不正なリクエスト
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            $ref: '#/components/schemas/ErrorResponseDto'
+    Forbidden:
+      description: アクセス権限エラー
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            $ref: '#/components/schemas/ErrorResponseDto'

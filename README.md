@@ -70,7 +70,7 @@
 - [テーブル定義書](docs/table-definition.md)
 - [ER図](docs/er-diagram.md)
 - [画面設計書](docs/screen-spec.md)
-- [API仕様](docs/api/)（未作成）
+- [API仕様](docs/openapi.yaml)
 - [シーケンス図](docs/sequence/)（未作成）
 
 ## 環境構築手順
