@@ -23,7 +23,7 @@
 | 9 | [アルバム](#albums) | albums | 写真・動画 |
 | 10 | [育児記録](#care_records) | care_records | 育児記録 |
 | 11 | [食事記録の詳細](#meal_details) | meal_details | 育児記録 |
-| 12 | [ミルク・授乳記録の詳細](#milk_details) | milk_details | 育児記録 |
+| 12 | [ミルク記録の詳細](#milk_details) | milk_details | 育児記録 |
 | 13 | [排泄記録の詳細](#diaper_details) | diaper_details | 育児記録 |
 | 14 | [体調記録の詳細](#health_details) | health_details | 育児記録 |
 | 15 | [身長・体重記録](#growth_records) | growth_records | 育児記録 |
@@ -239,7 +239,7 @@
 | uk_meal_details_care_record_id | care_record_id | UNIQUE |
 #### milk_details
 ##### 概要
-**論理テーブル名** : ミルク・授乳記録の詳細
+**論理テーブル名** : ミルク記録の詳細
 **目的** : 育児記録のミルクタイプの詳細情報管理
 ##### テーブル構造
 | カラム名 | データ型 | NULL | デフォルト | キー | 説明 |
@@ -392,5 +392,5 @@
 - [アーキテクチャ設計書](./architecture.md)
 - [ER図](./er-diagram.md)
 - [画面設計書](./screen-spec.md)
-- [API仕様](./api/)（未作成）
+- [API仕様](./openapi.yaml)
 - [シーケンス図](./sequence/)（未作成）

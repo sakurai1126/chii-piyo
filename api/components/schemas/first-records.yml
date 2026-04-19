@@ -1,0 +1,77 @@
+# はじめて記録
+FirstRecordResponseDto:
+  type: object
+  description: はじめて記録情報
+  required:
+    - id
+    - title
+    - achievedDate
+    - comment
+    - media
+    - createdAt
+    - updatedAt
+  properties:
+    id:
+      type: integer
+      format: int64
+      description: 記録ID
+      example: 1
+    title:
+      type: string
+      description: タイトル
+      example: "はじめての寝返り"
+    achievedDate:
+      type: string
+      format: date
+      description: 達成日
+      example: "2026-03-15"
+    comment:
+      type: ["string", "null"]
+      description: コメント
+      example: "6ヶ月で初めてできた"
+    media:
+      type: array
+      description: 紐付けされたメディア一覧
+      items:
+        $ref: "./media.yml#/MediaResponseDto"
+    createdAt:
+      type: string
+      format: date-time
+      description: 作成日時
+      example: "2026-01-01T00:00:00Z"
+    updatedAt:
+      type: string
+      format: date-time
+      description: 更新日時
+      example: "2026-01-01T00:00:00Z"
+
+FirstRecordRequestDto:
+  type: object
+  description: はじめて記録作成・更新リクエスト
+  required:
+    - title
+    - achievedDate
+    - comment
+    - mediaIds
+  properties:
+    title:
+      type: string
+      description: タイトル
+      minLength: 1
+      maxLength: 100
+      example: "はじめての寝返り"
+    achievedDate:
+      type: string
+      format: date
+      description: 達成日
+      example: "2026-03-15"
+    comment:
+      type: ["string", "null"]
+      description: コメント
+    mediaIds:
+      type: array
+      description: 紐付けるメディアIDの配列
+      items:
+        type: integer
+        format: int64
+      example: [1001, 1002]

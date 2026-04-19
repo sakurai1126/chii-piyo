@@ -1,0 +1,22 @@
+# お気に入り
+FavoriteMediaListResponseDto:
+  type: object
+  description: お気に入りメディア一覧レスポンス
+  required:
+    - items
+    - totalCount
+    - hasNext
+  properties:
+    items:
+      type: array
+      items:
+        $ref: "./media.yml#/MediaResponseDto"
+    totalCount:
+      type: integer
+      format: int64
+      description: 総件数
+      example: 10
+    hasNext:
+      type: boolean
+      description: 次のページが存在するかどうか
+      example: true

@@ -1,0 +1,55 @@
+get:
+  tags:
+    - wordRecordManagement
+  summary: ことばの記録一覧を取得
+  operationId: getWordRecords
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+  responses:
+    "200":
+      description: ことばの記録一覧
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            type: array
+            items:
+              $ref: "../../components/schemas/word-records.yml#/WordRecordResponseDto"
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"
+
+post:
+  tags:
+    - wordRecordManagement
+  summary: ことばの記録を登録
+  operationId: createWordRecord
+  x-codegen-request-body-name: WordRecordData
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+  requestBody:
+    description: 登録することばの記録情報
+    content:
+      application/json;charset=UTF-8:
+        schema:
+          $ref: "../../components/schemas/word-records.yml#/WordRecordRequestDto"
+    required: true
+  responses:
+    "201":
+      description: 作成されたことばの記録
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            $ref: "../../components/schemas/word-records.yml#/WordRecordResponseDto"
+    "400":
+      $ref: "../../components/responses.yml#/BadRequest"
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "403":
+      $ref: "../../components/responses.yml#/Forbidden"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"

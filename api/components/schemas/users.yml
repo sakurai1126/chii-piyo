@@ -1,0 +1,99 @@
+# ユーザー情報取得スキーマ
+UserResponseDto:
+  type: object
+  description: ユーザー情報
+  required:
+    - id
+    - cognitoUserId
+    - displayName
+    - email
+    - userIconUrl
+    - isDarkMode
+    - isEasyMode
+    - role
+    - createdAt
+    - updatedAt
+  properties:
+    id:
+      type: integer
+      format: int64
+      description: ユーザーID
+      example: 1
+    cognitoUserId:
+      type: string
+      description: Cognito ユーザーID
+      example: "abc123-def456"
+    displayName:
+      type: string
+      description: 表示名
+      example: "ママ"
+    email:
+      type: string
+      format: email
+      description: メールアドレス
+      example: "parent@example.com"
+    userIconUrl:
+      type: ["string", "null"]
+      description: プロフィール画像URL
+      example: "https://example.com/icon.png"
+    isDarkMode:
+      type: boolean
+      description: ダークモードフラグ
+      example: false
+    isEasyMode:
+      type: boolean
+      description: 簡易閲覧モードフラグ
+      example: false
+    role:
+      type: string
+      description: 権限ロール
+      enum:
+        - ADMIN
+        - VIEWER
+      example: "ADMIN"
+    createdAt:
+      type: string
+      format: date-time
+      description: 作成日時
+      example: "2026-01-01T00:00:00Z"
+    updatedAt:
+      type: string
+      format: date-time
+      description: 更新日時
+      example: "2026-01-01T00:00:00Z"
+
+# ユーザー情報更新スキーマ（自身の情報を更新）
+UserUpdateRequestDto:
+  type: object
+  description: ユーザー情報更新リクエスト
+  properties:
+    displayName:
+      type: string
+      description: 表示名
+      example: "ママ"
+      minLength: 1
+      maxLength: 100
+    userIconUrl:
+      type: ["string", "null"]
+      description: プロフィール画像URL
+      example: "https://example.com/icon.png"
+      maxLength: 500
+    isDarkMode:
+      type: boolean
+      description: ダークモードフラグ
+    isEasyMode:
+      type: boolean
+      description: 簡易閲覧モードフラグ
+
+# ユーザー権限更新スキーマ（管理者限定で権限操作）
+UserRoleUpdateRequestDto:
+  type: object
+  description: ユーザー権限更新リクエスト
+  properties:
+    role:
+      type: string
+      description: 権限ロール
+      enum:
+        - ADMIN
+        - VIEWER
+      example: "ADMIN"

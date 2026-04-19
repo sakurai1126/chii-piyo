@@ -1,0 +1,61 @@
+get:
+  tags:
+    - mediaManagement
+  summary: メディア一覧を取得
+  operationId: getMediaList
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+    - $ref: "../../components/parameters.yml#/PageOffset"
+    - $ref: "../../components/parameters.yml#/PageLimit"
+    - $ref: "../../components/parameters.yml#/MediaTypeFilter"
+    - $ref: "../../components/parameters.yml#/AlbumIdFilter"
+    - $ref: "../../components/parameters.yml#/TagIdFilter"
+    - $ref: "../../components/parameters.yml#/SharingGroupIdFilter"
+    - $ref: "../../components/parameters.yml#/StartDate"
+    - $ref: "../../components/parameters.yml#/EndDate"
+  responses:
+    "200":
+      description: メディア一覧
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            $ref: "../../components/schemas/media.yml#/MediaListResponseDto"
+    "400":
+      $ref: "../../components/responses.yml#/BadRequest"
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"
+
+post:
+  tags:
+    - mediaManagement
+  summary: メディアのメタデータを登録し署名付きアップロードURLを取得
+  operationId: createMedia
+  x-codegen-request-body-name: MediaUploadData
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+  requestBody:
+    description: アップロードするメディアのメタデータ
+    content:
+      application/json;charset=UTF-8:
+        schema:
+          $ref: "../../components/schemas/media.yml#/MediaUploadRequestDto"
+    required: true
+  responses:
+    "201":
+      description: メタデータ登録成功、署名付きURLを返却
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            $ref: "../../components/schemas/media.yml#/MediaUploadResponseDto"
+    "400":
+      $ref: "../../components/responses.yml#/BadRequest"
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"

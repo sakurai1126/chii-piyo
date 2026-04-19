@@ -1,0 +1,50 @@
+# タグ
+TagResponseDto:
+  type: object
+  description: タグ情報
+  required:
+    - id
+    - name
+    - createdAt
+  properties:
+    id:
+      type: integer
+      format: int64
+      description: タグID
+      example: 1
+    name:
+      type: string
+      description: タグ名
+      example: "お出かけ"
+    createdAt:
+      type: string
+      format: date-time
+      description: 作成日時
+      example: "2026-01-01T00:00:00Z"
+
+TagRequestDto:
+  type: object
+  description: タグ作成リクエスト
+  required:
+    - name
+  properties:
+    name:
+      type: string
+      description: タグ名
+      minLength: 1
+      maxLength: 100
+      example: "お出かけ"
+
+MediaTagsUpdateRequestDto:
+  type: object
+  description: メディアのタグ一括更新リクエスト
+  required:
+    - tagIds
+  properties:
+    tagIds:
+      type: array
+      description: 紐付けるタグIDの一覧
+      items:
+        type: integer
+        format: int64
+      example: [1, 2, 3]

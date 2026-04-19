@@ -1,0 +1,74 @@
+# アルバム
+AlbumResponseDto:
+  type: object
+  description: アルバム情報
+  required:
+    - id
+    - title
+    - coverMediaUrls
+    - photoCount
+    - videoCount
+    - createdAt
+    - updatedAt
+  properties:
+    id:
+      type: integer
+      format: int64
+      description: アルバムID
+      example: 1
+    title:
+      type: string
+      description: アルバムタイトル
+      example: "2026年お正月"
+    coverMediaUrls:
+      type: array
+      description: カバー画像のURLリスト（アルバム内の最新の写真のURLを最大3件返す）
+      items:
+        type: ["string", "null"]
+        description: カバー画像のURL
+        example: "https://example.com/cover.jpg"
+    photoCount:
+      type: integer
+      description: アルバム内写真数
+      example: 15
+    videoCount:
+      type: integer
+      description: アルバム内動画数
+      example: 15
+    createdAt:
+      type: string
+      format: date-time
+      description: 作成日時
+      example: "2026-01-01T00:00:00Z"
+    updatedAt:
+      type: string
+      format: date-time
+      description: 更新日時
+      example: "2026-01-01T00:00:00Z"
+
+AlbumRequestDto:
+  type: object
+  description: アルバム作成・更新リクエスト
+  required:
+    - title
+  properties:
+    title:
+      type: string
+      description: アルバムタイトル
+      minLength: 1
+      maxLength: 200
+      example: "保育園の運動会"
+
+AlbumMediaAddRequestDto:
+  type: object
+  description: アルバムへのメディア追加リクエスト
+  required:
+    - mediaIds
+  properties:
+    mediaIds:
+      type: array
+      description: 追加するメディアIDの一覧
+      items:
+        type: integer
+        format: int64
+      example: [1, 2, 3]

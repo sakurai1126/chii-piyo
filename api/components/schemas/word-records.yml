@@ -1,0 +1,77 @@
+# ことばの記録
+WordRecordResponseDto:
+  type: object
+  description: ことばの記録情報
+  required:
+    - id
+    - word
+    - recordedDate
+    - comment
+    - media
+    - createdAt
+    - updatedAt
+  properties:
+    id:
+      type: integer
+      format: int64
+      description: 記録ID
+      example: 1
+    word:
+      type: string
+      description: ことば
+      example: "まんま"
+    recordedDate:
+      type: string
+      format: date
+      description: 記録日
+      example: "2026-04-01"
+    comment:
+      type: ["string", "null"]
+      description: コメント
+      example: "ごはんの時に言った"
+    media:
+      type: array
+      description: 紐付けされたメディア一覧
+      items:
+        $ref: "./media.yml#/MediaResponseDto"
+    createdAt:
+      type: string
+      format: date-time
+      description: 作成日時
+      example: "2026-01-01T00:00:00Z"
+    updatedAt:
+      type: string
+      format: date-time
+      description: 更新日時
+      example: "2026-01-01T00:00:00Z"
+
+WordRecordRequestDto:
+  type: object
+  description: ことばの記録作成・更新リクエスト
+  required:
+    - word
+    - recordedDate
+    - comment
+    - mediaIds
+  properties:
+    word:
+      type: string
+      description: ことば
+      minLength: 1
+      maxLength: 100
+      example: "まんま"
+    recordedDate:
+      type: string
+      format: date
+      description: 記録日
+      example: "2026-04-01"
+    comment:
+      type: ["string", "null"]
+      description: コメント
+    mediaIds:
+      type: array
+      description: 紐付けるメディアIDの配列
+      items:
+        type: integer
+        format: int64
+      example: [1001, 1002]

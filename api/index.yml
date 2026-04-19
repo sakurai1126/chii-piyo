@@ -1,0 +1,137 @@
+# OpenAPI仕様のバージョン
+openapi: 3.1.1
+
+# APIの基本情報を定義するセクション
+info:
+  # 仕様書ドキュメントで表示される名前
+  title: ちいぴよ API
+  # APIの概要
+  description: 子供の写真・動画管理及び育児記録管理アプリケーションのAPI定義
+  # APIのバージョン番号
+  version: 1.0.0
+
+# APIエンドポイントのベースとなるサーバー側のURLリスト
+servers:
+  - url: http://localhost:8080/api/v1
+
+# エンドポイントをグループ化するためのタグ
+tags:
+  - name: userManagement
+    description: ユーザー情報管理
+  - name: sharingGroupManagement
+    description: 共有範囲グループ管理
+  - name: mediaManagement
+    description: 写真・動画管理
+  - name: mediaCommentManagement
+    description: 写真・動画へのコメント管理
+  - name: tagManagement
+    description: タグ管理
+  - name: favoriteManagement
+    description: お気に入り管理
+  - name: albumManagement
+    description: アルバム管理
+  - name: careRecordManagement
+    description: 育児記録管理
+  - name: growthRecordManagement
+    description: 身長・体重記録管理
+  - name: firstRecordManagement
+    description: はじめて記録管理
+  - name: wordRecordManagement
+    description: ことばの記録管理
+  - name: trashManagement
+    description: ゴミ箱管理
+
+# APIの各エンドポイント
+paths:
+  # ユーザー
+  /users/me:
+    $ref: "./paths/users/users-me.yml"
+  /users/{id}/role:
+    $ref: "./paths/users/users-role.yml"
+
+  # 共有グループ
+  /sharing-groups:
+    $ref: "./paths/sharing-groups/sharing-groups.yml"
+  /sharing-groups/{id}:
+    $ref: "./paths/sharing-groups/sharing-groups-detail.yml"
+  /sharing-groups/{id}/members:
+    $ref: "./paths/sharing-groups/sharing-group-members.yml"
+  /sharing-groups/{id}/members/{memberId}:
+    $ref: "./paths/sharing-groups/sharing-group-members-detail.yml"
+
+  # 写真・動画
+  /media:
+    $ref: "./paths/media/media.yml"
+  /media/{id}:
+    $ref: "./paths/media/media-detail.yml"
+
+  # 写真・動画コメント
+  /media/{mediaId}/comments:
+    $ref: "./paths/media/media-comments.yml"
+  /media/{mediaId}/comments/{id}:
+    $ref: "./paths/media/media-comments-detail.yml"
+
+  # 写真・動画タグ
+  /media/{mediaId}/tags:
+    $ref: "./paths/media/media-tags.yml"
+
+  # タグ
+  /tags:
+    $ref: "./paths/tags/tags.yml"
+
+  # お気に入り
+  /favorites:
+    $ref: "./paths/favorites/favorites.yml"
+  /favorites/{mediaId}:
+    $ref: "./paths/favorites/favorites-detail.yml"
+
+  # アルバム
+  /albums:
+    $ref: "./paths/albums/albums.yml"
+  /albums/{id}:
+    $ref: "./paths/albums/albums-detail.yml"
+  /albums/{id}/media:
+    $ref: "./paths/albums/albums-media.yml"
+
+  # 育児記録
+  /care-records:
+    $ref: "./paths/care-records/care-records.yml"
+  /care-records/{id}:
+    $ref: "./paths/care-records/care-records-detail.yml"
+
+  # 身長・体重記録
+  /growth-records:
+    $ref: "./paths/growth-records/growth-records.yml"
+  /growth-records/{id}:
+    $ref: "./paths/growth-records/growth-records-detail.yml"
+
+  # はじめて記録
+  /first-records:
+    $ref: "./paths/first-records/first-records.yml"
+  /first-records/{id}:
+    $ref: "./paths/first-records/first-records-detail.yml"
+
+  # ことばの記録
+  /word-records:
+    $ref: "./paths/word-records/word-records.yml"
+  /word-records/{id}:
+    $ref: "./paths/word-records/word-records-detail.yml"
+
+  # ゴミ箱
+  /trash:
+    $ref: "./paths/trash/trash.yml"
+  /trash/{id}:
+    $ref: "./paths/trash/trash-detail.yml"
+  /trash/{id}/restore:
+    $ref: "./paths/trash/trash-restore.yml"
+
+# 認証方式の定義
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "Cognitoで取得したJWTトークンを指定"
+security:
+  - BearerAuth: []

@@ -1,0 +1,61 @@
+get:
+  tags:
+    - sharingGroupManagement
+  summary: 共有グループのメンバー一覧を取得
+  operationId: getSharingGroupMembers
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+    - $ref: "../../components/parameters.yml#/ResourceId"
+  responses:
+    "200":
+      description: メンバー一覧
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            type: array
+            items:
+              $ref: "../../components/schemas/sharing-groups.yml#/SharingGroupMemberResponseDto"
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "404":
+      $ref: "../../components/responses.yml#/NotFound"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"
+
+post:
+  tags:
+    - sharingGroupManagement
+  summary: 共有グループにメンバーを追加
+  operationId: addSharingGroupMember
+  x-codegen-request-body-name: SharingGroupMemberData
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+    - $ref: "../../components/parameters.yml#/ResourceId"
+  requestBody:
+    description: 追加するメンバー情報
+    content:
+      application/json;charset=UTF-8:
+        schema:
+          $ref: "../../components/schemas/sharing-groups.yml#/SharingGroupMemberRequestDto"
+    required: true
+  responses:
+    "201":
+      description: メンバーの追加に成功
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            $ref: "../../components/schemas/sharing-groups.yml#/SharingGroupMemberResponseDto"
+    "400":
+      $ref: "../../components/responses.yml#/BadRequest"
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "403":
+      $ref: "../../components/responses.yml#/Forbidden"
+    "404":
+      $ref: "../../components/responses.yml#/NotFound"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"

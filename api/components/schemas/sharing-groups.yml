@@ -1,0 +1,90 @@
+# 共有グループ
+SharingGroupResponseDto:
+  type: object
+  description: 共有グループ情報
+  required:
+    - id
+    - name
+    - members
+    - createdAt
+    - updatedAt
+  properties:
+    id:
+      type: integer
+      format: int64
+      description: グループID
+      example: 1
+    name:
+      type: string
+      description: グループ名
+      example: "家族全員"
+    members:
+      type: array
+      description: グループメンバー一覧
+      items:
+        $ref: "#/SharingGroupMemberResponseDto"
+    createdAt:
+      type: string
+      format: date-time
+      description: 作成日時
+      example: "2026-01-01T00:00:00Z"
+    updatedAt:
+      type: string
+      format: date-time
+      description: 更新日時
+      example: "2026-01-01T00:00:00Z"
+
+SharingGroupRequestDto:
+  type: object
+  description: 共有グループ作成・更新リクエスト
+  required:
+    - name
+  properties:
+    name:
+      type: string
+      description: グループ名
+      minLength: 1
+      maxLength: 100
+      example: "家族全員"
+
+# 共有グループ所属メンバー
+SharingGroupMemberResponseDto:
+  type: object
+  description: 共有グループメンバー情報
+  required:
+    - id
+    - userId
+    - displayName
+    - userIconUrl
+    - createdAt
+  properties:
+    userId:
+      type: integer
+      format: int64
+      description: ユーザーID
+      example: 2
+    displayName:
+      type: string
+      description: ユーザー表示名
+      example: "ママ"
+    userIconUrl:
+      type: ["string", "null"]
+      description: プロフィール画像URL
+      example: "https://example.com/icon.png"
+    createdAt:
+      type: string
+      format: date-time
+      description: 作成日時
+      example: "2026-01-01T00:00:00Z"
+
+SharingGroupMemberRequestDto:
+  type: object
+  description: 共有グループメンバー追加リクエスト
+  required:
+    - userId
+  properties:
+    userId:
+      type: integer
+      format: int64
+      description: 追加するユーザーID
+      example: 2
