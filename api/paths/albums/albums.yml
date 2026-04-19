@@ -1,0 +1,53 @@
+get:
+  tags:
+    - albumManagement
+  summary: アルバム一覧を取得
+  operationId: getAlbums
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+  responses:
+    "200":
+      description: アルバム一覧
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            type: array
+            items:
+              $ref: "../../components/schemas/albums.yml#/AlbumResponseDto"
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"
+
+post:
+  tags:
+    - albumManagement
+  summary: アルバムを作成
+  operationId: createAlbum
+  x-codegen-request-body-name: AlbumData
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+  requestBody:
+    description: 作成するアルバム情報
+    content:
+      application/json;charset=UTF-8:
+        schema:
+          $ref: "../../components/schemas/albums.yml#/AlbumRequestDto"
+    required: true
+  responses:
+    "201":
+      description: 作成されたアルバム
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            $ref: "../../components/schemas/albums.yml#/AlbumResponseDto"
+    "400":
+      $ref: "../../components/responses.yml#/BadRequest"
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"
