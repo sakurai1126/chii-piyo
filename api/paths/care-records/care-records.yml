@@ -1,0 +1,60 @@
+get:
+  tags:
+    - careRecordManagement
+  summary: 育児記録一覧を取得
+  operationId: getCareRecords
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+    - $ref: "../../components/parameters.yml#/RecordTypeFilter"
+    - $ref: "../../components/parameters.yml#/StartDate"
+    - $ref: "../../components/parameters.yml#/EndDate"
+  responses:
+    "200":
+      description: 育児記録一覧
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            $ref: "../../components/schemas/care-records.yml#/CareRecordListResponseDto"
+    "400":
+      $ref: "../../components/responses.yml#/BadRequest"
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "403":
+      $ref: "../../components/responses.yml#/Forbidden"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"
+
+post:
+  tags:
+    - careRecordManagement
+  summary: 育児記録を登録
+  operationId: createCareRecord
+  x-codegen-request-body-name: CareRecordData
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+  requestBody:
+    description: 登録する育児記録情報
+    content:
+      application/json;charset=UTF-8:
+        schema:
+          $ref: "../../components/schemas/care-records.yml#/CareRecordRequestDto"
+    required: true
+  responses:
+    "201":
+      description: 作成された育児記録
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            $ref: "../../components/schemas/care-records.yml#/CareRecordResponseDto"
+    "400":
+      $ref: "../../components/responses.yml#/BadRequest"
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "403":
+      $ref: "../../components/responses.yml#/Forbidden"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"
