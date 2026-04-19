@@ -46,7 +46,7 @@ paths:
   # ユーザー
   /users/me:
     $ref: "./paths/users/users-me.yml"
-  /users/${id}/role:
+  /users/{id}/role:
     $ref: "./paths/users/users-role.yml"
 
   # 共有グループ
