@@ -1,0 +1,39 @@
+post:
+  tags:
+    - favoriteManagement
+  summary: メディアをお気に入りに追加
+  operationId: addFavorite
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+    - $ref: "../../components/parameters.yml#/MediaId"
+  responses:
+    "201":
+      description: お気に入りの追加に成功
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "404":
+      $ref: "../../components/responses.yml#/NotFound"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"
+
+delete:
+  tags:
+    - favoriteManagement
+  summary: メディアをお気に入りから削除
+  operationId: removeFavorite
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+    - $ref: "../../components/parameters.yml#/MediaId"
+  responses:
+    "204":
+      description: お気に入りの削除に成功
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "404":
+      $ref: "../../components/responses.yml#/NotFound"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"

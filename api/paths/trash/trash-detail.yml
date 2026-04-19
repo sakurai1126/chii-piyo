@@ -1,0 +1,21 @@
+delete:
+  tags:
+    - trashManagement
+  summary: ゴミ箱からアイテムを完全に削除
+  operationId: deleteTrashItem
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+    - $ref: "../../components/parameters.yml#/ResourceId"
+  responses:
+    "204":
+      description: 完全削除に成功
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "403":
+      $ref: "../../components/responses.yml#/Forbidden"
+    "404":
+      $ref: "../../components/responses.yml#/NotFound"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"

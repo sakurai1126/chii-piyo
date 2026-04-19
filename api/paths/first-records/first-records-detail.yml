@@ -1,0 +1,81 @@
+get:
+  tags:
+    - firstRecordManagement
+  summary: はじめて記録をID指定で1件取得
+  operationId: getFirstRecord
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+    - $ref: "../../components/parameters.yml#/ResourceId"
+  responses:
+    "200":
+      description: はじめて記録情報
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            $ref: "../../components/schemas/first-records.yml#/FirstRecordResponseDto"
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "404":
+      $ref: "../../components/responses.yml#/NotFound"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"
+
+put:
+  tags:
+    - firstRecordManagement
+  summary: はじめて記録を更新
+  operationId: updateFirstRecord
+  x-codegen-request-body-name: FirstRecordData
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+    - $ref: "../../components/parameters.yml#/ResourceId"
+  requestBody:
+    description: 更新するはじめて記録情報
+    content:
+      application/json;charset=UTF-8:
+        schema:
+          $ref: "../../components/schemas/first-records.yml#/FirstRecordRequestDto"
+    required: true
+  responses:
+    "200":
+      description: 更新されたはじめて記録
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            $ref: "../../components/schemas/first-records.yml#/FirstRecordResponseDto"
+    "400":
+      $ref: "../../components/responses.yml#/BadRequest"
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "403":
+      $ref: "../../components/responses.yml#/Forbidden"
+    "404":
+      $ref: "../../components/responses.yml#/NotFound"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"
+
+delete:
+  tags:
+    - firstRecordManagement
+  summary: はじめて記録を削除
+  operationId: deleteFirstRecord
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+    - $ref: "../../components/parameters.yml#/ResourceId"
+  responses:
+    "204":
+      description: はじめて記録の削除に成功
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "403":
+      $ref: "../../components/responses.yml#/Forbidden"
+    "404":
+      $ref: "../../components/responses.yml#/NotFound"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"

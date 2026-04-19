@@ -1,0 +1,37 @@
+put:
+  tags:
+    - tagManagement
+  summary: メディアのタグを一括更新
+  operationId: updateMediaTags
+  x-codegen-request-body-name: MediaTagsData
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+    - $ref: "../../components/parameters.yml#/MediaId"
+  requestBody:
+    description: 紐付けるタグIDの一覧
+    content:
+      application/json;charset=UTF-8:
+        schema:
+          $ref: "../../components/schemas/tags.yml#/MediaTagsUpdateRequestDto"
+    required: true
+  responses:
+    "200":
+      description: 更新後のタグ一覧
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            type: array
+            items:
+              $ref: "../../components/schemas/tags.yml#/TagResponseDto"
+    "400":
+      $ref: "../../components/responses.yml#/BadRequest"
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "403":
+      $ref: "../../components/responses.yml#/Forbidden"
+    "404":
+      $ref: "../../components/responses.yml#/NotFound"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"

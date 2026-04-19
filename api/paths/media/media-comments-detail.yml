@@ -1,0 +1,59 @@
+put:
+  tags:
+    - mediaCommentManagement
+  summary: コメントを更新
+  operationId: updateMediaComment
+  x-codegen-request-body-name: MediaCommentData
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+    - $ref: "../../components/parameters.yml#/MediaId"
+    - $ref: "../../components/parameters.yml#/ResourceId"
+  requestBody:
+    description: 更新するコメント内容
+    content:
+      application/json;charset=UTF-8:
+        schema:
+          $ref: "../../components/schemas/media.yml#/MediaCommentRequestDto"
+    required: true
+  responses:
+    "200":
+      description: 更新されたコメント
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            $ref: "../../components/schemas/media.yml#/MediaCommentResponseDto"
+    "400":
+      $ref: "../../components/responses.yml#/BadRequest"
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "403":
+      $ref: "../../components/responses.yml#/Forbidden"
+    "404":
+      $ref: "../../components/responses.yml#/NotFound"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"
+
+delete:
+  tags:
+    - mediaCommentManagement
+  summary: コメントを削除
+  operationId: deleteMediaComment
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+    - $ref: "../../components/parameters.yml#/MediaId"
+    - $ref: "../../components/parameters.yml#/ResourceId"
+  responses:
+    "204":
+      description: コメントの削除に成功
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "403":
+      $ref: "../../components/responses.yml#/Forbidden"
+    "404":
+      $ref: "../../components/responses.yml#/NotFound"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"

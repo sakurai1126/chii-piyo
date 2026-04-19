@@ -1,0 +1,29 @@
+post:
+  tags:
+    - albumManagement
+  summary: アルバムにメディアを追加
+  operationId: addAlbumMedia
+  x-codegen-request-body-name: AlbumMediaData
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+    - $ref: "../../components/parameters.yml#/ResourceId"
+  requestBody:
+    description: 追加するメディアID一覧
+    content:
+      application/json;charset=UTF-8:
+        schema:
+          $ref: "../../components/schemas/albums.yml#/AlbumMediaAddRequestDto"
+    required: true
+  responses:
+    "204":
+      description: メディアの追加に成功
+    "400":
+      $ref: "../../components/responses.yml#/BadRequest"
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "404":
+      $ref: "../../components/responses.yml#/NotFound"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"

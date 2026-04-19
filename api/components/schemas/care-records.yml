@@ -1,0 +1,187 @@
+# 育児記録
+CareRecordResponseDto:
+  type: object
+  description: 育児記録情報
+  required:
+    - id
+    - recordedBy
+    - recordType
+    - recordedAt
+    - mealDetail
+    - milkDetail
+    - diaperDetail
+    - healthDetail
+    - createdAt
+    - updatedAt
+  properties:
+    id:
+      type: integer
+      format: int64
+      description: 育児記録ID
+      example: 1
+    recordedBy:
+      type: integer
+      format: int64
+      description: 記録者のユーザーID
+      example: 1
+    recordType:
+      type: string
+      description: 記録種別
+      enum:
+        - MEAL
+        - MILK
+        - DIAPER
+        - HEALTH
+      example: "MILK"
+    recordedAt:
+      type: string
+      format: date-time
+      description: 記録日時
+      example: "2026-01-01T08:00:00Z"
+    mealDetail:
+      anyOf:
+        - $ref: "#/MealDetailDto"
+        - type: "null"
+    milkDetail:
+      anyOf:
+        - $ref: "#/MilkDetailDto"
+        - type: "null"
+    diaperDetail:
+      anyOf:
+        - $ref: "#/DiaperDetailDto"
+        - type: "null"
+    healthDetail:
+      anyOf:
+        - $ref: "#/HealthDetailDto"
+        - type: "null"
+    createdAt:
+      type: string
+      format: date-time
+      description: 作成日時
+      example: "2026-01-01T00:00:00Z"
+    updatedAt:
+      type: string
+      format: date-time
+      description: 更新日時
+      example: "2026-01-01T00:00:00Z"
+
+CareRecordListResponseDto:
+  type: object
+  description: 育児記録一覧レスポンス
+  required:
+    - items
+    - totalCount
+  properties:
+    items:
+      type: array
+      items:
+        $ref: "#/CareRecordResponseDto"
+    totalCount:
+      type: integer
+      format: int64
+      description: 総件数
+      example: 50
+
+CareRecordRequestDto:
+  type: object
+  description: 育児記録作成・更新リクエスト
+  required:
+    - recordType
+    - recordedAt
+    - mealDetail
+    - milkDetail
+    - diaperDetail
+    - healthDetail
+  properties:
+    recordType:
+      type: string
+      description: 記録種別
+      enum:
+        - MEAL
+        - MILK
+        - DIAPER
+        - HEALTH
+      example: "MILK"
+    recordedAt:
+      type: string
+      format: date-time
+      description: 記録日時
+      example: "2026-01-01T08:00:00Z"
+    mealDetail:
+      anyOf:
+        - $ref: "#/MealDetailDto"
+        - type: "null"
+    milkDetail:
+      anyOf:
+        - $ref: "#/MilkDetailDto"
+        - type: "null"
+    diaperDetail:
+      anyOf:
+        - $ref: "#/DiaperDetailDto"
+        - type: "null"
+    healthDetail:
+      anyOf:
+        - $ref: "#/HealthDetailDto"
+        - type: "null"
+
+MealDetailDto:
+  type: object
+  description: 食事記録の詳細
+  required:
+    - note
+  properties:
+    note:
+      type: ["string", "null"]
+      description: 食事内容・メモ
+      example: "おかゆと野菜ペースト"
+
+MilkDetailDto:
+  type: object
+  description: ミルク記録の詳細
+  required:
+    - amountMl
+    - note
+  properties:
+    amountMl:
+      type: ["integer", "null"]
+      description: 量（ml）
+      example: 200
+    note:
+      type: ["string", "null"]
+      description: メモ・備考
+      example: "よく飲んだ"
+
+DiaperDetailDto:
+  type: object
+  description: 排泄記録の詳細
+  required:
+    - diaperType
+    - note
+  properties:
+    diaperType:
+      type: string
+      description: 排泄種別
+      enum:
+        - WET
+        - DIRTY
+      example: "WET"
+    note:
+      type: ["string", "null"]
+      description: メモ・備考
+
+HealthDetailDto:
+  type: object
+  description: 体調記録の詳細
+  required:
+    - temperature
+    - note
+  properties:
+    temperature:
+      type: ["number", "null"]
+      format: double
+      description: 体温
+      example: 36.5
+    note:
+      type: ["string", "null"]
+      description: メモ・備考
+      example: "元気"

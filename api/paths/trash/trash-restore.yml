@@ -1,0 +1,25 @@
+post:
+  tags:
+    - trashManagement
+  summary: ゴミ箱からアイテムを復元
+  operationId: restoreTrashItem
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+    - $ref: "../../components/parameters.yml#/ResourceId"
+  responses:
+    "200":
+      description: 復元されたメディア情報
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            $ref: "../../components/schemas/media.yml#/MediaResponseDto"
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "403":
+      $ref: "../../components/responses.yml#/Forbidden"
+    "404":
+      $ref: "../../components/responses.yml#/NotFound"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"

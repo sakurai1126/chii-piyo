@@ -1,0 +1,60 @@
+# ゴミ箱
+TrashItemResponseDto:
+  type: object
+  description: ゴミ箱アイテム情報
+  required:
+    - id
+    - mediaId
+    - deletedBy
+    - expiresAt
+    - createdAt
+  properties:
+    id:
+      type: integer
+      format: int64
+      description: ゴミ箱ID
+      example: 1
+    mediaId:
+      type: integer
+      format: int64
+      description: メディアID
+      example: 10
+    media:
+      $ref: "./media.yml#/MediaResponseDto"
+    deletedBy:
+      type: integer
+      format: int64
+      description: 削除したユーザーID
+      example: 1
+    expiresAt:
+      type: string
+      format: date-time
+      description: 完全削除予定日時
+      example: "2026-02-01T00:00:00Z"
+    createdAt:
+      type: string
+      format: date-time
+      description: 作成日時
+      example: "2026-01-01T00:00:00Z"
+
+TrashItemListResponseDto:
+  type: object
+  description: ゴミ箱一覧レスポンス
+  required:
+    - items
+    - totalCount
+    - hasNext
+  properties:
+    items:
+      type: array
+      items:
+        $ref: "#/TrashItemResponseDto"
+    totalCount:
+      type: integer
+      format: int64
+      description: 総件数
+      example: 5
+    hasNext:
+      type: boolean
+      description: 次のページが存在するかどうか
+      example: true

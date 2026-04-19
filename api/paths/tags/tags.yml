@@ -1,0 +1,57 @@
+get:
+  tags:
+    - tagManagement
+  summary: タグ一覧を取得
+  operationId: getTags
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+  responses:
+    "200":
+      description: タグ一覧
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            type: array
+            items:
+              $ref: "../../components/schemas/tags.yml#/TagResponseDto"
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "403":
+      $ref: "../../components/responses.yml#/Forbidden"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"
+
+post:
+  tags:
+    - tagManagement
+  summary: タグを作成
+  operationId: createTag
+  x-codegen-request-body-name: TagData
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+  requestBody:
+    description: 作成するタグ情報
+    content:
+      application/json;charset=UTF-8:
+        schema:
+          $ref: "../../components/schemas/tags.yml#/TagRequestDto"
+    required: true
+  responses:
+    "201":
+      description: 作成されたタグ
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            $ref: "../../components/schemas/tags.yml#/TagResponseDto"
+    "400":
+      $ref: "../../components/responses.yml#/BadRequest"
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "403":
+      $ref: "../../components/responses.yml#/Forbidden"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"

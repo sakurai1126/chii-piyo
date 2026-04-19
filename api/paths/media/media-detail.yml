@@ -1,0 +1,82 @@
+get:
+  tags:
+    - mediaManagement
+  summary: メディアをID指定で1件取得
+  operationId: getMedia
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+    - $ref: "../../components/parameters.yml#/ResourceId"
+  responses:
+    "200":
+      description: メディア情報
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            $ref: "../../components/schemas/media.yml#/MediaResponseDto"
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "404":
+      $ref: "../../components/responses.yml#/NotFound"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"
+
+put:
+  tags:
+    - mediaManagement
+  summary: メディア情報を更新
+  operationId: updateMedia
+  x-codegen-request-body-name: MediaUpdateData
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+    - $ref: "../../components/parameters.yml#/ResourceId"
+  requestBody:
+    description: 更新するメディア情報
+    content:
+      application/json;charset=UTF-8:
+        schema:
+          $ref: "../../components/schemas/media.yml#/MediaUpdateRequestDto"
+    required: true
+  responses:
+    "200":
+      description: 更新されたメディア情報
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            $ref: "../../components/schemas/media.yml#/MediaResponseDto"
+    "400":
+      $ref: "../../components/responses.yml#/BadRequest"
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "403":
+      $ref: "../../components/responses.yml#/Forbidden"
+    "404":
+      $ref: "../../components/responses.yml#/NotFound"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"
+
+delete:
+  tags:
+    - mediaManagement
+  summary: メディアを削除
+  description: ゴミ箱に移動し30日間保持
+  operationId: deleteMedia
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+    - $ref: "../../components/parameters.yml#/ResourceId"
+  responses:
+    "204":
+      description: メディアの削除に成功
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "403":
+      $ref: "../../components/responses.yml#/Forbidden"
+    "404":
+      $ref: "../../components/responses.yml#/NotFound"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"
