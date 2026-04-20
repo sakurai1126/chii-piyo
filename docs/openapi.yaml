@@ -485,6 +485,42 @@ paths:
           $ref: '#/components/responses/InternalServerError'
         default:
           $ref: '#/components/responses/DefaultErrors'
+  /media/{id}/status:
+    put:
+      tags:
+        - mediaManagement
+      summary: メディアのアップロード状態を更新
+      operationId: updateMediaUploadStatus
+      x-codegen-request-body-name: MediaUpdateStatusData
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+      requestBody:
+        description: 更新するステータス情報
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/MediaUploadStatusRequestDto'
+        required: true
+      responses:
+        '200':
+          description: 更新されたメディア情報
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/MediaResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
   /media/{mediaId}/comments:
     get:
       tags:
@@ -2139,6 +2175,20 @@ components:
           type: integer
           format: int64
           description: 共有範囲グループID
+    MediaUploadStatusRequestDto:
+      type: object
+      description: メディアアップロードステータス更新リクエスト
+      required:
+        - uploadStatus
+      properties:
+        uploadStatus:
+          type: string
+          description: アップロード状況
+          enum:
+            - PROCESSING
+            - COMPLETED
+            - FAILED
+          example: COMPLETED
     MediaCommentResponseDto:
       type: object
       description: メディアコメント情報
