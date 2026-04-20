@@ -73,7 +73,7 @@
 - [ER図](docs/er-diagram.md)
 - [画面設計書](docs/screen-spec.md)
 - [API仕様](docs/openapi.yaml)
-- [シーケンス図](docs/sequence/)（未作成）
+- [シーケンス図](docs/sequence.md)
 
 ## 環境構築手順
 ※環境構築完了後に追記
