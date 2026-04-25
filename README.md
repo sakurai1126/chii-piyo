@@ -76,7 +76,36 @@
 - [シーケンス図](docs/sequence.md)
 
 ## 環境構築手順
-※環境構築完了後に追記
+
+### 必要な環境
+- Docker Desktop
+
+### 手順
+
+**1. リポジトリのクローン**
+```bash
+git clone https://github.com/sakurai1126/chii-piyo.git
+cd chii-piyo
+```
+
+**2. 環境変数の設定**
+```bash
+cp .env.example .env
+```
+`.env` を開き各値を設定する。
+
+**3. 起動**
+```bash
+docker compose up
+```
+
+**4. 動作確認**
+
+以下のURLにアクセスしてステータスが `UP` であることを確認する。
+
+```
+http://localhost:8080/actuator/health
+```
 
 ## ディレクトリ構成
 ※実装開始後に追記
