@@ -22,15 +22,11 @@ const zenMaruGothic = Zen_Maru_Gothic({
 
 // アプリ全体のメタデータ
 export const metadata: Metadata = {
-  title: "Chii Piyo",
+  title: "Chii-Piyo",
   description: "育児記録管理アプリ",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ja" className={`${mPlusRounded1c.variable} ${zenMaruGothic.variable}`}>
       <body>{children}</body>
