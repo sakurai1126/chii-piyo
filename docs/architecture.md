@@ -63,6 +63,7 @@ graph TB
 ├── Repository Layer     : データアクセス、MyBatisマッパー呼び出し
 ├── Model Layer          : エンティティ、DTO
 ├── Security Layer       : 認証フィルター、JWT検証
+├── Common Layer         : 共通レスポンス形式、例外ハンドラー
 └── Config Layer         : Bean定義、外部サービス設定
 ```
 

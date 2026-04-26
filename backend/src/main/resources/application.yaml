@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: chii-piyo
+
+  # PostgreSQLへの接続設定
+  datasource:
+    url: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+
+# アプリケーションの管理エンドポイントの設定
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always

@@ -1,0 +1,52 @@
+services:
+  # -----------------------------
+  # Backend: Spring Boot
+  # -----------------------------
+
+  backend:
+    # ./backend ディレクトリ内の Dockerfile を使用してイメージをビルドする
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    # コンテナ名を定義
+    container_name: chii-piyo-backend
+    # ホストのポート 8080 をコンテナの 8080 に転送しブラウザやAPIクライアントからアクセス可能にする
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    volumes:
+      # ホストのソースコードをコンテナに同期させコード変更を即座に反映できるようにする
+      - ./backend:/app
+      # ビルド生成物が格納される target ディレクトリを除外
+      - /app/target
+    # postgres コンテナが起動した後にバックエンドを起動する
+    depends_on:
+      # postgres コンテナのヘルスチェックが成功するまでバックエンドの起動を遅延させる
+      postgres:
+        condition: service_healthy
+
+  # -----------------------------
+  # Database: PostgreSQL
+  # -----------------------------
+  postgres:
+    image: postgres:18-alpine
+    container_name: chii-piyo-db
+    # ホスト側からGeneratorを実行するために公開する
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      # 10秒おきにデータベースの起動確認コマンドを実行し、応答があるかをテストする
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+# Dockerホスト上の管理領域にデータを作成し、コンテナを削除してもデータの状態が維持されるようにするために必要
+volumes:
+  postgres_data:
+
