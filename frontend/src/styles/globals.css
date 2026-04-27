@@ -10,6 +10,8 @@
 @theme {
   --font-sans: var(--font-m-plus-rounded), sans-serif;
   --font-title: var(--font-zen-maru-gothic), sans-serif;
+  --color-brown-light: #D07800;
+  --color-brown-dark: #6F4000;
 }
 
 body {
