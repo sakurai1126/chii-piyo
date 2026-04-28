@@ -22,8 +22,7 @@ export default function HamburgerBtn({ children }: Readonly<{ children: React.Re
         <button
           onClick={() => setOpenPathname(isOpen ? null : pathname)}
           className="w-10 h-10 bg-brown-light border-brown-dark border rounded-sm flex flex-col items-center justify-center gap-1.5 cursor-pointer
-          max-md:w-7 max-md:h-7 max-md:gap-1 max-md:absolute max-md:left-5 max-md:top-2
-          "
+          max-md:w-7 max-md:h-7 max-md:gap-1 max-md:absolute max-md:left-5 max-md:-top-1.5"
         >
           <div
             className={`w-5 h-px bg-white rounded-xs transition max-md:w-4 ${isOpen ? "translate-y-1.75 rotate-45 max-md:translate-y-1.25" : ""}`}

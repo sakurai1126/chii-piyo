@@ -5,7 +5,7 @@ import HamburgerMenu from "./HamburgerMenu";
 
 export default function Header() {
   return (
-    <header className="flex items-center justify-between pt-4 pr-12">
+    <header className="flex items-center justify-between pt-4 pr-12 max-md:h-17.5">
       <Link
         href="/"
         className="max-md:absolute max-md:left-0 max-md:right-0 max-md:mx-auto max-md:w-fit max-md:top-2.5"
