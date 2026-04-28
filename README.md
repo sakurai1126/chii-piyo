@@ -79,6 +79,8 @@
 
 ### 必要な環境
 - Docker Desktop
+- Node.js v24.x.x
+- npm v11.x.x
 
 ### 手順
 
@@ -94,18 +96,36 @@ cp .env.example .env
 ```
 `.env` を開き各値を設定する。
 
-**3. 起動**
+```bash
+cp frontend/.env.example frontend/.env.local
+```
+`frontend/.env.local` を開き各値を設定する。
+
+**3. バックエンド起動**
 ```bash
 docker compose up
 ```
 
-**4. 動作確認**
+※以降別ターミナルで実行。
 
+**4. 依存パッケージのインストール**
+```bash
+cd frontend
+npm install
+```
+
+**5. フロントエンド起動**
+```bash
+npm run dev
+```
+
+**6. 動作確認**
+- バックエンド
 以下のURLにアクセスしてステータスが `UP` であることを確認する。
-
-```
 http://localhost:8080/actuator/health
-```
+- フロントエンド
+以下のURLにアクセスしてページが表示されることを確認する。
+http://localhost:3000
 
 ## ディレクトリ構成
 ※実装開始後に追記

@@ -47,7 +47,7 @@ graph TB
 フロントエンド: Next.js
 ├── App Layer            : ルーティング、レイアウト、プロバイダー設定
 ├── Feature Layer        : 機能別モジュール（api / components / hooks / types）
-├── Shared Layer         : 機能横断の共通コンポーネント・hooks・utils
+├── Shared Layer         : 機能横断の共通コンポーネント・hooks・utils・style
 ├── Lib Layer            : OpenAPI Generator生成のAPIクライアント、外部ライブラリ設定
 └── Type Layer           : 共通の型定義
 ```

@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+/* 全体の変数定義 */
+:root {
+  --background: #FFFFE7;
+  --foreground: #333333;
+}
+
+/* tailwind用の変数定義 */
+@theme {
+  --font-sans: var(--font-m-plus-rounded), sans-serif;
+  --font-title: var(--font-zen-maru-gothic), sans-serif;
+  --color-brown-light: #D07800;
+  --color-brown-dark: #6F4000;
+  --color-brown-middle: #A56F0C;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
