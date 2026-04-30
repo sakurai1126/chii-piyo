@@ -1,25 +1,25 @@
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function HamburgerMenu() {
   return (
-    <div className="absolute right-16 top-0 text-nowrap max-md:right-auto max-md:left-5 max-md:top-12">
+    <div className="absolute top-0 right-16 text-nowrap max-md:top-12 max-md:right-auto max-md:left-5">
       <div className="relative">
         <Image
           src="/images/menu-illust.png"
           width={143}
           height={95}
           alt="ひよこのイラスト"
-          className="absolute bottom-7 left-3 mix-blend-multiply z-1 max-md:w-22 max-md:left-auto max-md:right-4 max-md:bottom-5"
+          className="absolute bottom-7 left-3 z-1 mix-blend-multiply max-md:right-4 max-md:bottom-5 max-md:left-auto max-md:w-22"
         />
-        <div className="flex gap-15 bg-white/50 backdrop-blur-[7.5px] py-7 pl-20 pr-13 border-2 border-brown-dark rounded-lg max-md:border max-md:flex-col max-md:gap-6 max-md:p-5 max-md:w-70 max-md:pb-16">
+        <div className="border-brown-dark flex gap-15 rounded-lg border-2 bg-white/50 py-7 pr-13 pl-20 backdrop-blur-[7.5px] max-md:w-70 max-md:flex-col max-md:gap-6 max-md:border max-md:p-5 max-md:pb-16">
           <div className="max-md:flex max-md:gap-19.5">
             <Link href="/" className="block w-fit font-medium max-md:text-[13px]">
               ホーム
             </Link>
             <Link
               href="/settings"
-              className="block w-fit font-medium mt-5 max-md:text-[13px] max-md:mt-0"
+              className="mt-5 block w-fit font-medium max-md:mt-0 max-md:text-[13px]"
             >
               設定
             </Link>
@@ -27,7 +27,7 @@ export default function HamburgerMenu() {
           <div className="flex gap-15 max-md:gap-10">
             <div>
               <p className="block w-fit font-medium max-md:text-[13px]">写真/動画</p>
-              <div className="grid gap-2.5 mt-4">
+              <div className="mt-4 grid gap-2.5">
                 <Link href="/media" className="block w-fit text-sm max-md:text-xs">
                   写真/動画一覧
                 </Link>
@@ -47,7 +47,7 @@ export default function HamburgerMenu() {
             </div>
             <div>
               <p className="block w-fit font-medium max-md:text-[13px]">育児記録</p>
-              <div className="grid gap-2.5 mt-4">
+              <div className="mt-4 grid gap-2.5">
                 <Link href="/care" className="block w-fit text-sm max-md:text-xs">
                   日々の記録
                 </Link>
