@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="mt-40 border-t border-brown-dark pt-10 pb-15 max-md:mt-20 max-md:pt-6 max-md:pb-10">
+    <footer className="border-brown-dark mt-40 border-t pt-10 pb-15 max-md:mt-20 max-md:pt-6 max-md:pb-10">
       <Image
         src="/images/logo.png"
         alt="Chii-Piyo"
@@ -11,7 +11,7 @@ export default function Footer() {
         height={100}
         className="mx-auto max-md:w-45"
       />
-      <nav className="flex justify-center gap-12 mt-4 max-md:gap-7">
+      <nav className="mt-4 flex justify-center gap-12 max-md:gap-7">
         <Link href="/" className="max-md:text-[13px]">
           ホーム
         </Link>

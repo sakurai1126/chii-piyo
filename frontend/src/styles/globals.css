@@ -2,7 +2,7 @@
 
 /* 全体の変数定義 */
 :root {
-  --background: #FFFFE7;
+  --background: #ffffe7;
   --foreground: #333333;
 }
 
@@ -10,9 +10,9 @@
 @theme {
   --font-sans: var(--font-m-plus-rounded), sans-serif;
   --font-title: var(--font-zen-maru-gothic), sans-serif;
-  --color-brown-light: #D07800;
-  --color-brown-dark: #6F4000;
-  --color-brown-middle: #A56F0C;
+  --color-brown-light: #d07800;
+  --color-brown-dark: #6f4000;
+  --color-brown-middle: #a56f0c;
 }
 
 body {

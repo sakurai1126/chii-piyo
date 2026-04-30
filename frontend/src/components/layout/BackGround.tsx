@@ -3,7 +3,7 @@ import Image from "next/image";
 export default function BackGround({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <div className="relative overflow-hidden">
-      <div className="max-w-250 w-full mx-auto relative pointer-events-none ">
+      <div className="pointer-events-none relative mx-auto w-full max-w-250">
         <Image
           src="/images/bg-illust-1.png"
           alt=""
@@ -34,7 +34,7 @@ export default function BackGround({ children }: Readonly<{ children: React.Reac
         alt=""
         width={2498}
         height={2498}
-        className="absolute w-[174vw] max-w-[174vw] top-[-48vw] left-[-40vw] pointer-events-none"
+        className="pointer-events-none absolute top-[-48vw] left-[-40vw] w-[174vw] max-w-[174vw]"
       />
       <div className="relative z-1">{children}</div>
     </div>

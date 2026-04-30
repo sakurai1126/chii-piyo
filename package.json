@@ -7,9 +7,19 @@
   "scripts": {
     "prepare": "husky"
   },
+  "lint-staged": {
+    "frontend/**/*.{ts,tsx}": [
+      "bash -c 'cd frontend && npx eslint --fix --no-error-on-unmatched-pattern $@' --",
+      "bash -c 'cd frontend && npx prettier --write $@' --"
+    ],
+    "frontend/**/*.{json,css,md}": [
+      "bash -c 'cd frontend && npx prettier --write $@' --"
+    ]
+  },
   "devDependencies": {
     "@commitlint/cli": "^20.5.0",
     "@commitlint/config-conventional": "^20.5.0",
-    "husky": "^9.1.7"
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0"
   }
 }
