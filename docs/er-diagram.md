@@ -127,7 +127,7 @@ erDiagram
 
     meal_details {
         bigserial id PK
-        bigint care_record_id FK
+        bigint care_record_id FK, UK
         text note
         timestamptz created_at
         timestamptz updated_at
@@ -135,7 +135,7 @@ erDiagram
 
     milk_details {
         bigserial id PK
-        bigint care_record_id FK
+        bigint care_record_id FK, UK
         integer amount_ml
         text note
         timestamptz created_at
@@ -144,7 +144,7 @@ erDiagram
 
     diaper_details {
         bigserial id PK
-        bigint care_record_id FK
+        bigint care_record_id FK, UK
         varchar diaper_type
         text note
         timestamptz created_at
@@ -153,7 +153,7 @@ erDiagram
 
     health_details {
         bigserial id PK
-        bigint care_record_id FK
+        bigint care_record_id FK, UK
         decimal temperature
         text note
         timestamptz created_at
@@ -225,7 +225,7 @@ erDiagram
 erDiagram
     trash_items {
         bigserial id PK
-        bigint media_id FK
+        bigint media_id FK, UK
         bigint deleted_by FK
         timestamptz expires_at
         timestamptz created_at

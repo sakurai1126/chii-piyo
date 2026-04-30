@@ -8,6 +8,17 @@ spring:
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
 
+  flyway:
+    enabled: true
+    # マイグレーションSQLを探すパス
+    locations: classpath:db/migration
+    # 既存DBにFlywayを後付けするかの設定 ※初期構築のためOFF設定
+    baseline-on-migrate: false
+    # 過去のバージョン番号を持つファイルの追加実行を許可するか
+    out-of-order: false
+    # 実行済みのSQLファイルが以前実行した時と同じ内容であるかをチェック
+    validate-on-migrate: true
+
 # アプリケーションの管理エンドポイントの設定
 management:
   endpoints:

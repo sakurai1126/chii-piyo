@@ -51,11 +51,6 @@
 | role | VARCHAR(20) | NO | 'VIEWER' | | 権限ロール ADMIN:管理者 VIEWER:閲覧者 |
 | created_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 作成日時 |
 | updated_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 更新日時 |
-##### インデックス/ユニーク制約
-| インデックス名 | カラム | 種別 |
-| --- | --- | --- |
-| uk_users_cognito_user_id | cognito_user_id | UNIQUE |
-| uk_users_email | email | UNIQUE |
 #### sharing_groups
 ##### 概要
 **論理テーブル名** : 共有範囲グループ
@@ -67,10 +62,6 @@
 | name | VARCHAR(100) | NO | - | UK | グループ名 |
 | created_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 作成日時 |
 | updated_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 更新日時 |
-##### インデックス/ユニーク制約
-| インデックス名 | カラム | 種別 |
-| --- | --- | --- |
-| uk_sharing_groups_name | name | UNIQUE |
 #### sharing_group_members
 ##### 概要
 **論理テーブル名** : 共有グループメンバー
@@ -83,11 +74,11 @@
 | sharing_group_id | BIGINT | NO | - | FK | 共有グループID |
 | user_id | BIGINT | NO | - | FK | ユーザーID |
 | created_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 作成日時 |
-##### インデックス/ユニーク制約
-| インデックス名 | カラム | 種別 |
-| --- | --- | --- |
-| uk_sharing_group_members | sharing_group_id, user_id | UNIQUE |
-| idx_sharing_group_members_user | user_id | INDEX |
+##### インデックス/複合ユニーク制約
+| カラム | 種別 |
+| --- | --- |
+| sharing_group_id, user_id | UNIQUE |
+| user_id | INDEX |
 ### 写真・動画
 #### media
 ##### 概要
@@ -112,16 +103,14 @@
 | upload_status | VARCHAR(15) | NO | PROCESSING | | アップロード状況 |
 | created_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 作成日時 |
 | updated_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 更新日時 |
-##### インデックス/ユニーク制約
-| インデックス名 | カラム | 種別 |
-| --- | --- | --- |
-| uk_media_s3_key | s3_key | UNIQUE |
-| uk_media_thumbnail_s3_key | thumbnail_s3_key | UNIQUE |
-| idx_media_uploaded_by | uploaded_by | INDEX |
-| idx_media_taken_at | taken_at | INDEX |
-| idx_media_sharing_group_id | sharing_group_id | INDEX |
-| idx_media_media_type | media_type | INDEX |
-| idx_media_album_id | album_id | INDEX |
+##### インデックス/複合ユニーク制約
+| カラム | 種別 |
+| --- | --- |
+| uploaded_by | INDEX |
+| taken_at | INDEX |
+| sharing_group_id | INDEX |
+| media_type | INDEX |
+| album_id | INDEX |
 #### media_comments
 ##### 概要
 **論理テーブル名** : 写真・動画へのコメント
@@ -135,11 +124,11 @@
 | content | TEXT | NO | - | | コメント本文 |
 | created_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 作成日時 |
 | updated_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 更新日時 |
-##### インデックス/ユニーク制約
-| インデックス名 | カラム | 種別 |
-| --- | --- | --- |
-| idx_media_comments_media_id | media_id | INDEX |
-| idx_media_comments_user_id | user_id | INDEX |
+##### インデックス/複合ユニーク制約
+| カラム | 種別 |
+| --- | --- |
+| media_id | INDEX |
+| user_id | INDEX |
 #### tags
 ##### 概要
 **論理テーブル名** : タグ
@@ -150,10 +139,6 @@
 | id | BIGSERIAL | NO | AUTO | PK | 主キー |
 | name | VARCHAR(100) | NO | - | UK | タグ名 |
 | created_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 作成日時 |
-##### インデックス/ユニーク制約
-| インデックス名 | カラム | 種別 |
-| --- | --- | --- |
-| uk_tags_name | name | UNIQUE |
 #### media_tags
 ##### 概要
 **論理テーブル名** : メディアとタグの中間テーブル
@@ -165,11 +150,11 @@
 | media_id | BIGINT | NO | - | FK | メディアID |
 | tag_id | BIGINT | NO | - | FK | タグID |
 | created_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 作成日時 |
-##### インデックス/ユニーク制約
-| インデックス名 | カラム | 種別 |
-| --- | --- | --- |
-| uk_media_tags | media_id, tag_id | UNIQUE |
-| idx_media_tags_tag_id | tag_id | INDEX |
+##### インデックス/複合ユニーク制約
+| カラム | 種別 |
+| --- | --- |
+| media_id, tag_id | UNIQUE |
+| tag_id | INDEX |
 #### favorites
 ##### 概要
 **論理テーブル名** : お気に入り
@@ -181,11 +166,11 @@
 | user_id | BIGINT | NO | - | FK | ユーザーID |
 | media_id | BIGINT | NO | - | FK | メディアID |
 | created_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 作成日時 |
-##### インデックス/ユニーク制約
-| インデックス名 | カラム | 種別 |
-| --- | --- | --- |
-| uk_favorites | user_id, media_id | UNIQUE |
-| idx_favorites_media_id | media_id | INDEX |
+##### インデックス/複合ユニーク制約
+| カラム | 種別 |
+| --- | --- |
+| user_id, media_id | UNIQUE |
+| media_id | INDEX |
 #### albums
 ##### 概要
 **論理テーブル名** : アルバム
@@ -197,10 +182,6 @@
 | title | VARCHAR(200) | NO | - | UK | アルバムタイトル |
 | created_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 作成日時 |
 | updated_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 更新日時 |
-##### インデックス/ユニーク制約
-| インデックス名 | カラム | 種別 |
-| --- | --- | --- |
-| uk_albums_title | title | UNIQUE |
 ### 育児記録
 #### care_records
 ##### 概要
@@ -215,12 +196,12 @@
 | recorded_at | TIMESTAMPTZ | NO | - | | 記録日時 |
 | created_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 作成日時 |
 | updated_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 更新日時 |
-##### インデックス/ユニーク制約
-| インデックス名 | カラム | 種別 |
-| --- | --- | --- |
-| idx_care_records_recorded_at | recorded_at | INDEX |
-| idx_care_records_type | record_type | INDEX |
-| idx_care_records_recorded_by | recorded_by | INDEX |
+##### インデックス/複合ユニーク制約
+| カラム | 種別 |
+| --- | --- |
+| recorded_at | INDEX |
+| record_type | INDEX |
+| recorded_by | INDEX |
 #### meal_details
 ##### 概要
 **論理テーブル名** : 食事記録の詳細
@@ -229,14 +210,10 @@
 | カラム名 | データ型 | NULL | デフォルト | キー | 説明 |
 | --- | --- | --- | --- | --- | --- |
 | id | BIGSERIAL | NO | AUTO | PK | 主キー |
-| care_record_id | BIGINT | NO | - | FK | 育児記録ID |
+| care_record_id | BIGINT | NO | - | FK, UK | 育児記録ID |
 | note | TEXT | YES | NULL | | 食事内容・メモ |
 | created_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 作成日時 |
 | updated_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 更新日時 |
-##### インデックス/ユニーク制約
-| インデックス名 | カラム | 種別 |
-| --- | --- | --- |
-| uk_meal_details_care_record_id | care_record_id | UNIQUE |
 #### milk_details
 ##### 概要
 **論理テーブル名** : ミルク記録の詳細
@@ -245,15 +222,11 @@
 | カラム名 | データ型 | NULL | デフォルト | キー | 説明 |
 | --- | --- | --- | --- | --- | --- |
 | id | BIGSERIAL | NO | AUTO | PK | 主キー |
-| care_record_id | BIGINT | NO | - | FK | 育児記録ID |
+| care_record_id | BIGINT | NO | - | FK, UK | 育児記録ID |
 | amount_ml | INTEGER | YES | NULL | | 量（ml） |
 | note | TEXT | YES | NULL | | メモ・備考 |
 | created_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 作成日時 |
 | updated_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 更新日時 |
-##### インデックス/ユニーク制約
-| インデックス名 | カラム | 種別 |
-| --- | --- | --- |
-| uk_milk_details_care_record_id | care_record_id | UNIQUE |
 #### diaper_details
 ##### 概要
 **論理テーブル名** : 排泄記録の詳細
@@ -262,15 +235,11 @@
 | カラム名 | データ型 | NULL | デフォルト | キー | 説明 |
 | --- | --- | --- | --- | --- | --- |
 | id | BIGSERIAL | NO | AUTO | PK | 主キー |
-| care_record_id | BIGINT | NO | - | FK | 育児記録ID |
+| care_record_id | BIGINT | NO | - | FK, UK | 育児記録ID |
 | diaper_type | VARCHAR(20) | NO | - | | WET:おしっこ DIRTY:うんち |
 | note | TEXT | YES | NULL | | メモ・備考 |
 | created_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 作成日時 |
 | updated_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 更新日時 |
-##### インデックス/ユニーク制約
-| インデックス名 | カラム | 種別 |
-| --- | --- | --- |
-| uk_diaper_details_care_record_id | care_record_id | UNIQUE |
 #### health_details
 ##### 概要
 **論理テーブル名** : 体調記録の詳細
@@ -279,15 +248,11 @@
 | カラム名 | データ型 | NULL | デフォルト | キー | 説明 |
 | --- | --- | --- | --- | --- | --- |
 | id | BIGSERIAL | NO | AUTO | PK | 主キー |
-| care_record_id | BIGINT | NO | - | FK | 育児記録ID |
+| care_record_id | BIGINT | NO | - | FK, UK | 育児記録ID |
 | temperature | DECIMAL(4,1) | YES | NULL | | 体温 |
 | note | TEXT | YES | NULL | | メモ・備考 |
 | created_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 作成日時 |
 | updated_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 更新日時 |
-##### インデックス/ユニーク制約
-| インデックス名 | カラム | 種別 |
-| --- | --- | --- |
-| uk_health_details_care_record_id | care_record_id | UNIQUE |
 #### growth_records
 ##### 概要
 **論理テーブル名** : 身長・体重記録
@@ -298,11 +263,15 @@
 | --- | --- | --- | --- | --- | --- |
 | id | BIGSERIAL | NO | AUTO | PK | 主キー |
 | measurement_date | DATE | NO | - | | 測定日 |
-| height | DECIMAL(5,1) | YES | NULL | | 身長（cm） |
-| weight | DECIMAL(5,2) | YES | NULL | | 体重（kg） |
+| height | DECIMAL(5,1) | NO | - | | 身長（cm） |
+| weight | DECIMAL(5,2) | NO | - | | 体重（kg） |
 | note | TEXT | YES | NULL | | メモ |
 | created_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 作成日時 |
 | updated_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 更新日時 |
+##### インデックス/複合ユニーク制約
+| カラム | 種別 |
+| --- | --- |
+| measurement_date | INDEX |
 ### はじめて・ことば
 #### first_records
 ##### 概要
@@ -317,10 +286,10 @@
 | comment | TEXT | YES | NULL | | コメント |
 | created_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 作成日時 |
 | updated_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 更新日時 |
-##### インデックス/ユニーク制約
-| インデックス名 | カラム | 種別 |
-| --- | --- | --- |
-| idx_first_records_date | achieved_date | INDEX |
+##### インデックス/複合ユニーク制約
+| カラム | 種別 |
+| --- | --- |
+| achieved_date | INDEX |
 #### word_records
 ##### 概要
 **論理テーブル名** : ことばの記録
@@ -334,10 +303,10 @@
 | comment | TEXT | YES | NULL | | コメント |
 | created_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 作成日時 |
 | updated_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 更新日時 |
-##### インデックス/ユニーク制約
-| インデックス名 | カラム | 種別 |
-| --- | --- | --- |
-| idx_word_records_date | recorded_date | INDEX |
+##### インデックス/複合ユニーク制約
+| カラム | 種別 |
+| --- | --- |
+| recorded_date | INDEX |
 #### first_record_media
 ##### 概要
 **論理テーブル名** : はじめて記録の写真・動画
@@ -349,10 +318,10 @@
 | first_record_id | BIGINT | NO | - | FK | はじめて記録ID |
 | media_id | BIGINT | NO | - | FK | メディアID |
 | created_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 作成日時 |
-##### インデックス/ユニーク制約
-| インデックス名 | カラム | 種別 |
-| --- | --- | --- |
-| uk_first_record_media | first_record_id, media_id | UNIQUE |
+##### インデックス/複合ユニーク制約
+| カラム | 種別 |
+| --- | --- |
+| first_record_id, media_id | UNIQUE |
 #### word_record_media
 ##### 概要
 **論理テーブル名** : ことば記録の写真・動画
@@ -364,10 +333,10 @@
 | word_record_id | BIGINT | NO | - | FK | ことば記録ID |
 | media_id | BIGINT | NO | - | FK | メディアID |
 | created_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 作成日時 |
-##### インデックス/ユニーク制約
-| インデックス名 | カラム | 種別 |
-| --- | --- | --- |
-| uk_word_record_media | word_record_id, media_id | UNIQUE |
+##### インデックス/複合ユニーク制約
+| カラム | 種別 |
+| --- | --- |
+| word_record_id, media_id | UNIQUE |
 ### ゴミ箱
 #### trash_items
 ##### 概要
@@ -377,15 +346,14 @@
 | カラム名 | データ型 | NULL | デフォルト | キー | 説明 |
 | --- | --- | --- | --- | --- | --- |
 | id | BIGSERIAL | NO | AUTO | PK | 主キー |
-| media_id | BIGINT | NO | - | FK | メディアID |
+| media_id | BIGINT | NO | - | FK, UK | メディアID |
 | deleted_by | BIGINT | NO | - | FK | 削除したユーザーID |
 | expires_at | TIMESTAMPTZ | NO | - | | 完全削除予定日時 |
 | created_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 作成日時 |
-##### インデックス/ユニーク制約
-| インデックス名 | カラム | 種別 |
-| --- | --- | --- |
-| uk_trash_items_media_id | media_id | UNIQUE |
-| idx_trash_items_expires_at | expires_at | INDEX |
+##### インデックス/複合ユニーク制約
+| カラム | 種別 |
+| --- | --- |
+| expires_at | INDEX |
 
 
 ## その他設計ドキュメント
