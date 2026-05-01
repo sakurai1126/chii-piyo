@@ -1652,7 +1652,7 @@ components:
         minimum: 1
         maximum: 100
     MediaTypeFilter:
-      name: mediaType
+      name: mediaKind
       in: query
       description: メディア種別で絞り込み
       required: false
