@@ -36,6 +36,9 @@
 
     <properties>
         <java.version>25</java.version>
+        <openapi-generator-maven-plugin.version>7.22.0</openapi-generator-maven-plugin.version>
+        <jackson-databind-nullable.version>0.2.10</jackson-databind-nullable.version>
+        <swagger-annotations.version>2.2.49</swagger-annotations.version>
     </properties>
 
     <dependencies>
@@ -124,9 +127,20 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- OpenAPI Generatorに必要な依存 -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
+            <groupId>org.openapitools</groupId>
+            <artifactId>jackson-databind-nullable</artifactId>
+            <version>${jackson-databind-nullable.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>${swagger-annotations.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
         </dependency>
     </dependencies>
 
@@ -177,6 +191,43 @@
                                     <artifactId>lombok</artifactId>
                                 </path>
                             </annotationProcessorPaths>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- OpenAPI Generator -->
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>${openapi-generator-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <!-- openapi.yamlのパス -->
+                            <inputSpec>${project.basedir}/src/main/resources/openapi.yaml</inputSpec>
+                            <!-- SpringBoot用のコード生成の指定 -->
+                            <generatorName>spring</generatorName>
+                            <!-- 出力先ディレクトリ -->
+                            <output>${project.basedir}/target/gen/</output>
+                            <apiPackage>link.s_repo.chii_piyo.controller.gen</apiPackage>
+                            <modelPackage>link.s_repo.chii_piyo.model.gen</modelPackage>
+                            <!-- その他の設定オプション -->
+                            <configOptions>
+                                <!-- 日付ライブラリの指定 -->
+                                <dateLibrary>java8</dateLibrary>
+                                <!-- インターフェースのみ生成するかどうか -->
+                                <interfaceOnly>true</interfaceOnly>
+                                <!-- タグを使用するかどうか -->
+                                <usetags>true</usetags>
+                                <!-- Spring Controllerを使用するかどうか -->
+                                <useSpringController>false</useSpringController>
+                                <!-- Spring Boot 4向けの設定 -->
+                                <useSpringBoot4>true</useSpringBoot4>
+                            </configOptions>
                         </configuration>
                     </execution>
                 </executions>
