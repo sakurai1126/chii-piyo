@@ -42,6 +42,7 @@
         <postgresql.version>42.7.11</postgresql.version>
         <mybatis-spring-boot-starter.version>4.0.1</mybatis-spring-boot-starter.version>
         <mybatis-generator-maven-plugin.version>2.0.0</mybatis-generator-maven-plugin.version>
+        <mybatis-dynamic-sql.version>2.0.0</mybatis-dynamic-sql.version>
     </properties>
 
     <dependencies>
@@ -145,6 +146,13 @@
         <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
+        </dependency>
+
+        <!-- Mybatis Generatorに必要な依存 -->
+        <dependency>
+            <groupId>org.mybatis.dynamic-sql</groupId>
+            <artifactId>mybatis-dynamic-sql</artifactId>
+            <version>${mybatis-dynamic-sql.version}</version>
         </dependency>
     </dependencies>
 
