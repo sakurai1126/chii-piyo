@@ -39,6 +39,10 @@
         <openapi-generator-maven-plugin.version>7.22.0</openapi-generator-maven-plugin.version>
         <jackson-databind-nullable.version>0.2.10</jackson-databind-nullable.version>
         <swagger-annotations.version>2.2.49</swagger-annotations.version>
+        <postgresql.version>42.7.11</postgresql.version>
+        <mybatis-spring-boot-starter.version>4.0.1</mybatis-spring-boot-starter.version>
+        <mybatis-generator-maven-plugin.version>2.0.0</mybatis-generator-maven-plugin.version>
+        <mybatis-dynamic-sql.version>2.0.0</mybatis-dynamic-sql.version>
     </properties>
 
     <dependencies>
@@ -75,13 +79,14 @@
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>4.0.1</version>
+            <version>${mybatis-spring-boot-starter.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
+            <version>${postgresql.version}</version>
         </dependency>
 
         <dependency>
@@ -123,7 +128,7 @@
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter-test</artifactId>
-            <version>4.0.1</version>
+            <version>${mybatis-spring-boot-starter.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -141,6 +146,13 @@
         <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
+        </dependency>
+
+        <!-- Mybatis Generatorに必要な依存 -->
+        <dependency>
+            <groupId>org.mybatis.dynamic-sql</groupId>
+            <artifactId>mybatis-dynamic-sql</artifactId>
+            <version>${mybatis-dynamic-sql.version}</version>
         </dependency>
     </dependencies>
 
@@ -251,6 +263,26 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.mybatis.generator</groupId>
+                <artifactId>mybatis-generator-maven-plugin</artifactId>
+                <version>${mybatis-generator-maven-plugin.version}</version>
+                <configuration>
+                    <!-- generatorConfig.xml の配置場所 -->
+                    <configurationFile>${project.basedir}/src/main/resources/generatorConfig.xml</configurationFile>
+                    <!-- 既存ファイルを上書きするか -->
+                    <overwrite>true</overwrite>
+                </configuration>
+                <dependencies>
+                    <!-- ジェネレーター実行時に PostgreSQL ドライバを使用 -->
+                    <dependency>
+                        <groupId>org.postgresql</groupId>
+                        <artifactId>postgresql</artifactId>
+                        <version>${postgresql.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
