@@ -39,6 +39,8 @@
         <openapi-generator-maven-plugin.version>7.22.0</openapi-generator-maven-plugin.version>
         <jackson-databind-nullable.version>0.2.10</jackson-databind-nullable.version>
         <swagger-annotations.version>2.2.49</swagger-annotations.version>
+        <postgresql.version>42.7.11</postgresql.version>
+        <mybatis-spring-boot-starter.version>4.0.1</mybatis-spring-boot-starter.version>
     </properties>
 
     <dependencies>
@@ -75,13 +77,14 @@
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>4.0.1</version>
+            <version>${mybatis-spring-boot-starter.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
+            <version>${postgresql.version}</version>
         </dependency>
 
         <dependency>
@@ -123,7 +126,7 @@
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter-test</artifactId>
-            <version>4.0.1</version>
+            <version>${mybatis-spring-boot-starter.version}</version>
             <scope>test</scope>
         </dependency>
 
