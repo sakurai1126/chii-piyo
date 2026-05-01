@@ -41,6 +41,7 @@
         <swagger-annotations.version>2.2.49</swagger-annotations.version>
         <postgresql.version>42.7.11</postgresql.version>
         <mybatis-spring-boot-starter.version>4.0.1</mybatis-spring-boot-starter.version>
+        <mybatis-generator-maven-plugin.version>2.0.0</mybatis-generator-maven-plugin.version>
     </properties>
 
     <dependencies>
@@ -254,6 +255,26 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.mybatis.generator</groupId>
+                <artifactId>mybatis-generator-maven-plugin</artifactId>
+                <version>${mybatis-generator-maven-plugin.version}</version>
+                <configuration>
+                    <!-- generatorConfig.xml の配置場所 -->
+                    <configurationFile>${project.basedir}/src/main/resources/generatorConfig.xml</configurationFile>
+                    <!-- 既存ファイルを上書きするか -->
+                    <overwrite>true</overwrite>
+                </configuration>
+                <dependencies>
+                    <!-- ジェネレーター実行時に PostgreSQL ドライバを使用 -->
+                    <dependency>
+                        <groupId>org.postgresql</groupId>
+                        <artifactId>postgresql</artifactId>
+                        <version>${postgresql.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>

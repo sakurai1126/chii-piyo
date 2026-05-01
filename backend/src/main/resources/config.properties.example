@@ -1,0 +1,5 @@
+# ローカル実行時の接続情報
+# .envに記載しているPOSTGRES_DB/POSTGRES_USER/POSTGRES_PASSWORDの値と一致させる
+db.url=database_url
+db.user=username
+db.password=password

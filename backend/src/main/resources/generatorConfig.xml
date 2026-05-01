@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+
+    <!-- プロパティファイル読み込み -->
+    <properties resource="config.properties"/>
+
+    <context id="chiiPiyoContext" targetRuntime="MyBatis3DynamicSql">
+
+        <!-- テーブル名やカラム名がDBの予約語と一致している場合に自動でクォートで囲んでエスケープする -->
+        <property name="autoDelimitKeywords" value="true"/>
+        <property name="beginningDelimiter" value="&quot;"/>
+        <property name="endingDelimiter" value="&quot;"/>
+
+        <!-- 生成ファイルのエンコーディング -->
+        <property name="javaFileEncoding" value="UTF-8"/>
+
+        <!-- コメントを抑制する -->
+        <commentGenerator>
+            <property name="suppressDate" value="true"/>
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+
+        <!-- DB接続設定 -->
+        <jdbcConnection
+                driverClass="org.postgresql.Driver"
+                connectionURL="${db.url}"
+                userId="${db.user}"
+                password="${db.password}">
+            <property name="useInformationSchema" value="true"/>
+        </jdbcConnection>
+
+        <!-- Modelの生成先 -->
+        <javaModelGenerator
+                targetPackage="link.s_repo.chii_piyo.model.gen"
+                targetProject="src/main/java"/>
+
+        <!-- Mapperインターフェース + Dynamic SQL Support クラスの生成先 -->
+        <javaClientGenerator
+                targetPackage="link.s_repo.chii_piyo.repository.gen"
+                targetProject="src/main/java"/>
+
+        <!-- 生成対象テーブル -->
+
+        <!-- ユーザー -->
+        <table tableName="users" schema="public">
+            <!-- 自動採番ID用処理 JDBC標準APIで取得する -->
+            <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+        </table>
+
+        <!-- 共有範囲グループ -->
+        <table tableName="sharing_groups" schema="public">
+            <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+        </table>
+        <table tableName="sharing_group_members" schema="public">
+            <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+        </table>
+
+        <!-- アルバム -->
+        <table tableName="albums" schema="public">
+            <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+        </table>
+
+        <!-- 写真・動画 -->
+        <table tableName="media" schema="public">
+            <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+        </table>
+
+        <!-- 写真・動画へのコメント -->
+        <table tableName="media_comments" schema="public">
+            <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+        </table>
+
+        <!-- タグ -->
+        <table tableName="tags" schema="public">
+            <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+        </table>
+        <table tableName="media_tags" schema="public">
+            <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+        </table>
+
+        <!-- お気に入り -->
+        <table tableName="favorites" schema="public">
+            <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+        </table>
+
+        <!-- 育児記録 -->
+        <table tableName="care_records" schema="public">
+            <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+        </table>
+        <table tableName="meal_details" schema="public">
+            <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+        </table>
+        <table tableName="milk_details" schema="public">
+            <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+        </table>
+        <table tableName="diaper_details" schema="public">
+            <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+        </table>
+        <table tableName="health_details" schema="public">
+            <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+        </table>
+
+        <!-- 身長・体重記録 -->
+        <table tableName="growth_records" schema="public">
+            <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+        </table>
+
+        <!-- はじめて記録 -->
+        <table tableName="first_records" schema="public">
+            <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+        </table>
+        <table tableName="first_record_media" schema="public">
+            <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+        </table>
+
+        <!-- ことば記録 -->
+        <table tableName="word_records" schema="public">
+            <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+        </table>
+        <table tableName="word_record_media" schema="public">
+            <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+        </table>
+
+        <!-- ゴミ箱 -->
+        <table tableName="trash_items" schema="public">
+            <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+        </table>
+
+    </context>
+</generatorConfiguration>
