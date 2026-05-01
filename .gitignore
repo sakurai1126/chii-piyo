@@ -55,3 +55,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# OpenAPI Generator生成の不要ファイル
+frontend/src/lib/api-client/gen/docs/
+frontend/src/lib/api-client/gen/.openapi-generator/
