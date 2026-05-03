@@ -57,11 +57,10 @@ public class UserSyncService {
         user.setIsDarkMode(false);
         user.setIsEasyMode(false);
         user.setRole("VIEWER");
-        user.setCreatedAt(LocalDateTime.now());
-        user.setUpdatedAt(LocalDateTime.now());
+        // createdAt, updatedAt はタイムゾーンずれ対策のためDB側のDEFAULTに任せる
 
         // DBに保存
-        usersMapper.insert(user);
+        usersMapper.insertSelective(user);
         return user;
     }
 }
