@@ -10,6 +10,9 @@
     "generate-api": "rm -rf ./src/lib/api-client/gen/* && openapi-generator-cli generate -i ./openapi.yaml -g typescript-fetch -o ./src/lib/api-client/gen"
   },
   "dependencies": {
+    "@aws-sdk/client-cognito-identity-provider": "^3.1041.0",
+    "aws-sdk": "^2.1693.0",
+    "jose": "^6.2.3",
     "next": "16.2.4",
     "react": "19.2.4",
     "react-dom": "19.2.4"
