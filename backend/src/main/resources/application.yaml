@@ -19,6 +19,20 @@ spring:
     # 実行済みのSQLファイルが以前実行した時と同じ内容であるかをチェック
     validate-on-migrate: true
 
+  # Spring Securityの設定
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # JWTの発行元を検証するための設定
+          issuer-uri: ${COGNITO_ISSUER}
+          # Spring Bootは起動時にOIDC Discoveryエンドポイントを叩いてJWKをキャッシュしようとするが、CognitoはOIDC Discoveryに完全準拠していない部分があるのでjwk-set-uriも明示的に指定
+          jwk-set-uri: ${COGNITO_JWKS_URI}
+
+# Cognitoの設定
+cognito:
+  audience: ${COGNITO_CLIENT_ID}
+
 # アプリケーションの管理エンドポイントの設定
 management:
   endpoints:
@@ -28,3 +42,8 @@ management:
   endpoint:
     health:
       show-details: always
+
+# CORS設定
+app:
+  cors:
+    allowed-origins: ${ALLOWED_ORIGINS:http://localhost:3000}
