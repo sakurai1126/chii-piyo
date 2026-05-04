@@ -34,7 +34,7 @@ public class SecurityConfig {
     private String jwkSetUri;
     @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
     private String issuerUri;
-    @Value("${cognito.audience}")
+    @Value("${aws.cognito.audience}")
     private String audience;
     @Value("${app.cors.allowed-origins}")
     private List<String> allowedOrigins;
