@@ -48,5 +48,5 @@ const redirectToLogin = (request: NextRequest) => {
 // 正規表現でproxyを適用するパスを絞込
 // _next/static, _next/image, favicon.ico, images配下、その他拡張子を持った静的ファイルは除外する
 export const config = {
-  matcher: [String.raw`/((?!_next/static|_next/image|favicon.ico|images|.*\..*).*)`],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)"], // NOSONAR Next.jsのmatcherは静的文字列リテラル必須のためString.rawを使えない
 };
