@@ -1,6 +1,5 @@
 package link.s_repo.chii_piyo.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import link.s_repo.chii_piyo.common.ApiResponse;
@@ -11,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 
@@ -22,13 +22,13 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     /**
      * 認可失敗時の処理
      *
-     * @param request HTTPリクエストオブジェクト
-     * @param response HTTPレスポンスオブジェクト
+     * @param request               HTTPリクエストオブジェクト
+     * @param response              HTTPレスポンスオブジェクト
      * @param accessDeniedException アクセス拒否の例外情報
      * @throws IOException レスポンスの書き込みに失敗した場合にスローされる例外
      */
@@ -52,6 +52,6 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         );
 
         // レスポンスボディにJSON形式でエラーレスポンスを書き込む
-        response.getWriter().write(objectMapper.writeValueAsString(body));
+        response.getWriter().write(jsonMapper.writeValueAsString(body));
     }
 }
