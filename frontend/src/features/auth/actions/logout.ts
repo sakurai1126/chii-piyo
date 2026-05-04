@@ -10,5 +10,5 @@ import { clearAuthCookies } from "@/lib/auth/session";
  */
 export const logoutAction = async () => {
   await clearAuthCookies();
-  redirect("/login");
+  redirect("/login?logout=success");
 };

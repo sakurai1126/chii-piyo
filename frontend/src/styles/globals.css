@@ -13,6 +13,8 @@
   --color-brown-light: #d07800;
   --color-brown-dark: #6f4000;
   --color-brown-middle: #a56f0c;
+  --color-warning: #900521;
+  --color-success: #258210;
 }
 
 body {
