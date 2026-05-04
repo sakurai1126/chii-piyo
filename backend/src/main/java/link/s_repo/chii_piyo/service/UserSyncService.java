@@ -7,8 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-
 import static link.s_repo.chii_piyo.repository.gen.UsersDynamicSqlSupport.cognitoUserId;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
