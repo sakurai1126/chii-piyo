@@ -14,7 +14,7 @@ const mPlusRounded1c = M_PLUS_Rounded_1c({
 // 見出しフォントとして使用
 const zenMaruGothic = Zen_Maru_Gothic({
   subsets: ["latin"],
-  weight: ["400"],
+  weight: ["500"],
   variable: "--font-zen-maru-gothic",
   display: "swap",
   preload: false,
