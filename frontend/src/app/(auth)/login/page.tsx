@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import LoginForm from "@/features/auth/components/LoginForm";
+import { LoginForm } from "@/features/auth";
 
 type SearchParams = Promise<{ logout?: string }>;
 
