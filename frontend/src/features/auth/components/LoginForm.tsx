@@ -10,7 +10,7 @@ type Props = {
   logoutMessage?: boolean;
 };
 
-export default function LoginForm({ logoutMessage }: Readonly<Props>) {
+export const LoginForm = ({ logoutMessage }: Readonly<Props>) => {
   const [state, formAction, isPending] = useActionState(loginAction, initialState);
 
   return (
@@ -50,4 +50,4 @@ export default function LoginForm({ logoutMessage }: Readonly<Props>) {
       {state.error && <p className="text-warning mt-4 text-center text-sm">{state.error}</p>}
     </form>
   );
-}
+};
