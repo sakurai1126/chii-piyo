@@ -1,4 +1,6 @@
 @import "tailwindcss";
+/* frontend/ 以下を全スキャン */
+@source "../../";
 
 /* 全体の変数定義 */
 :root {
@@ -15,6 +17,21 @@
   --color-brown-middle: #a56f0c;
   --color-warning: #900521;
   --color-success: #258210;
+
+  --color-white-back: #ffffef;
+
+  --color-brown-back: #fdf3dc;
+  --color-note-gray: #888888;
+
+  --color-accent-pink: #ff4f4f;
+  --color-accent-pink-back: #ffd5c7;
+
+  --color-accent-brown-back: #fef0b5;
+
+  --color-green-back: #feffd8;
+  --color-green-accent: #6c6c00;
+
+  --color-line-gray: #cccccc;
 }
 
 body {
