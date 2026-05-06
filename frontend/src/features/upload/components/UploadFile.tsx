@@ -8,22 +8,40 @@ import { SharingSelector } from "@/features/sharing";
 import { TagSelector } from "@/features/tag";
 
 import boxArrow from "../assets/brown-arrow.svg";
+import { UploadImage } from "../types";
 
-export const UploadFile = () => {
+type Props = {
+  item: UploadImage;
+  onRemove: () => void;
+};
+
+export const UploadFile = ({ item, onRemove }: Props) => {
   const uid = useId();
   const [isOpen, setIsOpen] = useState(false);
+  const sizeInKB = item.file.size / 1024;
+  const sizeInMB = sizeInKB / 1024;
 
   return (
     <div className="bg-white-back border-brown-dark rounded-xl border px-5 pt-5">
       <div className="flex items-start gap-8 max-md:gap-3">
-        <Image src="/images/mock-img.jpg" alt="" width={120} height={120} className="rounded-lg" />
+        <Image
+          src={item.previewUrl}
+          alt=""
+          width={120}
+          height={120}
+          className="h-30 w-30 rounded-lg object-cover"
+          unoptimized
+        />
         <div className="w-full">
           <div className="flex h-30 items-start justify-between max-md:flex-col">
             <div>
-              <p className="max-md:text-[13px]">IMG_0001.jpg</p>
-              <p className="mt-2 text-[13px] max-md:text-[11px]">4.2MB 3024 × 4032</p>
+              <p className="max-md:text-[13px]">{item.file.name}</p>
+              <p className="mt-2 text-[13px] max-md:text-[11px]">
+                {sizeInKB > 1024 ? `${sizeInMB.toFixed(1)}MB` : `${sizeInKB.toFixed(0)}KB`}{" "}
+                {item.width && item.height && `${item.width} × ${item.height}`}
+              </p>
             </div>
-            <button className="text-warning text-xs underline max-md:ml-auto">
+            <button className="text-warning text-xs underline max-md:ml-auto" onClick={onRemove}>
               この画像を削除する
             </button>
           </div>
@@ -36,7 +54,7 @@ export const UploadFile = () => {
           <p className="mt-6 max-md:text-[13px]">コメント</p>
           <textarea
             name={`comment-${uid}`}
-            className="border-line-gray mt-2 h-20 w-full max-w-172.5 rounded-sm border bg-white max-md:h-18"
+            className="border-line-gray focus:outline-brown-light mt-2 h-20 w-full max-w-172.5 rounded-sm border bg-white p-3 max-md:h-18"
           />
           {/* アルバムと日付設定 */}
           <div className="mt-8 flex gap-8 max-lg:flex-col max-md:mt-4 max-md:gap-4">
