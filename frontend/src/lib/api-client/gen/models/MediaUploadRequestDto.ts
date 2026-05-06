@@ -73,6 +73,12 @@ export interface MediaUploadRequestDto {
    * @memberof MediaUploadRequestDto
    */
   sharingGroupId: number;
+  /**
+   * 付与するタグIDの一覧
+   * @type {Array<number>}
+   * @memberof MediaUploadRequestDto
+   */
+  tagIds?: Array<number>;
 }
 
 /**
@@ -118,6 +124,7 @@ export function MediaUploadRequestDtoFromJSONTyped(
     takenAt: json["takenAt"] == null ? undefined : new Date(json["takenAt"]),
     albumId: json["albumId"] == null ? undefined : json["albumId"],
     sharingGroupId: json["sharingGroupId"],
+    tagIds: json["tagIds"] == null ? undefined : json["tagIds"],
   };
 }
 
@@ -144,5 +151,6 @@ export function MediaUploadRequestDtoToJSONTyped(
       value["takenAt"] == null ? value["takenAt"] : value["takenAt"].toISOString().substring(0, 10),
     albumId: value["albumId"],
     sharingGroupId: value["sharingGroupId"],
+    tagIds: value["tagIds"],
   };
 }
