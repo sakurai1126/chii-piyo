@@ -2,7 +2,7 @@ package link.s_repo.chii_piyo.repository.gen;
 
 import java.sql.JDBCType;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import org.mybatis.dynamic.sql.AliasableSqlTable;
 import org.mybatis.dynamic.sql.SqlColumn;
 
@@ -37,9 +37,9 @@ public final class MediaDynamicSqlSupport {
 
     public static final SqlColumn<String> uploadStatus = media.uploadStatus;
 
-    public static final SqlColumn<LocalDateTime> createdAt = media.createdAt;
+    public static final SqlColumn<OffsetDateTime> createdAt = media.createdAt;
 
-    public static final SqlColumn<LocalDateTime> updatedAt = media.updatedAt;
+    public static final SqlColumn<OffsetDateTime> updatedAt = media.updatedAt;
 
     public static final class Media extends AliasableSqlTable<Media> {
         public final SqlColumn<Long> id = column("id", JDBCType.BIGINT).withJavaProperty("id");
@@ -70,9 +70,9 @@ public final class MediaDynamicSqlSupport {
 
         public final SqlColumn<String> uploadStatus = column("upload_status", JDBCType.VARCHAR).withJavaProperty("uploadStatus");
 
-        public final SqlColumn<LocalDateTime> createdAt = column("created_at", JDBCType.TIMESTAMP).withJavaProperty("createdAt");
+        public final SqlColumn<OffsetDateTime> createdAt = column("created_at", JDBCType.TIMESTAMP).withJavaProperty("createdAt");
 
-        public final SqlColumn<LocalDateTime> updatedAt = column("updated_at", JDBCType.TIMESTAMP).withJavaProperty("updatedAt");
+        public final SqlColumn<OffsetDateTime> updatedAt = column("updated_at", JDBCType.TIMESTAMP).withJavaProperty("updatedAt");
 
         public Media() {
             super("public.media", Media::new);

@@ -1,7 +1,7 @@
 package link.s_repo.chii_piyo.repository.gen;
 
 import java.sql.JDBCType;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import org.mybatis.dynamic.sql.AliasableSqlTable;
 import org.mybatis.dynamic.sql.SqlColumn;
 
@@ -16,9 +16,9 @@ public final class DiaperDetailsDynamicSqlSupport {
 
     public static final SqlColumn<String> note = diaperDetails.note;
 
-    public static final SqlColumn<LocalDateTime> createdAt = diaperDetails.createdAt;
+    public static final SqlColumn<OffsetDateTime> createdAt = diaperDetails.createdAt;
 
-    public static final SqlColumn<LocalDateTime> updatedAt = diaperDetails.updatedAt;
+    public static final SqlColumn<OffsetDateTime> updatedAt = diaperDetails.updatedAt;
 
     public static final class DiaperDetails extends AliasableSqlTable<DiaperDetails> {
         public final SqlColumn<Long> id = column("id", JDBCType.BIGINT).withJavaProperty("id");
@@ -29,9 +29,9 @@ public final class DiaperDetailsDynamicSqlSupport {
 
         public final SqlColumn<String> note = column("note", JDBCType.VARCHAR).withJavaProperty("note");
 
-        public final SqlColumn<LocalDateTime> createdAt = column("created_at", JDBCType.TIMESTAMP).withJavaProperty("createdAt");
+        public final SqlColumn<OffsetDateTime> createdAt = column("created_at", JDBCType.TIMESTAMP).withJavaProperty("createdAt");
 
-        public final SqlColumn<LocalDateTime> updatedAt = column("updated_at", JDBCType.TIMESTAMP).withJavaProperty("updatedAt");
+        public final SqlColumn<OffsetDateTime> updatedAt = column("updated_at", JDBCType.TIMESTAMP).withJavaProperty("updatedAt");
 
         public DiaperDetails() {
             super("public.diaper_details", DiaperDetails::new);

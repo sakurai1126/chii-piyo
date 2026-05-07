@@ -1,6 +1,6 @@
 package link.s_repo.chii_piyo.model.gen;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 public class WordRecordMedia {
     private Long id;
@@ -9,7 +9,7 @@ public class WordRecordMedia {
 
     private Long mediaId;
 
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 
     public Long getId() {
         return id;
@@ -35,11 +35,11 @@ public class WordRecordMedia {
         this.mediaId = mediaId;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
     }
 }
