@@ -1,6 +1,9 @@
 package link.s_repo.chii_piyo.common;
 
+import link.s_repo.chii_piyo.exception.MediaAccessDeniedException;
+import link.s_repo.chii_piyo.exception.MediaNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -18,15 +21,48 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
     /**
+     * リソースが見つからない場合のエラー
+     * ログにエラー内容を出力し、404エラーとして処理する
+     *
+     * @param e MediaNotFoundException
+     * @return エラーレスポンス
+     */
+    @ExceptionHandler(MediaNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleMediaNotFound(MediaNotFoundException e) {
+        log.warn("メディアが見つかりません: {}", e.getMessage());
+        return ResponseEntity
+            // notFound()はbodyを構築できないためステータスを自分で設定し共通エラーコードを使用したレスポンスを返す
+            .status(HttpStatus.NOT_FOUND)
+            .body(ApiResponse.error(
+                ErrorCode.NOT_FOUND.getCode(),
+                ErrorCode.NOT_FOUND.getMessage()));
+    }
+
+    /**
+     * メディアへのアクセス権がない場合のエラー
+     * ログにエラー内容を出力し、403エラーとして処理する
+     *
+     * @param e MediaAccessDeniedException
+     * @return エラーレスポンス
+     */
+    @ExceptionHandler(MediaAccessDeniedException.class)
+    public ResponseEntity<ApiResponse<Void>> handleMediaAccessDenied(MediaAccessDeniedException e) {
+        log.warn("メディアへのアクセス拒否: {}", e.getMessage());
+        return ResponseEntity
+            .status(HttpStatus.FORBIDDEN)
+            .body(ApiResponse.error(
+                ErrorCode.FORBIDDEN.getCode(),
+                ErrorCode.FORBIDDEN.getMessage()));
+    }
+
+    /**
      * バリデーションエラー
      *
      * @param e バリデーションエラー時の例外
      * @return エラーレスポンス
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Void>> handleValidationException(
-        MethodArgumentNotValidException e) {
-
+    public ResponseEntity<ApiResponse<Void>> handleValidationException(MethodArgumentNotValidException e) {
         // バリデーションエラーのメッセージをカンマ区切りで結合
         String message = e.getBindingResult()
             .getFieldErrors()

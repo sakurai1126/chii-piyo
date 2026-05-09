@@ -56,3 +56,6 @@ app:
   cors:
     allowed-origins: ${ALLOWED_ORIGINS:http://localhost:3000}
 
+server:
+  servlet:
+    context-path: /api/v1
