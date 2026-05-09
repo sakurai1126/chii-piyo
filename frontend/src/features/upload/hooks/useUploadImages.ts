@@ -1,30 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { UploadImage } from "../types";
+import { ItemState, UploadImage } from "../types";
 
-// 画像ファイルを読み込んでプレビューURLと縦横サイズを取得する関数
-const loadImageFile = (file: File): Promise<UploadImage> => {
-  return new Promise((resolve, reject) => {
-    // ファイルから一時的なURLを生成
-    const previewUrl = URL.createObjectURL(file);
-    const img = new Image();
-
-    // 画像が読み込まれたら、ファイルとURL、縦横サイズをオブジェクトとして返す
-    img.onload = () => {
-      resolve({ file, previewUrl, width: img.naturalWidth, height: img.naturalHeight });
-    };
-
-    img.onerror = () => {
-      // エラーが発生したらURLを解放してエラーを返す
-      URL.revokeObjectURL(previewUrl);
-      reject(new Error(`画像の読み込みに失敗しました: ${file.name}`));
-    };
-
-    // URLをセットすることで読み込み開始
-    img.src = previewUrl;
-  });
-};
-
+/**
+ * 画像ファイルのアップロードに関連する状態管理を提供するフック
+ *
+ * @returns
+ * - items: アップロード対象の画像アイテムの配列
+ * - setFileAndUrl: ファイルを受け取って初期値、プレビューURL、縦横サイズを取得しセットする関数
+ * - removeFile: 指定したインデックスのアイテムを削除し、URLを解放する関数
+ * - removeAllFiles: すべてのアイテムを削除し、URLを解放する関数
+ * - updateItem: 指定したアイテムIDの状態を更新する関数
+ */
 export const useUploadImages = () => {
   const [items, setItems] = useState<UploadImage[]>([]);
 
@@ -67,6 +54,21 @@ export const useUploadImages = () => {
     });
   }, []);
 
+  /**
+   * 個別アイテムの状態を更新する関数
+   *
+   * @param itemId - 更新対象のアイテムID
+   * @param patch - 更新内容のオブジェクト (status, progress, mediaId, errorMessageのいずれかを含む)
+   */
+  const updateItem = useCallback((itemId: string, patch: Partial<ItemState>) => {
+    setItems((prev) => {
+      return prev.map((item) => {
+        // 更新対象のアイテムIDと一致するアイテムに対して、patchの内容をマージして新しいオブジェクトを返す
+        return item.id === itemId ? { ...item, ...patch } : item;
+      });
+    });
+  }, []);
+
   // アンマウント時にもメモリリーク防止のため全URLを解放
   useEffect(() => {
     return () => {
@@ -74,5 +76,36 @@ export const useUploadImages = () => {
     };
   }, []);
 
-  return { items, setFileAndUrl, removeFile, removeAllFiles };
+  return { items, setFileAndUrl, removeFile, removeAllFiles, updateItem };
+};
+
+// 画像ファイルを読み込んでプレビューURLと縦横サイズを取得する関数
+const loadImageFile = (file: File): Promise<UploadImage> => {
+  return new Promise((resolve, reject) => {
+    // ファイルから一時的なURLを生成
+    const previewUrl = URL.createObjectURL(file);
+    const img = new Image();
+
+    // 画像が読み込まれたら、ファイルとURL、縦横サイズをオブジェクトとして返す
+    img.onload = () => {
+      resolve({
+        id: crypto.randomUUID(),
+        file,
+        previewUrl,
+        width: img.naturalWidth,
+        height: img.naturalHeight,
+        status: "idle",
+        progress: 0,
+      });
+    };
+
+    img.onerror = () => {
+      // エラーが発生したらURLを解放してエラーを返す
+      URL.revokeObjectURL(previewUrl);
+      reject(new Error(`画像の読み込みに失敗しました: ${file.name}`));
+    };
+
+    // URLをセットすることで読み込み開始
+    img.src = previewUrl;
+  });
 };

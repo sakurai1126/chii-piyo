@@ -10,7 +10,9 @@ type Props = {
 
 export const ImageUploader = ({ onFilesAdd }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const { isDragging, handleDrop, handleDragEnter, handleDragLeave } = useDragAndDrop(onFilesAdd);
+  const { isDragging, handleDrop, handleDragEnter, handleDragLeave } = useDragAndDrop({
+    onFilesAdd,
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // ファイルが選択されたときにonFilesAddを呼び出しHooks内のuseStateにファイルとURLをセットする

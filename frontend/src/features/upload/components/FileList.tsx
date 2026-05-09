@@ -8,11 +8,17 @@ type Props = {
   items: UploadImage[];
   onRemove: (index: number) => void;
   onRemoveAll: () => void;
+  onUpload: () => void;
+  isUploading: boolean;
 };
 
-export const FileList = ({ items, onRemove, onRemoveAll }: Props) => {
+export const FileList = ({ items, onRemove, onRemoveAll, onUpload, isUploading }: Props) => {
   const totalSizeInKB = items.reduce((total, item) => total + item.file.size / 1024, 0);
   const totalSizeInMB = totalSizeInKB / 1024;
+  // アップロード対象 (idle と failed のみ再アップロード可能)
+  const targetCount = items.filter(
+    (item) => item.status === "idle" || item.status === "failed",
+  ).length;
   return (
     <div className="mt-15 max-md:mt-10">
       <div className="flex items-start justify-between">
@@ -27,16 +33,21 @@ export const FileList = ({ items, onRemove, onRemoveAll }: Props) => {
       <div className="mt-5 grid gap-5">
         {/* 各ファイル */}
         {items.map((item, index) => (
-          <UploadFile key={item.previewUrl} item={item} onRemove={() => onRemove(index)} />
+          <UploadFile key={item.id} item={item} onRemove={() => onRemove(index)} />
         ))}
       </div>
       <div className="border-t-line-gray mt-15 flex items-center justify-between border-t pt-10">
         <p className="">写真{items.length}枚と動画1本をアップロードします</p>
         <div className="flex gap-5">
-          <Button variant="cancel" onClick={onRemoveAll}>
-            キャンセル
+          {!isUploading && (
+            <Button variant="cancel" onClick={onRemoveAll} disabled={isUploading}>
+              キャンセル
+            </Button>
+          )}
+
+          <Button variant="primary" onClick={onUpload} disabled={isUploading || targetCount === 0}>
+            {isUploading ? "アップロード中..." : "アップロード"}
           </Button>
-          <Button variant="primary">アップロード</Button>
         </div>
       </div>
     </div>

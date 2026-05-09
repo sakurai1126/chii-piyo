@@ -7,11 +7,19 @@ import {
   VideoUploader,
   MultipleSettings,
   FileList,
-  useUploadImages,
+  useUploadPage,
 } from "@/features/upload";
 
 export default function UploadPage() {
-  const { items, setFileAndUrl, removeFile, removeAllFiles } = useUploadImages();
+  const {
+    items,
+    setFileAndUrl,
+    removeFile,
+    removeAllFiles,
+    handleUpload,
+    isUploading,
+    resultMessage,
+  } = useUploadPage();
 
   return (
     <Container className="mt-20 max-md:mt-5">
@@ -26,7 +34,20 @@ export default function UploadPage() {
 
       {/* アップロードするファイルの一覧 */}
       {items.length > 0 && (
-        <FileList items={items} onRemove={removeFile} onRemoveAll={removeAllFiles} />
+        <FileList
+          items={items}
+          onRemove={removeFile}
+          onRemoveAll={removeAllFiles}
+          onUpload={handleUpload}
+          isUploading={isUploading}
+        />
+      )}
+
+      {/* 結果メッセージ */}
+      {resultMessage && (
+        <output className="bg-white-back border-brown-dark mt-10 block rounded-xl border px-5 py-4 text-sm">
+          {resultMessage}
+        </output>
       )}
     </Container>
   );

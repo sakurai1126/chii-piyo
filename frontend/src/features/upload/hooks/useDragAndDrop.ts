@@ -1,6 +1,23 @@
 import { useRef, useState } from "react";
 
-export const useDragAndDrop = (onFilesAdd: (files: File[]) => void) => {
+type UseDragAndDropParams = {
+  onFilesAdd: (files: File[]) => void;
+};
+
+/**
+ * ドラッグ＆ドロップでファイルを受け取るためのフック
+ *
+ * @param onFilesAdd
+ * ファイルが追加されたときに呼び出される関数
+ * useUploadPageのsetFileAndUrlを渡す想定
+ *
+ * @returns
+ * - isDragging: ドラッグ中かどうかのフラグ
+ * - handleDrop: ドロップした際の処理
+ * - handleDragEnter: ドラッグエリアに入った際の処理
+ * - handleDragLeave: ドラッグエリアから出た際の処理
+ */
+export const useDragAndDrop = ({ onFilesAdd }: UseDragAndDropParams) => {
   // ドラッグ中かどうかを管理するフラグ
   const [isDragging, setIsDragging] = useState(false);
   // 子要素に入るたびEnterとLeaveが発火するため、ドラッグ中かどうかをカウントで管理する
@@ -18,6 +35,7 @@ export const useDragAndDrop = (onFilesAdd: (files: File[]) => void) => {
     if (dragCounter.current === 0) setIsDragging(false);
   };
 
+  // ドロップしたときはcounterをリセットしてフラグを下ろし、ファイルを処理する
   const handleDrop = (e: React.DragEvent<HTMLElement>) => {
     e.preventDefault();
     dragCounter.current = 0;

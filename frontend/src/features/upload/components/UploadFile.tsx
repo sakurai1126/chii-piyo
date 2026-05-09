@@ -8,11 +8,31 @@ import { SharingSelector } from "@/features/sharing";
 import { TagSelector } from "@/features/tag";
 
 import boxArrow from "../assets/brown-arrow.svg";
-import { UploadImage } from "../types";
+import { UploadImage, UploadStatus } from "../types";
 
 type Props = {
   item: UploadImage;
   onRemove: () => void;
+};
+
+// アップロード状態に応じた表示ラベル
+const STATUS_LABEL: Record<UploadStatus, string> = {
+  idle: "",
+  creating: "準備中...",
+  uploading: "アップロード中",
+  completing: "仕上げ中...",
+  completed: "完了",
+  failed: "失敗",
+};
+
+// アップロード状態に応じた表示色クラス
+const STATUS_BADGE_CLASS: Record<UploadStatus, string> = {
+  idle: "",
+  creating: "bg-brown-back text-brown-middle",
+  uploading: "bg-brown-back text-brown-middle",
+  completing: "bg-brown-back text-brown-middle",
+  completed: "bg-success-back text-success",
+  failed: "bg-accent-pink-back text-accent-pink",
 };
 
 export const UploadFile = ({ item, onRemove }: Props) => {
@@ -20,6 +40,14 @@ export const UploadFile = ({ item, onRemove }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const sizeInKB = item.file.size / 1024;
   const sizeInMB = sizeInKB / 1024;
+
+  // 進捗バーを表示する条件
+  // creating/uploading/completing 中のみ表示する
+  const showProgress =
+    item.status === "creating" || item.status === "uploading" || item.status === "completing";
+
+  // アップロード中・完了後は削除と編集を不可にする
+  const isLocked = item.status !== "idle" && item.status !== "failed";
 
   return (
     <div className="bg-white-back border-brown-dark rounded-xl border px-5 pt-5">
@@ -40,11 +68,45 @@ export const UploadFile = ({ item, onRemove }: Props) => {
                 {sizeInKB > 1024 ? `${sizeInMB.toFixed(1)}MB` : `${sizeInKB.toFixed(0)}KB`}{" "}
                 {item.width && item.height && `${item.width} × ${item.height}`}
               </p>
+              {/* ステータスバッジ */}
+              {item.status !== "idle" && (
+                <div className="mt-2 flex items-center gap-2">
+                  <span
+                    className={`inline-block rounded-2xl px-3 py-0.5 text-xs ${STATUS_BADGE_CLASS[item.status]}`}
+                  >
+                    {STATUS_LABEL[item.status]}
+                  </span>
+                  {item.status === "uploading" && (
+                    <span className="text-note-gray text-xs">{item.progress}%</span>
+                  )}
+                </div>
+              )}
+              {/* エラーメッセージ */}
+              {item.status === "failed" && item.errorMessage && (
+                <p className="text-warning mt-1 text-xs">{item.errorMessage}</p>
+              )}{" "}
             </div>
-            <button className="text-warning text-xs underline max-md:ml-auto" onClick={onRemove}>
-              この画像を削除する
-            </button>
+
+            {/* 削除ボタンはアップロード中以外のみ表示 */}
+            {!isLocked && (
+              <button
+                className="text-warning text-xs underline max-md:ml-auto"
+                onClick={onRemove}
+                type="button"
+              >
+                この画像を削除する
+              </button>
+            )}
           </div>
+          {/* 進捗バー */}
+          {showProgress && (
+            <div className="bg-line-gray mt-2 h-1 w-full overflow-hidden rounded-full">
+              <div
+                className="bg-brown-middle h-full transition-all duration-200"
+                style={{ width: `${item.progress}%` }}
+              />
+            </div>
+          )}{" "}
         </div>
       </div>
 
@@ -55,6 +117,7 @@ export const UploadFile = ({ item, onRemove }: Props) => {
           <textarea
             name={`comment-${uid}`}
             className="border-line-gray focus:outline-brown-light mt-2 h-20 w-full max-w-172.5 rounded-sm border bg-white p-3 max-md:h-18"
+            disabled={isLocked}
           />
           {/* アルバムと日付設定 */}
           <div className="mt-8 flex gap-8 max-lg:flex-col max-md:mt-4 max-md:gap-4">
@@ -73,6 +136,7 @@ export const UploadFile = ({ item, onRemove }: Props) => {
         aria-expanded={isOpen}
         aria-controls={`accordion-${uid}`}
         onClick={() => setIsOpen(!isOpen)}
+        type="button"
       >
         <Image
           src={boxArrow}
