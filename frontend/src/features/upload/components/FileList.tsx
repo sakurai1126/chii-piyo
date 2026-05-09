@@ -1,4 +1,7 @@
 import { Button } from "@/components/ui/Button";
+import { UseAlbumsResult } from "@/features/album/types";
+import { UseSharingGroupsResult } from "@/features/sharing/types";
+import { UseTagsResult } from "@/features/tag/types";
 
 import { UploadImage } from "../types";
 
@@ -10,9 +13,21 @@ type Props = {
   onRemoveAll: () => void;
   onUpload: () => void;
   isUploading: boolean;
+  tagsState: UseTagsResult;
+  albumsState: UseAlbumsResult;
+  sharingGroupsState: UseSharingGroupsResult;
 };
 
-export const FileList = ({ items, onRemove, onRemoveAll, onUpload, isUploading }: Props) => {
+export const FileList = ({
+  items,
+  onRemove,
+  onRemoveAll,
+  onUpload,
+  isUploading,
+  tagsState,
+  albumsState,
+  sharingGroupsState,
+}: Props) => {
   const totalSizeInKB = items.reduce((total, item) => total + item.file.size / 1024, 0);
   const totalSizeInMB = totalSizeInKB / 1024;
   // アップロード対象 (idle と failed のみ再アップロード可能)
@@ -33,7 +48,14 @@ export const FileList = ({ items, onRemove, onRemoveAll, onUpload, isUploading }
       <div className="mt-5 grid gap-5">
         {/* 各ファイル */}
         {items.map((item, index) => (
-          <UploadFile key={item.id} item={item} onRemove={() => onRemove(index)} />
+          <UploadFile
+            key={item.id}
+            item={item}
+            onRemove={() => onRemove(index)}
+            tagsState={tagsState}
+            albumsState={albumsState}
+            sharingGroupsState={sharingGroupsState}
+          />
         ))}
       </div>
       <div className="border-t-line-gray mt-15 flex items-center justify-between border-t pt-10">

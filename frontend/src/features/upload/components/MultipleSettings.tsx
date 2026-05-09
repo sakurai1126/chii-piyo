@@ -5,12 +5,21 @@ import { AccordionContent } from "@/components/ui/AccordionContent";
 import { Button } from "@/components/ui/Button";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { AlbumSelector } from "@/features/album";
+import { UseAlbumsResult } from "@/features/album/types";
 import { SharingGroupsSelector } from "@/features/sharing";
+import { UseSharingGroupsResult } from "@/features/sharing/types";
 import { TagSelector } from "@/features/tag";
+import { UseTagsResult } from "@/features/tag/types";
 
 import boxArrow from "../assets/brown-arrow.svg";
 
-export const MultipleSettings = () => {
+type Props = {
+  tagsState: UseTagsResult;
+  albumsState: UseAlbumsResult;
+  sharingGroupsState: UseSharingGroupsResult;
+};
+
+export const MultipleSettings = ({ tagsState, albumsState, sharingGroupsState }: Props) => {
   const uid = useId();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -28,13 +37,28 @@ export const MultipleSettings = () => {
       <AccordionContent isOpen={isOpen} id={`accordion-${uid}`}>
         {/* アルバムと日付設定 */}
         <div className="mt-8 flex gap-8 max-lg:flex-col max-md:mt-4 max-md:gap-4">
-          <AlbumSelector />
+          <AlbumSelector
+            albums={albumsState.albums}
+            isLoading={albumsState.isLoading}
+            error={albumsState.error}
+            onRetry={albumsState.refetch}
+          />
           <DatePicker />
         </div>
         {/* タグを編集 */}
-        <TagSelector />
+        <TagSelector
+          tags={tagsState.tags}
+          isLoading={tagsState.isLoading}
+          error={tagsState.error}
+          onRetry={tagsState.refetch}
+        />
         {/* 共有範囲を編集 */}
-        <SharingGroupsSelector />
+        <SharingGroupsSelector
+          sharingGroups={sharingGroupsState.sharingGroups}
+          isLoading={sharingGroupsState.isLoading}
+          error={sharingGroupsState.error}
+          onRetry={sharingGroupsState.refetch}
+        />
         {/* ボタン */}
         <div className="mt-8 flex gap-5">
           <Button variant="cancel">キャンセル</Button>

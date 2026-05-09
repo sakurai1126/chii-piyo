@@ -1,40 +1,62 @@
 import { useId } from "react";
 
-export const SharingGroupsSelector = () => {
+import ReadError from "@/components/ui/ReadError";
+import { SharingGroupResponseDto } from "@/lib/api-client/gen";
+
+type Props = {
+  // 表示する共有グループ一覧
+  sharingGroups: SharingGroupResponseDto[];
+  // 共有グループ取得中フラグ
+  isLoading?: boolean;
+  // 共有グループ取得失敗時のエラーメッセージ
+  error?: string | null;
+  // 取得失敗時の再試行
+  onRetry?: () => void;
+};
+export const SharingGroupsSelector = ({
+  sharingGroups,
+  isLoading = false,
+  error = null,
+  onRetry,
+}: Props) => {
   const uid = useId();
   return (
     <>
       <p className="mt-8 max-md:mt-4 max-md:text-[13px]">共有範囲を編集</p>
-      <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2">
-        <label htmlFor={`${uid}-1`} className="flex items-center gap-2">
-          <input
-            type="radio"
-            id={`${uid}-1`}
-            name={`${uid}-sharing`}
-            className="accent-accent-pink h-4 w-4"
-            defaultChecked
-          />
-          <p className="max-md:text-[13px]">家族全員</p>
-        </label>
-        <label htmlFor={`${uid}-2`} className="flex items-center gap-2">
-          <input
-            type="radio"
-            id={`${uid}-2`}
-            name={`${uid}-sharing`}
-            className="accent-accent-pink h-4 w-4"
-          />
-          <p className="max-md:text-[13px]">夫婦</p>
-        </label>
-        <label htmlFor={`${uid}-3`} className="flex items-center gap-2">
-          <input
-            type="radio"
-            id={`${uid}-3`}
-            name={`${uid}-sharing`}
-            className="accent-accent-pink h-4 w-4"
-          />
-          <p className="max-md:text-[13px]">自分のみ</p>
-        </label>
-      </div>
+
+      {/* エラー時は再試行ボタンを表示 */}
+      {!isLoading && error && <ReadError error={error} onRetry={onRetry} />}
+
+      {/* 読み込み完了後 */}
+      {!isLoading && !error && (
+        <>
+          {/* 共有グループ0件の表示 */}
+          {sharingGroups.length === 0 && (
+            <p className="mt-3 mr-10 text-sm max-md:text-xs">共有グループがありません</p>
+          )}
+
+          {/* 共有グループ選択 */}
+          {sharingGroups.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2">
+              {sharingGroups.map((group, index) => (
+                <label
+                  key={group.id}
+                  htmlFor={`${uid}-${index}`}
+                  className="flex items-center gap-2"
+                >
+                  <input
+                    type="radio"
+                    id={`${uid}-${index}`}
+                    name={`${uid}-sharing`}
+                    className="accent-accent-pink h-4 w-4"
+                  />
+                  <p className="max-md:text-[13px]">{group.name}</p>
+                </label>
+              ))}
+            </div>
+          )}
+        </>
+      )}
     </>
   );
 };

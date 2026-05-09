@@ -4,8 +4,11 @@ import { useId, useState } from "react";
 import { AccordionContent } from "@/components/ui/AccordionContent";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { AlbumSelector } from "@/features/album";
+import { UseAlbumsResult } from "@/features/album/types";
 import { SharingGroupsSelector } from "@/features/sharing";
+import { UseSharingGroupsResult } from "@/features/sharing/types";
 import { TagSelector } from "@/features/tag";
+import { UseTagsResult } from "@/features/tag/types";
 
 import boxArrow from "../assets/brown-arrow.svg";
 import { UploadImage, UploadStatus } from "../types";
@@ -13,6 +16,9 @@ import { UploadImage, UploadStatus } from "../types";
 type Props = {
   item: UploadImage;
   onRemove: () => void;
+  tagsState: UseTagsResult;
+  albumsState: UseAlbumsResult;
+  sharingGroupsState: UseSharingGroupsResult;
 };
 
 // アップロード状態に応じた表示ラベル
@@ -35,7 +41,13 @@ const STATUS_BADGE_CLASS: Record<UploadStatus, string> = {
   failed: "bg-accent-pink-back text-accent-pink",
 };
 
-export const UploadFile = ({ item, onRemove }: Props) => {
+export const UploadFile = ({
+  item,
+  onRemove,
+  tagsState,
+  albumsState,
+  sharingGroupsState,
+}: Props) => {
   const uid = useId();
   const [isOpen, setIsOpen] = useState(false);
   const sizeInKB = item.file.size / 1024;
@@ -121,13 +133,28 @@ export const UploadFile = ({ item, onRemove }: Props) => {
           />
           {/* アルバムと日付設定 */}
           <div className="mt-8 flex gap-8 max-lg:flex-col max-md:mt-4 max-md:gap-4">
-            <AlbumSelector />
+            <AlbumSelector
+              albums={albumsState.albums}
+              isLoading={albumsState.isLoading}
+              error={albumsState.error}
+              onRetry={albumsState.refetch}
+            />
             <DatePicker />
           </div>
           {/* タグを編集 */}
-          <TagSelector />
+          <TagSelector
+            tags={tagsState.tags}
+            isLoading={tagsState.isLoading}
+            error={tagsState.error}
+            onRetry={tagsState.refetch}
+          />
           {/* 共有範囲を編集 */}
-          <SharingGroupsSelector />
+          <SharingGroupsSelector
+            sharingGroups={sharingGroupsState.sharingGroups}
+            isLoading={sharingGroupsState.isLoading}
+            error={sharingGroupsState.error}
+            onRetry={sharingGroupsState.refetch}
+          />
         </div>
       </AccordionContent>
 
