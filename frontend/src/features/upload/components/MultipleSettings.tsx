@@ -5,7 +5,7 @@ import { AccordionContent } from "@/components/ui/AccordionContent";
 import { Button } from "@/components/ui/Button";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { AlbumSelector } from "@/features/album";
-import { SharingSelector } from "@/features/sharing";
+import { SharingGroupsSelector } from "@/features/sharing";
 import { TagSelector } from "@/features/tag";
 
 import boxArrow from "../assets/brown-arrow.svg";
@@ -34,7 +34,7 @@ export const MultipleSettings = () => {
         {/* タグを編集 */}
         <TagSelector />
         {/* 共有範囲を編集 */}
-        <SharingSelector />
+        <SharingGroupsSelector />
         {/* ボタン */}
         <div className="mt-8 flex gap-5">
           <Button variant="cancel">キャンセル</Button>

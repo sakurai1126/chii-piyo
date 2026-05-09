@@ -4,7 +4,7 @@ import { useId, useState } from "react";
 import { AccordionContent } from "@/components/ui/AccordionContent";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { AlbumSelector } from "@/features/album";
-import { SharingSelector } from "@/features/sharing";
+import { SharingGroupsSelector } from "@/features/sharing";
 import { TagSelector } from "@/features/tag";
 
 import boxArrow from "../assets/brown-arrow.svg";
@@ -127,7 +127,7 @@ export const UploadFile = ({ item, onRemove }: Props) => {
           {/* タグを編集 */}
           <TagSelector />
           {/* 共有範囲を編集 */}
-          <SharingSelector />
+          <SharingGroupsSelector />
         </div>
       </AccordionContent>
 

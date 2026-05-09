@@ -1,1 +1,1 @@
-export { SharingSelector } from "./components/SharingSelector";
+export { SharingGroupsSelector } from "./components/SharingGroupsSelector";

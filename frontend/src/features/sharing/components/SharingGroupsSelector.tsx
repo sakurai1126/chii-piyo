@@ -1,6 +1,6 @@
 import { useId } from "react";
 
-export const SharingSelector = () => {
+export const SharingGroupsSelector = () => {
   const uid = useId();
   return (
     <>
