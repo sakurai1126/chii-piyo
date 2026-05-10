@@ -2145,16 +2145,6 @@ components:
           format: int64
           description: 共有範囲グループID
           example: 1
-        tagIds:
-          type: array
-          description: 付与するタグIDの一覧
-          items:
-            type: integer
-            format: int64
-          example:
-            - 1
-            - 2
-            - 3
     MediaUploadResponseDto:
       type: object
       description: メディアアップロードレスポンス

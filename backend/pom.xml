@@ -253,7 +253,7 @@
                                 <!-- インターフェースのみ生成するかどうか -->
                                 <interfaceOnly>true</interfaceOnly>
                                 <!-- タグを使用するかどうか -->
-                                <usetags>true</usetags>
+                                <useTags>true</useTags>
                                 <!-- Spring Controllerを使用するかどうか -->
                                 <useSpringController>false</useSpringController>
                                 <!-- Spring Boot 4向けの設定 -->

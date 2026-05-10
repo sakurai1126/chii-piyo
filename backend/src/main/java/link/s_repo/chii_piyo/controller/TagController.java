@@ -1,6 +1,7 @@
 package link.s_repo.chii_piyo.controller;
 
 import link.s_repo.chii_piyo.controller.converter.TagConverter;
+import link.s_repo.chii_piyo.controller.gen.TagManagementApi;
 import link.s_repo.chii_piyo.controller.gen.TagsApi;
 import link.s_repo.chii_piyo.model.gen.TagRequestDto;
 import link.s_repo.chii_piyo.model.gen.TagResponseDto;
@@ -16,12 +17,12 @@ import java.util.List;
 
 /**
  * タグ管理コントローラー<br>
- * OpenAPI Generator生成のTagsApiインターフェースを実装し、タグの取得・作成およびメディアとのタグ紐付けに関するAPIエンドポイントを提供する
+ * OpenAPI Generator生成のTagManagementApiインターフェースを実装し、タグの取得・作成およびメディアとのタグ紐付けに関するAPIエンドポイントを提供する
  */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-public class TagController implements TagsApi {
+public class TagController implements TagManagementApi {
 
     private final TagService tagService;
     private final TagConverter tagConverter;

@@ -1,7 +1,7 @@
 package link.s_repo.chii_piyo.controller;
 
 import link.s_repo.chii_piyo.controller.converter.AlbumConverter;
-import link.s_repo.chii_piyo.controller.gen.AlbumsApi;
+import link.s_repo.chii_piyo.controller.gen.AlbumManagementApi;
 import link.s_repo.chii_piyo.model.gen.AlbumMediaAddRequestDto;
 import link.s_repo.chii_piyo.model.gen.AlbumRequestDto;
 import link.s_repo.chii_piyo.model.gen.AlbumResponseDto;
@@ -18,12 +18,12 @@ import java.util.List;
 
 /**
  * アルバム管理コントローラー<br>
- * OpenAPI Generator生成のAlbumsApiインターフェースを実装し、アルバムの取得・作成およびメディアとのアルバム紐付けに関するAPIエンドポイントを提供する
+ * OpenAPI Generator生成のAlbumManagementApiインターフェースを実装し、アルバムの取得・作成およびメディアとのアルバム紐付けに関するAPIエンドポイントを提供する
  */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-public class AlbumController implements AlbumsApi {
+public class AlbumController implements AlbumManagementApi {
     private final AlbumService albumService;
     private final AlbumConverter albumConverter;
 

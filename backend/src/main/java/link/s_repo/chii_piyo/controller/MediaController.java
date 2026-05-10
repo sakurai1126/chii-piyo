@@ -1,7 +1,7 @@
 package link.s_repo.chii_piyo.controller;
 
 import link.s_repo.chii_piyo.controller.converter.MediaConverter;
-import link.s_repo.chii_piyo.controller.gen.MediaApi;
+import link.s_repo.chii_piyo.controller.gen.MediaManagementApi;
 import link.s_repo.chii_piyo.model.gen.*;
 import link.s_repo.chii_piyo.security.CurrentUserProvider;
 import link.s_repo.chii_piyo.service.MediaService;
@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
@@ -21,7 +21,7 @@ import java.time.LocalDate;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-public class MediaController implements MediaApi {
+public class MediaController implements MediaManagementApi {
 
     private final MediaService mediaService;
     private final CurrentUserProvider currentUserProvider;
@@ -147,4 +147,5 @@ public class MediaController implements MediaApi {
     public ResponseEntity<Void> deleteMedia(String xRequestedWith, Long id) {
         throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
     }
+
 }

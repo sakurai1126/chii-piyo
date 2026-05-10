@@ -1,7 +1,7 @@
 package link.s_repo.chii_piyo.controller;
 
 import link.s_repo.chii_piyo.controller.converter.SharingGroupConverter;
-import link.s_repo.chii_piyo.controller.gen.SharingGroupsApi;
+import link.s_repo.chii_piyo.controller.gen.SharingGroupManagementApi;
 import link.s_repo.chii_piyo.model.gen.*;
 import link.s_repo.chii_piyo.service.SharingGroupService;
 import lombok.RequiredArgsConstructor;
@@ -15,12 +15,12 @@ import java.util.List;
 
 /**
  * 共有グループ管理コントローラー<br>
- * OpenAPI Generator生成のSharingGroupsApiインターフェースを実装し、タグの取得・作成およびメディアとのタグ紐付けに関するAPIエンドポイントを提供する
+ * OpenAPI Generator生成のSharingGroupManagementApiインターフェースを実装し、タグの取得・作成およびメディアとのタグ紐付けに関するAPIエンドポイントを提供する
  */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-public class SharingGroupController implements SharingGroupsApi {
+public class SharingGroupController implements SharingGroupManagementApi {
     private final SharingGroupService sharingGroupService;
     private final SharingGroupConverter sharingGroupConverter;
 
