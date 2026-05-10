@@ -5,6 +5,7 @@ import link.s_repo.chii_piyo.controller.gen.AlbumsApi;
 import link.s_repo.chii_piyo.model.gen.AlbumMediaAddRequestDto;
 import link.s_repo.chii_piyo.model.gen.AlbumRequestDto;
 import link.s_repo.chii_piyo.model.gen.AlbumResponseDto;
+import link.s_repo.chii_piyo.model.gen.Albums;
 import link.s_repo.chii_piyo.service.AlbumService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,11 +41,20 @@ public class AlbumController implements AlbumsApi {
     /**
      * POST /albums<br>
      * 新しいアルバムを作成する
+     *
+     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param albumData      アップロードリクエストDTO
+     * @return 作成されたアルバムの情報
      */
     @Override
     public ResponseEntity<AlbumResponseDto> createAlbum(
         String xRequestedWith, AlbumRequestDto albumData) {
-        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+        // サービス層でアルバムを作成する
+        Albums createdAlbum = albumService.createAlbum(albumData.getTitle());
+
+        // 作成されたアルバムをDTOに変換してレスポンスする
+        AlbumResponseDto response = albumConverter.toAlbumResponseDto(createdAlbum);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     /**

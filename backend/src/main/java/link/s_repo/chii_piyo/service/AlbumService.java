@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import static link.s_repo.chii_piyo.repository.gen.AlbumsDynamicSqlSupport.id;
@@ -20,6 +22,26 @@ import static link.s_repo.chii_piyo.repository.gen.AlbumsDynamicSqlSupport.id;
 @RequiredArgsConstructor
 public class AlbumService {
     private final AlbumsMapper albumsMapper;
+
+    /**
+     * アルバムを新規作成する<br>
+     *
+     * @param title 追加するアルバムのタイトル
+     * @return 作成されたアルバムエンティティ
+     */
+    @Transactional
+    public Albums createAlbum(String title) {
+        Albums albums = new Albums();
+
+        // アルバムエンティティに値をセット
+        albums.setTitle(title);
+        albums.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
+        albums.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
+
+        // アルバムをDBに保存
+        albumsMapper.insert(albums);
+        return albums;
+    }
 
     /**
      * アルバム一覧を取得する<br>
