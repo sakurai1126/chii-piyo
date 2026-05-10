@@ -11,13 +11,13 @@ type Props = {
   // 共有グループ取得失敗時のエラーメッセージ
   error?: string | null;
   // 取得失敗時の再試行
-  onRetry?: () => void;
+  onRefresh?: () => void;
 };
 export const SharingGroupsSelector = ({
   sharingGroups,
   isLoading = false,
   error = null,
-  onRetry,
+  onRefresh,
 }: Props) => {
   const uid = useId();
   return (
@@ -25,7 +25,7 @@ export const SharingGroupsSelector = ({
       <p className="mt-8 max-md:mt-4 max-md:text-[13px]">共有範囲を編集</p>
 
       {/* エラー時は再試行ボタンを表示 */}
-      {!isLoading && error && <ReadError error={error} onRetry={onRetry} />}
+      {!isLoading && error && <ReadError error={error} onRefresh={onRefresh} />}
 
       {/* 読み込み完了後 */}
       {!isLoading && !error && (

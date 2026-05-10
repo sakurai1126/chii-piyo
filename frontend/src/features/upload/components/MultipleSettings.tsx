@@ -41,7 +41,7 @@ export const MultipleSettings = ({ tagsState, albumsState, sharingGroupsState }:
             albums={albumsState.albums}
             isLoading={albumsState.isLoading}
             error={albumsState.error}
-            onRetry={albumsState.refetch}
+            onRefresh={albumsState.refetch}
           />
           <DatePicker />
         </div>
@@ -50,14 +50,14 @@ export const MultipleSettings = ({ tagsState, albumsState, sharingGroupsState }:
           tags={tagsState.tags}
           isLoading={tagsState.isLoading}
           error={tagsState.error}
-          onRetry={tagsState.refetch}
+          onRefresh={tagsState.refetch}
         />
         {/* 共有範囲を編集 */}
         <SharingGroupsSelector
           sharingGroups={sharingGroupsState.sharingGroups}
           isLoading={sharingGroupsState.isLoading}
           error={sharingGroupsState.error}
-          onRetry={sharingGroupsState.refetch}
+          onRefresh={sharingGroupsState.refetch}
         />
         {/* ボタン */}
         <div className="mt-8 flex gap-5">

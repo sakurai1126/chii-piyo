@@ -13,16 +13,16 @@ type Props = {
   // アルバム取得失敗時のエラーメッセージ
   error?: string | null;
   // 取得失敗時の再試行
-  onRetry?: () => void;
+  onRefresh?: () => void;
 };
 
-export const AlbumSelector = ({ albums, isLoading = false, error = null, onRetry }: Props) => {
+export const AlbumSelector = ({ albums, isLoading = false, error = null, onRefresh }: Props) => {
   return (
     <div>
       <p className="max-md:text-[13px]">アルバム</p>
 
       {/* エラー時は再試行ボタンを表示 */}
-      {!isLoading && error && <ReadError error={error} onRetry={onRetry} />}
+      {!isLoading && error && <ReadError error={error} onRefresh={onRefresh} />}
       {/* 読み込み完了後 */}
       {!isLoading && !error && (
         <>

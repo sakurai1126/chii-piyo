@@ -102,7 +102,7 @@ export const UploadFile = ({
             {/* 削除ボタンはアップロード中以外のみ表示 */}
             {!isLocked && (
               <button
-                className="text-warning text-xs underline max-md:ml-auto"
+                className="text-warning hover:text-warning-hover cursor-pointer text-xs underline transition-all duration-400 max-md:ml-auto"
                 onClick={onRemove}
                 type="button"
               >
@@ -137,7 +137,7 @@ export const UploadFile = ({
               albums={albumsState.albums}
               isLoading={albumsState.isLoading}
               error={albumsState.error}
-              onRetry={albumsState.refetch}
+              onRefresh={albumsState.refetch}
             />
             <DatePicker />
           </div>
@@ -146,14 +146,14 @@ export const UploadFile = ({
             tags={tagsState.tags}
             isLoading={tagsState.isLoading}
             error={tagsState.error}
-            onRetry={tagsState.refetch}
+            onRefresh={tagsState.refetch}
           />
           {/* 共有範囲を編集 */}
           <SharingGroupsSelector
             sharingGroups={sharingGroupsState.sharingGroups}
             isLoading={sharingGroupsState.isLoading}
             error={sharingGroupsState.error}
-            onRetry={sharingGroupsState.refetch}
+            onRefresh={sharingGroupsState.refetch}
           />
         </div>
       </AccordionContent>

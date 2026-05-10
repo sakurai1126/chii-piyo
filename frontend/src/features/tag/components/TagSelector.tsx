@@ -5,6 +5,8 @@ import { useId } from "react";
 import ReadError from "@/components/ui/ReadError";
 import { type TagResponseDto } from "@/lib/api-client/gen";
 
+import TagAddForm from "./TagAddForm";
+
 type Props = {
   // 表示するタグ一覧
   tags: TagResponseDto[];
@@ -12,11 +14,11 @@ type Props = {
   isLoading?: boolean;
   // タグ取得失敗時のエラーメッセージ
   error?: string | null;
-  // 取得失敗時の再試行
-  onRetry?: () => void;
+  // 再試行
+  onRefresh?: () => void;
 };
 
-export const TagSelector = ({ tags, isLoading = false, error = null, onRetry }: Props) => {
+export const TagSelector = ({ tags, isLoading = false, error = null, onRefresh }: Props) => {
   const uid = useId();
 
   return (
@@ -24,7 +26,7 @@ export const TagSelector = ({ tags, isLoading = false, error = null, onRetry }: 
       <p className="mt-8 max-md:mt-4 max-md:text-[13px]">タグを編集</p>
 
       {/* エラー時は再試行ボタンを表示 */}
-      {!isLoading && error && <ReadError error={error} onRetry={onRetry} />}
+      {!isLoading && error && <ReadError error={error} onRefresh={onRefresh} />}
 
       {/* 読み込み完了後 */}
       {!isLoading && !error && (
@@ -56,6 +58,9 @@ export const TagSelector = ({ tags, isLoading = false, error = null, onRetry }: 
           )}
         </>
       )}
+
+      {/* タグ追加フォーム */}
+      <TagAddForm onTagCreated={onRefresh} />
     </>
   );
 };

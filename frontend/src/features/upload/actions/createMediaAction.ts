@@ -10,7 +10,7 @@ import { createAuthorizedConfig } from "@/lib/api-client/server";
 
 // クライアントに返す結果型
 // 例外をクライアントに直接出さず、成功/失敗を判別可能な形にする
-export type CreateMediaActionResult =
+export type ActionResult =
   | { success: true; data: MediaUploadResponseDto }
   | { success: false; error: string };
 
@@ -37,7 +37,7 @@ type Input = {
  * 成功時：メディアID + 署名付きURL
  * 失敗時：エラーメッセージ
  */
-export const createMediaAction = async (input: Input): Promise<CreateMediaActionResult> => {
+export const createMediaAction = async (input: Input): Promise<ActionResult> => {
   try {
     // 認証トークンを含むAPIクライアントの設定を生成し、MediaManagementApiのインスタンスを作成
     const configuration = await createAuthorizedConfig();
