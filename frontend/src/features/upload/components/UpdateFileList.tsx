@@ -18,7 +18,7 @@ type Props = {
   sharingGroupsState: UseSharingGroupsResult;
 };
 
-export const FileList = ({
+export const UpdateFileList = ({
   items,
   onRemove,
   onRemoveAll,

@@ -21,26 +21,6 @@ type Props = {
   sharingGroupsState: UseSharingGroupsResult;
 };
 
-// アップロード状態に応じた表示ラベル
-const STATUS_LABEL: Record<UploadStatus, string> = {
-  idle: "",
-  creating: "準備中...",
-  uploading: "アップロード中",
-  completing: "仕上げ中...",
-  completed: "完了",
-  failed: "失敗",
-};
-
-// アップロード状態に応じた表示色クラス
-const STATUS_BADGE_CLASS: Record<UploadStatus, string> = {
-  idle: "",
-  creating: "bg-brown-back text-brown-middle",
-  uploading: "bg-brown-back text-brown-middle",
-  completing: "bg-brown-back text-brown-middle",
-  completed: "bg-success-back text-success",
-  failed: "bg-accent-pink-back text-accent-pink",
-};
-
 export const UploadFile = ({
   item,
   onRemove,
@@ -49,7 +29,9 @@ export const UploadFile = ({
   sharingGroupsState,
 }: Props) => {
   const uid = useId();
+  // アコーディオンの開閉状態
   const [isOpen, setIsOpen] = useState(false);
+  // ファイルサイズの表示 (KB or MB)
   const sizeInKB = item.file.size / 1024;
   const sizeInMB = sizeInKB / 1024;
 
@@ -99,7 +81,7 @@ export const UploadFile = ({
               )}{" "}
             </div>
 
-            {/* 削除ボタンはアップロード中以外のみ表示 */}
+            {/* 削除ボタン - アップロード中は非表示 */}
             {!isLocked && (
               <button
                 className="text-warning hover:text-warning-hover cursor-pointer text-xs underline transition-all duration-400 max-md:ml-auto"
@@ -122,6 +104,7 @@ export const UploadFile = ({
         </div>
       </div>
 
+      {/* メタデータ更新メニュー */}
       <AccordionContent isOpen={isOpen} id={`accordion-${uid}`}>
         <div className="border-t-line-gray ml-37.5 border-t border-dashed pb-3 max-md:mt-5 max-md:ml-0">
           {/* コメント */}
@@ -158,6 +141,7 @@ export const UploadFile = ({
         </div>
       </AccordionContent>
 
+      {/* アコーディオン開閉ボタン */}
       <button
         className="mx-auto grid h-10 w-full cursor-pointer place-content-center"
         aria-expanded={isOpen}
@@ -175,4 +159,24 @@ export const UploadFile = ({
       </button>
     </div>
   );
+};
+
+// アップロード状態に応じた表示ラベル
+const STATUS_LABEL: Record<UploadStatus, string> = {
+  idle: "",
+  creating: "準備中...",
+  uploading: "アップロード中",
+  completing: "仕上げ中...",
+  completed: "完了",
+  failed: "失敗",
+};
+
+// アップロード状態に応じた表示色クラス
+const STATUS_BADGE_CLASS: Record<UploadStatus, string> = {
+  idle: "",
+  creating: "bg-brown-back text-brown-middle",
+  uploading: "bg-brown-back text-brown-middle",
+  completing: "bg-brown-back text-brown-middle",
+  completed: "bg-success-back text-success",
+  failed: "bg-accent-pink-back text-accent-pink",
 };

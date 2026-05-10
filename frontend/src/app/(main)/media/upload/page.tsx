@@ -9,7 +9,7 @@ import {
   ImageUploader,
   VideoUploader,
   MultipleSettings,
-  FileList,
+  UpdateFileList,
   useUploadPage,
 } from "@/features/upload";
 
@@ -48,7 +48,7 @@ export default function UploadPage() {
 
       {/* アップロードするファイルの一覧 */}
       {items.length > 0 && (
-        <FileList
+        <UpdateFileList
           items={items}
           onRemove={removeFile}
           onRemoveAll={removeAllFiles}

@@ -1,10 +1,9 @@
 import { useState } from "react";
 
-import { useUploadImages, useUpload, type UploadMetadata } from "@/features/upload";
+import { useUploadImagesState, useUploadRunner, type UploadMetadata } from "@/features/upload";
 
 // 共有範囲のデフォルト値
 // 一旦初期登録値のグループID=1で固定
-// TODO 共有範囲の追加の際にフォームから選択できるようにする
 const DEFAULT_SHARING_GROUP_ID = 1;
 
 /**
@@ -20,13 +19,13 @@ const DEFAULT_SHARING_GROUP_ID = 1;
  * - resultMessage: アップロード結果のメッセージ表示用の状態
  */
 export const useUploadPage = () => {
-  const { items, setFileAndUrl, removeFile, removeAllFiles, updateItem } = useUploadImages();
+  const { items, setFileAndUrl, removeFile, removeAllFiles, updateItem } = useUploadImagesState();
 
   // アップロード結果のメッセージ表示用
   const [resultMessage, setResultMessage] = useState<string | null>(null);
 
-  // useUploadフックは状態変化のコールバックで useUploadImages 側のstateを更新する
-  const { upload, isUploading } = useUpload({
+  // useUploadRunnerフックは状態変化のコールバックで useUploadImagesState 側のstateを更新する
+  const { upload, isUploading } = useUploadRunner({
     onItemUpdate: (itemId, state) => {
       updateItem(itemId, state);
     },
@@ -47,7 +46,6 @@ export const useUploadPage = () => {
     setResultMessage(null);
 
     // メタデータは現状一括設定の固定値のみ
-    // TODO フォーム連携を実装する
     const metadata: UploadMetadata = {
       sharingGroupId: DEFAULT_SHARING_GROUP_ID,
     };

@@ -12,7 +12,7 @@ import { ItemState, UploadImage } from "../types";
  * - removeAllFiles: すべてのアイテムを削除し、URLを解放する関数
  * - updateItem: 指定したアイテムIDの状態を更新する関数
  */
-export const useUploadImages = () => {
+export const useUploadImagesState = () => {
   const [items, setItems] = useState<UploadImage[]>([]);
 
   // クリーンアップ時にitemsの最新値を参照するためのref

@@ -19,7 +19,7 @@ type UseUploadParams = {
  *
  * @param onItemUpdate
  * 各ファイルのステータス変化を親に通知するためのコールバック関数
- * useUploadImagesのupdateItemを想定
+ * useUploadImagesStateのupdateItemを想定
  *
  * @param onAllComplete
  * 全件処理完了時のコールバック (成功・失敗の件数を渡す)
@@ -28,7 +28,7 @@ type UseUploadParams = {
  * - isUploading: アップロード処理中かどうかの状態
  * - upload: アップロード処理を実行する関数
  */
-export const useUpload = ({ onItemUpdate, onAllComplete }: UseUploadParams = {}) => {
+export const useUploadRunner = ({ onItemUpdate, onAllComplete }: UseUploadParams = {}) => {
   // ボタンの二重押下防止に使用するアップロード中かどうかのステータス
   const [isUploading, setIsUploading] = useState(false);
 
