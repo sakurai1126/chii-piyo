@@ -5,6 +5,8 @@ import { AlbumResponseDto } from "@/lib/api-client/gen";
 
 import arrow from "../assets/arrow.svg";
 
+import { AlbumAddForm } from "./AlbumAddForm";
+
 type Props = {
   // 表示するアルバム一覧
   albums: AlbumResponseDto[];
@@ -56,6 +58,7 @@ export const AlbumSelector = ({ albums, isLoading = false, error = null, onRefre
           )}
         </>
       )}
+      <AlbumAddForm onAlbumCreated={onRefresh} />
     </div>
   );
 };
