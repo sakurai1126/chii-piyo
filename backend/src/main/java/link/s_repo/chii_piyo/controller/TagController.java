@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
+import link.s_repo.chii_piyo.model.gen.Tags;
 
 import java.util.List;
 
@@ -26,13 +26,22 @@ public class TagController implements TagsApi {
     private final TagService tagService;
     private final TagConverter tagConverter;
 
-
     /**
-     * POST /tags : タグを作成
+     * POST /tags<br>
+     * タグを作成する
+     *
+     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param tagData        アップロードリクエストDTO
+     * @return 作成されたタグの情報
      */
     @Override
     public ResponseEntity<TagResponseDto> createTag(String xRequestedWith, TagRequestDto tagData) {
-        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+        // サービス層でタグを作成する
+        Tags createdTag = tagService.createTag(tagData.getName());
+
+        // 作成されたタグをDTOに変換してレスポンスする
+        TagResponseDto response = tagConverter.toTagResponseDto(createdTag);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     /**

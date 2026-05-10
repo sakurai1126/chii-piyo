@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import static link.s_repo.chii_piyo.repository.gen.TagsDynamicSqlSupport.id;
@@ -21,6 +23,19 @@ import static link.s_repo.chii_piyo.repository.gen.TagsDynamicSqlSupport.id;
 public class TagService {
 
     private final TagsMapper tagsMapper;
+
+    @Transactional
+    public Tags createTag(String name) {
+        Tags tags = new Tags();
+
+        // タグエンティティに値をセット
+        tags.setName(name);
+        tags.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
+
+        // タグをDBに保存
+        tagsMapper.insert(tags);
+        return tags;
+    }
 
     /**
      * タグ一覧を取得する<br>
