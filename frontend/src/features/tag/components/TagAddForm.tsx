@@ -30,9 +30,10 @@ export default function TagAddForm({ onTagCreated }: Readonly<Props>) {
   return (
     <>
       <p className="mt-8 max-md:mt-4 max-md:text-[13px]">タグを新しく追加する</p>
-      <div className="mt-2 flex items-center gap-4">
+      <div className="mt-2 flex items-center gap-5">
         <input
-          className="border-line-gray focus:outline-brown-light h-12 w-115 max-w-full rounded-sm border bg-white p-3 max-md:h-9 max-md:text-[13px]"
+          className="border-line-gray focus:outline-brown-light h-12 w-90 max-w-full rounded-sm border bg-white p-3 max-md:h-9 max-md:text-[13px]"
+          type="text"
           value={tagName}
           onChange={(e) => setTagName(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleAddTag()}

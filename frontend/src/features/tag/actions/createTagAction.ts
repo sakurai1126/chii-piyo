@@ -1,9 +1,9 @@
 "use server";
 
-// クライアントに返す結果型
 import { TagManagementApi, TagRequestDto, TagResponseDto } from "@/lib/api-client/gen";
 import { createAuthorizedConfig } from "@/lib/api-client/server";
 
+// クライアントに返す結果型
 // 例外をクライアントに直接出さず、成功/失敗を判別可能な形にする
 export type ActionResult =
   | { success: true; data: TagResponseDto }

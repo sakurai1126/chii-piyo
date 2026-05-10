@@ -24,6 +24,12 @@ public class TagService {
 
     private final TagsMapper tagsMapper;
 
+    /**
+     * タグを新規作成する<br>
+     *
+     * @param name 追加するタグ名
+     * @return 作成されたタグエンティティ
+     */
     @Transactional
     public Tags createTag(String name) {
         Tags tags = new Tags();

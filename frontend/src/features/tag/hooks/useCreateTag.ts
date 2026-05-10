@@ -27,6 +27,9 @@ export const useCreateTag = ({ onSuccess }: Options = {}) => {
    * @param name 追加するタグ名
    */
   const createTag = async (name: string) => {
+    // すでに作成処理が走っている場合は何もしない
+    if (isCreating) return;
+
     // タグ名が空の場合はエラーにする
     if (!name.trim()) {
       setError("タグ名を入力してください");
