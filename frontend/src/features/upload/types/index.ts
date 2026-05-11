@@ -31,21 +31,22 @@ export type UploadImage = {
   mediaId?: number;
   /** failed時のエラーメッセージ */
   errorMessage?: string;
+  /** フォームで入力されたメタデータ*/
+  metadata: UploadMetadata;
 };
 
-// アップロード時のメタデータ (UI側で入力された値)
-// API送信用ではなく、フォーム状態として保持する型
+// アップロード時のメタデータ
 export type UploadMetadata = {
-  /** ISO形式の日付文字列 (yyyy-MM-dd) */
-  takenAt?: string;
-  /** アルバムID */
-  albumId?: number;
-  /** 共有グループID */
-  sharingGroupId: number;
-  /** タグIDの配列 */
-  tagIds?: number[];
   /** コメント */
   comment?: string;
+  /** アルバムID */
+  albumId?: number;
+  /** 撮影日時 */
+  takenAt?: string;
+  /** タグIDの配列 */
+  tagIds?: number[];
+  /** 共有グループID */
+  sharingGroupId?: number;
 };
 
 // 更新される状態の型
