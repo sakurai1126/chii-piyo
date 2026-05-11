@@ -35,12 +35,10 @@ public class MediaConverter {
             media.getAlbumId(),
             media.getSharingGroupId(),
             MediaResponseDto.UploadStatusEnum.fromValue(media.getUploadStatus()),
-            // TODO タグは後ほど実装
+            // TODO タグは後ほど実装 media_tagsから一致するものを取得してセットする
             Collections.emptyList(),
             media.getCreatedAt(),
             media.getUpdatedAt()
         );
     }
-
-
 }

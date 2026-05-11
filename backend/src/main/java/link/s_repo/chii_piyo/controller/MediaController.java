@@ -24,8 +24,8 @@ import java.time.LocalDate;
 public class MediaController implements MediaManagementApi {
 
     private final MediaService mediaService;
-    private final CurrentUserProvider currentUserProvider;
     private final MediaConverter mediaConverter;
+    private final CurrentUserProvider currentUserProvider;
 
     /**
      * POST /media<br>

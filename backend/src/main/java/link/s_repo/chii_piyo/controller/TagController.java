@@ -1,17 +1,20 @@
 package link.s_repo.chii_piyo.controller;
 
+
 import link.s_repo.chii_piyo.controller.converter.TagConverter;
+
 import link.s_repo.chii_piyo.controller.gen.TagManagementApi;
-import link.s_repo.chii_piyo.controller.gen.TagsApi;
+import link.s_repo.chii_piyo.model.gen.MediaTagsUpdateRequestDto;
 import link.s_repo.chii_piyo.model.gen.TagRequestDto;
 import link.s_repo.chii_piyo.model.gen.TagResponseDto;
+import link.s_repo.chii_piyo.model.gen.Tags;
 import link.s_repo.chii_piyo.service.TagService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import link.s_repo.chii_piyo.model.gen.Tags;
+
 
 import java.util.List;
 
@@ -62,4 +65,25 @@ public class TagController implements TagManagementApi {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * PUT /media/{mediaId}/tags : メディアのタグを一括更新
+     *
+     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param mediaId        メディアID
+     * @param mediaTagsData  紐付けるタグIDの一覧
+     * @return 更新後のタグ一覧
+     */
+    @Override
+    public ResponseEntity<List<TagResponseDto>> updateMediaTags(
+        String xRequestedWith, Long mediaId, MediaTagsUpdateRequestDto mediaTagsData) {
+
+        // サービス層でタグを更新する
+        List<Tags> updatedTags = tagService.syncMediaTags(mediaId, mediaTagsData.getTagIds());
+
+        // 更新されたタグをDTOに変換してレスポンスする
+        List<TagResponseDto> response = updatedTags.stream()
+            .map(tagConverter::toTagResponseDto)
+            .toList();
+        return ResponseEntity.ok(response);
+    }
 }
