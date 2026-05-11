@@ -86,6 +86,18 @@ export const useUploadImagesState = () => {
     });
   }, []);
 
+  /**
+   * すべてのアイテムのメタデータを一括更新する関数
+   */
+  const updateAllMetadata = useCallback((patch: Partial<UploadMetadata>) => {
+    setItems((prev) => {
+      return prev.map((item) => ({
+        ...item,
+        metadata: { ...item.metadata, ...patch },
+      }));
+    });
+  }, []);
+
   // アンマウント時にもメモリリーク防止のため全URLを解放
   useEffect(() => {
     return () => {
@@ -93,7 +105,15 @@ export const useUploadImagesState = () => {
     };
   }, []);
 
-  return { items, setFileAndUrl, removeFile, removeAllFiles, updateItem, updateItemMetadata };
+  return {
+    items,
+    setFileAndUrl,
+    removeFile,
+    removeAllFiles,
+    updateItem,
+    updateItemMetadata,
+    updateAllMetadata,
+  };
 };
 
 /**

@@ -17,8 +17,15 @@ import { useUploadImagesState, useUploadRunner } from "@/features/upload";
  * - resultMessage: アップロード結果のメッセージ表示用の状態
  */
 export const useUploadPage = () => {
-  const { items, setFileAndUrl, removeFile, removeAllFiles, updateItem, updateItemMetadata } =
-    useUploadImagesState();
+  const {
+    items,
+    setFileAndUrl,
+    removeFile,
+    removeAllFiles,
+    updateItem,
+    updateItemMetadata,
+    updateAllMetadata,
+  } = useUploadImagesState();
 
   // アップロード結果のメッセージ表示用
   const [resultMessage, setResultMessage] = useState<string | null>(null);
@@ -58,5 +65,6 @@ export const useUploadPage = () => {
     isUploading,
     resultMessage,
     updateItemMetadata,
+    updateAllMetadata,
   };
 };

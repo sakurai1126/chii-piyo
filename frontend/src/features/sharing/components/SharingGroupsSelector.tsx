@@ -14,6 +14,8 @@ type Props = {
   onRefresh?: () => void;
   // 共有グループ選択時のコールバック
   onSharingGroupSelect: (selectedGroupId: number) => void;
+  // 現在選択されている共有グループID
+  selectedGroupId?: number;
 };
 export const SharingGroupsSelector = ({
   sharingGroups,
@@ -21,6 +23,7 @@ export const SharingGroupsSelector = ({
   error = null,
   onRefresh,
   onSharingGroupSelect,
+  selectedGroupId,
 }: Props) => {
   const uid = useId();
 
@@ -31,6 +34,7 @@ export const SharingGroupsSelector = ({
     onSharingGroupSelectRef.current = onSharingGroupSelect;
   });
 
+  // 共有グループが読み込まれたとき先頭グループを選択状態にする
   useEffect(() => {
     if (sharingGroups.length > 0) {
       onSharingGroupSelectRef.current(sharingGroups[0].id);
@@ -67,7 +71,9 @@ export const SharingGroupsSelector = ({
                     name={`${uid}-sharing`}
                     className="accent-accent-pink h-4 w-4"
                     onChange={() => onSharingGroupSelect(group.id)}
-                    defaultChecked={index === 0}
+                    checked={
+                      selectedGroupId === undefined ? index === 0 : group.id === selectedGroupId
+                    }
                   />
                   <p className="max-md:text-[13px]">{group.name}</p>
                 </label>

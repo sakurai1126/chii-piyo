@@ -1,5 +1,6 @@
+"use client";
+
 import Image from "next/image";
-import { useId, useState } from "react";
 
 import { AccordionContent } from "@/components/ui/AccordionContent";
 import { Button } from "@/components/ui/Button";
@@ -13,17 +14,24 @@ import { TagSelector } from "@/features/tag";
 import { UseTagsResult } from "@/features/tag/types";
 
 import boxArrow from "../assets/brown-arrow.svg";
+import { useMultipleSettings } from "../hooks/useMultipleSettings";
+import { UploadMetadata } from "../types";
 
 type Props = {
   tagsState: UseTagsResult;
   albumsState: UseAlbumsResult;
   sharingGroupsState: UseSharingGroupsResult;
+  updateAllMetadata: (patch: Partial<UploadMetadata>) => void;
 };
 
-export const MultipleSettings = ({ tagsState, albumsState, sharingGroupsState }: Props) => {
-  const uid = useId();
-  const [isOpen, setIsOpen] = useState(false);
-
+export const MultipleSettings = ({
+  tagsState,
+  albumsState,
+  sharingGroupsState,
+  updateAllMetadata,
+}: Props) => {
+  const { uid, isOpen, setIsOpen, selected, setSelected, message, handleChange, handleReset } =
+    useMultipleSettings({ updateAllMetadata, sharingGroupsState });
   return (
     <div className="bg-white-back border-brown-dark mt-15 rounded-xl border px-8 pt-6 max-md:mt-8 max-md:px-4 max-md:pt-4">
       <div className="flex items-center gap-8 max-md:gap-2">
@@ -44,15 +52,15 @@ export const MultipleSettings = ({ tagsState, albumsState, sharingGroupsState }:
               isLoading={albumsState.isLoading}
               error={albumsState.error}
               onRefresh={albumsState.refetch}
-              // TODO 次回実装
-              onAlbumSelect={(albumId) => albumId}
+              onAlbumSelect={(albumId) => setSelected((prev) => ({ ...prev, albumId }))}
+              selectedAlbumId={selected.albumId}
             />
             <AlbumAddForm onAlbumCreated={albumsState.refetch} />
           </div>
 
           <DatePicker
-            // TODO 次回実装
-            onChange={(date) => date}
+            onChange={(takenAt) => setSelected((prev) => ({ ...prev, takenAt }))}
+            value={selected.takenAt}
           />
         </div>
         {/* タグを編集 */}
@@ -61,9 +69,8 @@ export const MultipleSettings = ({ tagsState, albumsState, sharingGroupsState }:
           isLoading={tagsState.isLoading}
           error={tagsState.error}
           onRefresh={tagsState.refetch}
-          // TODO 次回実装
-          selectedTagIds={[]}
-          onTagSelect={(tagIds) => tagIds}
+          selectedTagIds={selected.tagIds ?? []}
+          onTagSelect={(tagIds) => setSelected((prev) => ({ ...prev, tagIds }))}
         />
         {/* 共有範囲を編集 */}
         <SharingGroupsSelector
@@ -71,20 +78,26 @@ export const MultipleSettings = ({ tagsState, albumsState, sharingGroupsState }:
           isLoading={sharingGroupsState.isLoading}
           error={sharingGroupsState.error}
           onRefresh={sharingGroupsState.refetch}
-          // TODO 次回実装
-          onSharingGroupSelect={(sharingGroupId) => sharingGroupId}
+          onSharingGroupSelect={(sharingGroupId) =>
+            setSelected((prev) => ({ ...prev, sharingGroupId }))
+          }
+          selectedGroupId={selected.sharingGroupId}
         />
         {/* ボタン */}
         <div className="mt-8 flex gap-5">
-          <Button variant="cancel">キャンセル</Button>
-          <Button variant="primary">変更する</Button>
+          <Button variant="cancel" onClick={handleReset}>
+            リセット
+          </Button>
+          <Button variant="primary" onClick={() => handleChange()}>
+            変更する
+          </Button>
         </div>
+        {message && <p className="text-success mt-4 max-md:text-sm">{message}</p>}
       </AccordionContent>
       <button
         className="mx-auto grid h-10 w-full cursor-pointer place-content-center"
         aria-expanded={isOpen}
         aria-controls={`accordion-${uid}`}
-        // TODO 次回実装
         onClick={() => setIsOpen(!isOpen)}
       >
         <Image

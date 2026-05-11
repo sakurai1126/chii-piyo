@@ -23,6 +23,7 @@ export default function UploadPage() {
     isUploading,
     resultMessage,
     updateItemMetadata,
+    updateAllMetadata,
   } = useUploadPage();
 
   // 各種既存メタデータはページで一度だけ取得し、配下のセレクターに配布する
@@ -44,6 +45,7 @@ export default function UploadPage() {
           tagsState={tagsState}
           albumsState={albumsState}
           sharingGroupsState={sharingGroupsState}
+          updateAllMetadata={updateAllMetadata}
         />
       )}
 

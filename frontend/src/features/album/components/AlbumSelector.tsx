@@ -15,7 +15,9 @@ type Props = {
   // 取得失敗時の再試行
   onRefresh?: () => void;
   // アルバム選択時のコールバック
-  onAlbumSelect: (albumId: string) => void;
+  onAlbumSelect: (albumId: number) => void;
+  // 現在選択されているアルバムID
+  selectedAlbumId?: number;
 };
 
 export const AlbumSelector = ({
@@ -24,6 +26,7 @@ export const AlbumSelector = ({
   error = null,
   onRefresh,
   onAlbumSelect,
+  selectedAlbumId,
 }: Props) => {
   return (
     <div>
@@ -43,9 +46,9 @@ export const AlbumSelector = ({
           {albums.length > 0 && (
             <div className="border-line-gray relative mt-2 h-12 w-115 max-w-full rounded-sm border bg-white max-md:h-9">
               <select
-                name=""
                 className="focus:outline-brown-light h-full w-full appearance-none px-4 max-md:px-3 max-md:text-[13px]"
-                onChange={(e) => onAlbumSelect(e.target.value)}
+                onChange={(e) => onAlbumSelect(Number(e.target.value))}
+                value={selectedAlbumId ?? ""}
               >
                 <option value="">選択してください</option>
                 {albums.map((album) => (

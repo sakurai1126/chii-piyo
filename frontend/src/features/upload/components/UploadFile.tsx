@@ -133,10 +133,14 @@ export const UploadFile = ({
                 onAlbumSelect={(albumId) =>
                   handleMetadataChange({ albumId: albumId ? Number(albumId) : undefined })
                 }
+                selectedAlbumId={item.metadata.albumId}
               />
               <AlbumAddForm onAlbumCreated={albumsState.refetch} />
             </div>
-            <DatePicker onChange={(date) => handleMetadataChange({ takenAt: date })} />
+            <DatePicker
+              value={item.metadata.takenAt}
+              onChange={(date) => handleMetadataChange({ takenAt: date })}
+            />
           </div>
           {/* タグを編集 */}
           <TagSelector
@@ -154,6 +158,7 @@ export const UploadFile = ({
             error={sharingGroupsState.error}
             onRefresh={sharingGroupsState.refetch}
             onSharingGroupSelect={(sharingGroupId) => handleMetadataChange({ sharingGroupId })}
+            selectedGroupId={item.metadata.sharingGroupId}
           />
         </div>
       </AccordionContent>
