@@ -1,6 +1,8 @@
+"use client";
+
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { ItemState, UploadImage } from "../types";
+import { ItemState, UploadImage, UploadMetadata } from "../types";
 
 /**
  * 画像ファイルのアップロードに関連する状態管理を提供するフック
@@ -24,7 +26,9 @@ export const useUploadImagesState = () => {
 
   // useCallbackで関数をメモ化して、子コンポーネントへの不要な再レンダリングを防止
 
-  // ファイルとプレビューURL、縦横サイズをセットする
+  /**
+   * ファイルとプレビューURL、縦横サイズをセットする
+   */
   const setFileAndUrl = useCallback(async (files: File[]) => {
     // 複数ファイルを読み込むためにPromise.allでloadImageFileを並列実行する
     try {
@@ -35,7 +39,9 @@ export const useUploadImagesState = () => {
     }
   }, []);
 
-  // ファイルを個別削除
+  /**
+   * ファイルを個別削除
+   */
   const removeFile = useCallback((index: number) => {
     setItems((prev) => {
       // メモリリークを防ぐためにrevokeObjectURLでURLを解放
@@ -45,7 +51,9 @@ export const useUploadImagesState = () => {
     });
   }, []);
 
-  // 全てのファイルを削除
+  /**
+   * 全てのファイルを削除
+   */
   const removeAllFiles = useCallback(() => {
     setItems((prev) => {
       // 全てのURLを解放
@@ -56,15 +64,24 @@ export const useUploadImagesState = () => {
 
   /**
    * 個別アイテムの状態を更新する関数
-   *
-   * @param itemId - 更新対象のアイテムID
-   * @param patch - 更新内容のオブジェクト (status, progress, mediaId, errorMessageのいずれかを含む)
    */
   const updateItem = useCallback((itemId: string, patch: Partial<ItemState>) => {
     setItems((prev) => {
       return prev.map((item) => {
         // 更新対象のアイテムIDと一致するアイテムに対して、patchの内容をマージして新しいオブジェクトを返す
         return item.id === itemId ? { ...item, ...patch } : item;
+      });
+    });
+  }, []);
+
+  /**
+   * メタデータを更新する関数
+   */
+  const updateItemMetadata = useCallback((itemId: string, patch: Partial<UploadMetadata>) => {
+    setItems((prev) => {
+      return prev.map((item) => {
+        // 更新対象のアイテムIDと一致するアイテムに対して、patchの内容をマージして新しいオブジェクトを返す
+        return item.id === itemId ? { ...item, metadata: { ...item.metadata, ...patch } } : item;
       });
     });
   }, []);
@@ -76,10 +93,12 @@ export const useUploadImagesState = () => {
     };
   }, []);
 
-  return { items, setFileAndUrl, removeFile, removeAllFiles, updateItem };
+  return { items, setFileAndUrl, removeFile, removeAllFiles, updateItem, updateItemMetadata };
 };
 
-// 画像ファイルを読み込んでプレビューURLと縦横サイズを取得する関数
+/**
+ * 画像ファイルを読み込んでプレビューURLと縦横サイズを取得する関数
+ */
 const loadImageFile = (file: File): Promise<UploadImage> => {
   return new Promise((resolve, reject) => {
     // ファイルから一時的なURLを生成
@@ -96,6 +115,9 @@ const loadImageFile = (file: File): Promise<UploadImage> => {
         height: img.naturalHeight,
         status: "idle",
         progress: 0,
+        metadata: {
+          takenAt: new Date().toLocaleDateString("sv-SE"),
+        },
       });
     };
 

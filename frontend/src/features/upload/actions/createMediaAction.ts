@@ -1,5 +1,7 @@
 "use server";
 
+import { createMediaCommentAction } from "@/features/comment/actions/createCommentAction";
+import { updateMediaTagsAction } from "@/features/tag/actions/updateMediaTagsAction";
 import {
   type MediaUploadRequestDto,
   type MediaUploadResponseDto,
@@ -11,7 +13,7 @@ import { createAuthorizedConfig } from "@/lib/api-client/server";
 // クライアントに返す結果型
 // 例外をクライアントに直接出さず、成功/失敗を判別可能な形にする
 export type ActionResult =
-  | { success: true; data: MediaUploadResponseDto }
+  | { success: true; data: MediaUploadResponseDto; warnings?: string[] }
   | { success: false; error: string };
 
 // クライアントから受け取る入力型
@@ -25,6 +27,8 @@ type Input = {
   takenAt?: string;
   albumId?: number;
   sharingGroupId: number;
+  tagIds?: number[];
+  comment?: string;
 };
 
 /**
@@ -43,12 +47,14 @@ export const createMediaAction = async (input: Input): Promise<ActionResult> => 
     const configuration = await createAuthorizedConfig();
     const apiClient = new MediaManagementApi(configuration);
 
+    const mediaTypeMap = {
+      PHOTO: MediaUploadRequestDtoMediaTypeEnum.Photo,
+      VIDEO: MediaUploadRequestDtoMediaTypeEnum.Video,
+    } as const;
+
     // 生成型に揃えてリクエストボディを構築
     const requestDto: MediaUploadRequestDto = {
-      mediaType:
-        input.mediaType === "PHOTO"
-          ? MediaUploadRequestDtoMediaTypeEnum.Photo
-          : MediaUploadRequestDtoMediaTypeEnum.Video,
+      mediaType: mediaTypeMap[input.mediaType],
       originalFilename: input.originalFilename,
       contentType: input.contentType,
       fileSize: input.fileSize,
@@ -65,7 +71,35 @@ export const createMediaAction = async (input: Input): Promise<ActionResult> => 
       mediaUploadData: requestDto,
     });
 
-    return { success: true, data: response };
+    const warnings: string[] = [];
+
+    // コメントがある場合登録する
+    if (input.comment) {
+      const commentResponse = await createMediaCommentAction({
+        mediaId: response.mediaId,
+        content: input.comment,
+      });
+
+      if (!commentResponse.success) {
+        console.warn("コメントの登録に失敗しました", commentResponse.error);
+        warnings.push("コメントの登録に失敗しました");
+      }
+    }
+
+    // タグがある場合登録する
+    if (input.tagIds && input.tagIds.length > 0) {
+      const tagResponse = await updateMediaTagsAction({
+        mediaId: response.mediaId,
+        tagIds: input.tagIds,
+      });
+
+      if (!tagResponse.success) {
+        console.warn("タグの登録に失敗しました", tagResponse.error);
+        warnings.push("タグの登録に失敗しました");
+      }
+    }
+
+    return { success: true, data: response, warnings: warnings.length > 0 ? warnings : undefined };
   } catch (error) {
     console.error("createMediaAction失敗", error);
     if (error instanceof Error && error.message === "UNAUTHORIZED") {

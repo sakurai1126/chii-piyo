@@ -1,4 +1,4 @@
-import { useId } from "react";
+import { useEffect, useId, useRef } from "react";
 
 import ReadError from "@/components/ui/ReadError";
 import { SharingGroupResponseDto } from "@/lib/api-client/gen";
@@ -12,14 +12,31 @@ type Props = {
   error?: string | null;
   // 取得失敗時の再試行
   onRefresh?: () => void;
+  // 共有グループ選択時のコールバック
+  onSharingGroupSelect: (selectedGroupId: number) => void;
 };
 export const SharingGroupsSelector = ({
   sharingGroups,
   isLoading = false,
   error = null,
   onRefresh,
+  onSharingGroupSelect,
 }: Props) => {
   const uid = useId();
+
+  // 親でuseCallbackなしに関数が渡されると毎レンダーで新インスタンスが生成され、不要なeffectが走る可能性がある
+  // refで最新値を保持して参照する形にする
+  const onSharingGroupSelectRef = useRef(onSharingGroupSelect);
+  useEffect(() => {
+    onSharingGroupSelectRef.current = onSharingGroupSelect;
+  });
+
+  useEffect(() => {
+    if (sharingGroups.length > 0) {
+      onSharingGroupSelectRef.current(sharingGroups[0].id);
+    }
+  }, [sharingGroups]);
+
   return (
     <>
       <p className="mt-8 max-md:mt-4 max-md:text-[13px]">共有範囲を編集</p>
@@ -49,6 +66,8 @@ export const SharingGroupsSelector = ({
                     id={`${uid}-${index}`}
                     name={`${uid}-sharing`}
                     className="accent-accent-pink h-4 w-4"
+                    onChange={() => onSharingGroupSelect(group.id)}
+                    defaultChecked={index === 0}
                   />
                   <p className="max-md:text-[13px]">{group.name}</p>
                 </label>

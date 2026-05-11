@@ -3,7 +3,7 @@ import { UseAlbumsResult } from "@/features/album/types";
 import { UseSharingGroupsResult } from "@/features/sharing/types";
 import { UseTagsResult } from "@/features/tag/types";
 
-import { UploadImage } from "../types";
+import { UploadImage, UploadMetadata } from "../types";
 
 import { UploadFile } from "./UploadFile";
 
@@ -16,6 +16,7 @@ type Props = {
   tagsState: UseTagsResult;
   albumsState: UseAlbumsResult;
   sharingGroupsState: UseSharingGroupsResult;
+  updateItemMetadata: (itemId: string, patch: Partial<UploadMetadata>) => void;
 };
 
 export const UpdateFileList = ({
@@ -27,6 +28,7 @@ export const UpdateFileList = ({
   tagsState,
   albumsState,
   sharingGroupsState,
+  updateItemMetadata,
 }: Props) => {
   const totalSizeInKB = items.reduce((total, item) => total + item.file.size / 1024, 0);
   const totalSizeInMB = totalSizeInKB / 1024;
@@ -55,6 +57,7 @@ export const UpdateFileList = ({
             tagsState={tagsState}
             albumsState={albumsState}
             sharingGroupsState={sharingGroupsState}
+            updateItemMetadata={updateItemMetadata}
           />
         ))}
       </div>

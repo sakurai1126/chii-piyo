@@ -5,6 +5,7 @@ import { AccordionContent } from "@/components/ui/AccordionContent";
 import { Button } from "@/components/ui/Button";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { AlbumSelector } from "@/features/album";
+import { AlbumAddForm } from "@/features/album/components/AlbumAddForm";
 import { UseAlbumsResult } from "@/features/album/types";
 import { SharingGroupsSelector } from "@/features/sharing";
 import { UseSharingGroupsResult } from "@/features/sharing/types";
@@ -37,13 +38,22 @@ export const MultipleSettings = ({ tagsState, albumsState, sharingGroupsState }:
       <AccordionContent isOpen={isOpen} id={`accordion-${uid}`}>
         {/* アルバムと日付設定 */}
         <div className="mt-8 flex gap-8 max-lg:flex-col max-md:mt-4 max-md:gap-4">
-          <AlbumSelector
-            albums={albumsState.albums}
-            isLoading={albumsState.isLoading}
-            error={albumsState.error}
-            onRefresh={albumsState.refetch}
+          <div>
+            <AlbumSelector
+              albums={albumsState.albums}
+              isLoading={albumsState.isLoading}
+              error={albumsState.error}
+              onRefresh={albumsState.refetch}
+              // TODO 次回実装
+              onAlbumSelect={(albumId) => albumId}
+            />
+            <AlbumAddForm onAlbumCreated={albumsState.refetch} />
+          </div>
+
+          <DatePicker
+            // TODO 次回実装
+            onChange={(date) => date}
           />
-          <DatePicker />
         </div>
         {/* タグを編集 */}
         <TagSelector
@@ -51,6 +61,9 @@ export const MultipleSettings = ({ tagsState, albumsState, sharingGroupsState }:
           isLoading={tagsState.isLoading}
           error={tagsState.error}
           onRefresh={tagsState.refetch}
+          // TODO 次回実装
+          selectedTagIds={[]}
+          onTagSelect={(tagIds) => tagIds}
         />
         {/* 共有範囲を編集 */}
         <SharingGroupsSelector
@@ -58,6 +71,8 @@ export const MultipleSettings = ({ tagsState, albumsState, sharingGroupsState }:
           isLoading={sharingGroupsState.isLoading}
           error={sharingGroupsState.error}
           onRefresh={sharingGroupsState.refetch}
+          // TODO 次回実装
+          onSharingGroupSelect={(sharingGroupId) => sharingGroupId}
         />
         {/* ボタン */}
         <div className="mt-8 flex gap-5">
@@ -69,6 +84,7 @@ export const MultipleSettings = ({ tagsState, albumsState, sharingGroupsState }:
         className="mx-auto grid h-10 w-full cursor-pointer place-content-center"
         aria-expanded={isOpen}
         aria-controls={`accordion-${uid}`}
+        // TODO 次回実装
         onClick={() => setIsOpen(!isOpen)}
       >
         <Image

@@ -1,9 +1,11 @@
+"use client";
+
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { createMediaAction } from "../actions/createMediaAction";
 import { updateMediaStatusAction } from "../actions/updateMediaStatusAction";
 import { uploadToS3 } from "../lib/uploadToS3";
-import { type UploadImage, type UploadMetadata, type UploadStatus, type ItemState } from "../types";
+import { type UploadImage, type UploadStatus, type ItemState } from "../types";
 
 // 同時実行数の上限
 // ブラウザのコネクション上限と帯域を考慮して3本に絞る
@@ -49,7 +51,7 @@ export const useUploadRunner = ({ onItemUpdate, onAllComplete }: UseUploadParams
   // 1ファイル分のアップロード処理
   // アップロード時はこの関数を並列実行する
   const uploadOneFile = useCallback(
-    async (item: UploadImage, metadata: UploadMetadata, signal: AbortSignal) => {
+    async (item: UploadImage, signal: AbortSignal) => {
       // 状態更新用の関数
       const updateState = (partial: Partial<ItemState>) => {
         // 現在の状態を取得し、存在しない場合は初期状態を設定してから差分をマージして更新
@@ -66,24 +68,50 @@ export const useUploadRunner = ({ onItemUpdate, onAllComplete }: UseUploadParams
       let mediaId: number | undefined;
 
       try {
+        // 共有範囲の選択は必須のため、存在しない場合はエラーにしてアップロード処理を中断
+        if (item.metadata.sharingGroupId === undefined) {
+          updateState({ status: "failed", errorMessage: "共有範囲が選択されていません" });
+          return { success: false };
+        }
+
+        // ファイルのMIMEタイプからメディア種別を判定する
+        const mediaType = (() => {
+          switch (item.file.type.split("/")[0]) {
+            case "image":
+              return "PHOTO" as const;
+            case "video":
+              return "VIDEO" as const;
+            default:
+              throw new Error(`サポートされていないファイル形式です: ${item.file.type}`);
+          }
+        })();
+
         // Step 1: メタデータ登録 + 署名付きURL取得
         updateState({ status: "creating", progress: 0 });
 
         // メタデータ登録と署名付きURLの取得を同時に行うAPI呼び出し
         const createResult = await createMediaAction({
-          mediaType: "PHOTO",
+          mediaType,
           originalFilename: item.file.name,
           contentType: item.file.type,
           fileSize: item.file.size,
           width: item.width,
           height: item.height,
-          takenAt: metadata.takenAt,
-          albumId: metadata.albumId,
-          sharingGroupId: metadata.sharingGroupId,
+          takenAt: item.metadata.takenAt,
+          albumId: item.metadata.albumId,
+          sharingGroupId: item.metadata.sharingGroupId,
+          tagIds: item.metadata.tagIds,
+          comment: item.metadata.comment,
         });
 
         if (!createResult.success) {
           throw new Error(createResult.error);
+        }
+
+        // コメント・タグ登録の部分的な失敗はwarningとして記録
+        if (createResult.warnings?.length) {
+          console.warn(`[${item.file.name}] メタデータの一部登録に失敗:`, createResult.warnings);
+          updateState({ errorMessage: "メタデータの一部登録に失敗しました" });
         }
 
         // mediaIdは後続のステータス更新で必要になるため、先に変数に保持
@@ -145,7 +173,7 @@ export const useUploadRunner = ({ onItemUpdate, onAllComplete }: UseUploadParams
    * @param metadata 全ファイル共通のメタデータ
    */
   const upload = useCallback(
-    async (items: UploadImage[], metadata: UploadMetadata) => {
+    async (items: UploadImage[]) => {
       if (isUploading || items.length === 0) return;
 
       // アップロード開始フラグを立て、AbortControllerを初期化
@@ -169,7 +197,7 @@ export const useUploadRunner = ({ onItemUpdate, onAllComplete }: UseUploadParams
           if (!item) return;
 
           // アップロード処理を実行し、成功・失敗件数をカウント
-          const result = await uploadOneFile(item, metadata, abortController.signal);
+          const result = await uploadOneFile(item, abortController.signal);
 
           if (result.success) {
             successCount++;

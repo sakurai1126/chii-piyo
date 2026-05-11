@@ -22,6 +22,7 @@ export default function UploadPage() {
     handleUpload,
     isUploading,
     resultMessage,
+    updateItemMetadata,
   } = useUploadPage();
 
   // 各種既存メタデータはページで一度だけ取得し、配下のセレクターに配布する
@@ -57,6 +58,7 @@ export default function UploadPage() {
           tagsState={tagsState}
           albumsState={albumsState}
           sharingGroupsState={sharingGroupsState}
+          updateItemMetadata={updateItemMetadata}
         />
       )}
 
@@ -64,6 +66,13 @@ export default function UploadPage() {
       {resultMessage && (
         <output className="bg-white-back border-brown-dark mt-10 block rounded-xl border px-5 py-4 text-sm">
           {resultMessage}
+          <br />
+          {/* アップロード完了後の注意事項 */}
+          {items.some((item) => item.errorMessage) && (
+            <p className="text-warning mt-2">
+              一部処理に失敗したファイルがあります。詳細は各ファイルのエラーメッセージをご確認ください。
+            </p>
+          )}
         </output>
       )}
     </Container>

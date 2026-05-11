@@ -5,8 +5,6 @@ import { AlbumResponseDto } from "@/lib/api-client/gen";
 
 import arrow from "../assets/arrow.svg";
 
-import { AlbumAddForm } from "./AlbumAddForm";
-
 type Props = {
   // 表示するアルバム一覧
   albums: AlbumResponseDto[];
@@ -16,9 +14,17 @@ type Props = {
   error?: string | null;
   // 取得失敗時の再試行
   onRefresh?: () => void;
+  // アルバム選択時のコールバック
+  onAlbumSelect: (albumId: string) => void;
 };
 
-export const AlbumSelector = ({ albums, isLoading = false, error = null, onRefresh }: Props) => {
+export const AlbumSelector = ({
+  albums,
+  isLoading = false,
+  error = null,
+  onRefresh,
+  onAlbumSelect,
+}: Props) => {
   return (
     <div>
       <p className="max-md:text-[13px]">アルバム</p>
@@ -39,6 +45,7 @@ export const AlbumSelector = ({ albums, isLoading = false, error = null, onRefre
               <select
                 name=""
                 className="focus:outline-brown-light h-full w-full appearance-none px-4 max-md:px-3 max-md:text-[13px]"
+                onChange={(e) => onAlbumSelect(e.target.value)}
               >
                 <option value="">選択してください</option>
                 {albums.map((album) => (
@@ -58,7 +65,6 @@ export const AlbumSelector = ({ albums, isLoading = false, error = null, onRefre
           )}
         </>
       )}
-      <AlbumAddForm onAlbumCreated={onRefresh} />
     </div>
   );
 };

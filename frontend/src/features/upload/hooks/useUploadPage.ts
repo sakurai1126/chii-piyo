@@ -1,10 +1,8 @@
+"use client";
+
 import { useState } from "react";
 
-import { useUploadImagesState, useUploadRunner, type UploadMetadata } from "@/features/upload";
-
-// 共有範囲のデフォルト値
-// 一旦初期登録値のグループID=1で固定
-const DEFAULT_SHARING_GROUP_ID = 1;
+import { useUploadImagesState, useUploadRunner } from "@/features/upload";
 
 /**
  * アップロードページ全体の状態管理を提供するフック
@@ -19,7 +17,8 @@ const DEFAULT_SHARING_GROUP_ID = 1;
  * - resultMessage: アップロード結果のメッセージ表示用の状態
  */
 export const useUploadPage = () => {
-  const { items, setFileAndUrl, removeFile, removeAllFiles, updateItem } = useUploadImagesState();
+  const { items, setFileAndUrl, removeFile, removeAllFiles, updateItem, updateItemMetadata } =
+    useUploadImagesState();
 
   // アップロード結果のメッセージ表示用
   const [resultMessage, setResultMessage] = useState<string | null>(null);
@@ -45,14 +44,9 @@ export const useUploadPage = () => {
     // アップロード前に結果メッセージをリセット
     setResultMessage(null);
 
-    // メタデータは現状一括設定の固定値のみ
-    const metadata: UploadMetadata = {
-      sharingGroupId: DEFAULT_SHARING_GROUP_ID,
-    };
-
     // failed と idle のみアップロード対象
     const targets = items.filter((item) => item.status === "idle" || item.status === "failed");
-    await upload(targets, metadata);
+    await upload(targets);
   };
 
   return {
@@ -63,5 +57,6 @@ export const useUploadPage = () => {
     handleUpload,
     isUploading,
     resultMessage,
+    updateItemMetadata,
   };
 };

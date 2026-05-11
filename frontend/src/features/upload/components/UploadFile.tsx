@@ -4,6 +4,7 @@ import { useId, useState } from "react";
 import { AccordionContent } from "@/components/ui/AccordionContent";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { AlbumSelector } from "@/features/album";
+import { AlbumAddForm } from "@/features/album/components/AlbumAddForm";
 import { UseAlbumsResult } from "@/features/album/types";
 import { SharingGroupsSelector } from "@/features/sharing";
 import { UseSharingGroupsResult } from "@/features/sharing/types";
@@ -11,7 +12,7 @@ import { TagSelector } from "@/features/tag";
 import { UseTagsResult } from "@/features/tag/types";
 
 import boxArrow from "../assets/brown-arrow.svg";
-import { UploadImage, UploadStatus } from "../types";
+import { UploadImage, UploadMetadata, UploadStatus } from "../types";
 
 type Props = {
   item: UploadImage;
@@ -19,6 +20,7 @@ type Props = {
   tagsState: UseTagsResult;
   albumsState: UseAlbumsResult;
   sharingGroupsState: UseSharingGroupsResult;
+  updateItemMetadata: (itemId: string, patch: Partial<UploadMetadata>) => void;
 };
 
 export const UploadFile = ({
@@ -27,6 +29,7 @@ export const UploadFile = ({
   tagsState,
   albumsState,
   sharingGroupsState,
+  updateItemMetadata,
 }: Props) => {
   const uid = useId();
   // アコーディオンの開閉状態
@@ -42,6 +45,10 @@ export const UploadFile = ({
 
   // アップロード中・完了後は削除と編集を不可にする
   const isLocked = item.status !== "idle" && item.status !== "failed";
+
+  const handleMetadataChange = (patch: Partial<UploadMetadata>) => {
+    updateItemMetadata(item.id, patch);
+  };
 
   return (
     <div className="bg-white-back border-brown-dark rounded-xl border px-5 pt-5">
@@ -76,7 +83,7 @@ export const UploadFile = ({
                 </div>
               )}
               {/* エラーメッセージ */}
-              {item.status === "failed" && item.errorMessage && (
+              {item.errorMessage && (
                 <p className="text-warning mt-1 text-xs">{item.errorMessage}</p>
               )}{" "}
             </div>
@@ -113,16 +120,23 @@ export const UploadFile = ({
             name={`comment-${uid}`}
             className="border-line-gray focus:outline-brown-light mt-2 h-20 w-full max-w-172.5 rounded-sm border bg-white p-3 max-md:h-18"
             disabled={isLocked}
+            onChange={(e) => handleMetadataChange({ comment: e.target.value })}
           />
           {/* アルバムと日付設定 */}
           <div className="mt-8 flex gap-8 max-lg:flex-col max-md:mt-4 max-md:gap-4">
-            <AlbumSelector
-              albums={albumsState.albums}
-              isLoading={albumsState.isLoading}
-              error={albumsState.error}
-              onRefresh={albumsState.refetch}
-            />
-            <DatePicker />
+            <div>
+              <AlbumSelector
+                albums={albumsState.albums}
+                isLoading={albumsState.isLoading}
+                error={albumsState.error}
+                onRefresh={albumsState.refetch}
+                onAlbumSelect={(albumId) =>
+                  handleMetadataChange({ albumId: albumId ? Number(albumId) : undefined })
+                }
+              />
+              <AlbumAddForm onAlbumCreated={albumsState.refetch} />
+            </div>
+            <DatePicker onChange={(date) => handleMetadataChange({ takenAt: date })} />
           </div>
           {/* タグを編集 */}
           <TagSelector
@@ -130,6 +144,8 @@ export const UploadFile = ({
             isLoading={tagsState.isLoading}
             error={tagsState.error}
             onRefresh={tagsState.refetch}
+            selectedTagIds={item.metadata.tagIds ?? []}
+            onTagSelect={(tagIds) => handleMetadataChange({ tagIds })}
           />
           {/* 共有範囲を編集 */}
           <SharingGroupsSelector
@@ -137,6 +153,7 @@ export const UploadFile = ({
             isLoading={sharingGroupsState.isLoading}
             error={sharingGroupsState.error}
             onRefresh={sharingGroupsState.refetch}
+            onSharingGroupSelect={(sharingGroupId) => handleMetadataChange({ sharingGroupId })}
           />
         </div>
       </AccordionContent>

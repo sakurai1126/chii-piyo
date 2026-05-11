@@ -16,10 +16,26 @@ type Props = {
   error?: string | null;
   // 再試行
   onRefresh?: () => void;
+  // タグ選択時のコールバック（タグIDの配列を渡す）
+  onTagSelect: (selectedTagIds: number[]) => void;
+  // 現在選択されているタグIDの配列
+  selectedTagIds: number[];
 };
 
-export const TagSelector = ({ tags, isLoading = false, error = null, onRefresh }: Props) => {
+export const TagSelector = ({
+  tags,
+  isLoading = false,
+  error = null,
+  onRefresh,
+  onTagSelect,
+  selectedTagIds,
+}: Props) => {
   const uid = useId();
+
+  const handleChange = (tagId: number, checked: boolean) => {
+    const next = checked ? [...selectedTagIds, tagId] : selectedTagIds.filter((id) => id !== tagId);
+    onTagSelect(next);
+  };
 
   return (
     <>
@@ -49,6 +65,8 @@ export const TagSelector = ({ tags, isLoading = false, error = null, onRefresh }
                       id={inputId}
                       name={`${uid}-tag`}
                       className="accent-accent-pink h-4 w-4"
+                      onChange={(e) => handleChange(tag.id, e.target.checked)}
+                      checked={selectedTagIds.includes(tag.id)}
                     />
                     <p className="max-md:text-[13px]">{tag.name}</p>
                   </label>
