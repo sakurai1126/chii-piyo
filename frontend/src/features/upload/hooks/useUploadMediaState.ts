@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { ItemState, UploadImage, UploadMetadata } from "../types";
+import { ItemState, UploadMedia, UploadMetadata } from "../types";
 
 /**
  * 画像ファイルのアップロードに関連する状態管理を提供するフック
@@ -14,8 +14,8 @@ import { ItemState, UploadImage, UploadMetadata } from "../types";
  * - removeAllFiles: すべてのアイテムを削除し、URLを解放する関数
  * - updateItem: 指定したアイテムIDの状態を更新する関数
  */
-export const useUploadImagesState = () => {
-  const [items, setItems] = useState<UploadImage[]>([]);
+export const useUploadMediaState = () => {
+  const [items, setItems] = useState<UploadMedia[]>([]);
 
   // クリーンアップ時にitemsの最新値を参照するためのref
   // 続くアンマウント時の処理にてアップデート関数のsetItems経由での読み取りを避けるため使用
@@ -27,15 +27,28 @@ export const useUploadImagesState = () => {
   // useCallbackで関数をメモ化して、子コンポーネントへの不要な再レンダリングを防止
 
   /**
-   * ファイルとプレビューURL、縦横サイズをセットする
+   * 画像ファイルとプレビューURL、縦横サイズをセットする
    */
-  const setFileAndUrl = useCallback(async (files: File[]) => {
+  const setImageAndUrl = useCallback(async (files: File[]) => {
     // 複数ファイルを読み込むためにPromise.allでloadImageFileを並列実行する
     try {
       const newItems = await Promise.all(files.map(loadImageFile));
       setItems((prev) => [...prev, ...newItems]);
     } catch {
       console.error("画像の読み込みに失敗しました");
+    }
+  }, []);
+
+  /**
+   * 動画ファイルとプレビューURL、縦横サイズをセットする
+   */
+  const setVideoAndUrl = useCallback(async (files: File[]) => {
+    // 複数ファイルを読み込むためにPromise.allでloadVideoFileを並列実行する
+    try {
+      const newItems = await Promise.all(files.map(loadVideoFile));
+      setItems((prev) => [...prev, ...newItems]);
+    } catch {
+      console.error("動画の読み込みに失敗しました");
     }
   }, []);
 
@@ -107,7 +120,8 @@ export const useUploadImagesState = () => {
 
   return {
     items,
-    setFileAndUrl,
+    setImageAndUrl,
+    setVideoAndUrl,
     removeFile,
     removeAllFiles,
     updateItem,
@@ -119,7 +133,7 @@ export const useUploadImagesState = () => {
 /**
  * 画像ファイルを読み込んでプレビューURLと縦横サイズを取得する関数
  */
-const loadImageFile = (file: File): Promise<UploadImage> => {
+const loadImageFile = (file: File): Promise<UploadMedia> => {
   return new Promise((resolve, reject) => {
     // ファイルから一時的なURLを生成
     const previewUrl = URL.createObjectURL(file);
@@ -149,5 +163,34 @@ const loadImageFile = (file: File): Promise<UploadImage> => {
 
     // URLをセットすることで読み込み開始
     img.src = previewUrl;
+  });
+};
+
+const loadVideoFile = (file: File): Promise<UploadMedia> => {
+  return new Promise((resolve, reject) => {
+    const previewUrl = URL.createObjectURL(file);
+    const video = document.createElement("video");
+
+    video.onloadedmetadata = () => {
+      resolve({
+        id: crypto.randomUUID(),
+        file,
+        previewUrl,
+        width: video.videoWidth,
+        height: video.videoHeight,
+        status: "idle",
+        progress: 0,
+        metadata: {
+          takenAt: new Date().toLocaleDateString("sv-SE"),
+        },
+      });
+    };
+
+    video.onerror = () => {
+      URL.revokeObjectURL(previewUrl);
+      reject(new Error(`動画の読み込みに失敗しました: ${file.name}`));
+    };
+
+    video.src = previewUrl;
   });
 };

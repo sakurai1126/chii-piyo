@@ -3,12 +3,12 @@ import { UseAlbumsResult } from "@/features/album/types";
 import { UseSharingGroupsResult } from "@/features/sharing/types";
 import { UseTagsResult } from "@/features/tag/types";
 
-import { UploadImage, UploadMetadata } from "../types";
+import { UploadMedia, UploadMetadata } from "../types";
 
 import { UploadFile } from "./UploadFile";
 
 type Props = {
-  items: UploadImage[];
+  items: UploadMedia[];
   onRemove: (index: number) => void;
   onRemoveAll: () => void;
   onUpload: () => void;
@@ -32,16 +32,24 @@ export const UpdateFileList = ({
 }: Props) => {
   const totalSizeInKB = items.reduce((total, item) => total + item.file.size / 1024, 0);
   const totalSizeInMB = totalSizeInKB / 1024;
-  // アップロード対象 (idle と failed のみ再アップロード可能)
-  const targetCount = items.filter(
-    (item) => item.status === "idle" || item.status === "failed",
-  ).length;
+
+  // アップロード対象のみを抽出
+  const targets = items.filter((item) => item.status === "idle" || item.status === "failed");
+
+  // 写真と動画の総件数をカウント
+  const totalImageCount = items.filter((item) => item.file.type.startsWith("image/")).length;
+  const totalVideoCount = items.filter((item) => item.file.type.startsWith("video/")).length;
+
+  // 対象の中での写真・動画の件数
+  const targetImageCount = targets.filter((item) => item.file.type.startsWith("image/")).length;
+  const targetVideoCount = targets.filter((item) => item.file.type.startsWith("video/")).length;
+
   return (
     <div className="mt-15 max-md:mt-10">
       <div className="flex items-start justify-between">
         <p className="text-xl font-medium max-md:text-sm">アップロードするファイル</p>
         <p className="text-note-gray pt-0.5 text-right max-md:text-xs">
-          写真 : {items.length}枚 + 動画 : 1本
+          写真 : {totalImageCount}枚 + 動画 : {totalVideoCount}本
           <br />
           合計サイズ :{" "}
           {totalSizeInKB > 1024 ? `${totalSizeInMB.toFixed(1)}MB` : `${totalSizeInKB.toFixed(0)}KB`}
@@ -62,15 +70,27 @@ export const UpdateFileList = ({
         ))}
       </div>
       <div className="border-t-line-gray mt-15 flex items-center justify-between border-t pt-10">
-        <p className="">写真{items.length}枚と動画1本をアップロードします</p>
+        <p>
+          {targetImageCount > 0 &&
+            targetVideoCount > 0 &&
+            `写真${targetImageCount}枚と動画${targetVideoCount}本`}
+          {targetImageCount > 0 && targetVideoCount === 0 && `写真${targetImageCount}枚`}
+          {targetVideoCount > 0 && targetImageCount === 0 && `動画${targetVideoCount}本`}
+          {(targetImageCount > 0 || targetVideoCount > 0) && `をアップロードします`}
+        </p>
         <div className="flex gap-5">
           {!isUploading && (
-            <Button variant="cancel" onClick={onRemoveAll} disabled={isUploading}>
+            <Button variant="cancel" onClick={onRemoveAll}>
               キャンセル
             </Button>
           )}
 
-          <Button variant="primary" onClick={onUpload} disabled={isUploading || targetCount === 0}>
+          <Button
+            variant="primary"
+            onClick={onUpload}
+            disabled={isUploading || targets.length === 0}
+            disabledStyle={isUploading || targets.length === 0}
+          >
             {isUploading ? "アップロード中..." : "アップロード"}
           </Button>
         </div>

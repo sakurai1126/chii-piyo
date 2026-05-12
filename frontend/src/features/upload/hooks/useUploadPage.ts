@@ -2,14 +2,15 @@
 
 import { useState } from "react";
 
-import { useUploadImagesState, useUploadRunner } from "@/features/upload";
+import { useUploadMediaState, useUploadRunner } from "@/features/upload";
 
 /**
  * アップロードページ全体の状態管理を提供するフック
  *
  * @returns
  * - items: アップロード対象のアイテムの配列
- * - setFileAndUrl: ファイルを受け取って初期値、プレビューURL、縦横サイズを取得しセットする関数
+ * - setImageAndUrl: 画像ファイルを受け取って初期値、プレビューURL、縦横サイズを取得しセットする関数
+ * - setVideoAndUrl: 動画ファイルを受け取って初期値、プレビューURL、縦横サイズを取得しセットする関数
  * - removeFile: 指定したインデックスのアイテムを削除し、URLを解放する関数
  * - removeAllFiles: すべてのアイテムを削除し、URLを解放する関数
  * - handleUpload: アップロード処理を実行する関数
@@ -19,18 +20,19 @@ import { useUploadImagesState, useUploadRunner } from "@/features/upload";
 export const useUploadPage = () => {
   const {
     items,
-    setFileAndUrl,
+    setImageAndUrl,
+    setVideoAndUrl,
     removeFile,
     removeAllFiles,
     updateItem,
     updateItemMetadata,
     updateAllMetadata,
-  } = useUploadImagesState();
+  } = useUploadMediaState();
 
   // アップロード結果のメッセージ表示用
   const [resultMessage, setResultMessage] = useState<string | null>(null);
 
-  // useUploadRunnerフックは状態変化のコールバックで useUploadImagesState 側のstateを更新する
+  // useUploadRunnerフックは状態変化のコールバックで useUploadMediaState 側のstateを更新する
   const { upload, isUploading } = useUploadRunner({
     onItemUpdate: (itemId, state) => {
       updateItem(itemId, state);
@@ -58,7 +60,8 @@ export const useUploadPage = () => {
 
   return {
     items,
-    setFileAndUrl,
+    setImageAndUrl,
+    setVideoAndUrl,
     removeFile,
     removeAllFiles,
     handleUpload,

@@ -34,6 +34,8 @@
   --color-green-accent: #6c6c00;
 
   --color-line-gray: #cccccc;
+  --color-disabled-back: #eeeeee;
+  --color-disabled-text: #aaaaaa;
 }
 
 body {

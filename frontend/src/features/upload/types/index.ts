@@ -9,7 +9,7 @@ export type UploadStatus =
   | "completed"
   | "failed";
 
-export type UploadImage = {
+export type UploadMedia = {
   /**
    * クライアント側で生成する一意ID
    * サーバー側のmediaIdが採番される前からReactのkeyや状態キーとして使うため、別軸で必要
@@ -19,9 +19,9 @@ export type UploadImage = {
   file: File;
   /** URL.createObjectURLで生成したプレビュー用のURL */
   previewUrl: string;
-  /** 画像の横サイズ */
+  /** メディアの横サイズ */
   width?: number;
-  /** 画像の縦サイズ */
+  /** メディアの縦サイズ */
   height?: number;
   /** アップロードのライフサイクル状態 */
   status: UploadStatus;

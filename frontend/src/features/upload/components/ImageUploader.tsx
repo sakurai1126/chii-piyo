@@ -12,11 +12,16 @@ export const ImageUploader = ({ onFilesAdd }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const { isDragging, handleDrop, handleDragEnter, handleDragLeave } = useDragAndDrop({
     onFilesAdd,
+    acceptTypes: "image",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // ファイルが選択されたときにonFilesAddを呼び出しHooks内のuseStateにファイルとURLをセットする
-    if (e.target.files) onFilesAdd([...e.target.files]);
+    if (e.target.files) {
+      // 画像ファイルのみをフィルタリングしてonFilesAddを呼び出す
+      const files = [...e.target.files].filter((f) => f.type.startsWith("image/"));
+      if (files.length) onFilesAdd(files);
+    }
     // 同じファイルを連続で選択したときもonFilesAddが呼ばれるようにinputの値をリセットする
     e.target.value = "";
   };
@@ -24,7 +29,7 @@ export const ImageUploader = ({ onFilesAdd }: Props) => {
   return (
     <section
       aria-label="画像のドラッグ&ドロップエリア"
-      className={`bg-brown-back border-brown-middle relative block rounded-4xl border-2 border-dotted px-5 pt-10 pb-15 text-center transition-all duration-500 max-md:rounded-2xl max-md:pb-5 ${isDragging ? "bg-white-back" : ""} `}
+      className={`bg-brown-back border-brown-middle relative block rounded-4xl border-2 border-dotted pt-10 pb-15 text-center transition-all duration-500 max-md:rounded-2xl max-md:pb-5 ${isDragging ? "bg-white-back" : ""} `}
       onDrop={handleDrop}
       onDragOver={(e) => e.preventDefault()}
       onDragEnter={handleDragEnter}

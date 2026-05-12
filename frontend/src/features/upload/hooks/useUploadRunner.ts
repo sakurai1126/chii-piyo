@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createMediaAction } from "../actions/createMediaAction";
 import { updateMediaStatusAction } from "../actions/updateMediaStatusAction";
 import { uploadToS3 } from "../lib/uploadToS3";
-import { type UploadImage, type UploadStatus, type ItemState } from "../types";
+import { type UploadMedia, type UploadStatus, type ItemState } from "../types";
 
 // 同時実行数の上限
 // ブラウザのコネクション上限と帯域を考慮して3本に絞る
@@ -21,7 +21,7 @@ type UseUploadParams = {
  *
  * @param onItemUpdate
  * 各ファイルのステータス変化を親に通知するためのコールバック関数
- * useUploadImagesStateのupdateItemを想定
+ * useUploadMediaStateのupdateItemを想定
  *
  * @param onAllComplete
  * 全件処理完了時のコールバック (成功・失敗の件数を渡す)
@@ -51,7 +51,7 @@ export const useUploadRunner = ({ onItemUpdate, onAllComplete }: UseUploadParams
   // 1ファイル分のアップロード処理
   // アップロード時はこの関数を並列実行する
   const uploadOneFile = useCallback(
-    async (item: UploadImage, signal: AbortSignal) => {
+    async (item: UploadMedia, signal: AbortSignal) => {
       // 状態更新用の関数
       const updateState = (partial: Partial<ItemState>) => {
         // 現在の状態を取得し、存在しない場合は初期状態を設定してから差分をマージして更新
@@ -173,7 +173,7 @@ export const useUploadRunner = ({ onItemUpdate, onAllComplete }: UseUploadParams
    * @param metadata 全ファイル共通のメタデータ
    */
   const upload = useCallback(
-    async (items: UploadImage[]) => {
+    async (items: UploadMedia[]) => {
       if (isUploading || items.length === 0) return;
 
       // アップロード開始フラグを立て、AbortControllerを初期化

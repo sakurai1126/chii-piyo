@@ -7,11 +7,20 @@ const variantStyles = {
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: keyof typeof variantStyles;
+  disabledStyle?: boolean;
 };
 
-export const Button = ({ variant = "primary", children, ...props }: ButtonProps) => {
+export const Button = ({
+  variant = "primary",
+  disabledStyle = false,
+  children,
+  ...props
+}: ButtonProps) => {
   return (
-    <button {...props} className={`${variantStyles[variant]} ${props.className || ""}`}>
+    <button
+      {...props}
+      className={`${variantStyles[variant]} ${disabledStyle ? "border-disabled-text bg-disabled-back text-disabled-text pointer-events-none cursor-not-allowed" : ""} ${props.className || ""}`}
+    >
       {children}
     </button>
   );

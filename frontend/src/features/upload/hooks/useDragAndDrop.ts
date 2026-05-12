@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 
 type UseDragAndDropParams = {
   onFilesAdd: (files: File[]) => void;
+  acceptTypes: "image" | "video";
 };
 
 /**
@@ -18,7 +19,7 @@ type UseDragAndDropParams = {
  * - handleDragEnter: ドラッグエリアに入った際の処理
  * - handleDragLeave: ドラッグエリアから出た際の処理
  */
-export const useDragAndDrop = ({ onFilesAdd }: UseDragAndDropParams) => {
+export const useDragAndDrop = ({ onFilesAdd, acceptTypes }: UseDragAndDropParams) => {
   // ドラッグ中かどうかを管理するフラグ
   const [isDragging, setIsDragging] = useState(false);
   // 子要素に入るたびEnterとLeaveが発火するため、ドラッグ中かどうかをカウントで管理する
@@ -41,8 +42,8 @@ export const useDragAndDrop = ({ onFilesAdd }: UseDragAndDropParams) => {
     e.preventDefault();
     dragCounter.current = 0;
     setIsDragging(false);
-    // 画像ファイルのみをフィルタリングしてonFilesAddを呼び出す
-    const files = [...e.dataTransfer.files].filter((f) => f.type.startsWith("image/"));
+    // 画像および動画ファイルのみをフィルタリングしてonFilesAddを呼び出す
+    const files = [...e.dataTransfer.files].filter((f) => f.type.startsWith(`${acceptTypes}/`));
     if (files.length) onFilesAdd(files);
   };
 

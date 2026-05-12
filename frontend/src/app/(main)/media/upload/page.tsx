@@ -16,7 +16,8 @@ import {
 export default function UploadPage() {
   const {
     items,
-    setFileAndUrl,
+    setImageAndUrl,
+    setVideoAndUrl,
     removeFile,
     removeAllFiles,
     handleUpload,
@@ -34,9 +35,9 @@ export default function UploadPage() {
   return (
     <Container className="mt-20 max-md:mt-5">
       <PageTitle text="アップロード" />
-      <div className="mt-15 grid grid-cols-2 gap-10 max-lg:gap-3 max-md:mt-6">
-        <ImageUploader onFilesAdd={setFileAndUrl} />
-        <VideoUploader />
+      <div className="mt-15 grid grid-cols-2 items-start gap-10 max-lg:gap-3 max-md:mt-6">
+        <ImageUploader onFilesAdd={setImageAndUrl} />
+        <VideoUploader onFilesAdd={setVideoAndUrl} />
       </div>
 
       {/* 条件一括設定 */}

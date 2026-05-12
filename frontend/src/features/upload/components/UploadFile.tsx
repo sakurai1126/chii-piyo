@@ -12,10 +12,10 @@ import { TagSelector } from "@/features/tag";
 import { UseTagsResult } from "@/features/tag/types";
 
 import boxArrow from "../assets/brown-arrow.svg";
-import { UploadImage, UploadMetadata, UploadStatus } from "../types";
+import { UploadMedia, UploadMetadata, UploadStatus } from "../types";
 
 type Props = {
-  item: UploadImage;
+  item: UploadMedia;
   onRemove: () => void;
   tagsState: UseTagsResult;
   albumsState: UseAlbumsResult;
@@ -50,17 +50,30 @@ export const UploadFile = ({
     updateItemMetadata(item.id, patch);
   };
 
+  // 動画かどうかの判定
+  const isVideo = item.file.type.startsWith("video/");
+
   return (
     <div className="bg-white-back border-brown-dark rounded-xl border px-5 pt-5">
       <div className="flex items-start gap-8 max-md:gap-3">
-        <Image
-          src={item.previewUrl}
-          alt=""
-          width={120}
-          height={120}
-          className="h-30 w-30 rounded-lg object-cover"
-          unoptimized
-        />
+        {isVideo ? (
+          <video
+            src={`${item.previewUrl}#t=0.1`}
+            className="h-30 w-30 rounded-lg object-cover"
+            muted
+            playsInline
+            preload="metadata"
+          />
+        ) : (
+          <Image
+            src={`${item.previewUrl}#t=0.1`} // 0.1秒時点を指定
+            alt=""
+            width={120}
+            height={120}
+            className="h-30 w-30 rounded-lg object-cover"
+            unoptimized
+          />
+        )}
         <div className="w-full">
           <div className="flex h-30 items-start justify-between max-md:flex-col">
             <div>
@@ -95,7 +108,7 @@ export const UploadFile = ({
                 onClick={onRemove}
                 type="button"
               >
-                この画像を削除する
+                {isVideo ? "この動画を削除する" : "この画像を削除する"}
               </button>
             )}
           </div>
