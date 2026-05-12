@@ -14,7 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * アルバム管理コントローラー<br>
@@ -52,8 +54,13 @@ public class AlbumController implements AlbumManagementApi {
         // サービス層でアルバムを作成する
         Albums createdAlbum = albumService.createAlbum(albumData.getTitle());
 
+
         // 作成されたアルバムをDTOに変換してレスポンスする
-        AlbumResponseDto response = albumConverter.toAlbumResponseDto(createdAlbum);
+        AlbumResponseDto response = albumConverter.toAlbumResponseDto(
+            createdAlbum,
+            Collections.emptyList(),
+            new AlbumService.MediaCountResult(0, 0)
+        );
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -81,9 +88,21 @@ public class AlbumController implements AlbumManagementApi {
      */
     @Override
     public ResponseEntity<List<AlbumResponseDto>> getAlbums(String xRequestedWith) {
+
         // サービス層でエンティティを取得し、コンバータでDTOに変換する
-        List<AlbumResponseDto> response = albumService.findAll().stream()
-            .map(albumConverter::toAlbumResponseDto)
+        List<Albums> albums = albumService.findAll();
+        List<Long> albumIds = albums.stream().map(Albums::getId).toList();
+        Map<Long, AlbumService.MediaCountResult> counts =
+            albumService.getMediaCountsByAlbumIds(albumIds);
+
+        List<AlbumResponseDto> response = albums.stream()
+            .map(album -> {
+                    AlbumService.MediaCountResult count = counts.getOrDefault(
+                        album.getId(), new AlbumService.MediaCountResult(0, 0)
+                    );
+                    return albumConverter.toAlbumResponseDto(album, Collections.emptyList(), count);
+                }
+            )
             .toList();
 
         return ResponseEntity.ok(response);
@@ -98,6 +117,4 @@ public class AlbumController implements AlbumManagementApi {
         String xRequestedWith, Long albumId, AlbumRequestDto albumData) {
         throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
     }
-
-
 }

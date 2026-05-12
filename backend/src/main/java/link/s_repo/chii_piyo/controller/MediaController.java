@@ -1,10 +1,12 @@
 package link.s_repo.chii_piyo.controller;
 
 import link.s_repo.chii_piyo.controller.converter.MediaConverter;
+import link.s_repo.chii_piyo.controller.converter.TagConverter;
 import link.s_repo.chii_piyo.controller.gen.MediaManagementApi;
 import link.s_repo.chii_piyo.model.gen.*;
 import link.s_repo.chii_piyo.security.CurrentUserProvider;
 import link.s_repo.chii_piyo.service.MediaService;
+import link.s_repo.chii_piyo.service.TagService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * メディア管理コントローラー<br>
@@ -26,6 +29,8 @@ public class MediaController implements MediaManagementApi {
     private final MediaService mediaService;
     private final MediaConverter mediaConverter;
     private final CurrentUserProvider currentUserProvider;
+    private final TagService tagService;
+    private final TagConverter tagConverter;
 
     /**
      * POST /media<br>
@@ -93,8 +98,14 @@ public class MediaController implements MediaManagementApi {
             mediaUpdateStatusData.getUploadStatus().getValue()
         );
 
+        // メディアに紐づくタグを取得してDTOに変換
+        List<Tags> tags = tagService.findMediaTags(mediaId);
+        List<TagResponseDto> tagsDto = tags.stream()
+            .map(tagConverter::toTagResponseDto)
+            .toList();
+
         // レスポンスDTOに変換して返却
-        return ResponseEntity.ok(mediaConverter.toMediaResponseDto(updated));
+        return ResponseEntity.ok(mediaConverter.toMediaResponseDto(updated, tagsDto));
     }
 
     // ====================================================================

@@ -19,9 +19,9 @@ public class TagConverter {
      */
     public TagResponseDto toTagResponseDto(Tags tag) {
         return new TagResponseDto(
-            tag.getId(),
-            tag.getName(),
-            tag.getCreatedAt()
+            tag.getId(), // ID
+            tag.getName(), // タグ名
+            tag.getCreatedAt() // 作成日時
         );
     }
 }

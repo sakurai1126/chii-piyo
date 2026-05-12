@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -63,6 +64,32 @@ public class TagService {
     public List<Tags> findAll() {
         return tagsMapper.select(c -> c.orderBy(id));
     }
+
+    /**
+     * メディアに紐づくタグ一覧を取得する。
+     *
+     * @param mediaId メディアID
+     * @return タグのリスト
+     */
+    @Transactional(readOnly = true)
+    public List<Tags> findMediaTags(Long mediaId) {
+        // メディアIDと紐づいたタグIDの一覧を取得する
+        List<Long> mediaTagIds = mediaTagsMapper.select(
+                // "WHERE media_id = #{mediaId}"
+                c -> c.where(MediaTagsDynamicSqlSupport.mediaId, isEqualTo(mediaId))
+            ).stream()
+            // MediaTagsエンティティからタグIDだけ抜き取りリスト化
+            .map(MediaTags::getTagId)
+            .toList();
+
+        // タグが空の場合は空リストを渡す
+        if (mediaTagIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return tagsMapper.select(c -> c.where(id, isIn(mediaTagIds)));
+    }
+
 
     /**
      * メディアに紐づくタグを一括更新する<br>

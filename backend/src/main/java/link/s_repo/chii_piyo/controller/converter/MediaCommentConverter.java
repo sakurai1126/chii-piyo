@@ -25,13 +25,13 @@ public class MediaCommentConverter {
 
         // 必須フィールドを揃えてコンストラクタに渡す
         return new MediaCommentResponseDto(
-            mediaComment.getId(),
-            mediaComment.getUserId(),
-            user.getDisplayName(),
-            user.getUserIconUrl(),
-            mediaComment.getContent(),
-            mediaComment.getCreatedAt(),
-            mediaComment.getUpdatedAt()
+            mediaComment.getId(), // ID
+            mediaComment.getUserId(), // コメントしたユーザーID
+            user.getDisplayName(), // コメントしたユーザーの表示名
+            user.getUserIconUrl(), // コメントしたユーザーのアイコンURL
+            mediaComment.getContent(), // コメント本文
+            mediaComment.getCreatedAt(), // 作成日時
+            mediaComment.getUpdatedAt() // 更新日時
         );
     }
 }

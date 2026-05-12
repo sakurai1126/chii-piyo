@@ -20,11 +20,11 @@ public class SharingGroupConverter {
      */
     public SharingGroupResponseDto toSharingGroupResponseDto(SharingGroups sharingGroup) {
         return new SharingGroupResponseDto(
-            sharingGroup.getId(),
-            sharingGroup.getName(),
+            sharingGroup.getId(), // ID
+            sharingGroup.getName(), // 共有グループ名
             Collections.emptyList(), // メンバーのリスト
-            sharingGroup.getCreatedAt(),
-            sharingGroup.getUpdatedAt()
+            sharingGroup.getCreatedAt(), // 作成日時
+            sharingGroup.getUpdatedAt() // 更新日時
         );
     }
 }
