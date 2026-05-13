@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { M_PLUS_Rounded_1c, Zen_Maru_Gothic } from "next/font/google";
+
 import "@/styles/globals.css";
+import Toast from "@/components/ui/Toast";
 
 // 本文フォントとして使用
 const mPlusRounded1c = M_PLUS_Rounded_1c({
@@ -29,7 +31,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ja" className={`${mPlusRounded1c.variable} ${zenMaruGothic.variable}`}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Toast />
+      </body>
     </html>
   );
 }

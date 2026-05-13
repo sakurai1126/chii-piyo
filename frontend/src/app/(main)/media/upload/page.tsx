@@ -22,9 +22,9 @@ export default function UploadPage() {
     removeAllFiles,
     handleUpload,
     isUploading,
-    resultMessage,
     updateItemMetadata,
     updateAllMetadata,
+    limits,
   } = useUploadPage();
 
   // 各種既存メタデータはページで一度だけ取得し、配下のセレクターに配布する
@@ -36,8 +36,16 @@ export default function UploadPage() {
     <Container className="mt-20 max-md:mt-5">
       <PageTitle text="アップロード" />
       <div className="mt-15 grid grid-cols-2 items-start gap-10 max-lg:gap-3 max-md:mt-6">
-        <ImageUploader onFilesAdd={setImageAndUrl} />
-        <VideoUploader onFilesAdd={setVideoAndUrl} />
+        <ImageUploader
+          onFilesAdd={setImageAndUrl}
+          maxFiles={limits.MAX_UPLOAD_IMAGE_LIMIT}
+          maxSize={limits.MAX_IMAGE_SIZE_MB}
+        />
+        <VideoUploader
+          onFilesAdd={setVideoAndUrl}
+          maxFiles={limits.MAX_UPLOAD_VIDEO_LIMIT}
+          maxSize={limits.MAX_VIDEO_SIZE_MB}
+        />
       </div>
 
       {/* 条件一括設定 */}
@@ -63,20 +71,6 @@ export default function UploadPage() {
           sharingGroupsState={sharingGroupsState}
           updateItemMetadata={updateItemMetadata}
         />
-      )}
-
-      {/* 結果メッセージ */}
-      {resultMessage && (
-        <output className="bg-white-back border-brown-dark mt-10 block rounded-xl border px-5 py-4 text-sm">
-          {resultMessage}
-          <br />
-          {/* アップロード完了後の注意事項 */}
-          {items.some((item) => item.errorMessage) && (
-            <p className="text-warning mt-2">
-              一部処理に失敗したファイルがあります。詳細は各ファイルのエラーメッセージをご確認ください。
-            </p>
-          )}
-        </output>
       )}
     </Container>
   );

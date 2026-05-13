@@ -6,9 +6,11 @@ import { useDragAndDrop } from "../hooks/useDragAndDrop";
 
 type Props = {
   onFilesAdd: (files: File[]) => void;
+  maxFiles: number;
+  maxSize: number;
 };
 
-export const VideoUploader = ({ onFilesAdd }: Props) => {
+export const VideoUploader = ({ onFilesAdd, maxFiles, maxSize }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const { isDragging, handleDrop, handleDragEnter, handleDragLeave } = useDragAndDrop({
     onFilesAdd,
@@ -35,6 +37,11 @@ export const VideoUploader = ({ onFilesAdd }: Props) => {
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
     >
+      {/* スマホタップ用ボタン */}
+      <button
+        className="absolute top-0 left-0 z-1 hidden h-full w-full rounded-2xl opacity-0 max-md:block"
+        onClick={() => inputRef.current?.click()}
+      />
       {/* 実態のinput要素を非表示にする */}
       <input
         ref={inputRef}
@@ -45,8 +52,8 @@ export const VideoUploader = ({ onFilesAdd }: Props) => {
         onChange={handleChange}
       />
 
-      <p className="text-brown-middle bg-accent-brown-back absolute top-5 right-8 grid h-8 w-25 place-content-center rounded-2xl border text-xs font-medium max-md:top-2 max-md:right-2 max-md:h-5 max-md:w-18 max-md:text-[10px]">
-        一本ずつ
+      <p className="text-brown-middle bg-accent-brown-back absolute top-5 right-8 grid h-8 w-30 place-content-center rounded-2xl border text-xs font-medium max-md:top-2 max-md:right-2 max-md:h-5 max-md:w-22 max-md:text-[10px]">
+        最大{maxFiles}ファイル
       </p>
       <Image
         src={icon}
@@ -59,9 +66,9 @@ export const VideoUploader = ({ onFilesAdd }: Props) => {
         動画をアップロード
       </p>
       <p className="text-note-gray mt-4 text-sm max-md:hidden">
-        1ファイルずつ選択してください
+        複数ファイルをまとめて選択できます
         <br />
-        アップロード完了後に次を追加できます
+        ドラッグ＆ドロップにも対応
       </p>
       <button
         className="bg-green-accent hover:text-green-accent border-green-accent hover:bg-white-back mt-5 h-10 w-40 cursor-pointer rounded-4xl border font-medium text-white transition-all duration-500 max-md:hidden"
@@ -69,11 +76,11 @@ export const VideoUploader = ({ onFilesAdd }: Props) => {
       >
         動画を選択
       </button>
-      <p className="text-note-gray mt-4 text-xs max-md:hidden">mp4 / mov - 1 本最大500MB</p>
+      <p className="text-note-gray mt-4 text-xs max-md:hidden">mp4 / mov - 1 本最大{maxSize}MB</p>
       <p className="text-note-gray mt-2 text-[10px] leading-5 md:hidden">
-        1ファイルずつ選択
+        まとめて選択できます
         <br />
-        1本最大500MB
+        1本最大{maxSize}MB
       </p>
     </section>
   );

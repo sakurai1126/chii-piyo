@@ -6,9 +6,11 @@ import { useDragAndDrop } from "../hooks/useDragAndDrop";
 
 type Props = {
   onFilesAdd: (files: File[]) => void;
+  maxFiles: number;
+  maxSize: number;
 };
 
-export const ImageUploader = ({ onFilesAdd }: Props) => {
+export const ImageUploader = ({ onFilesAdd, maxFiles, maxSize }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const { isDragging, handleDrop, handleDragEnter, handleDragLeave } = useDragAndDrop({
     onFilesAdd,
@@ -35,6 +37,11 @@ export const ImageUploader = ({ onFilesAdd }: Props) => {
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
     >
+      {/* スマホタップ用ボタン */}
+      <button
+        className="absolute top-0 left-0 z-1 hidden h-full w-full rounded-2xl opacity-0 max-md:block"
+        onClick={() => inputRef.current?.click()}
+      />
       {/* 実態のinput要素を非表示にする */}
       <input
         ref={inputRef}
@@ -45,8 +52,8 @@ export const ImageUploader = ({ onFilesAdd }: Props) => {
         onChange={handleChange}
       />
 
-      <p className="text-accent-pink bg-accent-pink-back absolute top-5 right-8 grid h-8 w-25 place-content-center rounded-2xl border text-xs font-medium max-md:top-2 max-md:right-2 max-md:h-5 max-md:w-18 max-md:text-[10px]">
-        複数選択可
+      <p className="text-accent-pink bg-accent-pink-back absolute top-5 right-8 grid h-8 w-30 place-content-center rounded-2xl border text-xs font-medium max-md:top-2 max-md:right-2 max-md:h-5 max-md:w-22 max-md:text-[10px]">
+        最大{maxFiles}ファイル
       </p>
       <Image
         src={icon}
@@ -59,7 +66,7 @@ export const ImageUploader = ({ onFilesAdd }: Props) => {
         写真をアップロード
       </p>
       <p className="text-note-gray mt-4 text-sm max-md:hidden">
-        複数枚をまとめて選択できます
+        複数ファイルをまとめて選択できます
         <br />
         ドラッグ＆ドロップにも対応
       </p>
@@ -70,12 +77,12 @@ export const ImageUploader = ({ onFilesAdd }: Props) => {
         写真を選択
       </button>
       <p className="text-note-gray mt-4 text-xs max-md:hidden">
-        jpg / jpeg / png / heic - 1枚最大50MB
+        jpg / jpeg / png / heic - 1枚最大{maxSize}MB
       </p>
       <p className="text-note-gray mt-2 text-[10px] leading-5 md:hidden">
         まとめて選択できます
         <br />
-        1枚最大50MB
+        1枚最大{maxSize}MB
       </p>
     </section>
   );

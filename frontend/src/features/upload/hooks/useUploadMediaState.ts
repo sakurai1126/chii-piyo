@@ -2,7 +2,17 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { toast } from "@/components/ui/Toast";
+
 import { ItemState, UploadMedia, UploadMetadata } from "../types";
+
+// アップロードの上限値とサイズ制限値
+const limits = {
+  MAX_UPLOAD_IMAGE_LIMIT: 50,
+  MAX_UPLOAD_VIDEO_LIMIT: 5,
+  MAX_IMAGE_SIZE_MB: 50,
+  MAX_VIDEO_SIZE_MB: 500,
+} as const;
 
 /**
  * 画像ファイルのアップロードに関連する状態管理を提供するフック
@@ -30,12 +40,36 @@ export const useUploadMediaState = () => {
    * 画像ファイルとプレビューURL、縦横サイズをセットする
    */
   const setImageAndUrl = useCallback(async (files: File[]) => {
-    // 複数ファイルを読み込むためにPromise.allでloadImageFileを並列実行する
+    // ファイルサイズのバリデーション
+    const MAX_IMAGE_SIZE_BYTES = limits.MAX_IMAGE_SIZE_MB * 1024 * 1024;
+    const sizeValidFiles = files.filter((f) => f.size <= MAX_IMAGE_SIZE_BYTES);
+
+    if (sizeValidFiles.length < files.length) {
+      toast.error(`${limits.MAX_IMAGE_SIZE_MB}MBを超える画像はスキップされました`);
+    }
+
+    // 残件数を計算し、上限を超える分をスキップしたファイルリストを作成
+    const remaining = limits.MAX_UPLOAD_IMAGE_LIMIT - itemsRef.current.length;
+    const uploadTargets = sizeValidFiles.slice(0, remaining);
+
+    if (uploadTargets.length === 0) {
+      if (sizeValidFiles.length > 0) {
+        toast.error(`画像は${limits.MAX_UPLOAD_IMAGE_LIMIT}枚までアップロードできます`);
+      }
+      return;
+    }
+
+    if (uploadTargets.length < sizeValidFiles.length) {
+      toast.error(
+        `上限のため${sizeValidFiles.length - uploadTargets.length}枚はスキップされました`,
+      );
+    }
+
     try {
-      const newItems = await Promise.all(files.map(loadImageFile));
+      const newItems = await Promise.all(uploadTargets.map(loadImageFile));
       setItems((prev) => [...prev, ...newItems]);
     } catch {
-      console.error("画像の読み込みに失敗しました");
+      toast.error("画像の読み込みに失敗しました");
     }
   }, []);
 
@@ -43,12 +77,37 @@ export const useUploadMediaState = () => {
    * 動画ファイルとプレビューURL、縦横サイズをセットする
    */
   const setVideoAndUrl = useCallback(async (files: File[]) => {
+    // ファイルサイズのバリデーション
+    const MAX_VIDEO_SIZE_BYTES = limits.MAX_VIDEO_SIZE_MB * 1024 * 1024;
+    const sizeValidFiles = files.filter((f) => f.size <= MAX_VIDEO_SIZE_BYTES);
+
+    if (sizeValidFiles.length < files.length) {
+      toast.error(`${limits.MAX_VIDEO_SIZE_MB}MBを超える動画はスキップされました`);
+    }
+
+    // 残件数を計算し、上限を超える分をスキップしたファイルリストを作成
+    const remaining = limits.MAX_UPLOAD_VIDEO_LIMIT - itemsRef.current.length;
+    const uploadTargets = sizeValidFiles.slice(0, remaining);
+
+    if (uploadTargets.length === 0) {
+      if (sizeValidFiles.length > 0) {
+        toast.error(`動画は${limits.MAX_UPLOAD_VIDEO_LIMIT}本までアップロードできます`);
+      }
+      return;
+    }
+
+    if (uploadTargets.length < sizeValidFiles.length) {
+      toast.error(
+        `上限のため${sizeValidFiles.length - uploadTargets.length}本はスキップされました`,
+      );
+    }
+
     // 複数ファイルを読み込むためにPromise.allでloadVideoFileを並列実行する
     try {
-      const newItems = await Promise.all(files.map(loadVideoFile));
+      const newItems = await Promise.all(uploadTargets.map(loadVideoFile));
       setItems((prev) => [...prev, ...newItems]);
     } catch {
-      console.error("動画の読み込みに失敗しました");
+      toast.error("動画の読み込みに失敗しました");
     }
   }, []);
 
@@ -127,6 +186,7 @@ export const useUploadMediaState = () => {
     updateItem,
     updateItemMetadata,
     updateAllMetadata,
+    limits,
   };
 };
 

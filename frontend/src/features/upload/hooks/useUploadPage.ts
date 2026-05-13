@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-
+import { toast } from "@/components/ui/Toast";
 import { useUploadMediaState, useUploadRunner } from "@/features/upload";
 
 /**
@@ -15,7 +14,9 @@ import { useUploadMediaState, useUploadRunner } from "@/features/upload";
  * - removeAllFiles: すべてのアイテムを削除し、URLを解放する関数
  * - handleUpload: アップロード処理を実行する関数
  * - isUploading: アップロード処理中かどうかの状態
- * - resultMessage: アップロード結果のメッセージ表示用の状態
+ * - updateItemMetadata: 指定したアイテムIDのメタデータを更新する関数
+ * - updateAllMetadata: すべてのアイテムのメタデータを一括更新する関数
+ * - limits: アップロードの上限値とサイズ制限値
  */
 export const useUploadPage = () => {
   const {
@@ -27,10 +28,8 @@ export const useUploadPage = () => {
     updateItem,
     updateItemMetadata,
     updateAllMetadata,
+    limits,
   } = useUploadMediaState();
-
-  // アップロード結果のメッセージ表示用
-  const [resultMessage, setResultMessage] = useState<string | null>(null);
 
   // useUploadRunnerフックは状態変化のコールバックで useUploadMediaState 側のstateを更新する
   const { upload, isUploading } = useUploadRunner({
@@ -39,9 +38,9 @@ export const useUploadPage = () => {
     },
     onAllComplete: ({ successCount, failedCount }) => {
       if (failedCount === 0) {
-        setResultMessage(`${successCount}件のアップロードが完了しました`);
+        toast.success(`${successCount}件のアップロードが完了しました`);
       } else {
-        setResultMessage(
+        toast.error(
           `${successCount}件成功 / ${failedCount}件失敗しました。失敗したファイルは再度アップロードできます`,
         );
       }
@@ -50,9 +49,6 @@ export const useUploadPage = () => {
 
   // アップロード実行処理
   const handleUpload = async () => {
-    // アップロード前に結果メッセージをリセット
-    setResultMessage(null);
-
     // failed と idle のみアップロード対象
     const targets = items.filter((item) => item.status === "idle" || item.status === "failed");
     await upload(targets);
@@ -66,8 +62,8 @@ export const useUploadPage = () => {
     removeAllFiles,
     handleUpload,
     isUploading,
-    resultMessage,
     updateItemMetadata,
     updateAllMetadata,
+    limits,
   };
 };
