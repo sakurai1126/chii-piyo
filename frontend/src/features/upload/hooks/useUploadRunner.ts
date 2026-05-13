@@ -153,8 +153,6 @@ export const useUploadRunner = ({ onItemUpdate, onAllComplete }: UseUploadParams
             uploadStatus: "FAILED",
           }).catch((e) => {
             console.error("FAILED更新失敗", e);
-
-            // TODO 後のIssueでログを出力して分析できるようにする
           });
         }
 
