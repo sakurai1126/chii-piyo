@@ -49,7 +49,11 @@ export const useUploadMediaState = () => {
     }
 
     // 残件数を計算し、上限を超える分をスキップしたファイルリストを作成
-    const remaining = limits.MAX_UPLOAD_IMAGE_LIMIT - itemsRef.current.length;
+    const currentImageCount = itemsRef.current.filter((i) =>
+      i.file.type.startsWith("image/"),
+    ).length;
+    const remaining = limits.MAX_UPLOAD_IMAGE_LIMIT - currentImageCount;
+
     const uploadTargets = sizeValidFiles.slice(0, remaining);
 
     if (uploadTargets.length === 0) {
@@ -86,7 +90,10 @@ export const useUploadMediaState = () => {
     }
 
     // 残件数を計算し、上限を超える分をスキップしたファイルリストを作成
-    const remaining = limits.MAX_UPLOAD_VIDEO_LIMIT - itemsRef.current.length;
+    const currentVideoCount = itemsRef.current.filter((i) =>
+      i.file.type.startsWith("video/"),
+    ).length;
+    const remaining = limits.MAX_UPLOAD_VIDEO_LIMIT - currentVideoCount;
     const uploadTargets = sizeValidFiles.slice(0, remaining);
 
     if (uploadTargets.length === 0) {
