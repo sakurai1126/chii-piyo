@@ -48,85 +48,127 @@
         <table tableName="users" schema="public">
             <!-- 自動採番ID用処理 JDBC標準APIで取得する -->
             <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+            <columnOverride column="created_at" javaType="java.time.OffsetDateTime"/>
+            <columnOverride column="updated_at" javaType="java.time.OffsetDateTime"/>
         </table>
 
         <!-- 共有範囲グループ -->
         <table tableName="sharing_groups" schema="public">
             <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+            <columnOverride column="created_at" javaType="java.time.OffsetDateTime"/>
+            <columnOverride column="updated_at" javaType="java.time.OffsetDateTime"/>
         </table>
         <table tableName="sharing_group_members" schema="public">
             <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+            <columnOverride column="created_at" javaType="java.time.OffsetDateTime"/>
+            <columnOverride column="updated_at" javaType="java.time.OffsetDateTime"/>
         </table>
 
         <!-- アルバム -->
         <table tableName="albums" schema="public">
             <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+            <columnOverride column="created_at" javaType="java.time.OffsetDateTime"/>
+            <columnOverride column="updated_at" javaType="java.time.OffsetDateTime"/>
         </table>
 
         <!-- 写真・動画 -->
         <table tableName="media" schema="public">
             <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+            <columnOverride column="created_at" javaType="java.time.OffsetDateTime"/>
+            <columnOverride column="updated_at" javaType="java.time.OffsetDateTime"/>
         </table>
 
         <!-- 写真・動画へのコメント -->
         <table tableName="media_comments" schema="public">
             <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+            <columnOverride column="created_at" javaType="java.time.OffsetDateTime"/>
+            <columnOverride column="updated_at" javaType="java.time.OffsetDateTime"/>
         </table>
 
         <!-- タグ -->
         <table tableName="tags" schema="public">
             <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+            <columnOverride column="created_at" javaType="java.time.OffsetDateTime"/>
+            <columnOverride column="updated_at" javaType="java.time.OffsetDateTime"/>
         </table>
         <table tableName="media_tags" schema="public">
             <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+            <columnOverride column="created_at" javaType="java.time.OffsetDateTime"/>
+            <columnOverride column="updated_at" javaType="java.time.OffsetDateTime"/>
         </table>
 
         <!-- お気に入り -->
         <table tableName="favorites" schema="public">
             <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+            <columnOverride column="created_at" javaType="java.time.OffsetDateTime"/>
+            <columnOverride column="updated_at" javaType="java.time.OffsetDateTime"/>
         </table>
 
         <!-- 育児記録 -->
         <table tableName="care_records" schema="public">
             <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+            <columnOverride column="created_at" javaType="java.time.OffsetDateTime"/>
+            <columnOverride column="updated_at" javaType="java.time.OffsetDateTime"/>
+            <columnOverride column="recorded_at" javaType="java.time.OffsetDateTime"/>
         </table>
         <table tableName="meal_details" schema="public">
             <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+            <columnOverride column="created_at" javaType="java.time.OffsetDateTime"/>
+            <columnOverride column="updated_at" javaType="java.time.OffsetDateTime"/>
         </table>
         <table tableName="milk_details" schema="public">
             <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+            <columnOverride column="created_at" javaType="java.time.OffsetDateTime"/>
+            <columnOverride column="updated_at" javaType="java.time.OffsetDateTime"/>
         </table>
         <table tableName="diaper_details" schema="public">
             <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+            <columnOverride column="created_at" javaType="java.time.OffsetDateTime"/>
+            <columnOverride column="updated_at" javaType="java.time.OffsetDateTime"/>
         </table>
         <table tableName="health_details" schema="public">
             <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+            <columnOverride column="created_at" javaType="java.time.OffsetDateTime"/>
+            <columnOverride column="updated_at" javaType="java.time.OffsetDateTime"/>
         </table>
 
         <!-- 身長・体重記録 -->
         <table tableName="growth_records" schema="public">
             <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+            <columnOverride column="created_at" javaType="java.time.OffsetDateTime"/>
+            <columnOverride column="updated_at" javaType="java.time.OffsetDateTime"/>
         </table>
 
         <!-- はじめて記録 -->
         <table tableName="first_records" schema="public">
             <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+            <columnOverride column="created_at" javaType="java.time.OffsetDateTime"/>
+            <columnOverride column="updated_at" javaType="java.time.OffsetDateTime"/>
         </table>
         <table tableName="first_record_media" schema="public">
             <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+            <columnOverride column="created_at" javaType="java.time.OffsetDateTime"/>
+            <columnOverride column="updated_at" javaType="java.time.OffsetDateTime"/>
         </table>
 
         <!-- ことば記録 -->
         <table tableName="word_records" schema="public">
             <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+            <columnOverride column="created_at" javaType="java.time.OffsetDateTime"/>
+            <columnOverride column="updated_at" javaType="java.time.OffsetDateTime"/>
         </table>
         <table tableName="word_record_media" schema="public">
             <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+            <columnOverride column="created_at" javaType="java.time.OffsetDateTime"/>
+            <columnOverride column="updated_at" javaType="java.time.OffsetDateTime"/>
         </table>
 
         <!-- ゴミ箱 -->
         <table tableName="trash_items" schema="public">
             <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+            <columnOverride column="expires_at" javaType="java.time.OffsetDateTime"/>
+            <columnOverride column="created_at" javaType="java.time.OffsetDateTime"/>
+            <columnOverride column="updated_at" javaType="java.time.OffsetDateTime"/>
         </table>
 
     </context>

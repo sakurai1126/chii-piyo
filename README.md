@@ -129,3 +129,24 @@ http://localhost:3000
 
 ## ディレクトリ構成
 ※実装開始後に追記
+
+## 開発フロー
+
+### スキーマ駆動開発
+
+API定義は `api/` 配下のYAMLファイル群で管理し、`api/index.yml` をエントリーポイントとして集約。
+集約後の `openapi.yaml` をフロントエンド・バックエンド・ドキュメントの3箇所に配置しそれぞれのコードを自動生成することで、API定義と実装の乖離を防止する。
+
+### APIコード再生成
+
+API定義を変更した際は以下のスクリプトを実行する。
+
+```bash
+./script/generate-api.sh
+```
+
+スクリプトは以下を順に実行する。
+
+1. `@redocly/cli` で `index.yml` を `openapi.yaml` にバンドルし3箇所へ配置
+2. バックエンドのMaven `generate-sources` でAPIインターフェースとモデルクラスを再生成
+3. フロントエンドの `npm run generate-api` でTypeScript型+クライアントを再生成

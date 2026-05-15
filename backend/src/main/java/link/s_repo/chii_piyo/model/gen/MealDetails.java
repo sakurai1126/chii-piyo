@@ -1,6 +1,6 @@
 package link.s_repo.chii_piyo.model.gen;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 public class MealDetails {
     private Long id;
@@ -9,9 +9,9 @@ public class MealDetails {
 
     private String note;
 
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 
-    private LocalDateTime updatedAt;
+    private OffsetDateTime updatedAt;
 
     public Long getId() {
         return id;
@@ -37,19 +37,19 @@ public class MealDetails {
         this.note = note;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public LocalDateTime getUpdatedAt() {
+    public OffsetDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
+    public void setUpdatedAt(OffsetDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 }

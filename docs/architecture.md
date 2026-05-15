@@ -59,10 +59,12 @@ graph TB
 ```
 バックエンド: Spring Boot
 ├── Controller Layer     : REST APIエンドポイント
+│   └── Converter        : EntityとDTO間の変換
 ├── Service Layer        : ビジネスロジック、トランザクション管理
 ├── Repository Layer     : データアクセス、MyBatisマッパー呼び出し
-├── Model Layer          : エンティティ、DTO
+├── Model Layer          : エンティティ
 ├── Security Layer       : 認証フィルター、JWT検証
+├── Exception Layer      : ドメイン固有の例外定義
 ├── Common Layer         : 共通レスポンス形式、例外ハンドラー
 └── Config Layer         : Bean定義、外部サービス設定
 ```

@@ -1,6 +1,6 @@
 package link.s_repo.chii_piyo.model.gen;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 public class TrashItems {
     private Long id;
@@ -9,9 +9,9 @@ public class TrashItems {
 
     private Long deletedBy;
 
-    private LocalDateTime expiresAt;
+    private OffsetDateTime expiresAt;
 
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 
     public Long getId() {
         return id;
@@ -37,19 +37,19 @@ public class TrashItems {
         this.deletedBy = deletedBy;
     }
 
-    public LocalDateTime getExpiresAt() {
+    public OffsetDateTime getExpiresAt() {
         return expiresAt;
     }
 
-    public void setExpiresAt(LocalDateTime expiresAt) {
+    public void setExpiresAt(OffsetDateTime expiresAt) {
         this.expiresAt = expiresAt;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
     }
 }

@@ -3,13 +3,17 @@ package link.s_repo.chii_piyo.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
-import org.springframework.beans.factory.annotation.Value;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
 
+
+import java.io.InputStream;
 import java.time.Duration;
 
 @Service
@@ -18,6 +22,7 @@ public class S3Service {
 
     // 署名付きURL生成用オブジェクト
     private final S3Presigner s3Presigner;
+    private final S3Client s3Client;
 
     // application.yamlからS3バケット名を読込
     @Value("${aws.s3.bucket}")
@@ -91,4 +96,38 @@ public class S3Service {
             .url()
             .toString();
     }
+
+    /**
+     * ストリームとしてS3オブジェクトをダウンロードする<br>
+     * サムネイル生成のためバックエンド内部から呼び出される
+     *
+     * @param s3Key S3オブジェクトキー
+     * @return オブジェクトのInputStream
+     */
+    public InputStream downloadAsStream(String s3Key) {
+        if (!StringUtils.hasText(s3Key)) {
+            throw new IllegalArgumentException("s3Keyがnullまたは空です");
+        }
+        GetObjectRequest req = GetObjectRequest.builder().bucket(s3Bucket).key(s3Key).build();
+        return s3Client.getObject(req);
+    }
+
+    /**
+     * サムネイルバイト列をS3バケットにアップロードする
+     *
+     * @param thumbnailS3Key サムネイルのS3キー
+     * @param data           サムネイルのバイト列
+     */
+    public void uploadThumbnail(String thumbnailS3Key, byte[] data) {
+        if (!StringUtils.hasText(thumbnailS3Key)) {
+            throw new IllegalArgumentException("thumbnailS3Keyがnullまたは空です");
+        }
+        PutObjectRequest objectRequest = PutObjectRequest.builder()
+            .bucket(s3Bucket)
+            .key(thumbnailS3Key)
+            .contentType("image/jpeg")
+            .build();
+        s3Client.putObject(objectRequest, RequestBody.fromBytes(data));
+    }
+
 }

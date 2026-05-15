@@ -1,6 +1,6 @@
 package link.s_repo.chii_piyo.model.gen;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 public class CareRecords {
     private Long id;
@@ -9,11 +9,11 @@ public class CareRecords {
 
     private String recordType;
 
-    private LocalDateTime recordedAt;
+    private OffsetDateTime recordedAt;
 
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 
-    private LocalDateTime updatedAt;
+    private OffsetDateTime updatedAt;
 
     public Long getId() {
         return id;
@@ -39,27 +39,27 @@ public class CareRecords {
         this.recordType = recordType;
     }
 
-    public LocalDateTime getRecordedAt() {
+    public OffsetDateTime getRecordedAt() {
         return recordedAt;
     }
 
-    public void setRecordedAt(LocalDateTime recordedAt) {
+    public void setRecordedAt(OffsetDateTime recordedAt) {
         this.recordedAt = recordedAt;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public LocalDateTime getUpdatedAt() {
+    public OffsetDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
+    public void setUpdatedAt(OffsetDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 }

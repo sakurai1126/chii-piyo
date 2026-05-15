@@ -8,6 +8,9 @@ RUN addgroup -S spring && adduser -S spring -G spring
 # コンテナ内の作業ディレクトリを設定
 WORKDIR /app
 
+# 動画のサムネイル生成にffmpegを使用するため、Alpine Linuxのパッケージマネージャであるapkを使用してffmpegをインストール
+RUN apk add --no-cache ffmpeg
+
 # 依存関係の準備のために必要なファイルをコピー
 # root所有でコピーし 非rootユーザーは読み取りのみ可能で書き換え不可とする
 COPY pom.xml .

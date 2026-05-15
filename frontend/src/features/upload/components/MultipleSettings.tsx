@@ -1,0 +1,113 @@
+"use client";
+
+import Image from "next/image";
+
+import { AccordionContent } from "@/components/ui/AccordionContent";
+import { Button } from "@/components/ui/Button";
+import { DatePicker } from "@/components/ui/DatePicker";
+import { AlbumSelector } from "@/features/album";
+import { AlbumAddForm } from "@/features/album/components/AlbumAddForm";
+import { UseAlbumsResult } from "@/features/album/types";
+import { SharingGroupsSelector } from "@/features/sharing";
+import { UseSharingGroupsResult } from "@/features/sharing/types";
+import { TagSelector } from "@/features/tag";
+import { UseTagsResult } from "@/features/tag/types";
+
+import boxArrow from "../assets/brown-arrow.svg";
+import { useMultipleSettings } from "../hooks/useMultipleSettings";
+import { UploadMetadata } from "../types";
+
+type Props = {
+  tagsState: UseTagsResult;
+  albumsState: UseAlbumsResult;
+  sharingGroupsState: UseSharingGroupsResult;
+  updateAllMetadata: (patch: Partial<UploadMetadata>) => void;
+};
+
+export const MultipleSettings = ({
+  tagsState,
+  albumsState,
+  sharingGroupsState,
+  updateAllMetadata,
+}: Props) => {
+  const { uid, isOpen, setIsOpen, selected, setSelected, message, handleChange, handleReset } =
+    useMultipleSettings({ updateAllMetadata, sharingGroupsState });
+  return (
+    <div className="bg-white-back border-brown-dark mt-15 rounded-xl border px-8 pt-6 max-md:mt-8 max-md:px-4 max-md:pt-4">
+      <div className="flex items-center gap-8 max-md:gap-2">
+        <p className="text-xl font-medium max-md:text-sm">一括設定</p>
+        <div className="flex items-center gap-2">
+          <div className="bg-note-gray h-px w-5"></div>
+          <p className="text-note-gray text-sm max-md:text-[10px]">
+            アップロードしたファイルをまとめて設定
+          </p>
+        </div>
+      </div>
+      <AccordionContent isOpen={isOpen} id={`accordion-${uid}`}>
+        {/* アルバムと日付設定 */}
+        <div className="mt-8 flex gap-8 max-lg:flex-col max-md:mt-4 max-md:gap-4">
+          <div>
+            <AlbumSelector
+              albums={albumsState.albums}
+              isLoading={albumsState.isLoading}
+              error={albumsState.error}
+              onRefresh={albumsState.refetch}
+              onAlbumSelect={(albumId) => setSelected((prev) => ({ ...prev, albumId }))}
+              selectedAlbumId={selected.albumId}
+            />
+            <AlbumAddForm onAlbumCreated={albumsState.refetch} />
+          </div>
+
+          <DatePicker
+            onChange={(takenAt) => setSelected((prev) => ({ ...prev, takenAt }))}
+            value={selected.takenAt}
+          />
+        </div>
+        {/* タグを編集 */}
+        <TagSelector
+          tags={tagsState.tags}
+          isLoading={tagsState.isLoading}
+          error={tagsState.error}
+          onRefresh={tagsState.refetch}
+          selectedTagIds={selected.tagIds ?? []}
+          onTagSelect={(tagIds) => setSelected((prev) => ({ ...prev, tagIds }))}
+        />
+        {/* 共有範囲を編集 */}
+        <SharingGroupsSelector
+          sharingGroups={sharingGroupsState.sharingGroups}
+          isLoading={sharingGroupsState.isLoading}
+          error={sharingGroupsState.error}
+          onRefresh={sharingGroupsState.refetch}
+          onSharingGroupSelect={(sharingGroupId) =>
+            setSelected((prev) => ({ ...prev, sharingGroupId }))
+          }
+          selectedGroupId={selected.sharingGroupId}
+        />
+        {/* ボタン */}
+        <div className="mt-8 flex gap-5">
+          <Button variant="cancel" onClick={handleReset}>
+            リセット
+          </Button>
+          <Button variant="primary" onClick={() => handleChange()}>
+            変更する
+          </Button>
+        </div>
+        {message && <p className="text-success mt-4 max-md:text-sm">{message}</p>}
+      </AccordionContent>
+      <button
+        className="mx-auto grid h-10 w-full cursor-pointer place-content-center"
+        aria-expanded={isOpen}
+        aria-controls={`accordion-${uid}`}
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <Image
+          src={boxArrow}
+          alt=""
+          width={13}
+          height={7}
+          className={`${isOpen ? "rotate-180" : ""} transition-transform duration-300`}
+        />
+      </button>
+    </div>
+  );
+};

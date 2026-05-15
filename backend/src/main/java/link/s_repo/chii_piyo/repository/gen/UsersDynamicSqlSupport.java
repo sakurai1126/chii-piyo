@@ -1,7 +1,7 @@
 package link.s_repo.chii_piyo.repository.gen;
 
 import java.sql.JDBCType;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import org.mybatis.dynamic.sql.AliasableSqlTable;
 import org.mybatis.dynamic.sql.SqlColumn;
 
@@ -24,9 +24,9 @@ public final class UsersDynamicSqlSupport {
 
     public static final SqlColumn<String> role = users.role;
 
-    public static final SqlColumn<LocalDateTime> createdAt = users.createdAt;
+    public static final SqlColumn<OffsetDateTime> createdAt = users.createdAt;
 
-    public static final SqlColumn<LocalDateTime> updatedAt = users.updatedAt;
+    public static final SqlColumn<OffsetDateTime> updatedAt = users.updatedAt;
 
     public static final class Users extends AliasableSqlTable<Users> {
         public final SqlColumn<Long> id = column("id", JDBCType.BIGINT).withJavaProperty("id");
@@ -45,9 +45,9 @@ public final class UsersDynamicSqlSupport {
 
         public final SqlColumn<String> role = column("\"role\"", JDBCType.VARCHAR).withJavaProperty("role");
 
-        public final SqlColumn<LocalDateTime> createdAt = column("created_at", JDBCType.TIMESTAMP).withJavaProperty("createdAt");
+        public final SqlColumn<OffsetDateTime> createdAt = column("created_at", JDBCType.TIMESTAMP).withJavaProperty("createdAt");
 
-        public final SqlColumn<LocalDateTime> updatedAt = column("updated_at", JDBCType.TIMESTAMP).withJavaProperty("updatedAt");
+        public final SqlColumn<OffsetDateTime> updatedAt = column("updated_at", JDBCType.TIMESTAMP).withJavaProperty("updatedAt");
 
         public Users() {
             super("public.users", Users::new);

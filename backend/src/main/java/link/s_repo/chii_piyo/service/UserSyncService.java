@@ -7,6 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+
 import static link.s_repo.chii_piyo.repository.gen.UsersDynamicSqlSupport.cognitoUserId;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
@@ -55,7 +58,8 @@ public class UserSyncService {
         user.setIsDarkMode(false);
         user.setIsEasyMode(false);
         user.setRole("VIEWER");
-        // createdAt, updatedAt はタイムゾーンずれ対策のためDB側のDEFAULTに任せる
+        user.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
+        user.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
 
         // DBに保存
         usersMapper.insertSelective(user);
