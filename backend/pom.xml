@@ -44,6 +44,7 @@
         <mybatis-generator-maven-plugin.version>2.0.0</mybatis-generator-maven-plugin.version>
         <mybatis-dynamic-sql.version>2.0.0</mybatis-dynamic-sql.version>
         <software.amazon.awssdk.version>2.44.0</software.amazon.awssdk.version>
+        <thumbnailator.version>0.4.21</thumbnailator.version>
     </properties>
 
     <dependencies>
@@ -172,6 +173,13 @@
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>s3</artifactId>
             <version>${software.amazon.awssdk.version}</version>
+        </dependency>
+
+        <!-- サムネイル作成 -->
+        <dependency>
+            <groupId>net.coobird</groupId>
+            <artifactId>thumbnailator</artifactId>
+            <version>${thumbnailator.version}</version>
         </dependency>
     </dependencies>
 

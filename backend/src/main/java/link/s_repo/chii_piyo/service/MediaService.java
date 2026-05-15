@@ -29,6 +29,7 @@ public class MediaService {
 
     private final MediaMapper mediaMapper;
     private final S3Service s3Service;
+    private final ThumbnailService thumbnailService;
 
     // S3のプレフィックスをまとめて管理
     private static final String MEDIA_PREFIX = "media";
@@ -122,6 +123,17 @@ public class MediaService {
 
         // updateByPrimaryKeySelectiveでnullカラムをスキップして更新
         mediaMapper.updateByPrimaryKeySelective(media);
+
+        // COMPLETEDに変わったところからサムネイル生成を非同期で起動
+        if ("COMPLETED".equals(uploadStatus)) {
+            thumbnailService.generateThumbnailAsync(
+                mediaId,
+                media.getMediaType(),
+                media.getS3Key(),
+                media.getOriginalFilename(),
+                media.getFileSize()
+            );
+        }
 
         return media;
     }

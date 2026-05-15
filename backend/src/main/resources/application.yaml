@@ -29,6 +29,17 @@ spring:
           # Spring Bootは起動時にOIDC Discoveryエンドポイントを叩いてJWKをキャッシュしようとするが、CognitoはOIDC Discoveryに完全準拠していない部分があるのでjwk-set-uriも明示的に指定
           jwk-set-uri: ${COGNITO_JWKS_URI}
 
+  # 非同期処理のスレッドプール設定
+  task:
+    execution:
+      pool:
+        # コアスレッド数と最大スレッド数を同じにして、キューにタスクを溜める方式にする
+        # 1スレッドが埋まった後の処理依頼はキューで待機して順次実行される
+        # 親族内利用想定でコスト面からサーバースペックも限られている、かつ多少の遅延は許容されるためこの設定にする
+        core-size: 1
+        max-size: 1
+        queue-capacity: 100
+
 aws:
   # Cognitoの設定
   cognito:
@@ -40,6 +51,23 @@ aws:
     credentials:
       access-key: ${AWS_S3_ACCESS_KEY_ID}
       secret-key: ${AWS_S3_SECRET_ACCESS_KEY}
+
+# サムネイル生成の設定
+thumbnail:
+  # サムネイルの最大辺のピクセル数
+  max-edge-pixels: 400
+  # JPEGの品質 (0.0 - 1.0)
+  jpeg-quality: 0.85
+  # 動画のサムネイルを生成する際のフレーム位置 (秒)
+  video-frame-second: 1
+  # ffmpegの実行パス
+  ffmpeg-path: ${FFMPEG_PATH:ffmpeg}
+  # サムネイル生成のリトライ間隔（ミリ秒）
+  retry-interval-ms: 86400000  # 24時間
+  # サムネイル生成の際に処理するメディアファイルの最大サイズ（バイト単位）
+  # 境界値事故防止のため、フロント指定より少し大きめに設定
+  max-image-bytes: 22020096  # 21MB
+  max-video-bytes: 110100480  # 105MB
 
 # アプリケーションの管理エンドポイントの設定
 management:

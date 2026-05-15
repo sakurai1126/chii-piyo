@@ -15,6 +15,9 @@ services:
       - "8080:8080"
     env_file:
       - .env
+    environment:
+      # JVMヒープ上限を制限し、OS・PostgreSQL・ffmpegとのメモリ競合を防ぐ
+      - JAVA_TOOL_OPTIONS=-Xms128m -Xmx400m
     volumes:
       # ホストのソースコードをコンテナに同期させコード変更を即座に反映できるようにする
       - ./backend:/app

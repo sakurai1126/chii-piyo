@@ -111,6 +111,13 @@ sequenceDiagram
         Spring-->>Next: 200
         Next-->>Browser: エラー表示・リトライ案内
     end
+
+    Note over Spring: 別スレッドで非同期サムネイル生成
+    Spring->>S3: オリジナルダウンロード
+    S3-->>Spring: ファイル
+    Spring->>Spring: サムネイル生成 (画像: Thumbnailator / 動画: ffmpeg)
+    Spring->>S3: サムネイルアップロード
+    Spring->>DB: thumbnail_s3_key を更新
 ```
 
 ### ゴミ箱から完全削除

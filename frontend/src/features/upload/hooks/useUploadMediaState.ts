@@ -8,10 +8,10 @@ import { ItemState, UploadMedia, UploadMetadata } from "../types";
 
 // アップロードの上限値とサイズ制限値
 const limits = {
-  MAX_UPLOAD_IMAGE_LIMIT: 50,
-  MAX_UPLOAD_VIDEO_LIMIT: 5,
-  MAX_IMAGE_SIZE_MB: 50,
-  MAX_VIDEO_SIZE_MB: 500,
+  MAX_UPLOAD_IMAGE_LIMIT: 30,
+  MAX_UPLOAD_VIDEO_LIMIT: 3,
+  MAX_IMAGE_SIZE_MB: 20,
+  MAX_VIDEO_SIZE_MB: 100,
 } as const;
 
 /**
