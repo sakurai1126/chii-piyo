@@ -26,12 +26,12 @@ export const useMultipleSettings = ({ updateAllMetadata, sharingGroupsState }: P
   const today = new Date().toLocaleDateString("sv-SE");
 
   // 一括設定の選択状態を管理するローカルステート
-  const [selected, setSelected] = useState({
+  const [selected, setSelected] = useState<SelectedState>({
     albumId: undefined,
     takenAt: today,
-    tagIds: [] as number[],
+    tagIds: [],
     sharingGroupId: undefined,
-  } as SelectedState);
+  });
 
   // ユーザーへのフィードバックメッセージ
   const [message, setMessage] = useState("");
