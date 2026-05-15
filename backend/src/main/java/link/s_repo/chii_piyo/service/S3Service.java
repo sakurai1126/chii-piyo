@@ -113,7 +113,7 @@ public class S3Service {
     }
 
     /**
-     * サムネイルバイト列をサムネイル用S3バケットにアップロードする
+     * サムネイルバイト列をS3バケットにアップロードする
      *
      * @param thumbnailS3Key サムネイルのS3キー
      * @param data           サムネイルのバイト列
