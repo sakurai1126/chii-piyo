@@ -51,8 +51,6 @@ public class MediaConverter {
             media.getUpdatedAt() // 更新日時
         );
 
-
-
         dto.setPresignedUrl(presignedUrl); // ダウンロード用署名付きURL
         dto.setThumbnailPresignedUrl(JsonNullable.of(thumbnailPresignedUrl)); // サムネイルのダウンロード用署名付きURL
         dto.setTags(tags);// タグのリスト
@@ -61,6 +59,4 @@ public class MediaConverter {
 
         return dto;
     }
-
-
 }

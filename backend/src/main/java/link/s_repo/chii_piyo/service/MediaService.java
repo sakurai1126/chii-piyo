@@ -3,6 +3,7 @@ package link.s_repo.chii_piyo.service;
 import link.s_repo.chii_piyo.exception.MediaAccessDeniedException;
 import link.s_repo.chii_piyo.exception.MediaNotFoundException;
 import link.s_repo.chii_piyo.model.gen.Media;
+import link.s_repo.chii_piyo.repository.gen.MediaDynamicSqlSupport;
 import link.s_repo.chii_piyo.repository.gen.MediaMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.UUID;
 
 import static link.s_repo.chii_piyo.repository.gen.MediaDynamicSqlSupport.id;
@@ -35,6 +37,34 @@ public class MediaService {
     private static final String MEDIA_PREFIX = "media";
     // S3キー生成時に使用する日付フォーマット
     private static final DateTimeFormatter S3_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+
+    /**
+     * メディア総件数を取得する
+     *
+     * @return 総件数の数値
+     */
+    @Transactional(readOnly = true)
+    public Long countMedia() {
+        return mediaMapper.count(c -> c);
+    }
+
+    /**
+     * メディアの一覧を取得する
+     *
+     * @param offset 取得位置
+     * @param limit 最大件数
+     * @return メディアのリスト
+     */
+    public List<Media> getMediaList(int offset, int limit) {
+        // ページネーション込みで一覧取得
+        return mediaMapper.select(c -> c
+            .orderBy(MediaDynamicSqlSupport.createdAt.descending())
+            .limit(limit)
+            .offset(offset)
+        );
+    }
+
+
 
     /**
      * メディアレコードを作成し、署名付きアップロードURLを返却する<br>

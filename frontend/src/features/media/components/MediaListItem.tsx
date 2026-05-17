@@ -1,18 +1,33 @@
 import Image from "next/image";
 
+import { MediaResponseDto } from "@/lib/api-client/gen";
+
 import comment from "../assets/comment.svg";
 import heart from "../assets/heart.svg";
 
-export const MediaListItem = () => {
+type Props = {
+  data: MediaResponseDto;
+};
+
+export const MediaListItem = ({ data }: Props) => {
   return (
     <div className="group relative aspect-square overflow-hidden">
-      <Image
-        src="/images/mock-img.jpg"
-        alt=""
-        width={235}
-        height={235}
-        className="absolute transition-all duration-500 group-hover:scale-125"
-      />
+      {data.thumbnailPresignedUrl ? (
+        <Image
+          src={data.thumbnailPresignedUrl}
+          alt=""
+          fill
+          className="absolute h-full w-full object-cover transition-all duration-500 group-hover:scale-110"
+        />
+      ) : (
+        <Image
+          src="/images/no-thumbnail.png"
+          alt=""
+          fill
+          className="absolute h-full w-full object-cover transition-all duration-500 group-hover:scale-110"
+        />
+      )}
+
       {/* チェックボックス */}
       <input
         aria-label="選択"
@@ -45,16 +60,18 @@ export const MediaListItem = () => {
       </div>
 
       {/* コメント */}
-      <div className="absolute right-2 bottom-2 flex items-center gap-1 max-md:right-1 max-md:bottom-1">
-        <Image
-          src={comment}
-          alt="comment"
-          width={20}
-          height={20}
-          className="max-md:h-4 max-md:w-4"
-        />
-        <p className="text-brown-dark max-md:text-xs">1</p>
-      </div>
+      {data.commentCount ? (
+        <div className="border-brown-dark bg-accent-orange-back absolute right-2 bottom-2 flex items-center gap-1 rounded-2xl border px-2 py-0.5 max-md:right-1 max-md:bottom-1">
+          <Image
+            src={comment}
+            alt="comment"
+            width={11}
+            height={11}
+            className="mt-0.5 max-md:h-4 max-md:w-4"
+          />
+          <p className="text-brown-dark text-xs max-md:text-[10px]">{data.commentCount}</p>
+        </div>
+      ) : null}
     </div>
   );
 };
