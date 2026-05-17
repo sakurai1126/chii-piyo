@@ -163,6 +163,7 @@ export const UploadFile = ({
             onRefresh={tagsState.refetch}
             selectedTagIds={item.metadata.tagIds ?? []}
             onTagSelect={(tagIds) => handleMetadataChange({ tagIds })}
+            addTag={true}
           />
           {/* 共有範囲を編集 */}
           <SharingGroupsSelector

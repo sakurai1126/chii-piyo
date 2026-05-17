@@ -7,7 +7,7 @@ import Toast from "@/components/ui/Toast";
 // 本文フォントとして使用
 const mPlusRounded1c = M_PLUS_Rounded_1c({
   subsets: ["latin"],
-  weight: ["400", "500", "700"],
+  weight: ["300", "400", "500", "700"],
   variable: "--font-m-plus-rounded",
   display: "swap",
   preload: false,

@@ -71,6 +71,7 @@ export const MultipleSettings = ({
           onRefresh={tagsState.refetch}
           selectedTagIds={selected.tagIds ?? []}
           onTagSelect={(tagIds) => setSelected((prev) => ({ ...prev, tagIds }))}
+          addTag={true}
         />
         {/* 共有範囲を編集 */}
         <SharingGroupsSelector
