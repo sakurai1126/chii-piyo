@@ -6,6 +6,7 @@ import link.s_repo.chii_piyo.controller.gen.MediaManagementApi;
 import link.s_repo.chii_piyo.model.gen.*;
 import link.s_repo.chii_piyo.security.CurrentUserProvider;
 import link.s_repo.chii_piyo.service.MediaService;
+import link.s_repo.chii_piyo.service.S3Service;
 import link.s_repo.chii_piyo.service.TagService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -31,6 +33,7 @@ public class MediaController implements MediaManagementApi {
     private final CurrentUserProvider currentUserProvider;
     private final TagService tagService;
     private final TagConverter tagConverter;
+    private final S3Service s3Service;
 
     /**
      * POST /media<br>
@@ -92,7 +95,7 @@ public class MediaController implements MediaManagementApi {
         Long userId = currentUserProvider.getUserId();
 
         // サービス層でステータス更新
-        Media updated = mediaService.updateUploadStatus(
+        Media media = mediaService.updateUploadStatus(
             mediaId,
             userId,
             mediaUpdateStatusData.getUploadStatus().getValue()
@@ -104,8 +107,14 @@ public class MediaController implements MediaManagementApi {
             .map(tagConverter::toTagResponseDto)
             .toList();
 
+        URI presignedUrl = URI.create(s3Service.generateDownloadPresignedUrl(media.getS3Key()));
+
+        URI thumbnailPresignedUrl = media.getThumbnailS3Key() != null
+            ? URI.create(s3Service.generateDownloadPresignedUrl(media.getThumbnailS3Key()))
+            : null;
+
         // レスポンスDTOに変換して返却
-        return ResponseEntity.ok(mediaConverter.toMediaResponseDto(updated, tagsDto));
+        return ResponseEntity.ok(mediaConverter.toMediaResponseDto(media, tagsDto, presignedUrl, thumbnailPresignedUrl));
     }
 
     // ====================================================================

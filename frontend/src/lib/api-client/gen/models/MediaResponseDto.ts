@@ -76,17 +76,17 @@ export interface MediaResponseDto {
    */
   height: number | null;
   /**
-   * S3オブジェクトキー
+   * S3アップロード用の署名付きURL
    * @type {string}
    * @memberof MediaResponseDto
    */
-  s3Key: string;
+  presignedUrl: string;
   /**
-   * サムネイルのS3キー
+   * サムネイルのS3アップロード用の署名付きURL
    * @type {string}
    * @memberof MediaResponseDto
    */
-  thumbnailS3Key: string | null;
+  thumbnailPresignedUrl: string | null;
   /**
    * 撮影日
    * @type {Date}
@@ -170,8 +170,9 @@ export function instanceOfMediaResponseDto(value: object): value is MediaRespons
   if (!("fileSize" in value) || value["fileSize"] === undefined) return false;
   if (!("width" in value) || value["width"] === undefined) return false;
   if (!("height" in value) || value["height"] === undefined) return false;
-  if (!("s3Key" in value) || value["s3Key"] === undefined) return false;
-  if (!("thumbnailS3Key" in value) || value["thumbnailS3Key"] === undefined) return false;
+  if (!("presignedUrl" in value) || value["presignedUrl"] === undefined) return false;
+  if (!("thumbnailPresignedUrl" in value) || value["thumbnailPresignedUrl"] === undefined)
+    return false;
   if (!("takenAt" in value) || value["takenAt"] === undefined) return false;
   if (!("albumId" in value) || value["albumId"] === undefined) return false;
   if (!("sharingGroupId" in value) || value["sharingGroupId"] === undefined) return false;
@@ -202,8 +203,8 @@ export function MediaResponseDtoFromJSONTyped(
     fileSize: json["fileSize"],
     width: json["width"],
     height: json["height"],
-    s3Key: json["s3Key"],
-    thumbnailS3Key: json["thumbnailS3Key"],
+    presignedUrl: json["presignedUrl"],
+    thumbnailPresignedUrl: json["thumbnailPresignedUrl"],
     takenAt: json["takenAt"] == null ? null : new Date(json["takenAt"]),
     albumId: json["albumId"],
     sharingGroupId: json["sharingGroupId"],
@@ -236,8 +237,8 @@ export function MediaResponseDtoToJSONTyped(
     fileSize: value["fileSize"],
     width: value["width"],
     height: value["height"],
-    s3Key: value["s3Key"],
-    thumbnailS3Key: value["thumbnailS3Key"],
+    presignedUrl: value["presignedUrl"],
+    thumbnailPresignedUrl: value["thumbnailPresignedUrl"],
     takenAt:
       value["takenAt"] == null ? value["takenAt"] : value["takenAt"].toISOString().substring(0, 10),
     albumId: value["albumId"],
