@@ -57,7 +57,7 @@ public class AlbumService {
      * @return アルバムエンティティの一覧
      */
     @Transactional(readOnly = true)
-    public List<Albums> findAll() {
+    public List<Albums> getAlbums() {
         return albumsMapper.select(c -> c.orderBy(id));
     }
 

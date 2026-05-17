@@ -99,7 +99,7 @@ public class MediaController implements MediaManagementApi {
         );
 
         // メディアに紐づくタグを取得してDTOに変換
-        List<Tags> tags = tagService.findMediaTags(mediaId);
+        List<Tags> tags = tagService.getMediaTags(mediaId);
         List<TagResponseDto> tagsDto = tags.stream()
             .map(tagConverter::toTagResponseDto)
             .toList();

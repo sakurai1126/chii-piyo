@@ -58,7 +58,7 @@ public class TagController implements TagManagementApi {
     @Override
     public ResponseEntity<List<TagResponseDto>> getTags(String xRequestedWith) {
         // サービス層でエンティティを取得し、コンバータでDTOに変換する
-        List<TagResponseDto> response = tagService.findAll().stream()
+        List<TagResponseDto> response = tagService.getTags().stream()
             .map(tagConverter::toTagResponseDto)
             .toList();
 

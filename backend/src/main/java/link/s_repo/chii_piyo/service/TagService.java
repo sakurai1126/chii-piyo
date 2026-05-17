@@ -61,7 +61,7 @@ public class TagService {
      * @return タグエンティティの一覧
      */
     @Transactional(readOnly = true)
-    public List<Tags> findAll() {
+    public List<Tags> getTags() {
         return tagsMapper.select(c -> c.orderBy(id));
     }
 
@@ -72,7 +72,7 @@ public class TagService {
      * @return タグのリスト
      */
     @Transactional(readOnly = true)
-    public List<Tags> findMediaTags(Long mediaId) {
+    public List<Tags> getMediaTags(Long mediaId) {
         // メディアIDと紐づいたタグIDの一覧を取得する
         List<Long> mediaTagIds = mediaTagsMapper.select(
                 // "WHERE media_id = #{mediaId}"
