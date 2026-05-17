@@ -3,6 +3,7 @@ package link.s_repo.chii_piyo.controller.converter;
 import link.s_repo.chii_piyo.model.gen.Media;
 import link.s_repo.chii_piyo.model.gen.MediaResponseDto;
 import link.s_repo.chii_piyo.model.gen.TagResponseDto;
+import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
@@ -23,11 +24,15 @@ public class MediaConverter {
      * @return MediaResponseDto
      */
     public MediaResponseDto toMediaResponseDto(
-        Media media, List<TagResponseDto> tags,
-        URI presignedUrl, URI thumbnailPresignedUrl) {
+        Media media,
+        List<TagResponseDto> tags,
+        URI presignedUrl,
+        URI thumbnailPresignedUrl,
+        Boolean isFavorite,
+        Long commentCount) {
 
         // 必須フィールドを揃えてコンストラクタに渡す
-        return new MediaResponseDto(
+        MediaResponseDto dto = new MediaResponseDto(
             media.getId(), // メディアID
             media.getUploadedBy(), // アップロードしたユーザーID
             MediaResponseDto.MediaTypeEnum.
@@ -37,16 +42,25 @@ public class MediaConverter {
             media.getFileSize(), // ファイルサイズ
             media.getWidth(), // 横幅
             media.getHeight(), // 高さ
-            presignedUrl, // ダウンロード用署名付きURL
-            thumbnailPresignedUrl, // サムネイルのダウンロード用署名付きURL
             media.getTakenAt(), // 撮影日時
             media.getAlbumId(), // 関連するアルバムID
             media.getSharingGroupId(), // 関連する共有グループID
             MediaResponseDto.UploadStatusEnum.
                 fromValue(media.getUploadStatus()), // アップロードステータス
-            tags, // タグのリスト
             media.getCreatedAt(), // 作成日時
             media.getUpdatedAt() // 更新日時
         );
+
+
+
+        dto.setPresignedUrl(presignedUrl); // ダウンロード用署名付きURL
+        dto.setThumbnailPresignedUrl(JsonNullable.of(thumbnailPresignedUrl)); // サムネイルのダウンロード用署名付きURL
+        dto.setTags(tags);// タグのリスト
+        dto.setIsFavorite(isFavorite); // お気に入りフラグ
+        dto.setCommentCount(commentCount); // コメントの数
+
+        return dto;
     }
+
+
 }

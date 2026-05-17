@@ -11,13 +11,10 @@ MediaResponseDto:
     - fileSize
     - width
     - height
-    - presignedUrl
-    - thumbnailPresignedUrl
     - takenAt
     - albumId
     - sharingGroupId
     - uploadStatus
-    - tags
     - createdAt
     - updatedAt
   properties:
@@ -99,6 +96,11 @@ MediaResponseDto:
       type: boolean
       description: お気に入り済みフラグ
       example: false
+    commentCount:
+      type: integer
+      format: int64
+      description: コメント数
+      example: 1
     createdAt:
       type: string
       format: date-time
