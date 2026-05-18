@@ -8,11 +8,12 @@ import { useInfiniteMediaList } from "../hooks/useInfiniteMediaList";
 
 import { MediaListItem } from "./MediaListItem";
 
-interface MediaListProps {
+type MediaListProps = {
   initialData: MediaListResponseDto;
-}
+  isSelectionMode?: boolean;
+};
 
-export const MediaList = ({ initialData }: MediaListProps) => {
+export const MediaList = ({ initialData, isSelectionMode }: MediaListProps) => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isError, error } =
     useInfiniteMediaList({ initialData });
 
@@ -42,7 +43,7 @@ export const MediaList = ({ initialData }: MediaListProps) => {
           {/* メディアリスト */}
           <div className="mt-4 ml-7 grid grid-cols-4 gap-2 max-md:mt-2 max-md:ml-0 max-md:grid-cols-3 max-md:gap-0.5">
             {items.map((item) => (
-              <MediaListItem key={item.id} data={item} />
+              <MediaListItem key={item.id} data={item} isSelectionMode={isSelectionMode} />
             ))}
           </div>
         </div>

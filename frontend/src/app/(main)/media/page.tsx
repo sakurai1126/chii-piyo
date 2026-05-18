@@ -3,7 +3,7 @@ import Image from "next/image";
 import Container from "@/components/layout/Container";
 import { AccentLinkButton } from "@/components/ui/AccentLinkButton";
 import PageTitle from "@/components/ui/PageTitle";
-import { MultiEdit, MediaFilter, MediaList, getMediaList } from "@/features/media/";
+import { MediaFilter, getMediaList, MediaListSection } from "@/features/media/";
 
 export default async function MediaPage() {
   const initialData = await getMediaList({ offset: 0, limit: 12 });
@@ -27,11 +27,7 @@ export default async function MediaPage() {
         />
       </AccentLinkButton>
 
-      {/* 一括編集UI */}
-      <MultiEdit />
-
-      {/* メディア一覧 */}
-      <MediaList initialData={initialData} />
+      <MediaListSection initialData={initialData} />
     </Container>
   );
 }

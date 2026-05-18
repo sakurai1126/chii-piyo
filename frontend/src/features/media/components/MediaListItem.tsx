@@ -1,4 +1,6 @@
 import Image from "next/image";
+import Link from "next/link";
+import { useId } from "react";
 
 import { MediaResponseDto } from "@/lib/api-client/gen";
 
@@ -8,26 +10,21 @@ import videoIcon from "../assets/video-icon.svg";
 
 type Props = {
   data: MediaResponseDto;
+  isSelectionMode?: boolean;
 };
 
-export const MediaListItem = ({ data }: Props) => {
-  return (
+export const MediaListItem = ({ data, isSelectionMode }: Props) => {
+  const uid = useId();
+
+  const inner = (
     <div className="group relative aspect-square overflow-hidden">
-      {data.thumbnailPresignedUrl ? (
-        <Image
-          src={data.thumbnailPresignedUrl}
-          alt=""
-          fill
-          className="absolute h-full w-full object-cover transition-all duration-500 group-hover:scale-110"
-        />
-      ) : (
-        <Image
-          src="/images/no-thumbnail.png"
-          alt=""
-          fill
-          className="absolute h-full w-full object-cover transition-all duration-500 group-hover:scale-110"
-        />
-      )}
+      <Image
+        src={data.thumbnailPresignedUrl ? data.thumbnailPresignedUrl : "/images/no-thumbnail.png"}
+        alt=""
+        width={230}
+        height={230}
+        className={`absolute h-full w-full object-cover transition-all duration-500 ${isSelectionMode ? "" : "group-hover:scale-110"}`}
+      />
 
       {data.mediaType === "VIDEO" && (
         <Image
@@ -38,12 +35,17 @@ export const MediaListItem = ({ data }: Props) => {
           className="absolute top-0 right-0 bottom-0 left-0 m-auto"
         />
       )}
+
       {/* チェックボックス */}
-      <input
-        aria-label="選択"
-        type="checkbox"
-        className="accent-accent-pink absolute top-2 left-2 z-1 h-5 w-5 max-md:top-1 max-md:left-1 max-md:h-4 max-md:w-4"
-      />
+      {isSelectionMode && (
+        <input
+          id={uid}
+          aria-label="選択"
+          type="checkbox"
+          className="accent-accent-pink absolute top-2 left-2 z-1 h-5 w-5 max-md:top-1 max-md:left-1 max-md:h-4 max-md:w-4"
+        />
+      )}
+
       {/* お気に入り */}
       <div className="absolute top-2 right-2 flex items-center gap-0.5 max-md:top-1 max-md:right-1">
         <div className="flex -space-x-2">
@@ -83,5 +85,15 @@ export const MediaListItem = ({ data }: Props) => {
         </div>
       ) : null}
     </div>
+  );
+
+  return isSelectionMode ? (
+    <label htmlFor={uid} className="cursor-pointer">
+      {inner}
+    </label>
+  ) : (
+    <Link href={`/media/${data.id}`} className="block">
+      {inner}
+    </Link>
   );
 };

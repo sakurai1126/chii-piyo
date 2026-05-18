@@ -32,10 +32,14 @@ const dummySharingGroups = [
   },
 ];
 
-export const MultiEdit = () => {
+type Props = {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+};
+
+export const MultiEdit = ({ isOpen, setIsOpen }: Props) => {
   const [selectedTagIds, setSelectedTagIds] = useState<number[]>([]);
   const [selectedGroupId, setSelectedGroupId] = useState<number | undefined>(undefined);
-  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
