@@ -4,6 +4,7 @@ import { MediaResponseDto } from "@/lib/api-client/gen";
 
 import comment from "../assets/comment.svg";
 import heart from "../assets/heart.svg";
+import videoIcon from "../assets/video-icon.svg";
 
 type Props = {
   data: MediaResponseDto;
@@ -28,6 +29,15 @@ export const MediaListItem = ({ data }: Props) => {
         />
       )}
 
+      {data.mediaType === "VIDEO" && (
+        <Image
+          src={videoIcon}
+          alt=""
+          width={40}
+          height={40}
+          className="absolute top-0 right-0 bottom-0 left-0 m-auto"
+        />
+      )}
       {/* チェックボックス */}
       <input
         aria-label="選択"
