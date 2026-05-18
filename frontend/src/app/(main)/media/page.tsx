@@ -6,7 +6,7 @@ import PageTitle from "@/components/ui/PageTitle";
 import { MultiEdit, MediaFilter, MediaList, getMediaList } from "@/features/media/";
 
 export default async function MediaPage() {
-  const data = await getMediaList();
+  const initialData = await getMediaList({ offset: 0, limit: 12 });
 
   return (
     <Container className="mt-20 max-md:mt-5">
@@ -31,7 +31,7 @@ export default async function MediaPage() {
       <MultiEdit />
 
       {/* メディア一覧 */}
-      <MediaList data={data} />
+      <MediaList initialData={initialData} />
     </Container>
   );
 }
