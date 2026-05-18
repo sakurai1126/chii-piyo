@@ -1,7 +1,7 @@
+import { UseQueryResult } from "@tanstack/react-query";
+
 import { Button } from "@/components/ui/Button";
-import { UseAlbumsResult } from "@/features/album/types";
-import { UseSharingGroupsResult } from "@/features/sharing/types";
-import { UseTagsResult } from "@/features/tag/types";
+import { AlbumResponseDto, SharingGroupResponseDto, TagResponseDto } from "@/lib/api-client/gen";
 
 import { UploadMedia, UploadMetadata } from "../types";
 
@@ -13,9 +13,9 @@ type Props = {
   onRemoveAll: () => void;
   onUpload: () => void;
   isUploading: boolean;
-  tagsState: UseTagsResult;
-  albumsState: UseAlbumsResult;
-  sharingGroupsState: UseSharingGroupsResult;
+  tagsState: UseQueryResult<TagResponseDto[]>;
+  albumsState: UseQueryResult<AlbumResponseDto[]>;
+  sharingGroupsState: UseQueryResult<SharingGroupResponseDto[]>;
   updateItemMetadata: (itemId: string, patch: Partial<UploadMetadata>) => void;
 };
 

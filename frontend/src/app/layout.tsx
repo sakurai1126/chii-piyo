@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { M_PLUS_Rounded_1c, Zen_Maru_Gothic } from "next/font/google";
 
 import "@/styles/globals.css";
+import Providers from "@/components/layout/providers";
 import Toast from "@/components/ui/Toast";
 
 // 本文フォントとして使用
@@ -32,8 +33,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="ja" className={`${mPlusRounded1c.variable} ${zenMaruGothic.variable}`}>
       <body>
-        {children}
-        <Toast />
+        <Providers>
+          {children}
+          <Toast />
+        </Providers>
       </body>
     </html>
   );

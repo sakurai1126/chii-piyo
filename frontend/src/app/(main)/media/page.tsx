@@ -3,12 +3,12 @@ import Image from "next/image";
 import Container from "@/components/layout/Container";
 import { AccentLinkButton } from "@/components/ui/AccentLinkButton";
 import PageTitle from "@/components/ui/PageTitle";
-import { MultiEdit, MediaFilter, MediaList, getMediaListAction } from "@/features/media/";
+import { MultiEdit, MediaFilter, MediaList, getMediaList } from "@/features/media/";
 
 export default async function MediaPage() {
-  const result = await getMediaListAction();
+  const data = await getMediaList();
 
-  return result.success ? (
+  return (
     <Container className="mt-20 max-md:mt-5">
       <PageTitle text="写真・動画一覧" />
 
@@ -31,25 +31,7 @@ export default async function MediaPage() {
       <MultiEdit />
 
       {/* メディア一覧 */}
-      <MediaList data={result.data} />
-    </Container>
-  ) : (
-    <Container className="mt-20 max-md:mt-5">
-      <PageTitle text="写真・動画一覧" />
-      <Image
-        src="/images/error.png"
-        alt=""
-        width={230}
-        height={146}
-        className="mx-auto mt-10 max-md:w-38"
-      />
-      <p className="mt-10 text-center font-medium">{result.error}...</p>
-      <a
-        href="/media"
-        className="bg-brown-light border-brown-middle hover:text-brown-dark mx-auto mt-8 grid h-12 w-60 place-content-center rounded-lg border text-white transition-all hover:bg-white max-md:mt-5 max-md:h-9 max-md:w-45 max-md:text-sm"
-      >
-        再読み込みする
-      </a>
+      <MediaList data={data} />
     </Container>
   );
 }
