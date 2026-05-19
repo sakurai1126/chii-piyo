@@ -2,11 +2,8 @@ package link.s_repo.chii_piyo.service;
 
 
 import link.s_repo.chii_piyo.model.gen.MediaComments;
-import link.s_repo.chii_piyo.model.gen.MediaTags;
-import link.s_repo.chii_piyo.model.gen.Tags;
 import link.s_repo.chii_piyo.repository.gen.MediaCommentsDynamicSqlSupport;
 import link.s_repo.chii_piyo.repository.gen.MediaCommentsMapper;
-import link.s_repo.chii_piyo.repository.gen.MediaTagsDynamicSqlSupport;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

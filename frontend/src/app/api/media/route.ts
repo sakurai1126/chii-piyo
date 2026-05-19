@@ -9,7 +9,7 @@ export const GET = async (request: NextRequest) => {
   const limit = params.get("limit");
   const mediaKind = params.get("mediaKind");
   const albumId = params.get("albumId");
-  const tagId = params.get("tagId");
+  const tagIds = params.getAll("tagId");
   const sharingGroupId = params.get("sharingGroupId");
   const startDate = params.get("startDate");
   const endDate = params.get("endDate");
@@ -20,7 +20,7 @@ export const GET = async (request: NextRequest) => {
       limit: limit ? Number(limit) : undefined,
       mediaKind: (mediaKind as GetMediaListMediaKindEnum) ?? undefined,
       albumId: albumId ? Number(albumId) : undefined,
-      tagId: tagId ? Number(tagId) : undefined,
+      tagId: tagIds.length > 0 ? tagIds.map(Number) : undefined,
       sharingGroupId: sharingGroupId ? Number(sharingGroupId) : undefined,
       startDate: startDate ? new Date(startDate) : undefined,
       endDate: endDate ? new Date(endDate) : undefined,

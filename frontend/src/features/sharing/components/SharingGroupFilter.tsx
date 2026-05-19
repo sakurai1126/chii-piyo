@@ -6,32 +6,27 @@ import { useFlexWrapOverflow } from "@/hooks/useFlexWrapOverflow";
 
 import arrow from "../assets/brown-arrow.svg";
 import icon from "../assets/icon.svg";
+import { useSharingGroups } from "../hooks/useSharingGroups";
 
-const labelClasses = {
-  unchecked: "border-line-gray bg-white",
-  checked: "border-accent-orange bg-accent-orange-back text-brown-middle",
+type Props = {
+  updateFilter: ({ key, value }: { key: string; value: string }) => void;
+  currentValue?: string;
 };
 
-export const SharingGroupFilter = () => {
+export const SharingGroupFilter = ({ updateFilter, currentValue = "" }: Props) => {
   const uid = useId();
-  const [checkedValue, setCheckedValue] = useState<number | null>(null);
 
-  const sharingGroups = [
-    { id: 1, name: "家族全員" },
-    { id: 2, name: "夫婦" },
-    { id: 3, name: "自分のみ" },
-  ];
+  const sharingGroupsState = useSharingGroups();
 
   // 折り返し展開フラグ
   const [isOpen, setIsOpen] = useState(false);
 
   // 要素の数に応じて折り返しの有無を判定するカスタムフック
   const { ref, hasOverflow, isLoading, closedHeight, fullHeight } = useFlexWrapOverflow(
-    sharingGroups.length,
+    sharingGroupsState.data?.length || 0,
   );
 
   // 共有グループ選択時の処理
-  const handleChange = (groupId: number) => setCheckedValue(groupId);
 
   return (
     <div className="bg-brown-back w-full rounded-lg px-7 pt-6 pb-8 max-md:p-3 max-md:pb-4">
@@ -44,21 +39,37 @@ export const SharingGroupFilter = () => {
         className={`mt-3 flex flex-wrap gap-2 overflow-hidden transition-all`}
         style={{ maxHeight: isOpen ? fullHeight : closedHeight }}
       >
-        {sharingGroups.map((group) => (
+        <label
+          htmlFor="allSharingGroup"
+          className="has-checked:border-accent-orange has-checked:bg-accent-orange-back has-checked:text-brown-middle border-line-gray flex cursor-pointer items-center gap-2 rounded-lg border bg-white py-1.5 pr-5 pl-3 transition-all max-md:py-1"
+        >
+          <input
+            type="radio"
+            id="allSharingGroup"
+            name={`sharing-group-${uid}`}
+            checked={currentValue === ""}
+            className="accent-accent-orange-radio"
+            onChange={() => {
+              updateFilter({ key: "sharingGroupId", value: "" });
+            }}
+          />
+          <p className="text-sm max-md:text-xs">すべて</p>
+        </label>
+        {sharingGroupsState.data?.map((group) => (
           <label
             key={group.id}
             htmlFor={`sharing-group-${group.id}`}
-            className={`flex cursor-pointer items-center gap-2 rounded-lg border py-1.5 pr-5 pl-3 transition-all max-md:py-1 ${
-              checkedValue === group.id ? labelClasses.checked : labelClasses.unchecked
-            }`}
+            className="has-checked:border-accent-orange has-checked:bg-accent-orange-back has-checked:text-brown-middle border-line-gray flex cursor-pointer items-center gap-2 rounded-lg border bg-white py-1.5 pr-5 pl-3 transition-all max-md:py-1"
           >
             <input
               type="radio"
               id={`sharing-group-${group.id}`}
               name={`sharing-group-${uid}`}
+              checked={currentValue === group.id.toString()}
               className="accent-accent-orange-radio"
-              checked={checkedValue === group.id}
-              onChange={() => handleChange(group.id)}
+              onChange={() => {
+                updateFilter({ key: "sharingGroupId", value: group.id.toString() });
+              }}
             />
             <p className="text-sm max-md:text-xs">{group.name}</p>
           </label>

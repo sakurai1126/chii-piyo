@@ -161,4 +161,15 @@ public class TagService {
         );
     }
 
+    /**
+     * タグIDごとのメディア数を返す
+     *
+     * @return タグID → メディア数のマップ
+     */
+    @Transactional(readOnly = true)
+    public Map<Long, Long> getMediaCountByTagId() {
+        return mediaTagsMapper.select(c -> c)
+            .stream()
+            .collect(Collectors.groupingBy(MediaTags::getTagId, Collectors.counting()));
+    }
 }

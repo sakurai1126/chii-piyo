@@ -1,26 +1,13 @@
-"use client";
-
 import Image from "next/image";
-import { useState } from "react";
 
-import checked from "../assets/checked.svg";
 import icon from "../assets/file-type-icon.svg";
-import plus from "../assets/plus.svg";
 
-const labelClasses = {
-  unchecked: "border-line-gray bg-white",
-  checked: "border-accent-orange bg-accent-orange-back text-brown-middle",
+type Props = {
+  updateFilter: ({ key, value }: { key: string; value: string }) => void;
+  currentValue?: string;
 };
 
-export const MediaKindFilter = () => {
-  const [isImageChecked, setIsImageChecked] = useState(false);
-  const [isVideoChecked, setIsVideoChecked] = useState(false);
-
-  const fileTypes = [
-    { type: "image", name: "写真", isChecked: isImageChecked, setIsChecked: setIsImageChecked },
-    { type: "video", name: "動画", isChecked: isVideoChecked, setIsChecked: setIsVideoChecked },
-  ];
-
+export const MediaKindFilter = ({ updateFilter, currentValue = "" }: Props) => {
   return (
     <div className="bg-brown-back shrink-0 rounded-lg px-7 pt-6 pb-8 max-md:p-3 max-md:pb-4">
       <div className="flex items-center gap-1.5">
@@ -28,23 +15,54 @@ export const MediaKindFilter = () => {
         <p className="max-md:text-[13px]">写真/動画</p>
       </div>
       <div className="mt-3 flex gap-2">
-        {fileTypes.map((fileType) => (
-          <label
-            key={fileType.type}
-            htmlFor={fileType.type}
-            className={`flex cursor-pointer items-center gap-2 rounded-4xl border py-1.5 pr-5 pl-3 transition-all max-md:py-1 ${fileType.isChecked ? labelClasses.checked : labelClasses.unchecked}`}
-          >
-            <input
-              type="checkbox"
-              id={fileType.type}
-              checked={fileType.isChecked}
-              onChange={(e) => fileType.setIsChecked(e.target.checked)}
-              className="hidden"
-            />
-            <Image src={fileType.isChecked ? checked : plus} alt="" width={14} height={14} />
-            <p className="text-sm max-md:text-xs">{fileType.name}</p>
-          </label>
-        ))}
+        <label
+          htmlFor="allMedia"
+          className="has-checked:border-accent-orange has-checked:bg-accent-orange-back has-checked:text-brown-middle border-line-gray flex cursor-pointer items-center gap-2 rounded-lg border bg-white py-1.5 pr-5 pl-3 transition-all max-md:py-1"
+        >
+          <input
+            type="radio"
+            id="allMedia"
+            name="mediaType"
+            checked={currentValue === ""}
+            onChange={() => {
+              updateFilter({ key: "mediaKind", value: "" });
+            }}
+            className="accent-accent-orange-radio"
+          />
+          <p className="text-sm max-md:text-xs">すべて</p>
+        </label>
+        <label
+          htmlFor="photo"
+          className="has-checked:border-accent-orange has-checked:bg-accent-orange-back has-checked:text-brown-middle border-line-gray flex cursor-pointer items-center gap-2 rounded-lg border bg-white py-1.5 pr-5 pl-3 transition-all max-md:py-1"
+        >
+          <input
+            type="radio"
+            id="photo"
+            name="mediaType"
+            checked={currentValue === "PHOTO"}
+            onChange={(e) => {
+              updateFilter({ key: "mediaKind", value: e.target.checked ? "PHOTO" : "" });
+            }}
+            className="accent-accent-orange-radio"
+          />
+          <p className="text-sm max-md:text-xs">写真</p>
+        </label>
+        <label
+          htmlFor="video"
+          className="has-checked:border-accent-orange has-checked:bg-accent-orange-back has-checked:text-brown-middle border-line-gray flex cursor-pointer items-center gap-2 rounded-lg border bg-white py-1.5 pr-5 pl-3 transition-all max-md:py-1"
+        >
+          <input
+            type="radio"
+            id="video"
+            name="mediaType"
+            checked={currentValue === "VIDEO"}
+            onChange={(e) => {
+              updateFilter({ key: "mediaKind", value: e.target.checked ? "VIDEO" : "" });
+            }}
+            className="accent-accent-orange-radio"
+          />
+          <p className="text-sm max-md:text-xs">動画</p>
+        </label>
       </div>
     </div>
   );

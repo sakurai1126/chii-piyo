@@ -1941,6 +1941,11 @@ components:
           type: string
           description: タグ名
           example: お出かけ
+        mediaCount:
+          type: integer
+          format: int64
+          description: タグが紐づいているメディアの数
+          example: 10
         createdAt:
           type: string
           format: date-time

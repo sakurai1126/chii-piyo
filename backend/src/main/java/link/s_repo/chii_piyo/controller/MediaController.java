@@ -2,14 +2,12 @@ package link.s_repo.chii_piyo.controller;
 
 import link.s_repo.chii_piyo.controller.converter.MediaConverter;
 import link.s_repo.chii_piyo.controller.converter.MediaListConverter;
-import link.s_repo.chii_piyo.controller.converter.TagConverter;
 import link.s_repo.chii_piyo.controller.gen.MediaManagementApi;
 import link.s_repo.chii_piyo.model.gen.*;
 import link.s_repo.chii_piyo.security.CurrentUserProvider;
 import link.s_repo.chii_piyo.service.MediaCommentService;
 import link.s_repo.chii_piyo.service.MediaService;
 import link.s_repo.chii_piyo.service.S3Service;
-import link.s_repo.chii_piyo.service.TagService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -117,9 +115,9 @@ public class MediaController implements MediaManagementApi {
      * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
      * @param offset         ページネーションのオフセット
      * @param limit          ページネーションのリミット
-     * @param mediaKind      メディア種別フィルタ (IMAGE / VIDEO)
+     * @param mediaType      メディア種別フィルタ (IMAGE / VIDEO)
      * @param albumId        アルバムIDフィルタ
-     * @param tagId          タグIDフィルタ
+     * @param tagId          タグIDフィルタのリスト
      * @param sharingGroupId 共有グループIDフィルタ
      * @param startDate      撮影日の開始日フィルタ
      * @param endDate        撮影日の終了日フィルタ
@@ -130,18 +128,18 @@ public class MediaController implements MediaManagementApi {
         String xRequestedWith,
         Integer offset,
         Integer limit,
-        String mediaKind,
+        String mediaType,
         Long albumId,
-        Long tagId,
+        List<Long> tagId,
         Long sharingGroupId,
         LocalDate startDate,
         LocalDate endDate
     ) {
         // 総件数を取得
-        Long totalCount = mediaService.countMedia();
+        Long totalCount = mediaService.countMedia(mediaType, albumId, tagId, sharingGroupId, startDate, endDate);
 
         // サービス層でメディアを取得
-        List<Media> mediaList = mediaService.getMediaList(offset, limit);
+        List<Media> mediaList = mediaService.getMediaList(offset, limit, mediaType, albumId, tagId, sharingGroupId, startDate, endDate);
 
         // hasNextの判定
         boolean hasNext = offset + mediaList.size() < totalCount;
@@ -198,5 +196,4 @@ public class MediaController implements MediaManagementApi {
     public ResponseEntity<Void> deleteMedia(String xRequestedWith, Long id) {
         throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
     }
-
 }

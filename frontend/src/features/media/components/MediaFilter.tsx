@@ -1,7 +1,9 @@
 "use client";
 import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
+import { Button } from "@/components/ui/Button";
 import { SharingGroupFilter } from "@/features/sharing";
 import { TagFilter } from "@/features/tag";
 
@@ -12,6 +14,35 @@ import { DateRangeFilter } from "./DateRangeFilter";
 import { MediaKindFilter } from "./MediaKindFilter";
 
 export const MediaFilter = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const updateFilter = ({ key, value }: { key: string; value: string }) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (key === "tagId") {
+      const current = params.getAll("tagId");
+      if (current.includes(value)) {
+        // すでに選択されているタグが再度選択された場合は、そのタグを削除する
+        // 一旦すべて削除してから、選択されたタグ以外を再度追加する
+        params.delete("tagId");
+        current.filter((v) => v !== value).forEach((v) => params.append("tagId", v));
+      } else {
+        params.append("tagId", value);
+      }
+    } else if (value) {
+      params.set(key, value);
+    } else {
+      params.delete(key);
+    }
+
+    router.push(`?${params.toString()}`, { scroll: false });
+  };
+
+  const paramsReset = () => {
+    router.push("/media", { scroll: false });
+  };
+
   const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="relative z-10">
@@ -40,22 +71,36 @@ export const MediaFilter = () => {
 
             <div className="flex grid-rows-[0fr] gap-5 max-md:flex-col max-md:gap-4">
               {/* 写真/動画 */}
-              <MediaKindFilter />
+              <MediaKindFilter
+                updateFilter={updateFilter}
+                currentValue={searchParams.get("mediaKind") ?? ""}
+              />
 
               {/* 共有範囲 */}
-              <SharingGroupFilter />
+              <SharingGroupFilter
+                updateFilter={updateFilter}
+                currentValue={searchParams.get("sharingGroupId") ?? ""}
+              />
             </div>
 
             {/* 下段 */}
             <div className="mt-5 flex gap-5 max-md:flex-col max-md:gap-4">
               {/* タグ */}
-              <TagFilter />
+              <TagFilter
+                updateFilter={updateFilter}
+                currentValue={searchParams.getAll("tagId") ?? ""}
+              />
 
               {/* 期間 */}
-              <DateRangeFilter />
+              <DateRangeFilter
+                updateFilter={updateFilter}
+                currentStartDate={searchParams.get("startDate") ?? ""}
+                currentEndDate={searchParams.get("endDate") ?? ""}
+              />
             </div>
           </div>
         </div>
+
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="text-brown-dark flex w-full items-center justify-center gap-2 py-5 text-[13px] outline-0 md:hidden"
@@ -86,6 +131,15 @@ export const MediaFilter = () => {
             )}
           </svg>
         </button>
+        {searchParams.size > 0 && (
+          <Button
+            variant="cancel"
+            className="text-note-gray mt-3 ml-auto block w-60"
+            onClick={paramsReset}
+          >
+            検索条件をリセット
+          </Button>
+        )}
       </div>
     </div>
   );

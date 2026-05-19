@@ -12,7 +12,7 @@ export type GetMediaListParams = {
   limit?: number;
   mediaKind?: GetMediaListMediaKindEnum;
   albumId?: number;
-  tagId?: number;
+  tagId?: number[];
   sharingGroupId?: number;
   startDate?: Date;
   endDate?: Date;

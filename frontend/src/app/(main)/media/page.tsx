@@ -14,8 +14,8 @@ export default async function MediaPage() {
 
       {/* 絞り込みUI */}
       <MediaFilter />
-      {/* ボタン */}
 
+      {/* 遷移ボタン */}
       <AccentLinkButton href="/media/upload" className="mt-10 ml-auto max-md:mt-4">
         <p>新規アップロード</p>
         <Image
@@ -27,6 +27,7 @@ export default async function MediaPage() {
         />
       </AccentLinkButton>
 
+      {/* 一括編集UI+メディアグリッド */}
       <MediaListSection initialData={initialData} />
     </Container>
   );

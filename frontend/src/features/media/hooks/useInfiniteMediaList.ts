@@ -10,7 +10,7 @@ const LIMIT = 12;
 export type UseInfiniteMediaListParams = {
   mediaKind?: GetMediaListMediaKindEnum;
   albumId?: number;
-  tagId?: number;
+  tagId?: number[];
   sharingGroupId?: number;
   startDate?: Date;
   endDate?: Date;
@@ -57,9 +57,11 @@ export const useInfiniteMediaList = ({ params = {}, initialData }: Props) => {
         // その他のフィルタリングパラメータがある場合追加でクエリパラメータに設定する
         if (params.mediaKind) sp.set("mediaKind", params.mediaKind);
         if (params.albumId !== undefined) sp.set("albumId", String(params.albumId));
-        if (params.tagId !== undefined) sp.set("tagId", String(params.tagId));
+        if (params.tagId && params.tagId.length > 0)
+          params.tagId.forEach((id) => sp.append("tagId", String(id)));
         if (params.sharingGroupId !== undefined)
           sp.set("sharingGroupId", String(params.sharingGroupId));
+        // 日付はISO形式の文字列(YYYY-MM-DD)に変換してクエリパラメータに設定する
         if (params.startDate) sp.set("startDate", params.startDate.toISOString().slice(0, 10));
         if (params.endDate) sp.set("endDate", params.endDate.toISOString().slice(0, 10));
 

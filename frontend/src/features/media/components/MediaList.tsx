@@ -4,18 +4,28 @@ import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { MediaResponseDto } from "@/lib/api-client/gen";
 import { MediaListResponseDto } from "@/lib/api-client/gen/models/MediaListResponseDto";
 
-import { useInfiniteMediaList } from "../hooks/useInfiniteMediaList";
+import { useInfiniteMediaList, UseInfiniteMediaListParams } from "../hooks/useInfiniteMediaList";
 
 import { MediaListItem } from "./MediaListItem";
 
 type MediaListProps = {
   initialData: MediaListResponseDto;
   isSelectionMode?: boolean;
+  params?: UseInfiniteMediaListParams;
 };
 
-export const MediaList = ({ initialData, isSelectionMode }: MediaListProps) => {
+export const MediaList = ({ initialData, isSelectionMode, params }: MediaListProps) => {
+  const hasActiveFilters =
+    params !== undefined &&
+    Object.entries(params).some(
+      ([, v]) => v !== undefined && !(Array.isArray(v) && v.length === 0),
+    );
+
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isError, error } =
-    useInfiniteMediaList({ initialData });
+    useInfiniteMediaList({
+      params,
+      initialData: hasActiveFilters ? undefined : initialData,
+    });
 
   // スクロール時追加読み込みカスタムフック、発火位置に指定するrefを受け取る
   const loadMoreRef = useIntersectionObserver({
