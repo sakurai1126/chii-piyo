@@ -1,8 +1,10 @@
 package link.s_repo.chii_piyo.service;
 
+import link.s_repo.chii_piyo.model.TagMediaCount;
 import link.s_repo.chii_piyo.model.gen.MediaTags;
 import link.s_repo.chii_piyo.model.gen.Tags;
 
+import link.s_repo.chii_piyo.repository.MediaTagsCustomMapper;
 import link.s_repo.chii_piyo.repository.gen.MediaTagsDynamicSqlSupport;
 import link.s_repo.chii_piyo.repository.gen.MediaTagsMapper;
 import link.s_repo.chii_piyo.repository.gen.TagsDynamicSqlSupport;
@@ -36,6 +38,7 @@ public class TagService {
 
     private final TagsMapper tagsMapper;
     private final MediaTagsMapper mediaTagsMapper;
+    private final MediaTagsCustomMapper mediaTagsCustomMapper;
 
     /**
      * タグを新規作成する<br>
@@ -162,14 +165,19 @@ public class TagService {
     }
 
     /**
-     * タグIDごとのメディア数を返す
+     * タグIDごとのメディア数を返す<br>
+     * 自動生成コードでは全件取得してから計算し高負荷となるためカスタムマッパーを使用してDB側で集計
+     * 返り値をMapに格納して返す
      *
      * @return タグID → メディア数のマップ
      */
     @Transactional(readOnly = true)
     public Map<Long, Long> getMediaCountByTagId() {
-        return mediaTagsMapper.select(c -> c)
+        return mediaTagsCustomMapper.selectMediaCountByTagId()
             .stream()
-            .collect(Collectors.groupingBy(MediaTags::getTagId, Collectors.counting()));
+            .collect(Collectors.toMap(
+                TagMediaCount::getTagId,
+                TagMediaCount::getMediaCount
+            ));
     }
 }
