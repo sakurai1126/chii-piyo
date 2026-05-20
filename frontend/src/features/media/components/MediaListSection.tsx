@@ -27,8 +27,8 @@ export const MediaListSection = ({ initialData }: Props) => {
       albumId: sp.get("albumId") ? Number(sp.get("albumId")) : undefined,
       tagId: sp.getAll("tagId").map(Number),
       sharingGroupId: sp.get("sharingGroupId") ? Number(sp.get("sharingGroupId")) : undefined,
-      startDate: sp.get("startDate") ? new Date(sp.get("startDate")!) : undefined,
-      endDate: sp.get("endDate") ? new Date(sp.get("endDate")!) : undefined,
+      startDate: sp.get("startDate") ? new Date(sp.get("startDate") as string) : undefined,
+      endDate: sp.get("endDate") ? new Date(sp.get("endDate") as string) : undefined,
     }),
     [sp],
   );
