@@ -70,7 +70,7 @@ export interface GetMediaListRequest {
   limit?: number;
   mediaKind?: GetMediaListMediaKindEnum;
   albumId?: number;
-  tagId?: number;
+  tagId?: Array<number>;
   sharingGroupId?: number;
   startDate?: Date;
   endDate?: Date;

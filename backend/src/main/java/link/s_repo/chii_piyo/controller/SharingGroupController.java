@@ -79,7 +79,7 @@ public class SharingGroupController implements SharingGroupManagementApi {
     @Override
     public ResponseEntity<List<SharingGroupResponseDto>> getSharingGroups(String xRequestedWith) {
         // サービス層でエンティティを取得し、コンバータでDTOに変換する
-        List<SharingGroupResponseDto> response = sharingGroupService.findAll().stream()
+        List<SharingGroupResponseDto> response = sharingGroupService.getSharingGroups().stream()
             .map(sharingGroupConverter::toSharingGroupResponseDto)
             .toList();
 

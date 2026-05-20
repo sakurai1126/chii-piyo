@@ -32,6 +32,12 @@ export interface TagResponseDto {
    */
   name: string;
   /**
+   * タグが紐づいているメディアの数
+   * @type {number}
+   * @memberof TagResponseDto
+   */
+  mediaCount?: number;
+  /**
    * 作成日時
    * @type {Date}
    * @memberof TagResponseDto
@@ -63,6 +69,7 @@ export function TagResponseDtoFromJSONTyped(
   return {
     id: json["id"],
     name: json["name"],
+    mediaCount: json["mediaCount"] == null ? undefined : json["mediaCount"],
     createdAt: new Date(json["createdAt"]),
   };
 }
@@ -82,6 +89,7 @@ export function TagResponseDtoToJSONTyped(
   return {
     id: value["id"],
     name: value["name"],
+    mediaCount: value["mediaCount"],
     createdAt: value["createdAt"].toISOString(),
   };
 }

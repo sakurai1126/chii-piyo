@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * タグ管理コントローラー<br>
@@ -44,7 +45,7 @@ public class TagController implements TagManagementApi {
         Tags createdTag = tagService.createTag(tagData.getName());
 
         // 作成されたタグをDTOに変換してレスポンスする
-        TagResponseDto response = tagConverter.toTagResponseDto(createdTag);
+        TagResponseDto response = tagConverter.toTagResponseDto(createdTag, null);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -58,10 +59,15 @@ public class TagController implements TagManagementApi {
     @Override
     public ResponseEntity<List<TagResponseDto>> getTags(String xRequestedWith) {
         // サービス層でエンティティを取得し、コンバータでDTOに変換する
-        List<TagResponseDto> response = tagService.findAll().stream()
-            .map(tagConverter::toTagResponseDto)
-            .toList();
+        List<Tags> tags = tagService.getTags();
+        Map<Long, Long> mediaCountMap = tagService.getMediaCountByTagId();
 
+        List<TagResponseDto> response = tags.stream()
+            .map(tag -> tagConverter.toTagResponseDto(
+                tag,
+                mediaCountMap.getOrDefault(tag.getId(), 0L)
+            ))
+            .toList();
         return ResponseEntity.ok(response);
     }
 
@@ -82,7 +88,7 @@ public class TagController implements TagManagementApi {
 
         // 更新されたタグをDTOに変換してレスポンスする
         List<TagResponseDto> response = updatedTags.stream()
-            .map(tagConverter::toTagResponseDto)
+            .map(tag -> tagConverter.toTagResponseDto(tag, null))
             .toList();
         return ResponseEntity.ok(response);
     }

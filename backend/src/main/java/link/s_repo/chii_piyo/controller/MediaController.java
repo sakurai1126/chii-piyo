@@ -1,12 +1,13 @@
 package link.s_repo.chii_piyo.controller;
 
 import link.s_repo.chii_piyo.controller.converter.MediaConverter;
-import link.s_repo.chii_piyo.controller.converter.TagConverter;
+import link.s_repo.chii_piyo.controller.converter.MediaListConverter;
 import link.s_repo.chii_piyo.controller.gen.MediaManagementApi;
 import link.s_repo.chii_piyo.model.gen.*;
 import link.s_repo.chii_piyo.security.CurrentUserProvider;
+import link.s_repo.chii_piyo.service.MediaCommentService;
 import link.s_repo.chii_piyo.service.MediaService;
-import link.s_repo.chii_piyo.service.TagService;
+import link.s_repo.chii_piyo.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -14,8 +15,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 /**
  * メディア管理コントローラー<br>
@@ -28,9 +31,10 @@ public class MediaController implements MediaManagementApi {
 
     private final MediaService mediaService;
     private final MediaConverter mediaConverter;
+    private final MediaListConverter mediaListConverter;
     private final CurrentUserProvider currentUserProvider;
-    private final TagService tagService;
-    private final TagConverter tagConverter;
+    private final MediaCommentService mediaCommentService;
+    private final S3Service s3Service;
 
     /**
      * POST /media<br>
@@ -92,43 +96,77 @@ public class MediaController implements MediaManagementApi {
         Long userId = currentUserProvider.getUserId();
 
         // サービス層でステータス更新
-        Media updated = mediaService.updateUploadStatus(
+        Media media = mediaService.updateUploadStatus(
             mediaId,
             userId,
             mediaUpdateStatusData.getUploadStatus().getValue()
         );
 
-        // メディアに紐づくタグを取得してDTOに変換
-        List<Tags> tags = tagService.findMediaTags(mediaId);
-        List<TagResponseDto> tagsDto = tags.stream()
-            .map(tagConverter::toTagResponseDto)
-            .toList();
-
         // レスポンスDTOに変換して返却
-        return ResponseEntity.ok(mediaConverter.toMediaResponseDto(updated, tagsDto));
+        return ResponseEntity.ok(mediaConverter.toMediaResponseDto(media, null, null,
+            null, null, null));
     }
 
-    // ====================================================================
-    // 以下別Issueで実装予定のメソッド
-    // OpenAPI Generator の interfaceOnly:true 設定によりコンパイル時に実装が必須となるため一旦スタブ化
-    // ====================================================================
 
     /**
-     * GET /media : メディア一覧を取得
+     * GET /media<br>
+     * メディア一覧を取得
+     *
+     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param offset         ページネーションのオフセット
+     * @param limit          ページネーションのリミット
+     * @param mediaType      メディア種別フィルタ (IMAGE / VIDEO)
+     * @param albumId        アルバムIDフィルタ
+     * @param tagId          タグIDフィルタのリスト
+     * @param sharingGroupId 共有グループIDフィルタ
+     * @param startDate      撮影日の開始日フィルタ
+     * @param endDate        撮影日の終了日フィルタ
+     * @return MediaListResponseDto
      */
     @Override
     public ResponseEntity<MediaListResponseDto> getMediaList(
         String xRequestedWith,
         Integer offset,
         Integer limit,
-        String mediaKind,
+        String mediaType,
         Long albumId,
-        Long tagId,
+        List<Long> tagId,
         Long sharingGroupId,
         LocalDate startDate,
         LocalDate endDate
     ) {
-        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+        // 総件数を取得
+        Long totalCount = mediaService.countMedia(mediaType, albumId, tagId, sharingGroupId, startDate, endDate);
+
+        // サービス層でメディアを取得
+        List<Media> mediaList = mediaService.getMediaList(offset, limit, mediaType, albumId, tagId, sharingGroupId, startDate, endDate);
+
+        // hasNextの判定
+        boolean hasNext = offset + mediaList.size() < totalCount;
+
+        List<Long> mediaIds = mediaList.stream().map(Media::getId).toList();
+
+        Map<Long, Long> commentCountsByMediaId =
+            mediaCommentService.getCommentCountsByMediaIds(mediaIds);
+
+        // コンバータでMediaResponseDtoのリストに変換する
+        List<MediaResponseDto> responseMediaList = mediaList.stream()
+            .map(media -> {
+                URI thumbnailPresignedUrl = media.getThumbnailS3Key() != null
+                    ? URI.create(s3Service.generateDownloadPresignedUrl(media.getThumbnailS3Key()))
+                    : null;
+                Long commentCount = commentCountsByMediaId.getOrDefault(media.getId(), 0L);
+                return mediaConverter.toMediaResponseDto(media, null, null,
+                    thumbnailPresignedUrl, null, commentCount);
+            })
+            .toList();
+
+        // コンバータで一覧用DTOに変換する
+        MediaListResponseDto response = mediaListConverter.toMediaListResponseDto(
+            responseMediaList,
+            totalCount, hasNext);
+
+        return ResponseEntity.ok(response);
     }
 
     /**
@@ -158,5 +196,4 @@ public class MediaController implements MediaManagementApi {
     public ResponseEntity<Void> deleteMedia(String xRequestedWith, Long id) {
         throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
     }
-
 }

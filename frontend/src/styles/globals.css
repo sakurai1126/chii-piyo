@@ -30,13 +30,16 @@
   --color-accent-pink-back: #ffd5c7;
 
   --color-accent-brown-back: #fef0b5;
-
   --color-green-back: #feffd8;
   --color-green-accent: #6c6c00;
 
   --color-line-gray: #cccccc;
   --color-disabled-back: #eeeeee;
   --color-disabled-text: #aaaaaa;
+
+  --color-accent-orange: #ffa600;
+  --color-accent-orange-back: #fdefca;
+  --color-accent-orange-radio: #e87116;
 }
 
 body {

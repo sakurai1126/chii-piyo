@@ -3,9 +3,12 @@ package link.s_repo.chii_piyo.service;
 import link.s_repo.chii_piyo.exception.MediaAccessDeniedException;
 import link.s_repo.chii_piyo.exception.MediaNotFoundException;
 import link.s_repo.chii_piyo.model.gen.Media;
+import link.s_repo.chii_piyo.repository.gen.MediaDynamicSqlSupport;
 import link.s_repo.chii_piyo.repository.gen.MediaMapper;
+import link.s_repo.chii_piyo.repository.gen.MediaTagsDynamicSqlSupport;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,10 +16,12 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static link.s_repo.chii_piyo.repository.gen.MediaDynamicSqlSupport.id;
-import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 /**
  * メディア管理サービス<br>
@@ -35,6 +40,114 @@ public class MediaService {
     private static final String MEDIA_PREFIX = "media";
     // S3キー生成時に使用する日付フォーマット
     private static final DateTimeFormatter S3_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+
+    /**
+     * メディア総件数を取得する
+     *
+     * @return 総件数の数値
+     */
+    @Transactional(readOnly = true)
+    public Long countMedia(
+        String mediaType,
+        Long albumId,
+        List<Long> tagId,
+        Long sharingGroupId,
+        LocalDate startDate,
+        LocalDate endDate) {
+        return mediaMapper.count(c -> {
+            // 絞り込み条件設定を構築
+            List<AndOrCriteriaGroup> conditions = buildMediaFilterConditions(mediaType, albumId, tagId, sharingGroupId, startDate, endDate);
+
+            if (!conditions.isEmpty()) {
+                c.where(conditions);
+            }
+
+            return c;
+        });
+    }
+
+    /**
+     * メディアの一覧を取得する
+     *
+     * @param offset 取得位置
+     * @param limit  最大件数
+     * @return メディアのリスト
+     */
+    public List<Media> getMediaList(
+        Integer offset,
+        Integer limit,
+        String mediaType,
+        Long albumId,
+        List<Long> tagId,
+        Long sharingGroupId,
+        LocalDate startDate,
+        LocalDate endDate) {
+        // ページネーション込みで一覧取得
+        return mediaMapper.select(c -> {
+                // 絞り込み条件設定を構築
+                List<AndOrCriteriaGroup> conditions = buildMediaFilterConditions(mediaType, albumId, tagId, sharingGroupId, startDate, endDate);
+
+                if (!conditions.isEmpty()) {
+                    c.where(conditions);
+                }
+
+                c.orderBy(MediaDynamicSqlSupport.createdAt.descending());
+                return c.limit(limit).offset(offset);
+            }
+        );
+    }
+
+    private List<AndOrCriteriaGroup> buildMediaFilterConditions(
+        String mediaType,
+        Long albumId,
+        List<Long> tagId,
+        Long sharingGroupId,
+        LocalDate startDate,
+        LocalDate endDate) {
+
+        // 絞り込み条件構築用のリストを用意し各条件が存在する時は追加していく
+        List<AndOrCriteriaGroup> conditions = new ArrayList<>();
+        if (albumId != null) {
+            conditions.add(and(MediaDynamicSqlSupport.albumId, isEqualTo(albumId)));
+        }
+
+        if ("PHOTO".equals(mediaType) || "VIDEO".equals(mediaType)) {
+            conditions.add(and(MediaDynamicSqlSupport.mediaType, isEqualTo(mediaType)));
+        }
+
+        if (sharingGroupId != null) {
+            conditions.add(and(MediaDynamicSqlSupport.sharingGroupId, isEqualTo(sharingGroupId)));
+        }
+
+        if (tagId != null && !tagId.isEmpty()) {
+            // タグIDで絞り込むため、MediaTagsテーブルとサブクエリで結合して条件を追加
+            // タグIDの一致するMediaTagsレコードをサブクエリで取得しMediaIdを抽出
+            // 上記のMediaIdとMediaテーブルのidで絞り込む
+            conditions.add(and(MediaDynamicSqlSupport.id,
+                isIn(select(MediaTagsDynamicSqlSupport.mediaId)
+                    .from(MediaTagsDynamicSqlSupport.mediaTags)
+                    .where(MediaTagsDynamicSqlSupport.tagId, isIn(tagId))
+                ))
+            );
+        }
+
+        if (startDate != null) {
+            // createdAt >= startDate で検索
+            // atStartOfDayでLocalDateTimeに変換、toOffsetDateTimeでOffsetDateTimeに変換して検索
+            conditions.add(and(MediaDynamicSqlSupport.createdAt,
+                isGreaterThanOrEqualTo(startDate.atStartOfDay(ZoneOffset.UTC).toOffsetDateTime())));
+        }
+
+        if (endDate != null) {
+            // createdAt < endDate で検索
+            // plusDays(1)で翌日にして対象日末までを検索
+            conditions.add(and(MediaDynamicSqlSupport.createdAt,
+                isLessThan(endDate.plusDays(1).atStartOfDay(ZoneOffset.UTC).toOffsetDateTime())));
+        }
+
+        return conditions;
+    }
+
 
     /**
      * メディアレコードを作成し、署名付きアップロードURLを返却する<br>

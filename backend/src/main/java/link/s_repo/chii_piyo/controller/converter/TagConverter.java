@@ -17,11 +17,14 @@ public class TagConverter {
      * @param tag Tagsエンティティ
      * @return TagResponseDto
      */
-    public TagResponseDto toTagResponseDto(Tags tag) {
-        return new TagResponseDto(
-            tag.getId(), // ID
-            tag.getName(), // タグ名
-            tag.getCreatedAt() // 作成日時
+    public TagResponseDto toTagResponseDto(Tags tag, Long mediaCount) {
+        TagResponseDto dto = new TagResponseDto(
+                tag.getId(), // ID
+                tag.getName(), // タグ名
+                tag.getCreatedAt() // 作成日時
         );
+
+        dto.setMediaCount(mediaCount); // タグが紐づいているメディアの数
+        return dto;
     }
 }

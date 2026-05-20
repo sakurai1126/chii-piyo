@@ -20,6 +20,8 @@ type Props = {
   onTagSelect: (selectedTagIds: number[]) => void;
   // 現在選択されているタグIDの配列
   selectedTagIds: number[];
+  // タグ追加フォームの表示フラグ（省略時は非表示）
+  addTag?: boolean;
 };
 
 export const TagSelector = ({
@@ -29,6 +31,7 @@ export const TagSelector = ({
   onRefresh,
   onTagSelect,
   selectedTagIds,
+  addTag = false,
 }: Props) => {
   const uid = useId();
 
@@ -78,7 +81,7 @@ export const TagSelector = ({
       )}
 
       {/* タグ追加フォーム */}
-      <TagAddForm onTagCreated={onRefresh} />
+      {addTag && <TagAddForm onTagCreated={onRefresh} />}
     </>
   );
 };

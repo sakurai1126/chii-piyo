@@ -1,5 +1,6 @@
 "use client";
 
+import { UseQueryResult } from "@tanstack/react-query";
 import Image from "next/image";
 
 import { AccordionContent } from "@/components/ui/AccordionContent";
@@ -7,20 +8,18 @@ import { Button } from "@/components/ui/Button";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { AlbumSelector } from "@/features/album";
 import { AlbumAddForm } from "@/features/album/components/AlbumAddForm";
-import { UseAlbumsResult } from "@/features/album/types";
 import { SharingGroupsSelector } from "@/features/sharing";
-import { UseSharingGroupsResult } from "@/features/sharing/types";
 import { TagSelector } from "@/features/tag";
-import { UseTagsResult } from "@/features/tag/types";
+import { AlbumResponseDto, SharingGroupResponseDto, TagResponseDto } from "@/lib/api-client/gen";
 
 import boxArrow from "../assets/brown-arrow.svg";
 import { useMultipleSettings } from "../hooks/useMultipleSettings";
 import { UploadMetadata } from "../types";
 
 type Props = {
-  tagsState: UseTagsResult;
-  albumsState: UseAlbumsResult;
-  sharingGroupsState: UseSharingGroupsResult;
+  tagsState: UseQueryResult<TagResponseDto[]>;
+  albumsState: UseQueryResult<AlbumResponseDto[]>;
+  sharingGroupsState: UseQueryResult<SharingGroupResponseDto[]>;
   updateAllMetadata: (patch: Partial<UploadMetadata>) => void;
 };
 
@@ -48,9 +47,9 @@ export const MultipleSettings = ({
         <div className="mt-8 flex gap-8 max-lg:flex-col max-md:mt-4 max-md:gap-4">
           <div>
             <AlbumSelector
-              albums={albumsState.albums}
+              albums={albumsState.data ?? []}
               isLoading={albumsState.isLoading}
-              error={albumsState.error}
+              error={albumsState.error?.message}
               onRefresh={albumsState.refetch}
               onAlbumSelect={(albumId) => setSelected((prev) => ({ ...prev, albumId }))}
               selectedAlbumId={selected.albumId}
@@ -65,18 +64,19 @@ export const MultipleSettings = ({
         </div>
         {/* タグを編集 */}
         <TagSelector
-          tags={tagsState.tags}
+          tags={tagsState.data ?? []}
           isLoading={tagsState.isLoading}
-          error={tagsState.error}
+          error={tagsState.error?.message}
           onRefresh={tagsState.refetch}
           selectedTagIds={selected.tagIds ?? []}
           onTagSelect={(tagIds) => setSelected((prev) => ({ ...prev, tagIds }))}
+          addTag={true}
         />
         {/* 共有範囲を編集 */}
         <SharingGroupsSelector
-          sharingGroups={sharingGroupsState.sharingGroups}
+          sharingGroups={sharingGroupsState.data ?? []}
           isLoading={sharingGroupsState.isLoading}
-          error={sharingGroupsState.error}
+          error={sharingGroupsState.error?.message}
           onRefresh={sharingGroupsState.refetch}
           onSharingGroupSelect={(sharingGroupId) =>
             setSelected((prev) => ({ ...prev, sharingGroupId }))

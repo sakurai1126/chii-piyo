@@ -28,7 +28,7 @@ public class SharingGroupService {
      * @return 共有グループエンティティの一覧
      */
     @Transactional(readOnly = true)
-    public List<SharingGroups> findAll() {
+    public List<SharingGroups> getSharingGroups() {
         return sharingGroupsMapper.select(c -> c.orderBy(id));
     }
 }

@@ -90,7 +90,7 @@ public class AlbumController implements AlbumManagementApi {
     public ResponseEntity<List<AlbumResponseDto>> getAlbums(String xRequestedWith) {
 
         // サービス層でエンティティを取得し、コンバータでDTOに変換する
-        List<Albums> albums = albumService.findAll();
+        List<Albums> albums = albumService.getAlbums();
         List<Long> albumIds = albums.stream().map(Albums::getId).toList();
         Map<Long, AlbumService.MediaCountResult> counts =
             albumService.getMediaCountsByAlbumIds(albumIds);

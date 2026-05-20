@@ -86,11 +86,13 @@ AlbumIdFilter:
 TagIdFilter:
   name: tagId
   in: query
-  description: タグIDで絞り込み
+  description: タグIDで絞り込み（複数指定可、OR検索）
   required: false
   schema:
-    type: integer
-    format: int64
+    type: array
+    items:
+      type: integer
+      format: int64
 
 SharingGroupIdFilter:
   name: sharingGroupId

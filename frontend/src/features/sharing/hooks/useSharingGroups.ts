@@ -1,62 +1,19 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
-import { type SharingGroupResponseDto } from "@/lib/api-client/gen";
+import { SharingGroupResponseDto } from "@/lib/api-client/gen";
 
-import { getSharingGroupsAction } from "../actions/getSharingGroupsAction";
-import { UseSharingGroupsResult } from "../types";
-
-export const useSharingGroups = (): UseSharingGroupsResult => {
-  const [sharingGroups, setSharingGroups] = useState<SharingGroupResponseDto[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  // 初回マウント時の取得処理
-  useEffect(() => {
-    const controller = new AbortController();
-
-    (async () => {
-      // 中断されていたら処理しない
-      if (controller.signal.aborted) return;
-
-      const result = await getSharingGroupsAction();
-
-      // 成功時は共有グループをセット、失敗時はエラーをセット
-      if (result.success) {
-        setSharingGroups(result.data);
-      } else {
-        setError(result.error);
+export const useSharingGroups = () => {
+  return useQuery<SharingGroupResponseDto[]>({
+    queryKey: ["sharing-groups"],
+    queryFn: async () => {
+      const res = await fetch("/api/sharing-groups");
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error ?? "共有グループの取得に失敗しました");
       }
-
-      // ローディング終了
-      setIsLoading(false);
-    })();
-
-    // アンマウント時は取得処理を中断
-    return () => controller.abort();
-  }, []);
-
-  // 手動再試行時の取得処理
-  const refetch = useCallback(async () => {
-    // 再試行開始時はローディング状態にしてエラーをリセット
-    setIsLoading(true);
-    setError(null);
-
-    const result = await getSharingGroupsAction();
-
-    if (result.success) {
-      setSharingGroups(result.data);
-    } else {
-      setError(result.error);
-    }
-    setIsLoading(false);
-  }, []);
-
-  return {
-    sharingGroups,
-    isLoading,
-    error,
-    refetch,
-  };
+      return res.json() as Promise<SharingGroupResponseDto[]>;
+    },
+  });
 };

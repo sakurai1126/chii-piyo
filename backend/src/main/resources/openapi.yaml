@@ -1672,11 +1672,13 @@ components:
     TagIdFilter:
       name: tagId
       in: query
-      description: タグIDで絞り込み
+      description: タグIDで絞り込み（複数指定可、OR検索）
       required: false
       schema:
-        type: integer
-        format: int64
+        type: array
+        items:
+          type: integer
+          format: int64
     SharingGroupIdFilter:
       name: sharingGroupId
       in: query
@@ -1939,6 +1941,11 @@ components:
           type: string
           description: タグ名
           example: お出かけ
+        mediaCount:
+          type: integer
+          format: int64
+          description: タグが紐づいているメディアの数
+          example: 10
         createdAt:
           type: string
           format: date-time
@@ -1956,13 +1963,10 @@ components:
         - fileSize
         - width
         - height
-        - s3Key
-        - thumbnailS3Key
         - takenAt
         - albumId
         - sharingGroupId
         - uploadStatus
-        - tags
         - createdAt
         - updatedAt
       properties:
@@ -2008,16 +2012,16 @@ components:
             - 'null'
           description: 高さ（ピクセル）
           example: 1080
-        s3Key:
+        presignedUrl:
           type: string
-          description: S3オブジェクトキー
-          example: media/2026/01/01/abc123.jpg
-        thumbnailS3Key:
+          format: uri
+          description: S3アップロード用の署名付きURL
+        thumbnailPresignedUrl:
           type:
             - string
             - 'null'
-          description: サムネイルのS3キー
-          example: thumbnails/2026/01/01/abc123.jpg
+          format: uri
+          description: サムネイルのS3アップロード用の署名付きURL
         takenAt:
           type:
             - string
@@ -2054,6 +2058,11 @@ components:
           type: boolean
           description: お気に入り済みフラグ
           example: false
+        commentCount:
+          type: integer
+          format: int64
+          description: コメント数
+          example: 1
         createdAt:
           type: string
           format: date-time

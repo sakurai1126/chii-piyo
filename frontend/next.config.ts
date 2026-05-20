@@ -5,6 +5,14 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: __dirname,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*.s3.ap-northeast-1.amazonaws.com",
+      },
+    ],
+  },
 };
 
 export default nextConfig;

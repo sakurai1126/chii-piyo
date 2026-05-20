@@ -7,6 +7,7 @@ const variantStyles = {
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: keyof typeof variantStyles;
+  className?: string;
   disabledStyle?: boolean;
 };
 

@@ -11,13 +11,10 @@ MediaResponseDto:
     - fileSize
     - width
     - height
-    - s3Key
-    - thumbnailS3Key
     - takenAt
     - albumId
     - sharingGroupId
     - uploadStatus
-    - tags
     - createdAt
     - updatedAt
   properties:
@@ -59,14 +56,14 @@ MediaResponseDto:
       type: ["integer", "null"]
       description: 高さ（ピクセル）
       example: 1080
-    s3Key:
+    presignedUrl:
       type: string
-      description: S3オブジェクトキー
-      example: "media/2026/01/01/abc123.jpg"
-    thumbnailS3Key:
+      format: uri
+      description: S3アップロード用の署名付きURL
+    thumbnailPresignedUrl:
       type: ["string", "null"]
-      description: サムネイルのS3キー
-      example: "thumbnails/2026/01/01/abc123.jpg"
+      format: uri
+      description: サムネイルのS3アップロード用の署名付きURL
     takenAt:
       type: ["string", "null"]
       format: date
@@ -99,6 +96,11 @@ MediaResponseDto:
       type: boolean
       description: お気に入り済みフラグ
       example: false
+    commentCount:
+      type: integer
+      format: int64
+      description: コメント数
+      example: 1
     createdAt:
       type: string
       format: date-time

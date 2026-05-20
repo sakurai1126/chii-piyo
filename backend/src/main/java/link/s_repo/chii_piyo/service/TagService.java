@@ -1,8 +1,10 @@
 package link.s_repo.chii_piyo.service;
 
+import link.s_repo.chii_piyo.model.TagMediaCount;
 import link.s_repo.chii_piyo.model.gen.MediaTags;
 import link.s_repo.chii_piyo.model.gen.Tags;
 
+import link.s_repo.chii_piyo.repository.MediaTagsCustomMapper;
 import link.s_repo.chii_piyo.repository.gen.MediaTagsDynamicSqlSupport;
 import link.s_repo.chii_piyo.repository.gen.MediaTagsMapper;
 import link.s_repo.chii_piyo.repository.gen.TagsDynamicSqlSupport;
@@ -16,6 +18,8 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static link.s_repo.chii_piyo.repository.gen.TagsDynamicSqlSupport.id;
@@ -34,6 +38,7 @@ public class TagService {
 
     private final TagsMapper tagsMapper;
     private final MediaTagsMapper mediaTagsMapper;
+    private final MediaTagsCustomMapper mediaTagsCustomMapper;
 
     /**
      * タグを新規作成する<br>
@@ -61,7 +66,7 @@ public class TagService {
      * @return タグエンティティの一覧
      */
     @Transactional(readOnly = true)
-    public List<Tags> findAll() {
+    public List<Tags> getTags() {
         return tagsMapper.select(c -> c.orderBy(id));
     }
 
@@ -72,7 +77,7 @@ public class TagService {
      * @return タグのリスト
      */
     @Transactional(readOnly = true)
-    public List<Tags> findMediaTags(Long mediaId) {
+    public List<Tags> getMediaTags(Long mediaId) {
         // メディアIDと紐づいたタグIDの一覧を取得する
         List<Long> mediaTagIds = mediaTagsMapper.select(
                 // "WHERE media_id = #{mediaId}"
@@ -157,5 +162,22 @@ public class TagService {
             // "WHERE id IN (?, ?, ...)"
             c -> c.where(TagsDynamicSqlSupport.id, isIn(updatedTagIds))
         );
+    }
+
+    /**
+     * タグIDごとのメディア数を返す<br>
+     * 自動生成コードでは全件取得してから計算し高負荷となるためカスタムマッパーを使用してDB側で集計
+     * 返り値をMapに格納して返す
+     *
+     * @return タグID → メディア数のマップ
+     */
+    @Transactional(readOnly = true)
+    public Map<Long, Long> getMediaCountByTagId() {
+        return mediaTagsCustomMapper.selectMediaCountByTagId()
+            .stream()
+            .collect(Collectors.toMap(
+                TagMediaCount::getTagId,
+                TagMediaCount::getMediaCount
+            ));
     }
 }
