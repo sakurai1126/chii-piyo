@@ -4,7 +4,7 @@ import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { MediaResponseDto } from "@/lib/api-client/gen";
 import { MediaListResponseDto } from "@/lib/api-client/gen/models/MediaListResponseDto";
 
-import { useInfiniteMediaList, UseInfiniteMediaListParams } from "../hooks/useInfiniteMediaList";
+import { useInfiniteMediaList, UseInfiniteMediaListParams } from "../../hooks/useInfiniteMediaList";
 
 import { MediaListItem } from "./MediaListItem";
 

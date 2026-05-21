@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/Button";
 import { SharingGroupFilter } from "@/features/sharing";
 import { TagFilter } from "@/features/tag";
 
-import heart from "../assets/heart.png";
-import illust from "../assets/illust.png";
+import heart from "../../assets/heart.png";
+import illust from "../../assets/illust.png";
 
 import { DateRangeFilter } from "./DateRangeFilter";
 import { MediaKindFilter } from "./MediaKindFilter";

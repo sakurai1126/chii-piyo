@@ -1,4 +1,4 @@
-export { MediaFilter } from "./components/MediaFilter";
-
-export { MediaListSection } from "./components/MediaListSection";
+export { MediaFilter } from "./components/list/MediaFilter";
+export { MediaListSection } from "./components/list/MediaListSection";
+export { MediaDetailContent } from "./components/detail/MediaDetailContent";
 export { getMediaList } from "./api/getMediaList";
