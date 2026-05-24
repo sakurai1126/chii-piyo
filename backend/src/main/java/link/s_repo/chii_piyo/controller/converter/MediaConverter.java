@@ -1,6 +1,7 @@
 package link.s_repo.chii_piyo.controller.converter;
 
 import link.s_repo.chii_piyo.model.gen.Media;
+import link.s_repo.chii_piyo.model.gen.MediaNavigationResponseDto;
 import link.s_repo.chii_piyo.model.gen.MediaResponseDto;
 import link.s_repo.chii_piyo.model.gen.TagResponseDto;
 import org.openapitools.jackson.nullable.JsonNullable;
@@ -29,7 +30,12 @@ public class MediaConverter {
         URI presignedUrl,
         URI thumbnailPresignedUrl,
         Boolean isFavorite,
-        Long commentCount) {
+        Long commentCount,
+        MediaNavigationResponseDto nextMedia,
+        MediaNavigationResponseDto secondNextMedia,
+        MediaNavigationResponseDto previousMedia,
+        MediaNavigationResponseDto secondPreviousMedia
+    ) {
 
         // 必須フィールドを揃えてコンストラクタに渡す
         MediaResponseDto dto = new MediaResponseDto(
@@ -56,6 +62,10 @@ public class MediaConverter {
         dto.setTags(tags);// タグのリスト
         dto.setIsFavorite(isFavorite); // お気に入りフラグ
         dto.setCommentCount(commentCount); // コメントの数
+        dto.setNextMedia(nextMedia); // 次のメディアのID
+        dto.setSecondNextMedia(secondNextMedia); // 2つ後のメディアのID
+        dto.setPreviousMedia(previousMedia); // 前のメディアのID
+        dto.setSecondPreviousMedia(secondPreviousMedia); // 2つ前のメディアのID
 
         return dto;
     }

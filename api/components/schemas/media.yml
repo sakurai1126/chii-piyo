@@ -101,6 +101,22 @@ MediaResponseDto:
       format: int64
       description: コメント数
       example: 1
+    nextMedia:
+      type: ["object", "null"]
+      description: 1つ後のメディア
+      $ref: "#/MediaNavigationResponseDto"
+    secondNextMedia :
+      type: ["object", "null"]
+      description: 2つ後のメディア
+      $ref: "#/MediaNavigationResponseDto"
+    previousMedia:
+      type: ["object", "null"]
+      description: 1つ前のメディア
+      $ref: "#/MediaNavigationResponseDto"
+    secondPreviousMedia:
+      type: ["object", "null"]
+      description: 2つ前のメディア
+      $ref: "#/MediaNavigationResponseDto"
     createdAt:
       type: string
       format: date-time
@@ -304,3 +320,27 @@ MediaCommentRequestDto:
       description: コメント本文
       minLength: 1
       example: "かわいい！"
+
+MediaNavigationResponseDto:
+  type: object
+  description: 前後のメディア情報
+  required:
+    - id
+    - mediaType
+  properties:
+    id:
+      type: integer
+      format: int64
+      description: メディアID
+      example: 1
+    thumbnailPresignedUrl:
+      type: ["string", "null"]
+      format: uri
+      description: サムネイルのS3アップロード用の署名付きURL
+    mediaType:
+      type: string
+      description: メディア種別
+      enum:
+        - PHOTO
+        - VIDEO
+      example: "PHOTO"

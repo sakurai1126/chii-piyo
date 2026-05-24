@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import icon from "../assets/calender-icon.svg";
+import icon from "../../assets/calender-icon.svg";
 
 type Props = {
   updateFilter: ({ key, value }: { key: string; value: string }) => void;

@@ -4,9 +4,9 @@ import { useId } from "react";
 
 import { MediaResponseDto } from "@/lib/api-client/gen";
 
-import comment from "../assets/comment.svg";
-import heart from "../assets/heart.svg";
-import videoIcon from "../assets/video-icon.svg";
+import comment from "../../assets/comment.svg";
+import heart from "../../assets/heart.svg";
+import videoIcon from "../../assets/video-icon.svg";
 
 type Props = {
   data: MediaResponseDto;
@@ -92,7 +92,7 @@ export const MediaListItem = ({ data, isSelectionMode }: Props) => {
       {inner}
     </label>
   ) : (
-    <Link href={`/media/${data.id}`} className="block">
+    <Link href={`/media/${data.id}`} className="block" scroll={false}>
       {inner}
     </Link>
   );

@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import icon from "../assets/file-type-icon.svg";
+import icon from "../../assets/file-type-icon.svg";
 
 type Props = {
   updateFilter: ({ key, value }: { key: string; value: string }) => void;

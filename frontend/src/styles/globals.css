@@ -18,6 +18,7 @@
   --color-warning: #900521;
   --color-warning-hover: #ff365e;
   --color-warning-back: #d80000;
+
   --color-success: #258210;
   --color-success-back: #d8ffd0;
 
@@ -40,9 +41,38 @@
   --color-accent-orange: #ffa600;
   --color-accent-orange-back: #fdefca;
   --color-accent-orange-radio: #e87116;
+
+  --color-remove: #cd193d;
+  --color-remove-back: #ffeee1;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.animate-fade-out {
+  animation: fadeOut 0.3s ease-out forwards;
 }

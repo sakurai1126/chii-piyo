@@ -1951,6 +1951,31 @@ components:
           format: date-time
           description: 作成日時
           example: '2026-01-01T00:00:00Z'
+    MediaNavigationResponseDto:
+      type: object
+      description: 前後のメディア情報
+      required:
+        - id
+        - mediaType
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: メディアID
+          example: 1
+        thumbnailPresignedUrl:
+          type:
+            - string
+            - 'null'
+          format: uri
+          description: サムネイルのS3アップロード用の署名付きURL
+        mediaType:
+          type: string
+          description: メディア種別
+          enum:
+            - PHOTO
+            - VIDEO
+          example: PHOTO
     MediaResponseDto:
       type: object
       description: メディア情報
@@ -2063,6 +2088,30 @@ components:
           format: int64
           description: コメント数
           example: 1
+        nextMedia:
+          type:
+            - object
+            - 'null'
+          description: 1つ後のメディア
+          $ref: '#/components/schemas/MediaNavigationResponseDto'
+        secondNextMedia:
+          type:
+            - object
+            - 'null'
+          description: 2つ後のメディア
+          $ref: '#/components/schemas/MediaNavigationResponseDto'
+        previousMedia:
+          type:
+            - object
+            - 'null'
+          description: 1つ前のメディア
+          $ref: '#/components/schemas/MediaNavigationResponseDto'
+        secondPreviousMedia:
+          type:
+            - object
+            - 'null'
+          description: 2つ前のメディア
+          $ref: '#/components/schemas/MediaNavigationResponseDto'
         createdAt:
           type: string
           format: date-time

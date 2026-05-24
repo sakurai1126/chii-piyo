@@ -3,11 +3,10 @@
 import Image from "next/image";
 import { useState } from "react";
 
+import { AccordionContent } from "@/components/ui/AccordionContent";
 import { Button } from "@/components/ui/Button";
 import { SharingGroupsSelector } from "@/features/sharing";
 import { TagSelector } from "@/features/tag";
-
-import { AccordionContent } from "../../../components/ui/AccordionContent";
 
 // ダミーデータ
 const dummyTags = [

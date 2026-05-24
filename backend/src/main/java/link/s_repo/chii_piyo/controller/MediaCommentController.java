@@ -19,7 +19,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -66,12 +69,42 @@ public class MediaCommentController implements MediaCommentManagementApi {
     }
 
     /**
-     * GET /media/{mediaId}/comments : メディアのコメント一覧を取得
+     * GET /media/{mediaId}/comments
+     * メディアのコメント一覧を取得
+     *
+     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param mediaId        メディアID
+     * @return 取得したコメントの情報
      */
     @Override
     public ResponseEntity<List<MediaCommentResponseDto>> getMediaComments(
         String xRequestedWith, Long mediaId) {
-        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+
+        // サービス層でmediaIdに紐づくコメントを取得
+        List<MediaComments> mediaComments = mediaCommentService.getMediaComments(mediaId);
+
+        // コメントが0件だった場合この時点で空リストを返す
+        if (mediaComments.isEmpty()) {
+            return ResponseEntity.ok(Collections.emptyList());
+        }
+
+        // コメントの情報からユーザーIDを抽出し重複削除
+        List<Long> userIds = mediaComments.stream()
+            .map(MediaComments::getUserId)
+            .distinct()
+            .toList();
+
+        // ユーザー情報を取得しIDとユーザーデータのMapにする
+        List<Users> users = userService.getUsersById(userIds);
+
+        Map<Long, Users> userMap = users.stream()
+            .collect(Collectors.toMap(Users::getId, user -> user));
+
+        return ResponseEntity.ok(mediaComments
+            .stream()
+            .map(c -> mediaCommentConverter.toMediaCommentResponseDto(c,
+                userMap.get(c.getUserId())))
+            .toList());
     }
 
     /**
