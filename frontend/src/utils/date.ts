@@ -6,7 +6,7 @@
  */
 export const formatJapaneseDate = (date: Date): string => {
   // 不正な日付文字列の対策
-  if (isNaN(date.getTime())) return "";
+  if (Number.isNaN(date.getTime())) return "";
 
   // dateStyle: 'long' -> "2026年1月1日"
   // timeStyle: 'short' -> "12:00"
@@ -23,7 +23,7 @@ export const formatJapaneseDate = (date: Date): string => {
  * @returns "YYYY年MM月DD日"形式の文字列
  */
 export const formatJapaneseDateNonTime = (date: Date): string => {
-  if (isNaN(date.getTime())) return "";
+  if (Number.isNaN(date.getTime())) return "";
 
   return new Intl.DateTimeFormat("ja-JP", {
     dateStyle: "long",
