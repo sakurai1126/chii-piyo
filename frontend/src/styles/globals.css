@@ -18,6 +18,7 @@
   --color-warning: #900521;
   --color-warning-hover: #ff365e;
   --color-warning-back: #d80000;
+
   --color-success: #258210;
   --color-success-back: #d8ffd0;
 
@@ -40,6 +41,9 @@
   --color-accent-orange: #ffa600;
   --color-accent-orange-back: #fdefca;
   --color-accent-orange-radio: #e87116;
+
+  --color-remove: #cd193d;
+  --color-remove-back: #ffeee1;
 }
 
 body {

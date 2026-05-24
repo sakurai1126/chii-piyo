@@ -1,6 +1,32 @@
+"use client";
+import { AnimatePresence } from "motion/react";
 import Image from "next/image";
+import { useState } from "react";
 
+import { Modal } from "@/components/layout/Modal";
+import { ActionDialog } from "@/components/ui/ActionDialog";
+import { Button } from "@/components/ui/Button";
+
+import { SharingGroupsSelector } from "./SharingGroupsSelector";
 export const ShareGroupMediaDetail = () => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [selectedGroupId, setSelectedGroupId] = useState<number | undefined>(undefined);
+  const dummySharingGroups = [
+    {
+      id: 1,
+      name: "家族全員",
+      members: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: 2,
+      name: "夫婦のみ",
+      members: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  ];
   return (
     <div className="mt-7">
       <p className="max-md:text-sm">共有範囲</p>
@@ -23,8 +49,40 @@ export const ShareGroupMediaDetail = () => {
             </div>
           ))}
         </div>
-        <button className="text-sm underline max-md:mt-3 max-md:ml-auto">共有範囲を変更する</button>
+        <button
+          className="cursor-pointer text-sm underline transition-all hover:opacity-70 max-md:mt-3 max-md:ml-auto max-md:text-xs"
+          onClick={() => setIsOpen(true)}
+        >
+          共有範囲を変更する
+        </button>
       </div>
+      <AnimatePresence>
+        {isOpen && (
+          <Modal>
+            <ActionDialog onClose={() => setIsOpen(false)}>
+              <div className="flex h-full flex-col justify-between">
+                <div className="-mt-8">
+                  <SharingGroupsSelector
+                    sharingGroups={dummySharingGroups}
+                    isLoading={false}
+                    error={null}
+                    onRefresh={() => {}}
+                    onSharingGroupSelect={(id) => setSelectedGroupId(id)}
+                    selectedGroupId={selectedGroupId}
+                  />
+                </div>
+
+                <div className="flex justify-center gap-5 max-md:mt-8">
+                  <Button variant="cancel" onClick={() => setIsOpen(false)}>
+                    キャンセル
+                  </Button>
+                  <Button>保存する</Button>
+                </div>
+              </div>
+            </ActionDialog>
+          </Modal>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

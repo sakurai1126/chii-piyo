@@ -32,7 +32,7 @@ export const MediaDetailContent = async ({ id, isModal = false }: Props) => {
         <MediaViewer isModal={isModal} media={media} />
 
         {/* 詳細情報 */}
-        <div className="w-full pb-20 max-md:px-5">
+        <div className={`w-full max-md:px-5 ${isModal ? "pb-20" : ""}`}>
           {/* コメント */}
           <MediaComment comments={comments} currentUser={currentUser} />
 

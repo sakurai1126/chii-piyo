@@ -63,7 +63,7 @@ export const TagMediaDetail = ({ tags }: Props) => {
                   />
                 </div>
 
-                <div className="flex justify-center gap-5">
+                <div className="flex justify-center gap-5 max-md:mt-8">
                   <Button variant="cancel" onClick={() => setIsOpen(false)}>
                     キャンセル
                   </Button>
