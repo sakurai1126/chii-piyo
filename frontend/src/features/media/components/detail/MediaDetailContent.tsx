@@ -37,7 +37,7 @@ export const MediaDetailContent = async ({ id, isModal = false }: Props) => {
           <MediaComment comments={comments} currentUser={currentUser} />
 
           {/* メタデータ */}
-          <MediaMetaData />
+          <MediaMetaData media={media} />
 
           {/* タグ */}
           <TagMediaDetail />
