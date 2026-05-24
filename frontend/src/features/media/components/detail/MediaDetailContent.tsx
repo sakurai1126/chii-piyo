@@ -40,7 +40,7 @@ export const MediaDetailContent = async ({ id, isModal = false }: Props) => {
           <MediaMetaData media={media} />
 
           {/* タグ */}
-          <TagMediaDetail />
+          <TagMediaDetail tags={media.tags} />
 
           {/* 共有範囲 */}
           <ShareGroupMediaDetail />

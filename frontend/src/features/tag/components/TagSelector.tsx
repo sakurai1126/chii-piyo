@@ -41,8 +41,8 @@ export const TagSelector = ({
   };
 
   return (
-    <>
-      <p className="mt-8 max-md:mt-4 max-md:text-[13px]">タグを編集</p>
+    <div className="mt-8">
+      <p className="max-md:mt-4 max-md:text-[13px]">タグを編集</p>
 
       {/* エラー時は再試行ボタンを表示 */}
       {!isLoading && error && <ReadError error={error} onRefresh={onRefresh} />}
@@ -82,6 +82,6 @@ export const TagSelector = ({
 
       {/* タグ追加フォーム */}
       {addTag && <TagAddForm onTagCreated={onRefresh} />}
-    </>
+    </div>
   );
 };
