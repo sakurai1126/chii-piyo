@@ -2,12 +2,15 @@ package link.s_repo.chii_piyo.controller;
 
 import link.s_repo.chii_piyo.controller.converter.MediaConverter;
 import link.s_repo.chii_piyo.controller.converter.MediaListConverter;
+import link.s_repo.chii_piyo.controller.converter.MediaNavigationConverter;
+import link.s_repo.chii_piyo.controller.converter.TagConverter;
 import link.s_repo.chii_piyo.controller.gen.MediaManagementApi;
 import link.s_repo.chii_piyo.model.gen.*;
 import link.s_repo.chii_piyo.security.CurrentUserProvider;
 import link.s_repo.chii_piyo.service.MediaCommentService;
 import link.s_repo.chii_piyo.service.MediaService;
 import link.s_repo.chii_piyo.service.S3Service;
+import link.s_repo.chii_piyo.service.TagService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -35,6 +38,9 @@ public class MediaController implements MediaManagementApi {
     private final CurrentUserProvider currentUserProvider;
     private final MediaCommentService mediaCommentService;
     private final S3Service s3Service;
+    private final TagService tagService;
+    private final TagConverter tagConverter;
+    private final MediaNavigationConverter mediaNavigationConverter;
 
     /**
      * POST /media<br>
@@ -47,8 +53,7 @@ public class MediaController implements MediaManagementApi {
     @Override
     public ResponseEntity<MediaUploadResponseDto> createMedia(
         String xRequestedWith,
-        MediaUploadRequestDto mediaUploadData
-    ) {
+        MediaUploadRequestDto mediaUploadData) {
         // 認証情報からアプリケーション側のユーザーIDを取得
         Long userId = currentUserProvider.getUserId();
 
@@ -63,14 +68,12 @@ public class MediaController implements MediaManagementApi {
             mediaUploadData.getHeight().orElse(null),
             mediaUploadData.getTakenAt().orElse(null),
             mediaUploadData.getAlbumId().orElse(null),
-            mediaUploadData.getSharingGroupId()
-        );
+            mediaUploadData.getSharingGroupId());
 
         // レスポンスDTOを構築
         MediaUploadResponseDto response = new MediaUploadResponseDto(
             result.media().getId(),
-            result.presignedUrl()
-        );
+            result.presignedUrl());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -89,8 +92,7 @@ public class MediaController implements MediaManagementApi {
     public ResponseEntity<MediaResponseDto> updateMediaUploadStatus(
         String xRequestedWith,
         Long mediaId,
-        MediaUploadStatusRequestDto mediaUpdateStatusData
-    ) {
+        MediaUploadStatusRequestDto mediaUpdateStatusData) {
 
         // 認証情報からアプリケーション側のユーザーIDを取得
         Long userId = currentUserProvider.getUserId();
@@ -99,14 +101,12 @@ public class MediaController implements MediaManagementApi {
         Media media = mediaService.updateUploadStatus(
             mediaId,
             userId,
-            mediaUpdateStatusData.getUploadStatus().getValue()
-        );
+            mediaUpdateStatusData.getUploadStatus().getValue());
 
         // レスポンスDTOに変換して返却
         return ResponseEntity.ok(mediaConverter.toMediaResponseDto(media, null, null,
-            null, null, null));
+            null, null, null, null, null, null, null));
     }
-
 
     /**
      * GET /media<br>
@@ -133,31 +133,31 @@ public class MediaController implements MediaManagementApi {
         List<Long> tagId,
         Long sharingGroupId,
         LocalDate startDate,
-        LocalDate endDate
-    ) {
+        LocalDate endDate) {
         // 総件数を取得
         Long totalCount = mediaService.countMedia(mediaType, albumId, tagId, sharingGroupId, startDate, endDate);
 
         // サービス層でメディアを取得
-        List<Media> mediaList = mediaService.getMediaList(offset, limit, mediaType, albumId, tagId, sharingGroupId, startDate, endDate);
+        List<Media> mediaList = mediaService.getMediaList(offset, limit, mediaType, albumId, tagId, sharingGroupId,
+            startDate, endDate);
 
         // hasNextの判定
         boolean hasNext = offset + mediaList.size() < totalCount;
 
         List<Long> mediaIds = mediaList.stream().map(Media::getId).toList();
 
-        Map<Long, Long> commentCountsByMediaId =
-            mediaCommentService.getCommentCountsByMediaIds(mediaIds);
+        Map<Long, Long> commentCountsByMediaId = mediaCommentService.getCommentCountsByMediaIds(mediaIds);
 
         // コンバータでMediaResponseDtoのリストに変換する
         List<MediaResponseDto> responseMediaList = mediaList.stream()
             .map(media -> {
                 URI thumbnailPresignedUrl = media.getThumbnailS3Key() != null
-                    ? URI.create(s3Service.generateDownloadPresignedUrl(media.getThumbnailS3Key()))
+                    ? s3Service.generateDownloadPresignedUrl(media.getThumbnailS3Key(),
+                    media.getOriginalFilename())
                     : null;
                 Long commentCount = commentCountsByMediaId.getOrDefault(media.getId(), 0L);
                 return mediaConverter.toMediaResponseDto(media, null, null,
-                    thumbnailPresignedUrl, null, commentCount);
+                    thumbnailPresignedUrl, null, commentCount, null, null, null, null);
             })
             .toList();
 
@@ -174,7 +174,53 @@ public class MediaController implements MediaManagementApi {
      */
     @Override
     public ResponseEntity<MediaResponseDto> getMedia(String xRequestedWith, Long id) {
-        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+        // サービス層でIDに基づくメディアを取得する
+        Media media = mediaService.getMedia(id);
+
+        URI presignedUrl = s3Service.generateDownloadPresignedUrl(media.getS3Key(), media.getOriginalFilename());
+
+        // メディアに紐づくタグを取得してDTOに変換する
+        List<TagResponseDto> tags = tagService.getMediaTags(id)
+            .stream().map(c -> tagConverter.toTagResponseDto(c, null)).toList();
+
+
+        // メディアの前後のナビゲーション情報(メディア情報と位置)を取得する
+        List<MediaService.GetMediaNavigationResult> mediaNavigation =
+            mediaService.getMediaNavigation(id);
+
+        MediaNavigationResponseDto nextMedia = null;
+        MediaNavigationResponseDto secondNextMedia = null;
+        MediaNavigationResponseDto previousMedia = null;
+        MediaNavigationResponseDto secondPreviousMedia = null;
+
+        for (MediaService.GetMediaNavigationResult nav : mediaNavigation) {
+            // ナビゲーション対象のメディアのサムネイル画像の署名付きURLを生成する
+            URI navMediaPresignedUrl = nav.media().getThumbnailS3Key() != null
+                ? s3Service.generateDownloadPresignedUrl(
+                nav.media().getThumbnailS3Key(), nav.media().getOriginalFilename())
+                : null;
+
+            // DTOに変換
+            MediaNavigationResponseDto dto = mediaNavigationConverter.toMediaNavigationResponseDto(
+                nav.media(),
+                navMediaPresignedUrl
+            );
+
+            // switch文で各変数に振り分ける
+            switch (nav.position()) {
+                case MediaService.NavigationPosition.NEXT_1 -> nextMedia = dto;
+                case MediaService.NavigationPosition.NEXT_2 -> secondNextMedia = dto;
+                case MediaService.NavigationPosition.PREVIOUS_1 -> previousMedia = dto;
+                case MediaService.NavigationPosition.PREVIOUS_2 -> secondPreviousMedia = dto;
+            }
+        }
+
+        URI thumbnailPresignedUrl = media.getThumbnailS3Key() != null
+            ? s3Service.generateDownloadPresignedUrl(media.getThumbnailS3Key(), media.getOriginalFilename())
+            : null;
+
+        return ResponseEntity.ok(mediaConverter.toMediaResponseDto(
+            media, tags, presignedUrl, thumbnailPresignedUrl, true, null, nextMedia, secondNextMedia, previousMedia, secondPreviousMedia));
     }
 
     /**
@@ -184,8 +230,7 @@ public class MediaController implements MediaManagementApi {
     public ResponseEntity<MediaResponseDto> updateMedia(
         String xRequestedWith,
         Long id,
-        MediaUpdateRequestDto mediaUpdateData
-    ) {
+        MediaUpdateRequestDto mediaUpdateData) {
         throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
     }
 

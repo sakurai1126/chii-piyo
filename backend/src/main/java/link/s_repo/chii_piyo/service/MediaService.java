@@ -17,6 +17,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,6 +41,19 @@ public class MediaService {
     private static final String MEDIA_PREFIX = "media";
     // S3キー生成時に使用する日付フォーマット
     private static final DateTimeFormatter S3_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+
+    /**
+     * メディアをID指定で1件取得する
+     *
+     * @param id 対象のメディアのID
+     * @return メディアデータ
+     */
+    @Transactional(readOnly = true)
+    public Media getMedia(Long id) {
+        return mediaMapper.selectByPrimaryKey(id)
+            .orElseThrow(() -> new MediaNotFoundException("メディアが見つかりません mediaId=" + id)
+            );
+    }
 
     /**
      * メディア総件数を取得する
@@ -283,9 +297,84 @@ public class MediaService {
     }
 
     /**
-     * createMediaの戻り値<br>
+     * 対象メディアの前後のメディア情報を取得し返却する<br>
+     * 前後のメディア情報と位置情報を返却する
+     *
+     * @param mediaId 対象メディアのID
+     * @return Mediaエンティティとナビゲーション位置をまとめたリスト
+     */
+    public List<GetMediaNavigationResult> getMediaNavigation(Long mediaId) {
+        // 対象の前のメディアをID降順で2件取得
+        List<Media> previousMediaList = mediaMapper.select(c -> c
+            // IDが小さいものが前のメディアになるため、ID < 対象IDで絞り込む
+            .where(MediaDynamicSqlSupport.id, isLessThan(mediaId))
+            // ID降順で対象に近いものから順番に2件取得する
+            .orderBy(MediaDynamicSqlSupport.id.descending())
+            .limit(2)
+        );
+        // 表示順を昇順に揃え直す
+        Collections.reverse(previousMediaList);
+
+        // 以降のメディアをID昇順で2件取得
+        List<Media> nextMediaList = mediaMapper.select(c -> c
+            // IDが大きいものが後のメディアになるため、ID > 対象IDで絞り込む
+            .where(MediaDynamicSqlSupport.id, isGreaterThan(mediaId))
+            // ID昇順で対象から順番に取得する
+            .orderBy(MediaDynamicSqlSupport.id)
+            .limit(2)
+        );
+
+        // buildNavigationResultsで前方メディアと現在以降のメディアを結合し、ナビゲーション位置を付与して返却する
+        return buildNavigationResults(previousMediaList, nextMediaList);
+    }
+
+    /**
+     * 前方メディアと現在以降のメディアを結合しナビゲーション位置を付与する
+     *
+     * @param previousMediaList 対象の前のメディアリスト 昇順
+     * @param nextMediaList     以降のメディアリスト 昇順
+     * @return ナビゲーション位置を付与したメディアリスト
+     */
+    private List<GetMediaNavigationResult> buildNavigationResults(
+        List<Media> previousMediaList,
+        List<Media> nextMediaList
+    ) {
+        List<GetMediaNavigationResult> results = new ArrayList<>();
+        // 前のメディアリストは昇順で2件まで入っているため、サイズとインデックスに応じてナビゲーション位置を付与する
+        for (int i = 0; i < previousMediaList.size(); i++) {
+            Media media = previousMediaList.get(i);
+            NavigationPosition position = (previousMediaList.size() == 2 && i == 0) ?
+                NavigationPosition.PREVIOUS_2 : NavigationPosition.PREVIOUS_1;
+            results.add(new GetMediaNavigationResult(media, position));
+        }
+        // 現在以降のメディアリストは昇順で2件まで入っているため、サイズとインデックスに応じてナビゲーション位置を付与する
+        for (int i = 0; i < nextMediaList.size(); i++) {
+            Media media = nextMediaList.get(i);
+
+            NavigationPosition position = (i == 0) ? NavigationPosition.NEXT_1 :
+                NavigationPosition.NEXT_2;
+            results.add(new GetMediaNavigationResult(media, position));
+        }
+        return results;
+    }
+
+    /**
      * Mediaエンティティと署名付きURLをまとめて返すための内部クラス
      */
     public record CreateMediaResult(Media media, String presignedUrl) {
+    }
+
+
+    /**
+     * どの位置のナビゲーションを返すかのENUM型
+     */
+    public enum NavigationPosition {
+        NEXT_1, NEXT_2, PREVIOUS_1, PREVIOUS_2
+    }
+
+    /**
+     * Mediaエンティティとナビゲーション位置をまとめて返すための内部クラス
+     */
+    public record GetMediaNavigationResult(Media media, NavigationPosition position) {
     }
 }

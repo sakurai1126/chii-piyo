@@ -9,7 +9,7 @@ export default async function MediaDetailModal({ params }: Readonly<Props>) {
   const paramsData = await params;
   const id = paramsData.id;
 
-  return (
+  return Number.isNaN(Number(id)) ? null : (
     <Modal>
       <MediaDetailContent id={id} isModal={true} />
     </Modal>

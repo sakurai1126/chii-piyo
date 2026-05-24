@@ -16,7 +16,7 @@ export default async function MediaPage() {
       <MediaFilter />
 
       {/* 遷移ボタン */}
-      <AccentLinkButton href="/media/upload" className="mt-10 ml-auto max-md:mt-4">
+      <AccentLinkButton href="/upload" className="mt-10 ml-auto max-md:mt-4">
         <p>新規アップロード</p>
         <Image
           src="/images/upload.svg"

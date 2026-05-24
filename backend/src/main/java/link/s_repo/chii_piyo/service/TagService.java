@@ -98,7 +98,6 @@ public class TagService {
 
     /**
      * メディアに紐づくタグを一括更新する<br>
-     * <p>
      *
      * @param mediaId メディアID
      * @param tagIds  タグIDのリスト

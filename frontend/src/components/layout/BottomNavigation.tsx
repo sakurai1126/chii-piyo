@@ -42,7 +42,7 @@ export default function BottomNavigation() {
         />
         <p className="text-brown-dark -mt-1 text-center text-[10px] font-medium">記録</p>
       </Link>
-      <Link href="/media/upload" className="grid place-content-center">
+      <Link href="/upload" className="grid place-content-center">
         <Image
           src="/images/nav-icon-4.svg"
           alt="アップロードアイコン"

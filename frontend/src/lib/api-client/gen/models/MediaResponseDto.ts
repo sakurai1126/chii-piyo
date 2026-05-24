@@ -13,6 +13,13 @@
  */
 
 import { mapValues } from "../runtime";
+import type { MediaNavigationResponseDto } from "./MediaNavigationResponseDto";
+import {
+  MediaNavigationResponseDtoFromJSON,
+  MediaNavigationResponseDtoFromJSONTyped,
+  MediaNavigationResponseDtoToJSON,
+  MediaNavigationResponseDtoToJSONTyped,
+} from "./MediaNavigationResponseDto";
 import type { TagResponseDto } from "./TagResponseDto";
 import {
   TagResponseDtoFromJSON,
@@ -130,6 +137,30 @@ export interface MediaResponseDto {
    */
   commentCount?: number;
   /**
+   * 1つ後のメディア
+   * @type {MediaNavigationResponseDto}
+   * @memberof MediaResponseDto
+   */
+  nextMedia?: MediaNavigationResponseDto;
+  /**
+   * 2つ後のメディア
+   * @type {MediaNavigationResponseDto}
+   * @memberof MediaResponseDto
+   */
+  secondNextMedia?: MediaNavigationResponseDto;
+  /**
+   * 1つ前のメディア
+   * @type {MediaNavigationResponseDto}
+   * @memberof MediaResponseDto
+   */
+  previousMedia?: MediaNavigationResponseDto;
+  /**
+   * 2つ前のメディア
+   * @type {MediaNavigationResponseDto}
+   * @memberof MediaResponseDto
+   */
+  secondPreviousMedia?: MediaNavigationResponseDto;
+  /**
    * 作成日時
    * @type {Date}
    * @memberof MediaResponseDto
@@ -216,6 +247,20 @@ export function MediaResponseDtoFromJSONTyped(
       json["tags"] == null ? undefined : (json["tags"] as Array<any>).map(TagResponseDtoFromJSON),
     isFavorite: json["isFavorite"] == null ? undefined : json["isFavorite"],
     commentCount: json["commentCount"] == null ? undefined : json["commentCount"],
+    nextMedia:
+      json["nextMedia"] == null ? undefined : MediaNavigationResponseDtoFromJSON(json["nextMedia"]),
+    secondNextMedia:
+      json["secondNextMedia"] == null
+        ? undefined
+        : MediaNavigationResponseDtoFromJSON(json["secondNextMedia"]),
+    previousMedia:
+      json["previousMedia"] == null
+        ? undefined
+        : MediaNavigationResponseDtoFromJSON(json["previousMedia"]),
+    secondPreviousMedia:
+      json["secondPreviousMedia"] == null
+        ? undefined
+        : MediaNavigationResponseDtoFromJSON(json["secondPreviousMedia"]),
     createdAt: new Date(json["createdAt"]),
     updatedAt: new Date(json["updatedAt"]),
   };
@@ -253,6 +298,10 @@ export function MediaResponseDtoToJSONTyped(
       value["tags"] == null ? undefined : (value["tags"] as Array<any>).map(TagResponseDtoToJSON),
     isFavorite: value["isFavorite"],
     commentCount: value["commentCount"],
+    nextMedia: MediaNavigationResponseDtoToJSON(value["nextMedia"]),
+    secondNextMedia: MediaNavigationResponseDtoToJSON(value["secondNextMedia"]),
+    previousMedia: MediaNavigationResponseDtoToJSON(value["previousMedia"]),
+    secondPreviousMedia: MediaNavigationResponseDtoToJSON(value["secondPreviousMedia"]),
     createdAt: value["createdAt"].toISOString(),
     updatedAt: value["updatedAt"].toISOString(),
   };

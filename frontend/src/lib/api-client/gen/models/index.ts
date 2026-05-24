@@ -18,6 +18,7 @@ export * from "./MealDetailDto";
 export * from "./MediaCommentRequestDto";
 export * from "./MediaCommentResponseDto";
 export * from "./MediaListResponseDto";
+export * from "./MediaNavigationResponseDto";
 export * from "./MediaResponseDto";
 export * from "./MediaTagsUpdateRequestDto";
 export * from "./MediaUpdateRequestDto";

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import software.amazon.awssdk.core.exception.SdkException;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
@@ -14,6 +15,8 @@ import software.amazon.awssdk.services.s3.S3Client;
 
 
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.Duration;
 
 @Service
@@ -72,7 +75,7 @@ public class S3Service {
      * @param s3Key S3オブジェクトのキー
      * @return 署名付きURL文字列
      */
-    public String generateDownloadPresignedUrl(String s3Key) {
+    public URI generateDownloadPresignedUrl(String s3Key, String fileName) {
         // s3Keyのバリデーション
         if (!StringUtils.hasText(s3Key)) {
             throw new IllegalArgumentException("s3Keyがnullまたは空です");
@@ -82,6 +85,7 @@ public class S3Service {
         GetObjectRequest objectRequest = GetObjectRequest.builder()
             .bucket(s3Bucket)
             .key(s3Key)
+            .responseContentDisposition("attachment; filename=\"" + fileName + "\"")
             .build();
 
         // GetObjectRequestを元に、署名付きURLを生成するためのGetObjectPresignRequestを作成
@@ -90,11 +94,16 @@ public class S3Service {
             .getObjectRequest(objectRequest)
             .build();
 
-        // S3Presignerを使用して署名付きURLを生成し、URL文字列を返す
-        return s3Presigner
-            .presignGetObject(presignRequest)
-            .url()
-            .toString();
+        // S3Presignerを使用して署名付きURLを生成し、URLをURIに変換して返す
+        try {
+            return s3Presigner
+                .presignGetObject(presignRequest)
+                .url().toURI();
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException("URIの生成に失敗しました", e);
+        } catch (SdkException e) {
+            throw e; // SdkException はそのまま伝播
+        }
     }
 
     /**

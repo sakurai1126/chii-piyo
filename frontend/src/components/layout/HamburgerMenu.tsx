@@ -31,7 +31,7 @@ export default function HamburgerMenu() {
                 <Link href="/media" className="block w-fit text-sm max-md:text-xs">
                   写真/動画一覧
                 </Link>
-                <Link href="/media/upload" className="block w-fit text-sm max-md:text-xs">
+                <Link href="/upload" className="block w-fit text-sm max-md:text-xs">
                   アップロード
                 </Link>
                 <Link href="/albums" className="block w-fit text-sm max-md:text-xs">
