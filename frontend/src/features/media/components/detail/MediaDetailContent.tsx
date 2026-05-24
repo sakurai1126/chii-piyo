@@ -1,8 +1,10 @@
 import { AlbumMediaDetail } from "@/features/album";
+import { getCurrentUser } from "@/features/auth/actions/getCurrentUser";
 import { ShareGroupMediaDetail } from "@/features/sharing";
 import { TagMediaDetail } from "@/features/tag";
 
 import { getMedia } from "../../api/getMedia";
+import { getMediaComments } from "../../api/getMediaComments";
 
 import { MediaComment } from "./MediaComment";
 import { MediaMetaData } from "./MediaMetaData";
@@ -14,7 +16,11 @@ type Props = {
 };
 
 export const MediaDetailContent = async ({ id, isModal = false }: Props) => {
-  const media = await getMedia(Number(id));
+  const [media, comments, currentUser] = await Promise.all([
+    getMedia(Number(id)),
+    getMediaComments(Number(id)),
+    getCurrentUser(),
+  ]);
 
   return (
     <div
@@ -28,7 +34,7 @@ export const MediaDetailContent = async ({ id, isModal = false }: Props) => {
         {/* 詳細情報 */}
         <div className="w-full pb-20 max-md:px-5">
           {/* コメント */}
-          <MediaComment />
+          <MediaComment comments={comments} currentUser={currentUser} />
 
           {/* メタデータ */}
           <MediaMetaData />

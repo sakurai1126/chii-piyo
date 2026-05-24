@@ -15,7 +15,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
+
 /**
  * コメント管理サービス<br>
  * コメントの取得・作成およびメディアとのコメント紐付けを担う
@@ -74,5 +76,17 @@ public class MediaCommentService {
                 MediaComments::getMediaId,
                 Collectors.counting()
             ));
+    }
+
+    /**
+     * メディアに紐づくコメントを一覧取得する
+     *
+     * @param mediaId 対象メディアのID
+     * @return コメントのリスト
+     */
+    public List<MediaComments> getMediaComments(Long mediaId) {
+        return mediaCommentsMapper.select(
+            c -> c.where(MediaCommentsDynamicSqlSupport.mediaId, isEqualTo(mediaId))
+        );
     }
 }
