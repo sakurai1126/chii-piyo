@@ -12,6 +12,10 @@
 @theme {
   --font-sans: var(--font-m-plus-rounded), sans-serif;
   --font-title: var(--font-zen-maru-gothic), sans-serif;
+
+  --color-background: #ffffe7;
+  --color-foreground: #333333;
+
   --color-brown-light: #d07800;
   --color-brown-dark: #6f4000;
   --color-brown-middle: #a56f0c;
@@ -44,6 +48,10 @@
 
   --color-remove: #cd193d;
   --color-remove-back: #ffeee1;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
