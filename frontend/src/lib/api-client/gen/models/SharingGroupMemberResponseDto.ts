@@ -32,11 +32,11 @@ export interface SharingGroupMemberResponseDto {
    */
   displayName: string;
   /**
-   * プロフィール画像URL
+   * プロフィール画像のS3署名付きURL
    * @type {string}
    * @memberof SharingGroupMemberResponseDto
    */
-  userIconUrl: string | null;
+  presignedIconUrl: string | null;
   /**
    * 作成日時
    * @type {Date}
@@ -53,7 +53,7 @@ export function instanceOfSharingGroupMemberResponseDto(
 ): value is SharingGroupMemberResponseDto {
   if (!("userId" in value) || value["userId"] === undefined) return false;
   if (!("displayName" in value) || value["displayName"] === undefined) return false;
-  if (!("userIconUrl" in value) || value["userIconUrl"] === undefined) return false;
+  if (!("presignedIconUrl" in value) || value["presignedIconUrl"] === undefined) return false;
   if (!("createdAt" in value) || value["createdAt"] === undefined) return false;
   return true;
 }
@@ -72,7 +72,7 @@ export function SharingGroupMemberResponseDtoFromJSONTyped(
   return {
     userId: json["userId"],
     displayName: json["displayName"],
-    userIconUrl: json["userIconUrl"],
+    presignedIconUrl: json["presignedIconUrl"],
     createdAt: new Date(json["createdAt"]),
   };
 }
@@ -92,7 +92,7 @@ export function SharingGroupMemberResponseDtoToJSONTyped(
   return {
     userId: value["userId"],
     displayName: value["displayName"],
-    userIconUrl: value["userIconUrl"],
+    presignedIconUrl: value["presignedIconUrl"],
     createdAt: value["createdAt"].toISOString(),
   };
 }

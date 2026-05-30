@@ -46,6 +46,8 @@ paths:
   # ユーザー
   /users/me:
     $ref: "./paths/users/users-me.yml"
+  /users/me/icon:
+    $ref: "./paths/users/users-icon.yml"
   /users/{id}/role:
     $ref: "./paths/users/users-role.yml"
 

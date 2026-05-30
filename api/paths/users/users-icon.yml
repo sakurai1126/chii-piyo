@@ -1,0 +1,34 @@
+post:
+  tags:
+    - userManagement
+  summary: ログインユーザーのアイコン用情報を送信し、S3署名付きURLを取得
+  operationId: generateIconPresignedUrl
+  # 自動生成されるコードの中で、リクエストボディ（送信データ）を受け取る引数の名前を指定
+  x-codegen-request-body-name: UserGenerateIconData
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+  # リクエストボディ: 作成するデータの内容を指定
+  requestBody:
+    description: 生成するユーザーのアイコン画像のファイル名情報
+    content:
+      application/json;charset=UTF-8:
+        schema:
+          $ref: "../../components/schemas/users.yml#/UserUpdateIconRequestDto"
+    required: true
+  responses:
+    "200":
+      description: 生成後のユーザーの情報
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            $ref: "../../components/schemas/users.yml#/UserGenerateIconDataResponseDto"
+    "400":
+      $ref: "../../components/responses.yml#/BadRequest"
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "404":
+      $ref: "../../components/responses.yml#/NotFound"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"

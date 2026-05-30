@@ -19,6 +19,11 @@ import {
   ErrorResponseDtoToJSON,
 } from "../models/ErrorResponseDto";
 import {
+  type UserGenerateIconDataResponseDto,
+  UserGenerateIconDataResponseDtoFromJSON,
+  UserGenerateIconDataResponseDtoToJSON,
+} from "../models/UserGenerateIconDataResponseDto";
+import {
   type UserResponseDto,
   UserResponseDtoFromJSON,
   UserResponseDtoToJSON,
@@ -29,10 +34,20 @@ import {
   UserRoleUpdateRequestDtoToJSON,
 } from "../models/UserRoleUpdateRequestDto";
 import {
+  type UserUpdateIconRequestDto,
+  UserUpdateIconRequestDtoFromJSON,
+  UserUpdateIconRequestDtoToJSON,
+} from "../models/UserUpdateIconRequestDto";
+import {
   type UserUpdateRequestDto,
   UserUpdateRequestDtoFromJSON,
   UserUpdateRequestDtoToJSON,
 } from "../models/UserUpdateRequestDto";
+
+export interface GenerateIconPresignedUrlRequest {
+  xRequestedWith: string;
+  userGenerateIconData: UserUpdateIconRequestDto;
+}
 
 export interface GetMeRequest {
   xRequestedWith: string;
@@ -53,6 +68,82 @@ export interface UpdateRoleRequest {
  *
  */
 export class UserManagementApi extends runtime.BaseAPI {
+  /**
+   * Creates request options for generateIconPresignedUrl without sending the request
+   */
+  async generateIconPresignedUrlRequestOpts(
+    requestParameters: GenerateIconPresignedUrlRequest,
+  ): Promise<runtime.RequestOpts> {
+    if (requestParameters["xRequestedWith"] == null) {
+      throw new runtime.RequiredError(
+        "xRequestedWith",
+        'Required parameter "xRequestedWith" was null or undefined when calling generateIconPresignedUrl().',
+      );
+    }
+
+    if (requestParameters["userGenerateIconData"] == null) {
+      throw new runtime.RequiredError(
+        "userGenerateIconData",
+        'Required parameter "userGenerateIconData" was null or undefined when calling generateIconPresignedUrl().',
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    headerParameters["Content-Type"] = "application/json;charset=UTF-8";
+
+    if (requestParameters["xRequestedWith"] != null) {
+      headerParameters["X-Requested-With"] = String(requestParameters["xRequestedWith"]);
+    }
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken;
+      const tokenString = await token("BearerAuth", []);
+
+      if (tokenString) {
+        headerParameters["Authorization"] = `Bearer ${tokenString}`;
+      }
+    }
+
+    let urlPath = `/users/me/icon`;
+
+    return {
+      path: urlPath,
+      method: "POST",
+      headers: headerParameters,
+      query: queryParameters,
+      body: UserUpdateIconRequestDtoToJSON(requestParameters["userGenerateIconData"]),
+    };
+  }
+
+  /**
+   * ログインユーザーのアイコン用情報を送信し、S3署名付きURLを取得
+   */
+  async generateIconPresignedUrlRaw(
+    requestParameters: GenerateIconPresignedUrlRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<UserGenerateIconDataResponseDto>> {
+    const requestOptions = await this.generateIconPresignedUrlRequestOpts(requestParameters);
+    const response = await this.request(requestOptions, initOverrides);
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      UserGenerateIconDataResponseDtoFromJSON(jsonValue),
+    );
+  }
+
+  /**
+   * ログインユーザーのアイコン用情報を送信し、S3署名付きURLを取得
+   */
+  async generateIconPresignedUrl(
+    requestParameters: GenerateIconPresignedUrlRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<UserGenerateIconDataResponseDto> {
+    const response = await this.generateIconPresignedUrlRaw(requestParameters, initOverrides);
+    return await response.value();
+  }
+
   /**
    * Creates request options for getMe without sending the request
    */

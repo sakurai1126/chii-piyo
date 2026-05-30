@@ -1,5 +1,6 @@
 import Container from "@/components/layout/Container";
 import PageTitle from "@/components/ui/PageTitle";
+import { getCurrentUser } from "@/features/auth";
 import {
   Account,
   DisplayMode,
@@ -9,7 +10,9 @@ import {
   Sidebar,
 } from "@/features/settings";
 
-export default function SettingsPage() {
+export default async function SettingsPage() {
+  const [currentUser] = await Promise.all([getCurrentUser()]);
+
   return (
     <Container className="mt-20 max-md:mt-5">
       <div className="relative flex items-start gap-10 max-lg:gap-5 max-md:flex-col">
@@ -19,7 +22,7 @@ export default function SettingsPage() {
           {/* タイトル */}
           <PageTitle text="設定" />
           {/* プロフィール */}
-          <Profile />
+          <Profile currentUser={currentUser} />
           {/* メンバー一覧 */}
           <Members />
           {/* 共有範囲 */}

@@ -11,7 +11,7 @@ public class Users {
 
     private String email;
 
-    private String userIconUrl;
+    private String userIconKey;
 
     private Boolean isDarkMode;
 
@@ -55,12 +55,12 @@ public class Users {
         this.email = email;
     }
 
-    public String getUserIconUrl() {
-        return userIconUrl;
+    public String getUserIconKey() {
+        return userIconKey;
     }
 
-    public void setUserIconUrl(String userIconUrl) {
-        this.userIconUrl = userIconUrl;
+    public void setUserIconKey(String userIconKey) {
+        this.userIconKey = userIconKey;
     }
 
     public Boolean getIsDarkMode() {

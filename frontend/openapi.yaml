@@ -88,6 +88,39 @@ paths:
           $ref: '#/components/responses/InternalServerError'
         default:
           $ref: '#/components/responses/DefaultErrors'
+  /users/me/icon:
+    post:
+      tags:
+        - userManagement
+      summary: ログインユーザーのアイコン用情報を送信し、S3署名付きURLを取得
+      operationId: generateIconPresignedUrl
+      x-codegen-request-body-name: UserGenerateIconData
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+      requestBody:
+        description: 生成するユーザーのアイコン画像のファイル名情報
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/UserUpdateIconRequestDto'
+        required: true
+      responses:
+        '200':
+          description: 生成後のユーザーの情報
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/UserGenerateIconDataResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
   /users/{id}/role:
     put:
       tags:
@@ -1747,7 +1780,7 @@ components:
         - cognitoUserId
         - displayName
         - email
-        - userIconUrl
+        - presignedIconUrl
         - isDarkMode
         - isEasyMode
         - role
@@ -1772,12 +1805,10 @@ components:
           format: email
           description: メールアドレス
           example: parent@example.com
-        userIconUrl:
-          type:
-            - string
-            - 'null'
-          description: プロフィール画像URL
-          example: https://example.com/icon.png
+        presignedIconUrl:
+          type: string
+          format: uri
+          description: S3用の署名付きURL
         isDarkMode:
           type: boolean
           description: ダークモードフラグ
@@ -1813,19 +1844,44 @@ components:
           example: ママ
           minLength: 1
           maxLength: 100
-        userIconUrl:
-          type:
-            - string
-            - 'null'
-          description: プロフィール画像URL
-          example: https://example.com/icon.png
-          maxLength: 500
+        s3key:
+          type: string
+          description: S3のキー
         isDarkMode:
           type: boolean
           description: ダークモードフラグ
         isEasyMode:
           type: boolean
           description: 簡易閲覧モードフラグ
+    UserUpdateIconRequestDto:
+      type: object
+      description: ユーザーアイコン画像更新時署名付きURL取得用リクエスト
+      required:
+        - filename
+        - contentType
+      properties:
+        filename:
+          type: string
+          description: ファイル名
+          maxLength: 255
+          example: profile.jpg
+        contentType:
+          type: string
+          description: MIMEタイプ
+          example: image/jpeg
+    UserGenerateIconDataResponseDto:
+      type: object
+      description: ユーザー情報
+      required:
+        - presignedUrl
+        - s3key
+      properties:
+        presignedUrl:
+          type: string
+          format: uri
+        s3key:
+          type: string
+          description: S3のキー
     UserRoleUpdateRequestDto:
       type: object
       description: ユーザー権限更新リクエスト
@@ -1844,7 +1900,7 @@ components:
         - id
         - userId
         - displayName
-        - userIconUrl
+        - presignedIconUrl
         - createdAt
       properties:
         userId:
@@ -1856,12 +1912,11 @@ components:
           type: string
           description: ユーザー表示名
           example: ママ
-        userIconUrl:
+        presignedIconUrl:
           type:
             - string
             - 'null'
-          description: プロフィール画像URL
-          example: https://example.com/icon.png
+          description: プロフィール画像のS3署名付きURL
         createdAt:
           type: string
           format: date-time
@@ -2040,13 +2095,13 @@ components:
         presignedUrl:
           type: string
           format: uri
-          description: S3アップロード用の署名付きURL
+          description: S3署名付きURL
         thumbnailPresignedUrl:
           type:
             - string
             - 'null'
           format: uri
-          description: サムネイルのS3アップロード用の署名付きURL
+          description: サムネイルのS3署名付きURL
         takenAt:
           type:
             - string
@@ -2217,6 +2272,7 @@ components:
           example: 1
         presignedUrl:
           type: string
+          format: uri
           description: S3アップロード用の署名付きURL
           example: https://s3.amazonaws.com/bucket/...
     MediaUpdateRequestDto:
@@ -2252,10 +2308,8 @@ components:
       description: メディアコメント情報
       required:
         - id
-        - mediaId
         - userId
         - displayName
-        - userIconUrl
         - content
         - createdAt
         - updatedAt
@@ -2274,12 +2328,10 @@ components:
           type: string
           description: コメントしたユーザーの表示名
           example: パパ
-        userIconUrl:
-          type:
-            - string
-            - 'null'
-          description: プロフィール画像URL
-          example: https://example.com/icon.png
+        presignedIconUrl:
+          type: string
+          format: uri
+          description: プロフィール画像のS3署名付きURL
         content:
           type: string
           description: コメント本文

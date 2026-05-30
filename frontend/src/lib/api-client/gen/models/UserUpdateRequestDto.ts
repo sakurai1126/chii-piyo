@@ -26,11 +26,11 @@ export interface UserUpdateRequestDto {
    */
   displayName?: string;
   /**
-   * プロフィール画像URL
+   * S3のキー
    * @type {string}
    * @memberof UserUpdateRequestDto
    */
-  userIconUrl?: string | null;
+  s3key?: string;
   /**
    * ダークモードフラグ
    * @type {boolean}
@@ -65,7 +65,7 @@ export function UserUpdateRequestDtoFromJSONTyped(
   }
   return {
     displayName: json["displayName"] == null ? undefined : json["displayName"],
-    userIconUrl: json["userIconUrl"] == null ? undefined : json["userIconUrl"],
+    s3key: json["s3key"] == null ? undefined : json["s3key"],
     isDarkMode: json["isDarkMode"] == null ? undefined : json["isDarkMode"],
     isEasyMode: json["isEasyMode"] == null ? undefined : json["isEasyMode"],
   };
@@ -85,7 +85,7 @@ export function UserUpdateRequestDtoToJSONTyped(
 
   return {
     displayName: value["displayName"],
-    userIconUrl: value["userIconUrl"],
+    s3key: value["s3key"],
     isDarkMode: value["isDarkMode"],
     isEasyMode: value["isEasyMode"],
   };

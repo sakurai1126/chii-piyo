@@ -11,7 +11,7 @@ export const DisplayMode = () => {
       </div>
       <div className="bg-white-back border-brown-dark mt-4 rounded-lg border max-md:mt-3">
         <div className="flex items-center justify-between px-8 py-6 max-lg:px-4 max-md:px-5 max-md:py-4">
-          <p className="text-[13px]">ダークモード</p>
+          <p className="max-md:text-[13px]">ダークモード</p>
           <label className="group relative h-7 w-16 cursor-pointer max-md:h-6 max-md:w-13">
             <input type="checkbox" className="peer hidden" />
             <span className="peer-checked:bg-accent-orange bg-line-gray absolute inset-0 rounded-full transition-colors"></span>
@@ -19,7 +19,7 @@ export const DisplayMode = () => {
           </label>
         </div>
         <div className="border-brown-dark/50 flex items-center justify-between border-t px-8 py-6 max-lg:px-4 max-md:px-5 max-md:py-4">
-          <p className="text-[13px]">簡易閲覧モード</p>
+          <p className="max-md:text-[13px]">簡易閲覧モード</p>
           <label className="group relative h-7 w-16 cursor-pointer max-md:h-6 max-md:w-13">
             <input type="checkbox" className="peer hidden" />
             <span className="peer-checked:bg-accent-orange bg-line-gray absolute inset-0 rounded-full transition-colors"></span>
