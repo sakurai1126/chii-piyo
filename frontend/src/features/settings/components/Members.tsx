@@ -1,8 +1,12 @@
 import Image from "next/image";
 
+import { getUsers } from "@/features/auth/actions/getUsers";
+
 import members from "../assets/members.svg";
 
-export const Members = () => {
+export const Members = async () => {
+  const users = await getUsers();
+
   return (
     <div className="mt-10 max-md:mt-8" id="members">
       <div className="flex items-center gap-2">
@@ -10,99 +14,50 @@ export const Members = () => {
         <p className="font-medium max-md:text-[13px]">メンバー一覧</p>
       </div>
       <div className="bg-white-back border-brown-dark mt-4 rounded-lg border max-md:mt-3">
-        <div className="py-4 pr-5 pl-7 max-md:p-5">
-          <div className="flex justify-between">
-            <div className="flex items-center gap-6">
-              <div className="h-20 w-20 shrink-0 rounded-full bg-[linear-gradient(100deg,#FFC0AB_35%,#FFF829_65%)] p-px">
-                <Image
-                  src="/images/mock-img.jpg"
-                  alt=""
-                  width={80}
-                  height={80}
-                  className="aspect-square h-full w-full rounded-full object-cover"
-                />
+        {users.map((user, index) => (
+          <div
+            className={`py-4 pr-5 pl-7 max-md:p-5 ${index > 0 ? "border-brown-dark/50 border-t" : ""}`}
+            key={user.id}
+          >
+            <div className="flex justify-between">
+              <div className="flex items-center gap-6">
+                <div className="h-20 w-20 shrink-0 rounded-full bg-[linear-gradient(100deg,#FFC0AB_35%,#FFF829_65%)] p-px">
+                  <div className="rounded-full bg-white">
+                    <Image
+                      src={user.presignedIconUrl || "/images/no-image.svg"}
+                      alt=""
+                      width={80}
+                      height={80}
+                      className="aspect-square h-full w-full rounded-full object-cover"
+                    />
+                  </div>
+                </div>
+                <div className="grid gap-1">
+                  <p className="text-sm max-md:text-[13px]">
+                    表示名：
+                    <br className="md:hidden" />
+                    {user.displayName}
+                  </p>
+                  <p className="text-sm max-md:hidden">メールアドレス：{user.email}</p>
+                  <p className="text-sm max-md:hidden">閲覧可能な共有範囲：家族全員、夫婦のみ</p>
+                </div>
               </div>
-              <div className="grid gap-1">
-                <p className="text-sm max-md:text-[13px]">
-                  表示名：
-                  <br className="md:hidden" />
-                  まま
+              {user.role === "ADMIN" ? (
+                <p className="text-accent-pink bg-accent-pink-back grid h-7 w-20 place-content-center rounded-3xl border text-xs font-medium">
+                  管理者
                 </p>
-                <p className="text-sm max-md:hidden">メールアドレス：parent@example.com</p>
-                <p className="text-sm max-md:hidden">閲覧可能な共有範囲：家族全員、夫婦のみ</p>
-              </div>
-            </div>
-            <p className="text-accent-pink bg-accent-pink-back grid h-7 w-20 place-content-center rounded-3xl border text-xs font-medium">
-              管理者
-            </p>
-          </div>
-          <div className="mt-2 grid gap-1 md:hidden">
-            <p className="text-xs">メールアドレス：parent@example.com</p>
-            <p className="text-xs">閲覧可能な共有範囲：家族全員、夫婦のみ</p>
-          </div>
-        </div>
-        <div className="border-brown-dark/50 border-t py-4 pr-5 pl-7 max-md:p-5">
-          <div className="flex justify-between">
-            <div className="flex items-center gap-6">
-              <div className="h-20 w-20 shrink-0 rounded-full bg-[linear-gradient(100deg,#FFC0AB_35%,#FFF829_65%)] p-px">
-                <Image
-                  src="/images/mock-img.jpg"
-                  alt=""
-                  width={80}
-                  height={80}
-                  className="aspect-square h-full w-full rounded-full object-cover"
-                />
-              </div>
-              <div className="grid gap-1">
-                <p className="text-sm max-md:text-[13px]">
-                  表示名：
-                  <br className="md:hidden" />
-                  まま
+              ) : (
+                <p className="text-brown-middle bg-accent-orange-back grid h-7 w-20 place-content-center rounded-3xl border text-xs font-medium">
+                  閲覧者
                 </p>
-                <p className="text-sm max-md:hidden">メールアドレス：parent@example.com</p>
-                <p className="text-sm max-md:hidden">閲覧可能な共有範囲：家族全員、夫婦のみ</p>
-              </div>
+              )}
             </div>
-            <p className="text-brown-middle bg-accent-orange-back grid h-7 w-20 place-content-center rounded-3xl border text-xs font-medium">
-              閲覧者
-            </p>
-          </div>
-          <div className="mt-2 grid gap-1 md:hidden">
-            <p className="text-xs">メールアドレス：parent@example.com</p>
-            <p className="text-xs">閲覧可能な共有範囲：家族全員、夫婦のみ</p>
-          </div>
-        </div>
-        <div className="border-brown-dark/50 border-t py-4 pr-5 pl-7 max-md:p-5">
-          <div className="flex justify-between">
-            <div className="flex items-center gap-6">
-              <div className="h-20 w-20 shrink-0 rounded-full bg-[linear-gradient(100deg,#FFC0AB_35%,#FFF829_65%)] p-px">
-                <Image
-                  src="/images/mock-img.jpg"
-                  alt=""
-                  width={80}
-                  height={80}
-                  className="aspect-square h-full w-full rounded-full object-cover"
-                />
-              </div>
-              <div className="grid gap-1">
-                <p className="text-sm max-md:text-[13px]">
-                  表示名：
-                  <br className="md:hidden" />
-                  まま
-                </p>
-                <p className="text-sm max-md:hidden">メールアドレス：parent@example.com</p>
-                <p className="text-sm max-md:hidden">閲覧可能な共有範囲：家族全員、夫婦のみ</p>
-              </div>
+            <div className="mt-2 grid gap-1 md:hidden">
+              <p className="text-xs">メールアドレス：{user.email}</p>
+              <p className="text-xs">閲覧可能な共有範囲：家族全員、夫婦のみ</p>
             </div>
-            <p className="text-brown-middle bg-accent-orange-back grid h-7 w-20 place-content-center rounded-3xl border text-xs font-medium">
-              閲覧者
-            </p>
           </div>
-          <div className="mt-2 grid gap-1 md:hidden">
-            <p className="text-xs">メールアドレス：parent@example.com</p>
-            <p className="text-xs">閲覧可能な共有範囲：家族全員、夫婦のみ</p>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );

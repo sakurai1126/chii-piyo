@@ -53,6 +53,10 @@ export interface GetMeRequest {
   xRequestedWith: string;
 }
 
+export interface GetUsersRequest {
+  xRequestedWith: string;
+}
+
 export interface UpdateMeRequest {
   xRequestedWith: string;
   userUpdateData: UserUpdateRequestDto;
@@ -203,6 +207,70 @@ export class UserManagementApi extends runtime.BaseAPI {
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<UserResponseDto> {
     const response = await this.getMeRaw(requestParameters, initOverrides);
+    return await response.value();
+  }
+
+  /**
+   * Creates request options for getUsers without sending the request
+   */
+  async getUsersRequestOpts(requestParameters: GetUsersRequest): Promise<runtime.RequestOpts> {
+    if (requestParameters["xRequestedWith"] == null) {
+      throw new runtime.RequiredError(
+        "xRequestedWith",
+        'Required parameter "xRequestedWith" was null or undefined when calling getUsers().',
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    if (requestParameters["xRequestedWith"] != null) {
+      headerParameters["X-Requested-With"] = String(requestParameters["xRequestedWith"]);
+    }
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken;
+      const tokenString = await token("BearerAuth", []);
+
+      if (tokenString) {
+        headerParameters["Authorization"] = `Bearer ${tokenString}`;
+      }
+    }
+
+    let urlPath = `/users`;
+
+    return {
+      path: urlPath,
+      method: "GET",
+      headers: headerParameters,
+      query: queryParameters,
+    };
+  }
+
+  /**
+   * ログインユーザー一覧の情報を取得
+   */
+  async getUsersRaw(
+    requestParameters: GetUsersRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<Array<UserResponseDto>>> {
+    const requestOptions = await this.getUsersRequestOpts(requestParameters);
+    const response = await this.request(requestOptions, initOverrides);
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      jsonValue.map(UserResponseDtoFromJSON),
+    );
+  }
+
+  /**
+   * ログインユーザー一覧の情報を取得
+   */
+  async getUsers(
+    requestParameters: GetUsersRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<Array<UserResponseDto>> {
+    const response = await this.getUsersRaw(requestParameters, initOverrides);
     return await response.value();
   }
 

@@ -33,6 +33,31 @@ tags:
   - name: trashManagement
     description: ゴミ箱管理
 paths:
+  /users:
+    get:
+      tags:
+        - userManagement
+      summary: ログインユーザー一覧の情報を取得
+      operationId: getUsers
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+      responses:
+        '200':
+          description: ユーザー情報一覧
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserResponseDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
   /users/me:
     get:
       tags:

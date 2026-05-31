@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -83,5 +84,25 @@ public class UserController implements UserManagementApi {
         );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    /**
+     * GET /users
+     * ユーザー情報の一覧を取得
+     *
+     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @return 取得したユーザー一覧情報
+     */
+    @Override
+    public ResponseEntity<List<UserResponseDto>> getUsers(String xRequestedWith) {
+        // サービス層でユーザー情報一覧とアイコンダウンロード用署名付きURLを取得する
+        List<UserService.UsersAndIconResult> usersAndIcon = userService.getUsersAndIcon();
+
+        // レスポンスDTOに変換して返却する
+        return ResponseEntity.ok(usersAndIcon
+            .stream()
+            .map(c -> userConverter.toUserResponseDto(c.user(), c.presignedUrl()))
+            .toList()
+        );
     }
 }

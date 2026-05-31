@@ -1,6 +1,6 @@
 package link.s_repo.chii_piyo.service;
 
-import jakarta.validation.constraints.NotNull;
+
 import link.s_repo.chii_piyo.common.S3KeyGenerator;
 import link.s_repo.chii_piyo.model.gen.UserUpdateRequestDto;
 import link.s_repo.chii_piyo.model.gen.Users;
@@ -14,6 +14,7 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
+import static link.s_repo.chii_piyo.repository.gen.UsersDynamicSqlSupport.id;
 import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
 
 /**
@@ -125,6 +126,29 @@ public class UserService {
         return new CreateIconS3KeyResult(s3Key, presignedUrl);
     }
 
+    /**
+     * ユーザー情報の一覧の取得と取得したユーザーからダウンロード用署名付きURLを生成し返却する
+     *
+     * @return ユーザー情報とダウンロード用署名付きURLをまとめたレコード型の一覧
+     */
+    public List<UsersAndIconResult> getUsersAndIcon() {
+        // ユーザー情報を一覧取得
+        List<Users> users = usersMapper.select(c -> c.orderBy(id));
+
+        // 取得下ユーザー情報から署名付きURLを取得して返却
+        return users.stream().map(user -> {
+                // ダウンロード用URLを生成
+                URI presignedUrl = generateIconDownloadPresignedUrl(user);
+                // レコードにまとめる
+                return new UsersAndIconResult(user, presignedUrl);
+            }).toList();
+    }
+
+    /**
+     * ユーザー情報とダウンロード用署名付きURLをまとめて返すための内部クラス
+     */
+    public record UsersAndIconResult(Users user, URI presignedUrl) {
+    }
 
     /**
      * S3Keyと署名付きURLをまとめて返すための内部クラス

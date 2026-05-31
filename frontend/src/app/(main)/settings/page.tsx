@@ -28,7 +28,7 @@ export default async function SettingsPage() {
           {/* 共有範囲 */}
           <SharingGroups />
           {/* 表示モード */}
-          <DisplayMode />
+          <DisplayMode currentUser={currentUser} />
           {/* アカウント */}
           <Account />
         </div>
