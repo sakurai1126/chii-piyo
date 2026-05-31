@@ -1,6 +1,7 @@
 package link.s_repo.chii_piyo.service;
 
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,7 +40,7 @@ public class S3Service {
      * @param contentType アップロードするオブジェクトのContent-Type
      * @return 署名付きURL文字列
      */
-    public String generateUploadPresignedUrl(String s3Key, String contentType) {
+    public URI generateUploadPresignedUrl(String s3Key, String contentType) {
         // s3KeyとcontentTypeのバリデーション
         if (!StringUtils.hasText(s3Key)) {
             throw new IllegalArgumentException("s3Keyがnullまたは空です");
@@ -62,36 +63,38 @@ public class S3Service {
             .build();
 
         // S3Presignerを使用して署名付きURLを生成し、URL文字列を返す
-        return s3Presigner
-            .presignPutObject(presignRequest)
-            .url()
-            .toString();
+        return java.net.URI.create(
+            s3Presigner.presignPutObject(presignRequest).url().toString()
+        );
     }
 
     /**
      * ダウンロード用Pre-signed URLを発行する
      * 有効期限は60分
      *
-     * @param s3Key S3オブジェクトのキー
+     * @param s3Key    S3オブジェクトのキー
+     * @param fileName ダウンロード時に保存されるファイル名
      * @return 署名付きURL文字列
      */
-    public URI generateDownloadPresignedUrl(String s3Key, String fileName) {
+    public URI generateDownloadPresignedUrl(String s3Key, @Nullable String fileName) {
         // s3Keyのバリデーション
         if (!StringUtils.hasText(s3Key)) {
             throw new IllegalArgumentException("s3Keyがnullまたは空です");
         }
 
         // ダウンロード用のGetObjectRequestを作成
-        GetObjectRequest objectRequest = GetObjectRequest.builder()
+        GetObjectRequest.Builder requestBuilder = GetObjectRequest.builder()
             .bucket(s3Bucket)
-            .key(s3Key)
-            .responseContentDisposition("attachment; filename=\"" + fileName + "\"")
-            .build();
+            .key(s3Key);
+
+        if (fileName != null) {
+            requestBuilder.responseContentDisposition("attachment; filename=\"" + fileName + "\"");
+        }
 
         // GetObjectRequestを元に、署名付きURLを生成するためのGetObjectPresignRequestを作成
         GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
             .signatureDuration(Duration.ofMinutes(60)) // 有効期限設定
-            .getObjectRequest(objectRequest)
+            .getObjectRequest(requestBuilder.build())
             .build();
 
         // S3Presignerを使用して署名付きURLを生成し、URLをURIに変換して返す

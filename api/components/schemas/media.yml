@@ -59,11 +59,11 @@ MediaResponseDto:
     presignedUrl:
       type: string
       format: uri
-      description: S3アップロード用の署名付きURL
+      description: S3署名付きURL
     thumbnailPresignedUrl:
       type: ["string", "null"]
       format: uri
-      description: サムネイルのS3アップロード用の署名付きURL
+      description: サムネイルのS3署名付きURL
     takenAt:
       type: ["string", "null"]
       format: date
@@ -217,6 +217,7 @@ MediaUploadResponseDto:
       example: 1
     presignedUrl:
       type: string
+      format: uri
       description: S3アップロード用の署名付きURL
       example: "https://s3.amazonaws.com/bucket/..."
 
@@ -268,10 +269,8 @@ MediaCommentResponseDto:
   description: メディアコメント情報
   required:
     - id
-    - mediaId
     - userId
     - displayName
-    - userIconUrl
     - content
     - createdAt
     - updatedAt
@@ -290,10 +289,10 @@ MediaCommentResponseDto:
       type: string
       description: コメントしたユーザーの表示名
       example: "パパ"
-    userIconUrl:
-      type: ["string", "null"]
-      description: プロフィール画像URL
-      example: "https://example.com/icon.png"
+    presignedIconUrl:
+      type: string
+      format: uri
+      description: プロフィール画像のS3署名付きURL
     content:
       type: string
       description: コメント本文

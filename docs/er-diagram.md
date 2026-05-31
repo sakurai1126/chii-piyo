@@ -15,7 +15,7 @@ erDiagram
         varchar cognito_user_id UK
         varchar display_name
         varchar email UK
-        varchar user_icon_url
+        varchar user_icon_key
         boolean is_dark_mode
         boolean is_easy_mode
         varchar role

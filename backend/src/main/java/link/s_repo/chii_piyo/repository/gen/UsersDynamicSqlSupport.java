@@ -16,7 +16,7 @@ public final class UsersDynamicSqlSupport {
 
     public static final SqlColumn<String> email = users.email;
 
-    public static final SqlColumn<String> userIconUrl = users.userIconUrl;
+    public static final SqlColumn<String> userIconKey = users.userIconKey;
 
     public static final SqlColumn<Boolean> isDarkMode = users.isDarkMode;
 
@@ -37,7 +37,7 @@ public final class UsersDynamicSqlSupport {
 
         public final SqlColumn<String> email = column("email", JDBCType.VARCHAR).withJavaProperty("email");
 
-        public final SqlColumn<String> userIconUrl = column("user_icon_url", JDBCType.VARCHAR).withJavaProperty("userIconUrl");
+        public final SqlColumn<String> userIconKey = column("user_icon_key", JDBCType.VARCHAR).withJavaProperty("userIconKey");
 
         public final SqlColumn<Boolean> isDarkMode = column("is_dark_mode", JDBCType.BIT).withJavaProperty("isDarkMode");
 

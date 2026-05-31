@@ -5,7 +5,7 @@ CREATE TABLE users
     cognito_user_id VARCHAR(255) NOT NULL,
     display_name    VARCHAR(100) NOT NULL,
     email           VARCHAR(255) NOT NULL,
-    user_icon_url   VARCHAR(500),
+    user_icon_key   VARCHAR(500),
     is_dark_mode    BOOLEAN      NOT NULL DEFAULT FALSE,
     is_easy_mode    BOOLEAN      NOT NULL DEFAULT FALSE,
     role            VARCHAR(20)  NOT NULL DEFAULT 'VIEWER',

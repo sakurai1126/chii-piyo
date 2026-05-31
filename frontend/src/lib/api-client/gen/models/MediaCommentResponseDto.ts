@@ -38,11 +38,11 @@ export interface MediaCommentResponseDto {
    */
   displayName: string;
   /**
-   * プロフィール画像URL
+   * プロフィール画像のS3署名付きURL
    * @type {string}
    * @memberof MediaCommentResponseDto
    */
-  userIconUrl: string | null;
+  presignedIconUrl?: string;
   /**
    * コメント本文
    * @type {string}
@@ -70,7 +70,6 @@ export function instanceOfMediaCommentResponseDto(value: object): value is Media
   if (!("id" in value) || value["id"] === undefined) return false;
   if (!("userId" in value) || value["userId"] === undefined) return false;
   if (!("displayName" in value) || value["displayName"] === undefined) return false;
-  if (!("userIconUrl" in value) || value["userIconUrl"] === undefined) return false;
   if (!("content" in value) || value["content"] === undefined) return false;
   if (!("createdAt" in value) || value["createdAt"] === undefined) return false;
   if (!("updatedAt" in value) || value["updatedAt"] === undefined) return false;
@@ -92,7 +91,7 @@ export function MediaCommentResponseDtoFromJSONTyped(
     id: json["id"],
     userId: json["userId"],
     displayName: json["displayName"],
-    userIconUrl: json["userIconUrl"],
+    presignedIconUrl: json["presignedIconUrl"] == null ? undefined : json["presignedIconUrl"],
     content: json["content"],
     createdAt: new Date(json["createdAt"]),
     updatedAt: new Date(json["updatedAt"]),
@@ -115,7 +114,7 @@ export function MediaCommentResponseDtoToJSONTyped(
     id: value["id"],
     userId: value["userId"],
     displayName: value["displayName"],
-    userIconUrl: value["userIconUrl"],
+    presignedIconUrl: value["presignedIconUrl"],
     content: value["content"],
     createdAt: value["createdAt"].toISOString(),
     updatedAt: value["updatedAt"].toISOString(),

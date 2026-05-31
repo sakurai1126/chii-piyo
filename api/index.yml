@@ -44,8 +44,12 @@ tags:
 # APIの各エンドポイント
 paths:
   # ユーザー
+  /users:
+    $ref: "./paths/users/users.yml"
   /users/me:
     $ref: "./paths/users/users-me.yml"
+  /users/me/icon:
+    $ref: "./paths/users/users-icon.yml"
   /users/{id}/role:
     $ref: "./paths/users/users-role.yml"
 

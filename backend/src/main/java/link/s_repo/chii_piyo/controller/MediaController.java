@@ -1,9 +1,6 @@
 package link.s_repo.chii_piyo.controller;
 
-import link.s_repo.chii_piyo.controller.converter.MediaConverter;
-import link.s_repo.chii_piyo.controller.converter.MediaListConverter;
-import link.s_repo.chii_piyo.controller.converter.MediaNavigationConverter;
-import link.s_repo.chii_piyo.controller.converter.TagConverter;
+import link.s_repo.chii_piyo.controller.converter.*;
 import link.s_repo.chii_piyo.controller.gen.MediaManagementApi;
 import link.s_repo.chii_piyo.model.gen.*;
 import link.s_repo.chii_piyo.security.CurrentUserProvider;
@@ -41,6 +38,7 @@ public class MediaController implements MediaManagementApi {
     private final TagService tagService;
     private final TagConverter tagConverter;
     private final MediaNavigationConverter mediaNavigationConverter;
+    private final MediaUploadConverter mediaUploadConverter;
 
     /**
      * POST /media<br>
@@ -71,9 +69,10 @@ public class MediaController implements MediaManagementApi {
             mediaUploadData.getSharingGroupId());
 
         // レスポンスDTOを構築
-        MediaUploadResponseDto response = new MediaUploadResponseDto(
+        MediaUploadResponseDto response = mediaUploadConverter.toMediaUploadResponseDto(
             result.media().getId(),
-            result.presignedUrl());
+            result.presignedUrl()
+        );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

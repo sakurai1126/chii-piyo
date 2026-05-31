@@ -5,7 +5,7 @@ const COGNITO_ISSUER = process.env.COGNITO_ISSUER!;
 const COGNITO_CLIENT_ID = process.env.COGNITO_CLIENT_ID!;
 
 // joseのcreateRemoteJWKSetは内部で公開鍵を自動キャッシュする
-// JWKSはトップレベルでキャッシュすることで初回兼商事に1回フェッチされるようにする
+// JWKSはトップレベルでキャッシュすることで初回起動時に1回フェッチされるようにする
 const JWKS = createRemoteJWKSet(new URL(COGNITO_JWKS_URI), {
   // 10分間キャッシュする
   // キャッシュ期間を過ぎたら次のリクエストで新しい公開鍵がフェッチされる

@@ -32,7 +32,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 @Mapper
 public interface UsersMapper extends CommonCountMapper, CommonDeleteMapper, CommonUpdateMapper {
-    BasicColumn[] selectList = BasicColumn.columnList(id, cognitoUserId, displayName, email, userIconUrl, isDarkMode, isEasyMode, role, createdAt, updatedAt);
+    BasicColumn[] selectList = BasicColumn.columnList(id, cognitoUserId, displayName, email, userIconKey, isDarkMode, isEasyMode, role, createdAt, updatedAt);
 
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
     @Options(useGeneratedKeys=true, keyProperty="row.id", keyColumn="id")
@@ -48,7 +48,7 @@ public interface UsersMapper extends CommonCountMapper, CommonDeleteMapper, Comm
         @Result(column="cognito_user_id", property="cognitoUserId", jdbcType=JdbcType.VARCHAR),
         @Result(column="display_name", property="displayName", jdbcType=JdbcType.VARCHAR),
         @Result(column="email", property="email", jdbcType=JdbcType.VARCHAR),
-        @Result(column="user_icon_url", property="userIconUrl", jdbcType=JdbcType.VARCHAR),
+        @Result(column="user_icon_key", property="userIconKey", jdbcType=JdbcType.VARCHAR),
         @Result(column="is_dark_mode", property="isDarkMode", jdbcType=JdbcType.BIT),
         @Result(column="is_easy_mode", property="isEasyMode", jdbcType=JdbcType.BIT),
         @Result(column="role", property="role", jdbcType=JdbcType.VARCHAR),
@@ -80,7 +80,7 @@ public interface UsersMapper extends CommonCountMapper, CommonDeleteMapper, Comm
             c.withMappedColumn(cognitoUserId)
             .withMappedColumn(displayName)
             .withMappedColumn(email)
-            .withMappedColumn(userIconUrl)
+            .withMappedColumn(userIconKey)
             .withMappedColumn(isDarkMode)
             .withMappedColumn(isEasyMode)
             .withMappedColumn(role)
@@ -94,7 +94,7 @@ public interface UsersMapper extends CommonCountMapper, CommonDeleteMapper, Comm
             c.withMappedColumn(cognitoUserId)
             .withMappedColumn(displayName)
             .withMappedColumn(email)
-            .withMappedColumn(userIconUrl)
+            .withMappedColumn(userIconKey)
             .withMappedColumn(isDarkMode)
             .withMappedColumn(isEasyMode)
             .withMappedColumn(role)
@@ -108,7 +108,7 @@ public interface UsersMapper extends CommonCountMapper, CommonDeleteMapper, Comm
             c.withMappedColumnWhenPresent(cognitoUserId, row::getCognitoUserId)
             .withMappedColumnWhenPresent(displayName, row::getDisplayName)
             .withMappedColumnWhenPresent(email, row::getEmail)
-            .withMappedColumnWhenPresent(userIconUrl, row::getUserIconUrl)
+            .withMappedColumnWhenPresent(userIconKey, row::getUserIconKey)
             .withMappedColumnWhenPresent(isDarkMode, row::getIsDarkMode)
             .withMappedColumnWhenPresent(isEasyMode, row::getIsEasyMode)
             .withMappedColumnWhenPresent(role, row::getRole)
@@ -144,7 +144,7 @@ public interface UsersMapper extends CommonCountMapper, CommonDeleteMapper, Comm
                 .set(cognitoUserId).equalTo(row::getCognitoUserId)
                 .set(displayName).equalTo(row::getDisplayName)
                 .set(email).equalTo(row::getEmail)
-                .set(userIconUrl).equalTo(row::getUserIconUrl)
+                .set(userIconKey).equalTo(row::getUserIconKey)
                 .set(isDarkMode).equalTo(row::getIsDarkMode)
                 .set(isEasyMode).equalTo(row::getIsEasyMode)
                 .set(role).equalTo(row::getRole)
@@ -157,7 +157,7 @@ public interface UsersMapper extends CommonCountMapper, CommonDeleteMapper, Comm
                 .set(cognitoUserId).equalToWhenPresent(row::getCognitoUserId)
                 .set(displayName).equalToWhenPresent(row::getDisplayName)
                 .set(email).equalToWhenPresent(row::getEmail)
-                .set(userIconUrl).equalToWhenPresent(row::getUserIconUrl)
+                .set(userIconKey).equalToWhenPresent(row::getUserIconKey)
                 .set(isDarkMode).equalToWhenPresent(row::getIsDarkMode)
                 .set(isEasyMode).equalToWhenPresent(row::getIsEasyMode)
                 .set(role).equalToWhenPresent(row::getRole)
@@ -170,7 +170,7 @@ public interface UsersMapper extends CommonCountMapper, CommonDeleteMapper, Comm
             c.set(cognitoUserId).equalTo(row::getCognitoUserId)
             .set(displayName).equalTo(row::getDisplayName)
             .set(email).equalTo(row::getEmail)
-            .set(userIconUrl).equalTo(row::getUserIconUrl)
+            .set(userIconKey).equalTo(row::getUserIconKey)
             .set(isDarkMode).equalTo(row::getIsDarkMode)
             .set(isEasyMode).equalTo(row::getIsEasyMode)
             .set(role).equalTo(row::getRole)
@@ -185,7 +185,7 @@ public interface UsersMapper extends CommonCountMapper, CommonDeleteMapper, Comm
             c.set(cognitoUserId).equalToWhenPresent(row::getCognitoUserId)
             .set(displayName).equalToWhenPresent(row::getDisplayName)
             .set(email).equalToWhenPresent(row::getEmail)
-            .set(userIconUrl).equalToWhenPresent(row::getUserIconUrl)
+            .set(userIconKey).equalToWhenPresent(row::getUserIconKey)
             .set(isDarkMode).equalToWhenPresent(row::getIsDarkMode)
             .set(isEasyMode).equalToWhenPresent(row::getIsEasyMode)
             .set(role).equalToWhenPresent(row::getRole)

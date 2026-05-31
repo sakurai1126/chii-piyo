@@ -1,0 +1,25 @@
+get:
+  tags:
+    - userManagement
+  summary: ログインユーザー一覧の情報を取得
+  # 操作ID: この操作の一意な識別子を指定、Generatorで生成したコードのメソッド名に使用される
+  operationId: getUsers
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+  responses:
+    "200":
+      description: ユーザー情報一覧
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            type: array
+            items:
+              $ref: "../../components/schemas/users.yml#/UserResponseDto"
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "404":
+      $ref: "../../components/responses.yml#/NotFound"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"

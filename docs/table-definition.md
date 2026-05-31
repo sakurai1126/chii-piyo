@@ -45,7 +45,7 @@
 | cognito_user_id | VARCHAR(255) | NO | - | UK | Cognito ユーザーID |
 | display_name | VARCHAR(100) | NO | - | | 表示名 |
 | email | VARCHAR(255) | NO | - | UK | メールアドレス |
-| user_icon_url | VARCHAR(500) | YES | NULL | | プロフィール画像URL |
+| user_icon_key | VARCHAR(500) | YES | NULL | | プロフィール画像URL |
 | is_dark_mode | BOOLEAN | NO | FALSE | | ダークモードフラグ |
 | is_easy_mode | BOOLEAN | NO | FALSE | | 簡易閲覧モードフラグ |
 | role | VARCHAR(20) | NO | 'VIEWER' | | 権限ロール ADMIN:管理者 VIEWER:閲覧者 |

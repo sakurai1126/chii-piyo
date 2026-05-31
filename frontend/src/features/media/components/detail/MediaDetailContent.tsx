@@ -1,5 +1,5 @@
 import { AlbumMediaDetail } from "@/features/album";
-import { getCurrentUser } from "@/features/auth/actions/getCurrentUser";
+import { getCurrentUser } from "@/features/auth";
 import { ShareGroupMediaDetail } from "@/features/sharing";
 import { TagMediaDetail } from "@/features/tag";
 

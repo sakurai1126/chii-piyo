@@ -55,7 +55,7 @@ SharingGroupMemberResponseDto:
     - id
     - userId
     - displayName
-    - userIconUrl
+    - presignedIconUrl
     - createdAt
   properties:
     userId:
@@ -67,10 +67,9 @@ SharingGroupMemberResponseDto:
       type: string
       description: ユーザー表示名
       example: "ママ"
-    userIconUrl:
+    presignedIconUrl:
       type: ["string", "null"]
-      description: プロフィール画像URL
-      example: "https://example.com/icon.png"
+      description: プロフィール画像のS3署名付きURL
     createdAt:
       type: string
       format: date-time

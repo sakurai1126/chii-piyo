@@ -83,13 +83,13 @@ export interface MediaResponseDto {
    */
   height: number | null;
   /**
-   * S3アップロード用の署名付きURL
+   * S3署名付きURL
    * @type {string}
    * @memberof MediaResponseDto
    */
   presignedUrl?: string;
   /**
-   * サムネイルのS3アップロード用の署名付きURL
+   * サムネイルのS3署名付きURL
    * @type {string}
    * @memberof MediaResponseDto
    */

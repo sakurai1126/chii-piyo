@@ -28,7 +28,6 @@ public class MediaCommentConverter {
             mediaComment.getId(), // ID
             mediaComment.getUserId(), // コメントしたユーザーID
             user.getDisplayName(), // コメントしたユーザーの表示名
-            user.getUserIconUrl(), // コメントしたユーザーのアイコンURL
             mediaComment.getContent(), // コメント本文
             mediaComment.getCreatedAt(), // 作成日時
             mediaComment.getUpdatedAt() // 更新日時

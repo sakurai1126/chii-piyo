@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function BackGround({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <div className="relative overflow-hidden">
+    <div className="relative overflow-clip">
       <div className="pointer-events-none relative mx-auto w-full max-w-250">
         <Image
           src="/images/bg-illust-1.png"
