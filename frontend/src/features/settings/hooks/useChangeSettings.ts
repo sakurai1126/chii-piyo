@@ -146,7 +146,7 @@ export const useChangeSettings = ({ currentUser }: Props) => {
       const updatedUser = await updateProfileAction({ isDarkMode: !isDarkMode });
       if (updatedUser.success) {
         setUser(updatedUser.user);
-        setIsDarkMode(!isDarkMode);
+        setIsDarkMode(updatedUser.user.isDarkMode);
         toast.success(`ダークモード表示を${!isDarkMode ? "ON" : "OFF"}にしました`);
       } else {
         toast.error("ダークモード表示の変更に失敗しました");
@@ -167,7 +167,7 @@ export const useChangeSettings = ({ currentUser }: Props) => {
       const updatedUser = await updateProfileAction({ isEasyMode: !isEasyMode });
       if (updatedUser.success) {
         setUser(updatedUser.user);
-        setIsEasyMode(!isEasyMode);
+        setIsEasyMode(updatedUser.user.isEasyMode);
         toast.success(`簡易閲覧モードを${!isEasyMode ? "ON" : "OFF"}にしました`);
       } else {
         toast.error("簡易閲覧モードの変更に失敗しました");

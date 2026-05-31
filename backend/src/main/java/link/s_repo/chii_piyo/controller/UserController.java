@@ -9,7 +9,7 @@ import link.s_repo.chii_piyo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.util.List;
@@ -66,7 +66,6 @@ public class UserController implements UserManagementApi {
      * @param userGenerateIconData 生成するユーザーのアイコン画像のファイル名情報
      * @return 生成後のユーザーの情報
      */
-
     @Override
     public ResponseEntity<UserGenerateIconDataResponseDto> generateIconPresignedUrl(
         String xRequestedWith, UserUpdateIconRequestDto userGenerateIconData) {

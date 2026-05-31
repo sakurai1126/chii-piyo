@@ -33,9 +33,9 @@ export const updateProfileAction = async (input: Input): Promise<ActionResult> =
       xRequestedWith: "XMLHttpRequest",
       userUpdateData: {
         displayName: input.displayName,
-        s3key: input.s3key ?? undefined,
-        isDarkMode: input.isDarkMode ?? undefined,
-        isEasyMode: input.isEasyMode ?? undefined,
+        s3key: input.s3key,
+        isDarkMode: input.isDarkMode,
+        isEasyMode: input.isEasyMode,
       },
     });
 
