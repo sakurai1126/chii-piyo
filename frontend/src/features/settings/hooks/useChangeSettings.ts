@@ -66,7 +66,7 @@ export const useChangeSettings = ({ currentUser }: Props) => {
   const iconUpload = async () => {
     try {
       // バリデーション
-      if (!iconInputRef.current || !iconInputRef.current.files) return;
+      if (!iconInputRef.current?.files) return;
       const originalFile = iconInputRef.current.files[0];
       if (originalFile.type.split("/")[0] !== "image") {
         throw new Error("画像ファイルを選択してください");
@@ -147,7 +147,7 @@ export const useChangeSettings = ({ currentUser }: Props) => {
       if (updatedUser.success) {
         setUser(updatedUser.user);
         setIsDarkMode(updatedUser.user.isDarkMode);
-        toast.success(`ダークモード表示を${!isDarkMode ? "ON" : "OFF"}にしました`);
+        toast.success(`ダークモード表示を${isDarkMode ? "OFF" : "ON"}にしました`);
       } else {
         toast.error("ダークモード表示の変更に失敗しました");
       }
@@ -168,7 +168,7 @@ export const useChangeSettings = ({ currentUser }: Props) => {
       if (updatedUser.success) {
         setUser(updatedUser.user);
         setIsEasyMode(updatedUser.user.isEasyMode);
-        toast.success(`簡易閲覧モードを${!isEasyMode ? "ON" : "OFF"}にしました`);
+        toast.success(`簡易閲覧モードを${isEasyMode ? "OFF" : "ON"}にしました`);
       } else {
         toast.error("簡易閲覧モードの変更に失敗しました");
       }

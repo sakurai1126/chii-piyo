@@ -11,7 +11,7 @@ import {
 } from "@/features/settings";
 
 export default async function SettingsPage() {
-  const [currentUser] = await Promise.all([getCurrentUser()]);
+  const currentUser = await getCurrentUser();
 
   return (
     <Container className="mt-20 max-md:mt-5">
