@@ -66,7 +66,7 @@ public class MediaController implements MediaManagementApi {
             mediaUploadData.getHeight().orElse(null),
             mediaUploadData.getTakenAt().orElse(null),
             mediaUploadData.getAlbumId().orElse(null),
-            mediaUploadData.getSharingGroupId());
+            mediaUploadData.getSharingGroupId().orElse(null));
 
         // レスポンスDTOを構築
         MediaUploadResponseDto response = mediaUploadConverter.toMediaUploadResponseDto(

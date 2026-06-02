@@ -72,7 +72,7 @@ export interface MediaUploadRequestDto {
    * @type {number}
    * @memberof MediaUploadRequestDto
    */
-  sharingGroupId: number;
+  sharingGroupId?: number | null;
 }
 
 /**
@@ -93,7 +93,6 @@ export function instanceOfMediaUploadRequestDto(value: object): value is MediaUp
   if (!("originalFilename" in value) || value["originalFilename"] === undefined) return false;
   if (!("contentType" in value) || value["contentType"] === undefined) return false;
   if (!("fileSize" in value) || value["fileSize"] === undefined) return false;
-  if (!("sharingGroupId" in value) || value["sharingGroupId"] === undefined) return false;
   return true;
 }
 
@@ -117,7 +116,7 @@ export function MediaUploadRequestDtoFromJSONTyped(
     height: json["height"] == null ? undefined : json["height"],
     takenAt: json["takenAt"] == null ? undefined : new Date(json["takenAt"]),
     albumId: json["albumId"] == null ? undefined : json["albumId"],
-    sharingGroupId: json["sharingGroupId"],
+    sharingGroupId: json["sharingGroupId"] == null ? undefined : json["sharingGroupId"],
   };
 }
 

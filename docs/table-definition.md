@@ -99,7 +99,7 @@
 | thumbnail_s3_key | VARCHAR(500) | YES | NULL | UK | サムネイルのS3キー |
 | taken_at | DATE | YES | NULL | | 撮影日 |
 | album_id | BIGINT | YES | NULL | FK | 所属アルバムID |
-| sharing_group_id | BIGINT | NO | - | FK | 共有範囲グループID |
+| sharing_group_id | BIGINT | YES | NULL | FK | 共有範囲グループID |
 | upload_status | VARCHAR(15) | NO | PROCESSING | | アップロード状況 |
 | created_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 作成日時 |
 | updated_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 更新日時 |

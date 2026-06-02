@@ -158,7 +158,6 @@ MediaUploadRequestDto:
     - originalFilename
     - contentType
     - fileSize
-    - sharingGroupId
   properties:
     mediaType:
       type: string
@@ -198,7 +197,7 @@ MediaUploadRequestDto:
       format: int64
       description: 所属アルバムID
     sharingGroupId:
-      type: integer
+      type: ["integer", "null"]
       format: int64
       description: 共有範囲グループID
       example: 1
