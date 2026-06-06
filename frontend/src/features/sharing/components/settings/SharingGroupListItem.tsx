@@ -1,5 +1,4 @@
 "use client";
-
 import { AnimatePresence } from "motion/react";
 import Image from "next/image";
 import { useState, useTransition } from "react";
@@ -9,52 +8,12 @@ import { AccordionContent } from "@/components/ui/AccordionContent";
 import { ActionDialog } from "@/components/ui/ActionDialog";
 import { Button } from "@/components/ui/Button";
 import { toast } from "@/components/ui/Toast";
-import { UserResponseDto, SharingGroupResponseDto } from "@/lib/api-client/gen";
+import { SharingGroupResponseDto, UserResponseDto } from "@/lib/api-client/gen";
 
-import { deleteSharingGroupAction } from "../actions/deleteSharingGroupAction";
-import { editGroupMembersAction } from "../actions/editGroupMembersAction";
+import { deleteSharingGroupAction } from "../../actions/deleteSharingGroupAction";
+import { updateSharingGroupAction } from "../../actions/updateSharingGroupAction";
 
 type Props = {
-  users: UserResponseDto[];
-  sharingGroups: SharingGroupResponseDto[];
-};
-
-export const SettingsSharingGroups = ({ users, sharingGroups }: Props) => {
-  return (
-    <>
-      <div className="bg-white-back border-brown-dark mt-4 rounded-lg border max-md:mt-3">
-        {/* デフォルト 全員公開 */}
-        <div className="flex items-center justify-between px-8 py-4 max-lg:px-4 max-md:flex-col max-md:items-start max-md:px-5">
-          <div className="flex items-center max-md:flex-col max-md:items-start">
-            <p className="w-25 shrink-0 max-md:text-[13px]">全員に公開</p>
-            <div className="ml-8 flex flex-wrap gap-x-6 gap-y-2 max-md:mt-3 max-md:ml-0 max-md:gap-x-3">
-              {users.map((user) => (
-                <div className="flex items-center gap-2" key={user.id}>
-                  <div className="h-10 w-10 shrink-0 rounded-full bg-[linear-gradient(100deg,#FFC0AB_35%,#FFF829_65%)] p-px">
-                    <Image
-                      src={user.presignedIconUrl || "/images/no-image.svg"}
-                      alt=""
-                      width={40}
-                      height={40}
-                      className="aspect-square h-full w-full rounded-full object-cover"
-                    />
-                  </div>
-                  <p className="max-md:text-[13px]">{user.displayName}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-        {sharingGroups.map((sharingGroup) => (
-          <GroupContents users={users} sharingGroup={sharingGroup} key={sharingGroup.id} />
-        ))}
-      </div>
-      <Button className="mt-5 ml-auto block max-md:mx-auto max-md:w-30">新規追加</Button>
-    </>
-  );
-};
-
-type GroupContentsProps = {
   users: UserResponseDto[];
   sharingGroup: SharingGroupResponseDto;
 };
@@ -65,9 +24,10 @@ type GroupContentsProps = {
  * @param sharingGroup 共有範囲のグループ
  * @returns 共有範囲のグループ
  */
-const GroupContents = ({ users, sharingGroup }: GroupContentsProps) => {
+export const SharingGroupListItem = ({ users, sharingGroup }: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isDeleteConfirm, setIsDeleteConfirm] = useState<boolean>(false);
+  const [newGroupName, setNewGroupName] = useState<string>(sharingGroup.name);
   // 非同期処理中のボタン状態管理
   const [isPending, startTransition] = useTransition();
 
@@ -90,14 +50,21 @@ const GroupContents = ({ users, sharingGroup }: GroupContentsProps) => {
   // 状態管理も初期状態に戻す
   const cancelEdit = () => {
     setIsOpen(false);
+    setNewGroupName(sharingGroup.name);
     setIsMembers(sharingGroup.members.map((member) => member.userId));
   };
 
-  // サーバーアクションを呼び出して更新
-  const saveEditAction = () => {
+  // 共有グループを更新する
+  const saveUpdateAction = () => {
+    if (!newGroupName.trim()) {
+      toast.error("グループ名を入力してください");
+      return;
+    }
+
     startTransition(async () => {
-      const result = await editGroupMembersAction({
+      const result = await updateSharingGroupAction({
         groupId: sharingGroup.id,
+        name: newGroupName,
         userIds: isMembers,
       });
 
@@ -105,7 +72,7 @@ const GroupContents = ({ users, sharingGroup }: GroupContentsProps) => {
         setIsOpen(false);
         setIsMembers(result.sharingGroup.members.map((member) => member.userId));
 
-        toast.success("メンバーの編集に成功しました");
+        toast.success("共有グループの編集に成功しました");
       } else {
         toast.error(result.error);
       }
@@ -172,23 +139,28 @@ const GroupContents = ({ users, sharingGroup }: GroupContentsProps) => {
           </div>
         </div>
         <AccordionContent isOpen={isOpen}>
-          <p className="pt-5">グループの共有範囲を編集</p>
-          <div className="mt-4 flex flex-wrap gap-6">
+          <p className="pt-5">共有範囲グループ名の編集</p>
+          <input
+            className="border-line-gray focus:outline-brown-light mt-2 block h-10 w-full max-w-90 rounded-sm border bg-white px-2.5"
+            onChange={(e) => setNewGroupName(e.target.value)}
+            value={newGroupName}
+            disabled={isPending}
+          />
+          <p className="mt-3">メンバーの編集</p>
+          <div className="mt-2 flex flex-wrap gap-6">
             {users.map((user) => (
               <label
                 className="flex cursor-pointer items-center gap-2"
                 key={user.id}
                 htmlFor={`${sharingGroup.id}-${user.id}`}
               >
-                {isOpen && (
-                  <input
-                    type="checkbox"
-                    className="accent-accent-pink h-4 w-4"
-                    id={`${sharingGroup.id}-${user.id}`}
-                    defaultChecked={isMembers.includes(user.id)}
-                    onChange={() => toggleMember(user.id)}
-                  />
-                )}
+                <input
+                  type="checkbox"
+                  className="accent-accent-pink h-4 w-4"
+                  id={`${sharingGroup.id}-${user.id}`}
+                  checked={isMembers.includes(user.id)}
+                  onChange={() => toggleMember(user.id)}
+                />
 
                 <div className="h-6 w-6 shrink-0 rounded-full bg-[linear-gradient(100deg,#FFC0AB_35%,#FFF829_65%)] p-px">
                   <Image
@@ -207,7 +179,7 @@ const GroupContents = ({ users, sharingGroup }: GroupContentsProps) => {
             <Button variant="cancel" onClick={cancelEdit} disabled={isPending}>
               キャンセル
             </Button>
-            <Button onClick={saveEditAction} disabled={isPending}>
+            <Button onClick={saveUpdateAction} disabled={isPending}>
               保存
             </Button>
           </div>

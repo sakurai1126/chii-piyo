@@ -36,7 +36,7 @@ SharingGroupResponseDto:
 
 SharingGroupRequestDto:
   type: object
-  description: 共有グループ作成・更新リクエスト
+  description: 共有グループ作成リクエスト
   required:
     - name
   properties:
@@ -46,6 +46,12 @@ SharingGroupRequestDto:
       minLength: 1
       maxLength: 100
       example: "家族全員"
+    userIds:
+      type: array
+      description: グループメンバーID一覧
+      items:
+        type: integer
+        format: int64
 
 # 共有グループ所属メンバー
 SharingGroupMemberResponseDto:
@@ -81,12 +87,16 @@ SharingGroupMemberResponseDto:
       description: 作成日時
       example: "2026-01-01T00:00:00Z"
 
-SharingGroupMemberRequestDto:
+SharingGroupUpdateRequestDto:
   type: object
-  description: 共有グループメンバー編集リクエスト
-  required:
-    - userIds
+  description: 共有グループ更新リクエスト
   properties:
+    name:
+      type: string
+      description: グループ名
+      minLength: 1
+      maxLength: 100
+      example: "家族全員"
     userIds:
       type: array
       description: 新しい共有グループメンバーID一覧

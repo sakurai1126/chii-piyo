@@ -19,11 +19,6 @@ import {
   ErrorResponseDtoToJSON,
 } from "../models/ErrorResponseDto";
 import {
-  type SharingGroupMemberRequestDto,
-  SharingGroupMemberRequestDtoFromJSON,
-  SharingGroupMemberRequestDtoToJSON,
-} from "../models/SharingGroupMemberRequestDto";
-import {
   type SharingGroupRequestDto,
   SharingGroupRequestDtoFromJSON,
   SharingGroupRequestDtoToJSON,
@@ -33,6 +28,11 @@ import {
   SharingGroupResponseDtoFromJSON,
   SharingGroupResponseDtoToJSON,
 } from "../models/SharingGroupResponseDto";
+import {
+  type SharingGroupUpdateRequestDto,
+  SharingGroupUpdateRequestDtoFromJSON,
+  SharingGroupUpdateRequestDtoToJSON,
+} from "../models/SharingGroupUpdateRequestDto";
 
 export interface CreateSharingGroupRequest {
   xRequestedWith: string;
@@ -42,12 +42,6 @@ export interface CreateSharingGroupRequest {
 export interface DeleteSharingGroupRequest {
   xRequestedWith: string;
   id: number;
-}
-
-export interface EditSharingGroupMemberRequest {
-  xRequestedWith: string;
-  id: number;
-  sharingGroupMemberData: SharingGroupMemberRequestDto;
 }
 
 export interface GetSharingGroupRequest {
@@ -62,7 +56,7 @@ export interface GetSharingGroupsRequest {
 export interface UpdateSharingGroupRequest {
   xRequestedWith: string;
   id: number;
-  sharingGroupData: SharingGroupRequestDto;
+  sharingGroupUpdateData: SharingGroupUpdateRequestDto;
 }
 
 /**
@@ -125,13 +119,11 @@ export class SharingGroupManagementApi extends runtime.BaseAPI {
   async createSharingGroupRaw(
     requestParameters: CreateSharingGroupRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<SharingGroupResponseDto>> {
+  ): Promise<runtime.ApiResponse<void>> {
     const requestOptions = await this.createSharingGroupRequestOpts(requestParameters);
     const response = await this.request(requestOptions, initOverrides);
 
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      SharingGroupResponseDtoFromJSON(jsonValue),
-    );
+    return new runtime.VoidApiResponse(response);
   }
 
   /**
@@ -140,9 +132,8 @@ export class SharingGroupManagementApi extends runtime.BaseAPI {
   async createSharingGroup(
     requestParameters: CreateSharingGroupRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<SharingGroupResponseDto> {
-    const response = await this.createSharingGroupRaw(requestParameters, initOverrides);
-    return await response.value();
+  ): Promise<void> {
+    await this.createSharingGroupRaw(requestParameters, initOverrides);
   }
 
   /**
@@ -214,90 +205,6 @@ export class SharingGroupManagementApi extends runtime.BaseAPI {
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<void> {
     await this.deleteSharingGroupRaw(requestParameters, initOverrides);
-  }
-
-  /**
-   * Creates request options for editSharingGroupMember without sending the request
-   */
-  async editSharingGroupMemberRequestOpts(
-    requestParameters: EditSharingGroupMemberRequest,
-  ): Promise<runtime.RequestOpts> {
-    if (requestParameters["xRequestedWith"] == null) {
-      throw new runtime.RequiredError(
-        "xRequestedWith",
-        'Required parameter "xRequestedWith" was null or undefined when calling editSharingGroupMember().',
-      );
-    }
-
-    if (requestParameters["id"] == null) {
-      throw new runtime.RequiredError(
-        "id",
-        'Required parameter "id" was null or undefined when calling editSharingGroupMember().',
-      );
-    }
-
-    if (requestParameters["sharingGroupMemberData"] == null) {
-      throw new runtime.RequiredError(
-        "sharingGroupMemberData",
-        'Required parameter "sharingGroupMemberData" was null or undefined when calling editSharingGroupMember().',
-      );
-    }
-
-    const queryParameters: any = {};
-
-    const headerParameters: runtime.HTTPHeaders = {};
-
-    headerParameters["Content-Type"] = "application/json;charset=UTF-8";
-
-    if (requestParameters["xRequestedWith"] != null) {
-      headerParameters["X-Requested-With"] = String(requestParameters["xRequestedWith"]);
-    }
-
-    if (this.configuration && this.configuration.accessToken) {
-      const token = this.configuration.accessToken;
-      const tokenString = await token("BearerAuth", []);
-
-      if (tokenString) {
-        headerParameters["Authorization"] = `Bearer ${tokenString}`;
-      }
-    }
-
-    let urlPath = `/sharing-groups/{id}/members`;
-    urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-    return {
-      path: urlPath,
-      method: "PUT",
-      headers: headerParameters,
-      query: queryParameters,
-      body: SharingGroupMemberRequestDtoToJSON(requestParameters["sharingGroupMemberData"]),
-    };
-  }
-
-  /**
-   * 共有グループメンバーを編集
-   */
-  async editSharingGroupMemberRaw(
-    requestParameters: EditSharingGroupMemberRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<SharingGroupResponseDto>> {
-    const requestOptions = await this.editSharingGroupMemberRequestOpts(requestParameters);
-    const response = await this.request(requestOptions, initOverrides);
-
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      SharingGroupResponseDtoFromJSON(jsonValue),
-    );
-  }
-
-  /**
-   * 共有グループメンバーを編集
-   */
-  async editSharingGroupMember(
-    requestParameters: EditSharingGroupMemberRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<SharingGroupResponseDto> {
-    const response = await this.editSharingGroupMemberRaw(requestParameters, initOverrides);
-    return await response.value();
   }
 
   /**
@@ -460,10 +367,10 @@ export class SharingGroupManagementApi extends runtime.BaseAPI {
       );
     }
 
-    if (requestParameters["sharingGroupData"] == null) {
+    if (requestParameters["sharingGroupUpdateData"] == null) {
       throw new runtime.RequiredError(
-        "sharingGroupData",
-        'Required parameter "sharingGroupData" was null or undefined when calling updateSharingGroup().',
+        "sharingGroupUpdateData",
+        'Required parameter "sharingGroupUpdateData" was null or undefined when calling updateSharingGroup().',
       );
     }
 
@@ -494,12 +401,12 @@ export class SharingGroupManagementApi extends runtime.BaseAPI {
       method: "PUT",
       headers: headerParameters,
       query: queryParameters,
-      body: SharingGroupRequestDtoToJSON(requestParameters["sharingGroupData"]),
+      body: SharingGroupUpdateRequestDtoToJSON(requestParameters["sharingGroupUpdateData"]),
     };
   }
 
   /**
-   * 共有グループを更新
+   * 共有グループを編集
    */
   async updateSharingGroupRaw(
     requestParameters: UpdateSharingGroupRequest,
@@ -514,7 +421,7 @@ export class SharingGroupManagementApi extends runtime.BaseAPI {
   }
 
   /**
-   * 共有グループを更新
+   * 共有グループを編集
    */
   async updateSharingGroup(
     requestParameters: UpdateSharingGroupRequest,

@@ -14,7 +14,7 @@
 
 import { mapValues } from "../runtime";
 /**
- * 共有グループ作成・更新リクエスト
+ * 共有グループ作成リクエスト
  * @export
  * @interface SharingGroupRequestDto
  */
@@ -25,6 +25,12 @@ export interface SharingGroupRequestDto {
    * @memberof SharingGroupRequestDto
    */
   name: string;
+  /**
+   * グループメンバーID一覧
+   * @type {Array<number>}
+   * @memberof SharingGroupRequestDto
+   */
+  userIds?: Array<number>;
 }
 
 /**
@@ -48,6 +54,7 @@ export function SharingGroupRequestDtoFromJSONTyped(
   }
   return {
     name: json["name"],
+    userIds: json["userIds"] == null ? undefined : json["userIds"],
   };
 }
 
@@ -65,5 +72,6 @@ export function SharingGroupRequestDtoToJSONTyped(
 
   return {
     name: value["name"],
+    userIds: value["userIds"],
   };
 }

@@ -25,22 +25,22 @@ get:
 put:
   tags:
     - sharingGroupManagement
-  summary: 共有グループを更新
+  summary: 共有グループを編集
   operationId: updateSharingGroup
-  x-codegen-request-body-name: SharingGroupData
+  x-codegen-request-body-name: SharingGroupUpdateData
   parameters:
     - $ref: "../../components/parameters.yml#/XRequestedWith"
     - $ref: "../../components/parameters.yml#/ResourceId"
   requestBody:
-    description: 更新する共有グループ情報
+    description: 編集する共有グループ情報
     content:
       application/json;charset=UTF-8:
         schema:
-          $ref: "../../components/schemas/sharing-groups.yml#/SharingGroupRequestDto"
+          $ref: "../../components/schemas/sharing-groups.yml#/SharingGroupUpdateRequestDto"
     required: true
   responses:
     "200":
-      description: 更新された共有グループ
+      description: 更新された共有グループ情報
       content:
         application/json;charset=UTF-8:
           schema:

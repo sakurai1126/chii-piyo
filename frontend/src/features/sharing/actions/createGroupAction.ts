@@ -7,20 +7,24 @@ import { createAuthorizedConfig } from "@/lib/api-client/server";
 
 // クライアントから受け取る入力型
 type Input = {
-  groupId: number;
+  name: string;
+  userIds: number[];
 };
 
 type ActionResult = { success: true } | { success: false; error: string };
 
-export const deleteSharingGroupAction = async (input: Input): Promise<ActionResult> => {
+export const createGroupAction = async (input: Input): Promise<ActionResult> => {
   try {
     // 認証トークンを含むAPIクライアントの設定を生成し、SharingGroupManagementApiのインスタンスを作成
     const configuration = await createAuthorizedConfig();
     const apiClient = new SharingGroupManagementApi(configuration);
 
-    await apiClient.deleteSharingGroup({
+    await apiClient.createSharingGroup({
       xRequestedWith: "XMLHttpRequest",
-      id: input.groupId,
+      sharingGroupData: {
+        name: input.name,
+        userIds: input.userIds,
+      },
     });
 
     // キャッシュを破棄し、サーバーコンポーネントを再レンダリング
@@ -28,10 +32,10 @@ export const deleteSharingGroupAction = async (input: Input): Promise<ActionResu
 
     return { success: true };
   } catch (error) {
-    console.error("deleteSharingGroupAction失敗", error);
+    console.error("createGroupAction失敗", error);
     if (error instanceof Error && error.message === "UNAUTHORIZED") {
       return { success: false, error: "認証が必要です" };
     }
-    return { success: false, error: "グループの削除に失敗しました" };
+    return { success: false, error: "グループ作成に失敗しました" };
   }
 };

@@ -1,10 +1,9 @@
 package link.s_repo.chii_piyo.service;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
-import link.s_repo.chii_piyo.model.gen.SharingGroupMemberRequestDto;
-import link.s_repo.chii_piyo.model.gen.SharingGroupMembers;
-import link.s_repo.chii_piyo.model.gen.SharingGroups;
-import link.s_repo.chii_piyo.model.gen.Users;
+import link.s_repo.chii_piyo.model.gen.*;
 import link.s_repo.chii_piyo.repository.gen.SharingGroupMembersDynamicSqlSupport;
 import link.s_repo.chii_piyo.repository.gen.SharingGroupMembersMapper;
 import link.s_repo.chii_piyo.repository.gen.SharingGroupsMapper;
@@ -64,6 +63,41 @@ public class SharingGroupService {
     }
 
     /**
+     * 共有グループを新規作成する
+     *
+     * @param name    新規共有グループの名前
+     * @param userIds 新規共有グループ所属メンバーのID
+     */
+    @Transactional
+    public void createGroup(String name, List<Long> userIds) {
+        SharingGroups sharingGroups = new SharingGroups();
+
+        // 受け取った値をセットしてデータを登録
+        sharingGroups.setName(name);
+        sharingGroupsMapper.insertSelective(sharingGroups);
+
+        // 採番されたIDを取得
+        Long id = sharingGroups.getId();
+
+        // ユーザーIDの指定がある場合は合わせて登録
+        if (userIds != null && !userIds.isEmpty()) {
+            List<SharingGroupMembers> members = userIds.stream()
+                .map(userId -> {
+                    SharingGroupMembers member = new SharingGroupMembers();
+                    member.setSharingGroupId(id);
+                    member.setUserId(userId);
+                    member.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
+                    return member;
+                })
+                .toList();
+
+            // DBに一括登録
+            sharingGroupMembersMapper.insertMultiple(members);
+        }
+    }
+
+
+    /**
      * 共有グループ所属メンバー一覧を取得する
      *
      * @param groupIds 対象のグループIDリスト
@@ -83,22 +117,20 @@ public class SharingGroupService {
     }
 
     /**
-     * 共有グループ所属メンバーを編集更新する
+     * 共有グループを更新する
      *
-     * @param id 対象共有グループID
-     * @param sharingGroupMemberData 新しい共有グループメンバー情報
+     * @param id         対象共有グループID
+     * @param newUserIds 新しい共有グループメンバーのIDリスト
      * @return 更新後のメンバーリスト
      */
     @Transactional
     public List<SharingGroupMembers> editMembers(
-        Long id, SharingGroupMemberRequestDto sharingGroupMemberData) {
+        Long id, List<Long> newUserIds) {
 
         // 対象グループの既存メンバーを一度すべて削除
         sharingGroupMembersMapper.delete(c -> c.where(sharingGroupId, isEqualTo(id)));
 
-        // リクエストから新しいユーザーIDリストを取り出し保存用のエンティティを作成
-        List<Long> newUserIds = sharingGroupMemberData.getUserIds();
-
+        // 保存用のエンティティを作成
         if (newUserIds != null && !newUserIds.isEmpty()) {
             List<SharingGroupMembers> newMembers = newUserIds.stream()
                 .map(userId -> {
@@ -170,6 +202,20 @@ public class SharingGroupService {
 
         // グループ本体の削除
         sharingGroupsMapper.deleteByPrimaryKey(id);
+    }
+
+    /**
+     * 共有グループの名前を更新する
+     *
+     * @param sharingGroups 対象の共有グループID
+     * @param name          新しい名前
+     * @return 共有グループエンティティ
+     */
+    public SharingGroups updateSharingGroup(SharingGroups sharingGroups, String name) {
+        sharingGroups.setName(name);
+        sharingGroupsMapper.updateByPrimaryKeySelective(sharingGroups);
+
+        return sharingGroups;
     }
 
     /**

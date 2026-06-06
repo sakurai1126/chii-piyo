@@ -222,11 +222,7 @@ paths:
         required: true
       responses:
         '201':
-          description: 作成された共有グループ
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/SharingGroupResponseDto'
+          description: 共有グループ作成成功
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -264,22 +260,22 @@ paths:
     put:
       tags:
         - sharingGroupManagement
-      summary: 共有グループを更新
+      summary: 共有グループを編集
       operationId: updateSharingGroup
-      x-codegen-request-body-name: SharingGroupData
+      x-codegen-request-body-name: SharingGroupUpdateData
       parameters:
         - $ref: '#/components/parameters/XRequestedWith'
         - $ref: '#/components/parameters/ResourceId'
       requestBody:
-        description: 更新する共有グループ情報
+        description: 編集する共有グループ情報
         content:
           application/json;charset=UTF-8:
             schema:
-              $ref: '#/components/schemas/SharingGroupRequestDto'
+              $ref: '#/components/schemas/SharingGroupUpdateRequestDto'
         required: true
       responses:
         '200':
-          description: 更新された共有グループ
+          description: 更新された共有グループ情報
           content:
             application/json;charset=UTF-8:
               schema:
@@ -307,42 +303,6 @@ paths:
       responses:
         '204':
           description: 共有グループの削除に成功
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-        default:
-          $ref: '#/components/responses/DefaultErrors'
-  /sharing-groups/{id}/members:
-    put:
-      tags:
-        - sharingGroupManagement
-      summary: 共有グループメンバーを編集
-      operationId: editSharingGroupMember
-      x-codegen-request-body-name: SharingGroupMemberData
-      parameters:
-        - $ref: '#/components/parameters/XRequestedWith'
-        - $ref: '#/components/parameters/ResourceId'
-      requestBody:
-        description: 編集するメンバー情報
-        content:
-          application/json;charset=UTF-8:
-            schema:
-              $ref: '#/components/schemas/SharingGroupMemberRequestDto'
-        required: true
-      responses:
-        '200':
-          description: 更新された共有グループ情報
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/SharingGroupResponseDto'
-        '400':
-          $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -1932,7 +1892,7 @@ components:
           example: '2026-01-01T00:00:00Z'
     SharingGroupRequestDto:
       type: object
-      description: 共有グループ作成・更新リクエスト
+      description: 共有グループ作成リクエスト
       required:
         - name
       properties:
@@ -1942,12 +1902,22 @@ components:
           minLength: 1
           maxLength: 100
           example: 家族全員
-    SharingGroupMemberRequestDto:
+        userIds:
+          type: array
+          description: グループメンバーID一覧
+          items:
+            type: integer
+            format: int64
+    SharingGroupUpdateRequestDto:
       type: object
-      description: 共有グループメンバー編集リクエスト
-      required:
-        - userIds
+      description: 共有グループ更新リクエスト
       properties:
+        name:
+          type: string
+          description: グループ名
+          minLength: 1
+          maxLength: 100
+          example: 家族全員
         userIds:
           type: array
           description: 新しい共有グループメンバーID一覧

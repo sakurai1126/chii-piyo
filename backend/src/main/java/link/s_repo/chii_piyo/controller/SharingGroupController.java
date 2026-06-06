@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URI;
@@ -34,9 +34,13 @@ public class SharingGroupController implements SharingGroupManagementApi {
      * 共有グループを新規作成する
      */
     @Override
-    public ResponseEntity<SharingGroupResponseDto> createSharingGroup(
+    public ResponseEntity<Void> createSharingGroup(
         String xRequestedWith, SharingGroupRequestDto sharingGroupData) {
-        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+        // サービス層で共有グループを作成する
+        sharingGroupService.createGroup(sharingGroupData.getName(), sharingGroupData.getUserIds());
+
+        // ステータスコードのみを返却
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     /**
@@ -111,7 +115,7 @@ public class SharingGroupController implements SharingGroupManagementApi {
     }
 
     /**
-     * PUT /sharing-groups/{id}/members<br>
+     * PUT /sharing-groups/{id}<br>
      * 共有グループメンバーを編集する
      *
      * @param xRequestedWith         X-Requested-With ヘッダ (CSRF防御用)
@@ -120,14 +124,20 @@ public class SharingGroupController implements SharingGroupManagementApi {
      * @return 更新されたメンバー情報一覧
      */
     @Override
-    public ResponseEntity<SharingGroupResponseDto> editSharingGroupMember(
-        String xRequestedWith, Long id, SharingGroupMemberRequestDto sharingGroupMemberData) {
+    public ResponseEntity<SharingGroupResponseDto> updateSharingGroup(
+        String xRequestedWith, Long id, SharingGroupUpdateRequestDto sharingGroupUpdateData) {
         // サービス層でグループのエンティティを取得
+
         SharingGroups sharingGroups = sharingGroupService.getSharingGroupById(id);
+
+        // 名前のリクエストがある場合のサービス層で名前を更新
+        if (sharingGroupUpdateData.getName() != null) {
+            sharingGroups = sharingGroupService.updateSharingGroup(sharingGroups, sharingGroupUpdateData.getName());
+        }
 
         // サービス層でメンバー情報の更新を行う
         List<SharingGroupMembers> newMembers = sharingGroupService.editMembers(
-            id, sharingGroupMemberData);
+            id, sharingGroupUpdateData.getUserIds());
 
         // サービス層でアイコンURLを生成しつつMap化
         SharingGroupService.MemberAndIconMapResult memberAndIconMap =
@@ -150,15 +160,4 @@ public class SharingGroupController implements SharingGroupManagementApi {
         // レスポンスを返却
         return ResponseEntity.ok(response);
     }
-
-    /**
-     * PUT /sharing-groups/{id}
-     * 共有グループを更新する
-     */
-    @Override
-    public ResponseEntity<SharingGroupResponseDto> updateSharingGroup(
-        String xRequestedWith, Long id, SharingGroupRequestDto sharingGroupData) {
-        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
-    }
-
 }
