@@ -40,12 +40,16 @@ public class SharingGroupController implements SharingGroupManagementApi {
     }
 
     /**
-     * DELETE /sharing-groups/{id}
+     * DELETE /sharing-groups/{id}<br>
      * 共有グループを削除する
      */
     @Override
     public ResponseEntity<Void> deleteSharingGroup(String xRequestedWith, Long id) {
-        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+        // Serviceに削除処理を委譲
+        sharingGroupService.deleteSharingGroup(id);
+
+        // 204 No Contentを返す
+        return ResponseEntity.noContent().build();
     }
 
     /**

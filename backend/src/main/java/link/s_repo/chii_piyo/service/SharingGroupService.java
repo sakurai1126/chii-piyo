@@ -154,6 +154,24 @@ public class SharingGroupService {
         return new MemberAndIconMapResult(usersMap, iconUrlsMap, membersByGroupIdMap);
     }
 
+
+    /**
+     * 共有グループと所属するメンバーを削除する
+     *
+     * @param id 共有グループID
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteSharingGroup(Long id) {
+        // 存在チェック
+        getSharingGroupById(id);
+
+        // 所属メンバーの削除
+        sharingGroupMembersMapper.delete(c -> c.where(sharingGroupId, isEqualTo(id)));
+
+        // グループ本体の削除
+        sharingGroupsMapper.deleteByPrimaryKey(id);
+    }
+
     /**
      * memberAndIconMappingの結果を返すためのレコードクラス
      */

@@ -1,13 +1,17 @@
 "use client";
 
+import { AnimatePresence } from "motion/react";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 
+import { Modal } from "@/components/layout/Modal";
 import { AccordionContent } from "@/components/ui/AccordionContent";
+import { ActionDialog } from "@/components/ui/ActionDialog";
 import { Button } from "@/components/ui/Button";
 import { toast } from "@/components/ui/Toast";
 import { UserResponseDto, SharingGroupResponseDto } from "@/lib/api-client/gen";
 
+import { deleteSharingGroupAction } from "../actions/deleteSharingGroupAction";
 import { editGroupMembersAction } from "../actions/editGroupMembersAction";
 
 type Props = {
@@ -63,6 +67,9 @@ type GroupContentsProps = {
  */
 const GroupContents = ({ users, sharingGroup }: GroupContentsProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isDeleteConfirm, setIsDeleteConfirm] = useState<boolean>(false);
+  // 非同期処理中のボタン状態管理
+  const [isPending, startTransition] = useTransition();
 
   // 所属メンバーの状態管理
   const [isMembers, setIsMembers] = useState<number[]>(
@@ -87,20 +94,38 @@ const GroupContents = ({ users, sharingGroup }: GroupContentsProps) => {
   };
 
   // サーバーアクションを呼び出して更新
-  const saveEdit = async () => {
-    const result = await editGroupMembersAction({
-      groupId: sharingGroup.id,
-      userIds: isMembers,
+  const saveEditAction = () => {
+    startTransition(async () => {
+      const result = await editGroupMembersAction({
+        groupId: sharingGroup.id,
+        userIds: isMembers,
+      });
+
+      if (result.success) {
+        setIsOpen(false);
+        setIsMembers(result.sharingGroup.members.map((member) => member.userId));
+
+        toast.success("メンバーの編集に成功しました");
+      } else {
+        toast.error(result.error);
+      }
     });
+  };
 
-    if (result.success) {
-      setIsOpen(false);
-      setIsMembers(result.sharingGroup.members.map((member) => member.userId));
+  // 共有グループを削除する
+  const deleteAction = () => {
+    startTransition(async () => {
+      const result = await deleteSharingGroupAction({
+        groupId: sharingGroup.id,
+      });
 
-      toast.success("メンバーの編集に成功しました");
-    } else {
-      toast.error(result.error);
-    }
+      if (result.success) {
+        setIsDeleteConfirm(false);
+        toast.success("共有グループの削除に成功しました");
+      } else {
+        toast.error(result.error);
+      }
+    });
   };
 
   return (
@@ -131,12 +156,19 @@ const GroupContents = ({ users, sharingGroup }: GroupContentsProps) => {
               <button
                 className="cursor-pointer text-sm underline transition-all hover:opacity-70 max-md:text-[10px]"
                 onClick={() => setIsOpen(true)}
+                disabled={isPending}
               >
                 編集
               </button>
             )}
 
-            <button className="text-warning text-sm underline max-md:text-[10px]">削除</button>
+            <button
+              className="text-warning cursor-pointer text-sm underline transition-all hover:opacity-70 max-md:text-[10px]"
+              onClick={() => setIsDeleteConfirm(true)}
+              disabled={isPending}
+            >
+              削除
+            </button>
           </div>
         </div>
         <AccordionContent isOpen={isOpen}>
@@ -172,12 +204,42 @@ const GroupContents = ({ users, sharingGroup }: GroupContentsProps) => {
             ))}
           </div>
           <div className="mt-4 flex gap-4">
-            <Button variant="cancel" onClick={cancelEdit}>
+            <Button variant="cancel" onClick={cancelEdit} disabled={isPending}>
               キャンセル
             </Button>
-            <Button onClick={saveEdit}>保存</Button>
+            <Button onClick={saveEditAction} disabled={isPending}>
+              保存
+            </Button>
           </div>
         </AccordionContent>
+        <AnimatePresence>
+          {isDeleteConfirm && (
+            <Modal>
+              <ActionDialog onClose={isPending ? undefined : () => setIsDeleteConfirm(false)}>
+                <div className="flex h-full flex-col justify-center">
+                  <p className="text-center text-xl font-medium max-md:text-sm">確認</p>
+                  <p className="mt-5 mb-10 text-center max-md:mt-2 max-md:mb-6 max-md:text-xs">
+                    共有グループ【{sharingGroup.name}】を削除します。
+                    <br />
+                    本当によろしいですか？
+                  </p>
+                  <div className="flex justify-center gap-5">
+                    <Button
+                      variant="cancel"
+                      onClick={() => setIsDeleteConfirm(false)}
+                      disabled={isPending}
+                    >
+                      キャンセル
+                    </Button>
+                    <Button variant="remove" onClick={deleteAction} disabled={isPending}>
+                      削除する
+                    </Button>
+                  </div>
+                </div>
+              </ActionDialog>
+            </Modal>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
