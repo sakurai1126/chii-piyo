@@ -1,7 +1,7 @@
 _local/
 node_modules/
 .husky/_/
-.github/copilot-instructions.md
+.agents
 .env*
 !.env.example
 
