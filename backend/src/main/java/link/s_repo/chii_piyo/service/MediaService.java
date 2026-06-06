@@ -1,8 +1,8 @@
 package link.s_repo.chii_piyo.service;
 
 import link.s_repo.chii_piyo.common.S3KeyGenerator;
-import link.s_repo.chii_piyo.exception.MediaAccessDeniedException;
-import link.s_repo.chii_piyo.exception.MediaNotFoundException;
+import link.s_repo.chii_piyo.exception.ResourceAccessDeniedException;
+import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.Media;
 import link.s_repo.chii_piyo.repository.gen.MediaDynamicSqlSupport;
 import link.s_repo.chii_piyo.repository.gen.MediaMapper;
@@ -17,11 +17,9 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 import static link.s_repo.chii_piyo.repository.gen.MediaDynamicSqlSupport.id;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
@@ -49,7 +47,7 @@ public class MediaService {
     @Transactional(readOnly = true)
     public Media getMedia(Long id) {
         return mediaMapper.selectByPrimaryKey(id)
-            .orElseThrow(() -> new MediaNotFoundException("メディアが見つかりません mediaId=" + id)
+            .orElseThrow(() -> new ResourceNotFoundException("メディアが見つかりません mediaId=" + id)
             );
     }
 
@@ -228,18 +226,18 @@ public class MediaService {
      * @param userId       実行ユーザーID
      * @param uploadStatus 更新後のステータス (COMPLETED / FAILED / PROCESSING)
      * @return 更新後のメディア情報
-     * @throws MediaNotFoundException     対象メディアが存在しない場合
-     * @throws MediaAccessDeniedException アップロード者以外が更新しようとした場合
+     * @throws ResourceNotFoundException     対象メディアが存在しない場合
+     * @throws ResourceAccessDeniedException アップロード者以外が更新しようとした場合
      */
     @Transactional
     public Media updateUploadStatus(Long mediaId, Long userId, String uploadStatus) {
         // 対象メディアを取得
         Media media = mediaMapper.selectOne(c -> c.where(id, isEqualTo(mediaId)))
-            .orElseThrow(() -> new MediaNotFoundException("メディアが見つかりません mediaId=" + mediaId));
+            .orElseThrow(() -> new ResourceNotFoundException("メディアが見つかりません mediaId=" + mediaId));
 
         // アップロード者本人かを確認
         if (!media.getUploadedBy().equals(userId)) {
-            throw new MediaAccessDeniedException("このメディアを更新する権限がありません mediaId=" + mediaId);
+            throw new ResourceAccessDeniedException("このメディアを更新する権限がありません mediaId=" + mediaId);
         }
 
         // ステータスのみを更新

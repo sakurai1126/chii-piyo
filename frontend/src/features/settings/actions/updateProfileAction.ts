@@ -1,5 +1,7 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+
 import { UserManagementApi, UserResponseDto } from "@/lib/api-client/gen";
 import { createAuthorizedConfig } from "@/lib/api-client/server";
 
@@ -38,6 +40,9 @@ export const updateProfileAction = async (input: Input): Promise<ActionResult> =
         isEasyMode: input.isEasyMode,
       },
     });
+
+    // キャッシュを破棄し、サーバーコンポーネントを再レンダリング
+    revalidatePath("/", "layout");
 
     return { success: true, user: response };
   } catch (error) {

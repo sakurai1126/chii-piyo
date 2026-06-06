@@ -60,8 +60,6 @@ paths:
     $ref: "./paths/sharing-groups/sharing-groups-detail.yml"
   /sharing-groups/{id}/members:
     $ref: "./paths/sharing-groups/sharing-group-members.yml"
-  /sharing-groups/{id}/members/{memberId}:
-    $ref: "./paths/sharing-groups/sharing-group-members-detail.yml"
 
   # 写真・動画
   /media:

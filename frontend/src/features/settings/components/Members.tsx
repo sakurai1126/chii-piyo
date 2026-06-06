@@ -1,12 +1,14 @@
 import Image from "next/image";
 
-import { getUsers } from "@/features/auth/actions/getUsers";
+import { UserResponseDto } from "@/lib/api-client/gen";
 
 import members from "../assets/members.svg";
 
-export const Members = async () => {
-  const users = await getUsers();
+type Props = {
+  users: UserResponseDto[];
+};
 
+export const Members = async ({ users }: Props) => {
   return (
     <div className="mt-10 max-md:mt-8" id="members">
       <div className="flex items-center gap-2">

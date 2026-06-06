@@ -14,17 +14,17 @@
 
 import { mapValues } from "../runtime";
 /**
- * 共有グループメンバー追加リクエスト
+ * 共有グループメンバー編集リクエスト
  * @export
  * @interface SharingGroupMemberRequestDto
  */
 export interface SharingGroupMemberRequestDto {
   /**
-   * 追加するユーザーID
-   * @type {number}
+   * 新しい共有グループメンバーID一覧
+   * @type {Array<number>}
    * @memberof SharingGroupMemberRequestDto
    */
-  userId: number;
+  userIds: Array<number>;
 }
 
 /**
@@ -33,7 +33,7 @@ export interface SharingGroupMemberRequestDto {
 export function instanceOfSharingGroupMemberRequestDto(
   value: object,
 ): value is SharingGroupMemberRequestDto {
-  if (!("userId" in value) || value["userId"] === undefined) return false;
+  if (!("userIds" in value) || value["userIds"] === undefined) return false;
   return true;
 }
 
@@ -49,7 +49,7 @@ export function SharingGroupMemberRequestDtoFromJSONTyped(
     return json;
   }
   return {
-    userId: json["userId"],
+    userIds: json["userIds"],
   };
 }
 
@@ -66,6 +66,6 @@ export function SharingGroupMemberRequestDtoToJSONTyped(
   }
 
   return {
-    userId: value["userId"],
+    userIds: value["userIds"],
   };
 }

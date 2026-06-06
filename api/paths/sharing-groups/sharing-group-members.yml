@@ -1,52 +1,26 @@
-get:
+put:
   tags:
     - sharingGroupManagement
-  summary: 共有グループのメンバー一覧を取得
-  operationId: getSharingGroupMembers
-  parameters:
-    - $ref: "../../components/parameters.yml#/XRequestedWith"
-    - $ref: "../../components/parameters.yml#/ResourceId"
-  responses:
-    "200":
-      description: メンバー一覧
-      content:
-        application/json;charset=UTF-8:
-          schema:
-            type: array
-            items:
-              $ref: "../../components/schemas/sharing-groups.yml#/SharingGroupMemberResponseDto"
-    "401":
-      $ref: "../../components/responses.yml#/Unauthorized"
-    "404":
-      $ref: "../../components/responses.yml#/NotFound"
-    "500":
-      $ref: "../../components/responses.yml#/InternalServerError"
-    default:
-      $ref: "../../components/responses.yml#/DefaultErrors"
-
-post:
-  tags:
-    - sharingGroupManagement
-  summary: 共有グループにメンバーを追加
-  operationId: addSharingGroupMember
+  summary: 共有グループメンバーを編集
+  operationId: editSharingGroupMember
   x-codegen-request-body-name: SharingGroupMemberData
   parameters:
     - $ref: "../../components/parameters.yml#/XRequestedWith"
     - $ref: "../../components/parameters.yml#/ResourceId"
   requestBody:
-    description: 追加するメンバー情報
+    description: 編集するメンバー情報
     content:
       application/json;charset=UTF-8:
         schema:
           $ref: "../../components/schemas/sharing-groups.yml#/SharingGroupMemberRequestDto"
     required: true
   responses:
-    "201":
-      description: メンバーの追加に成功
+    "200":
+      description: 更新された共有グループ情報
       content:
         application/json;charset=UTF-8:
           schema:
-            $ref: "../../components/schemas/sharing-groups.yml#/SharingGroupMemberResponseDto"
+            $ref: "../../components/schemas/sharing-groups.yml#/SharingGroupResponseDto"
     "400":
       $ref: "../../components/responses.yml#/BadRequest"
     "401":

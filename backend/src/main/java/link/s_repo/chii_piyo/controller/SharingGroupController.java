@@ -1,6 +1,7 @@
 package link.s_repo.chii_piyo.controller;
 
 import link.s_repo.chii_piyo.controller.converter.SharingGroupConverter;
+import link.s_repo.chii_piyo.controller.converter.SharingGroupMemberConverter;
 import link.s_repo.chii_piyo.controller.gen.SharingGroupManagementApi;
 import link.s_repo.chii_piyo.model.gen.*;
 import link.s_repo.chii_piyo.service.SharingGroupService;
@@ -11,7 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.net.URI;
+import java.util.Collections;
 import java.util.List;
+
 
 /**
  * 共有グループ管理コントローラー<br>
@@ -23,16 +27,7 @@ import java.util.List;
 public class SharingGroupController implements SharingGroupManagementApi {
     private final SharingGroupService sharingGroupService;
     private final SharingGroupConverter sharingGroupConverter;
-
-    /**
-     * POST /sharing-groups/{id}/members
-     * 共有グループにメンバーを追加する
-     */
-    @Override
-    public ResponseEntity<SharingGroupMemberResponseDto> addSharingGroupMember(
-        String xRequestedWith, Long id, SharingGroupMemberRequestDto sharingGroupMemberData) {
-        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
-    }
+    private final SharingGroupMemberConverter sharingGroupMemberConverter;
 
     /**
      * POST /sharing-groups
@@ -63,37 +58,93 @@ public class SharingGroupController implements SharingGroupManagementApi {
     }
 
     /**
-     * GET /sharing-groups/{id}/members
-     * 共有グループのメンバー一覧を取得する
-     */
-    @Override
-    public ResponseEntity<List<SharingGroupMemberResponseDto>> getSharingGroupMembers(
-        String xRequestedWith, Long id) {
-        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
-    }
-
-    /**
-     * GET /sharing-groups
+     * GET /sharing-groups<br>
      * 共有グループ一覧を取得する
+     *
+     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @return 共有グループレスポンスDTOのリスト
      */
     @Override
     public ResponseEntity<List<SharingGroupResponseDto>> getSharingGroups(String xRequestedWith) {
-        // サービス層でエンティティを取得し、コンバータでDTOに変換する
-        List<SharingGroupResponseDto> response = sharingGroupService.getSharingGroups().stream()
-            .map(sharingGroupConverter::toSharingGroupResponseDto)
+        // サービス層でエンティティを取得
+        List<SharingGroups> sharingGroups = sharingGroupService.getSharingGroups();
+
+        // 取得した共有グループからIDを抽出
+        List<Long> groupIds = sharingGroups.stream()
+            .map(SharingGroups::getId)
+            .toList();
+
+        // 抽出したIDを持った所属メンバーを取得
+        List<SharingGroupMembers> targetMembers = sharingGroupService.getMembersByGroupIds(groupIds);
+
+        // サービス層でアイコンURLを生成しつつMap化
+        SharingGroupService.MemberAndIconMapResult memberAndIconMap =
+            sharingGroupService.memberAndIconMapping(targetMembers);
+
+        // コンバータでDTOに変換する
+        List<SharingGroupResponseDto> response = sharingGroups.stream()
+            .map(group -> {
+                // MapからこのグループのIDに紐づくメンバーリスト(いない場合は空リスト)を取得する
+                List<SharingGroupMembers> members =
+                    memberAndIconMap.membersByGroupIdMap().getOrDefault(group.getId(),
+                        Collections.emptyList());
+
+                // 所属メンバーをレスポンスDTOに変換する
+                List<SharingGroupMemberResponseDto> memberDtos = members.stream()
+                    .map(member -> {
+                        // IDを元に、Mapからユーザー情報とアイコンURLを取得
+                        Users user = memberAndIconMap.usersMap().get(member.getUserId());
+                        URI iconUrl = memberAndIconMap.iconUrlsMap().get(member.getUserId());
+                        // メンバー情報、ユーザー情報、アイコンURLを渡して、メンバー用DTOを作成
+                        return sharingGroupMemberConverter.toSharingGroupMemberResponseDto(member, user, iconUrl);
+                    }).toList();
+                // コンバータにグループ情報と、変換済みのメンバーDTOリストを渡す
+                return sharingGroupConverter.toSharingGroupResponseDto(group, memberDtos);
+            })
             .toList();
 
         return ResponseEntity.ok(response);
     }
 
     /**
-     * DELETE /sharing-groups/{id}/members/{memberId}
-     * 共有グループからメンバーを削除する
+     * PUT /sharing-groups/{id}/members<br>
+     * 共有グループメンバーを編集する
+     *
+     * @param xRequestedWith         X-Requested-With ヘッダ (CSRF防御用)
+     * @param id                     対象共有グループのID
+     * @param sharingGroupMemberData 編集するメンバー情報
+     * @return 更新されたメンバー情報一覧
      */
     @Override
-    public ResponseEntity<Void> removeSharingGroupMember(
-        String xRequestedWith, Long id, Long memberId) {
-        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+    public ResponseEntity<SharingGroupResponseDto> editSharingGroupMember(
+        String xRequestedWith, Long id, SharingGroupMemberRequestDto sharingGroupMemberData) {
+        // サービス層でグループのエンティティを取得
+        SharingGroups sharingGroups = sharingGroupService.getSharingGroupById(id);
+
+        // サービス層でメンバー情報の更新を行う
+        List<SharingGroupMembers> newMembers = sharingGroupService.editMembers(
+            id, sharingGroupMemberData);
+
+        // サービス層でアイコンURLを生成しつつMap化
+        SharingGroupService.MemberAndIconMapResult memberAndIconMap =
+            sharingGroupService.memberAndIconMapping(newMembers);
+
+        // 所属メンバーをレスポンスDTOに変換する
+        List<SharingGroupMemberResponseDto> memberDtos = newMembers.stream()
+            .map(member -> {
+                // IDを元に、Mapからユーザー情報とアイコンURLを取得
+                Users user = memberAndIconMap.usersMap().get(member.getUserId());
+                URI iconUrl = memberAndIconMap.iconUrlsMap().get(member.getUserId());
+                // メンバー情報、ユーザー情報、アイコンURLを渡して、メンバー用DTOを作成
+                return sharingGroupMemberConverter.toSharingGroupMemberResponseDto(member, user, iconUrl);
+            }).toList();
+
+        // コンバータで変換する
+        SharingGroupResponseDto response =
+            sharingGroupConverter.toSharingGroupResponseDto(sharingGroups, memberDtos);
+
+        // レスポンスを返却
+        return ResponseEntity.ok(response);
     }
 
     /**
