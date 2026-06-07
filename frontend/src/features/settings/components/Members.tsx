@@ -51,7 +51,7 @@ export const Members = async ({ users, sharingGroups }: Props) => {
                     閲覧可能な共有範囲：
                     {user.scopeSharingGroups.map((sharingGroupId, index) => {
                       return (
-                        <span key={index}>
+                        <span key={sharingGroupId}>
                           {sharingGroupMap.get(sharingGroupId)}
                           {index < user.scopeSharingGroups.length - 1 ? "、" : ""}
                         </span>
@@ -76,7 +76,7 @@ export const Members = async ({ users, sharingGroups }: Props) => {
                 閲覧可能な共有範囲：
                 {user.scopeSharingGroups.map((sharingGroupId, index) => {
                   return (
-                    <span key={index}>
+                    <span key={sharingGroupId}>
                       {sharingGroupMap.get(sharingGroupId)}
                       {index < user.scopeSharingGroups.length - 1 ? "、" : ""}
                     </span>
