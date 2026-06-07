@@ -30,7 +30,7 @@ export default async function SettingsPage() {
           {/* プロフィール */}
           <Profile currentUser={currentUser} />
           {/* メンバー一覧 */}
-          <Members users={users} />
+          <Members users={users} sharingGroups={sharingGroups} />
           {/* 共有範囲 */}
           <SharingGroups users={users} sharingGroups={sharingGroups} />
           {/* 表示モード */}

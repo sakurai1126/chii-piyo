@@ -4,6 +4,7 @@ import link.s_repo.chii_piyo.common.S3KeyGenerator;
 import link.s_repo.chii_piyo.exception.ResourceAccessDeniedException;
 import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.Media;
+import link.s_repo.chii_piyo.model.gen.MediaUpdateRequestDto;
 import link.s_repo.chii_piyo.repository.gen.MediaDynamicSqlSupport;
 import link.s_repo.chii_piyo.repository.gen.MediaMapper;
 import link.s_repo.chii_piyo.repository.gen.MediaTagsDynamicSqlSupport;
@@ -37,6 +38,8 @@ public class MediaService {
     private final S3Service s3Service;
     private final ThumbnailService thumbnailService;
     private final S3KeyGenerator s3KeyGenerator;
+    private final SharingGroupService sharingGroupService;
+    private final AlbumService albumService;
 
     /**
      * メディアをID指定で1件取得する
@@ -126,7 +129,12 @@ public class MediaService {
         }
 
         if (sharingGroupId != null) {
-            conditions.add(and(MediaDynamicSqlSupport.sharingGroupId, isEqualTo(sharingGroupId)));
+            // 0指定の場合は指定されていない(全員公開)のみを取得する
+            if (sharingGroupId == 0) {
+                conditions.add(and(MediaDynamicSqlSupport.sharingGroupId, isNull()));
+            } else {
+                conditions.add(and(MediaDynamicSqlSupport.sharingGroupId, isEqualTo(sharingGroupId)));
+            }
         }
 
         if (tagId != null && !tagId.isEmpty()) {
@@ -260,6 +268,7 @@ public class MediaService {
 
         return media;
     }
+
     /**
      * 対象メディアの前後のメディア情報を取得し返却する<br>
      * 前後のメディア情報と位置情報を返却する
@@ -320,6 +329,39 @@ public class MediaService {
             results.add(new GetMediaNavigationResult(media, position));
         }
         return results;
+    }
+
+    /**
+     * メディア情報を更新する
+     *
+     * @param id         対象のメディアID
+     * @param updateData 更新用データ（アルバムID と 共有グループIDを想定）
+     */
+    public void updateMedia(Long id, MediaUpdateRequestDto updateData) {
+        // 対象メディアを取得
+        Media media = getMedia(id);
+
+        // isPresentでそのキーが存在したか（undefinedでないか）を判定しnullとundefinedの処理を分岐する
+        if (updateData.getSharingGroupId().isPresent()) {
+            Long newId = updateData.getSharingGroupId().get();
+            // nullではない場合存在するかチェックするため取得処理を挟む（存在しないIDの場合例外になる）
+            if (newId != null) {
+                sharingGroupService.getSharingGroupById(newId);
+            }
+
+            media.setSharingGroupId(newId);
+        }
+
+        if (updateData.getAlbumId().isPresent()) {
+            Long newId = updateData.getAlbumId().get();
+            // nullではない場合存在するかチェックするため取得処理を挟む（存在しないIDの場合例外になる）
+            if (newId != null) {
+                albumService.getAlbumById(newId);
+            }
+            media.setAlbumId(newId);
+        }
+
+        mediaMapper.updateByPrimaryKey(media);
     }
 
     /**

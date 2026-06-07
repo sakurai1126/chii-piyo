@@ -1,5 +1,6 @@
 package link.s_repo.chii_piyo.service;
 
+import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.Albums;
 import link.s_repo.chii_piyo.model.gen.Media;
 
@@ -61,6 +62,17 @@ public class AlbumService {
         return albumsMapper.select(c -> c.orderBy(id));
     }
 
+    /**
+     * アルバムをID指定で1件取得する
+     *
+     * @param id 対象アルバムのID
+     * @return アルバムデータ
+     */
+    @Transactional(readOnly = true)
+    public Albums getAlbumById(Long id) {
+        return albumsMapper.selectByPrimaryKey(id)
+            .orElseThrow(() -> new ResourceNotFoundException("アルバムが見つかりません id=" + id));
+    }
     /**
      * 指定したIDのアルバムに紐づくメディアの件数を取得する<br>
      *

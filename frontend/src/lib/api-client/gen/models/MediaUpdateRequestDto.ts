@@ -30,7 +30,7 @@ export interface MediaUpdateRequestDto {
    * @type {number}
    * @memberof MediaUpdateRequestDto
    */
-  sharingGroupId?: number;
+  sharingGroupId?: number | null;
 }
 
 /**

@@ -415,12 +415,8 @@ paths:
               $ref: '#/components/schemas/MediaUpdateRequestDto'
         required: true
       responses:
-        '200':
-          description: 更新されたメディア情報
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/MediaResponseDto'
+        '204':
+          description: メディアの更新に成功
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -1710,6 +1706,7 @@ components:
         - displayName
         - email
         - presignedIconUrl
+        - scopeSharingGroups
         - isDarkMode
         - isEasyMode
         - role
@@ -1738,6 +1735,13 @@ components:
           type: string
           format: uri
           description: S3用の署名付きURL
+        scopeSharingGroups:
+          type: array
+          items:
+            type: integer
+            format: int64
+            description: 共有グループID
+            example: 1
         isDarkMode:
           type: boolean
           description: ダークモードフラグ
@@ -2232,7 +2236,9 @@ components:
           format: int64
           description: 所属アルバムID
         sharingGroupId:
-          type: integer
+          type:
+            - integer
+            - 'null'
           format: int64
           description: 共有範囲グループID
     MediaUploadStatusRequestDto:

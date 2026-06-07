@@ -1,14 +1,20 @@
 import Image from "next/image";
 
-import { UserResponseDto } from "@/lib/api-client/gen";
+import { SharingGroupResponseDto, UserResponseDto } from "@/lib/api-client/gen";
 
 import members from "../assets/members.svg";
 
 type Props = {
   users: UserResponseDto[];
+  sharingGroups: SharingGroupResponseDto[];
 };
 
-export const Members = async ({ users }: Props) => {
+export const Members = async ({ users, sharingGroups }: Props) => {
+  const sharingGroupMap = new Map<number, string>();
+  sharingGroups.forEach((sharingGroup) => {
+    sharingGroupMap.set(sharingGroup.id, sharingGroup.name);
+  });
+
   return (
     <div className="mt-10 max-md:mt-8" id="members">
       <div className="flex items-center gap-2">
@@ -41,7 +47,17 @@ export const Members = async ({ users }: Props) => {
                     {user.displayName}
                   </p>
                   <p className="text-sm max-md:hidden">メールアドレス：{user.email}</p>
-                  <p className="text-sm max-md:hidden">閲覧可能な共有範囲：家族全員、夫婦のみ</p>
+                  <p className="text-sm max-md:hidden">
+                    閲覧可能な共有範囲：
+                    {user.scopeSharingGroups.map((sharingGroupId, index) => {
+                      return (
+                        <span key={index}>
+                          {sharingGroupMap.get(sharingGroupId)}
+                          {index < user.scopeSharingGroups.length - 1 ? "、" : ""}
+                        </span>
+                      );
+                    })}
+                  </p>
                 </div>
               </div>
               {user.role === "ADMIN" ? (
@@ -56,7 +72,17 @@ export const Members = async ({ users }: Props) => {
             </div>
             <div className="mt-2 grid gap-1 md:hidden">
               <p className="text-xs">メールアドレス：{user.email}</p>
-              <p className="text-xs">閲覧可能な共有範囲：家族全員、夫婦のみ</p>
+              <p className="text-xs">
+                閲覧可能な共有範囲：
+                {user.scopeSharingGroups.map((sharingGroupId, index) => {
+                  return (
+                    <span key={index}>
+                      {sharingGroupMap.get(sharingGroupId)}
+                      {index < user.scopeSharingGroups.length - 1 ? "、" : ""}
+                    </span>
+                  );
+                })}
+              </p>
             </div>
           </div>
         ))}

@@ -8,6 +8,7 @@ UserResponseDto:
     - displayName
     - email
     - presignedIconUrl
+    - scopeSharingGroups
     - isDarkMode
     - isEasyMode
     - role
@@ -36,6 +37,13 @@ UserResponseDto:
       type: string
       format: uri
       description: S3用の署名付きURL
+    scopeSharingGroups:
+      type: array
+      items:
+        type: integer
+        format: int64
+        description: 共有グループID
+        example: 1
     isDarkMode:
       type: boolean
       description: ダークモードフラグ

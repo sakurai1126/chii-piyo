@@ -5,6 +5,7 @@ import link.s_repo.chii_piyo.controller.converter.UserGenerateIconDataConverter;
 import link.s_repo.chii_piyo.controller.gen.UserManagementApi;
 import link.s_repo.chii_piyo.model.gen.*;
 import link.s_repo.chii_piyo.security.CurrentUserProvider;
+import link.s_repo.chii_piyo.service.SharingGroupService;
 import link.s_repo.chii_piyo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,6 +23,7 @@ public class UserController implements UserManagementApi {
     private final CurrentUserProvider currentUserProvider;
     private final UserConverter userConverter;
     private final UserGenerateIconDataConverter userGenerateIconDataConverter;
+    private final SharingGroupService sharingGroupService;
 
     /**
      * GET /users/me
@@ -33,9 +36,10 @@ public class UserController implements UserManagementApi {
     public ResponseEntity<UserResponseDto> getMe(String xRequestedWith) {
         Long currentUserId = currentUserProvider.getUserId();
         Users currentUser = userService.getUserById(currentUserId);
+        List<Long> scopeSharingGroups = sharingGroupService.getUserSharingScopes(currentUserId);
 
         URI presignedUrl = userService.generateIconDownloadPresignedUrl(currentUser);
-        return ResponseEntity.ok(userConverter.toUserResponseDto(currentUser, presignedUrl));
+        return ResponseEntity.ok(userConverter.toUserResponseDto(currentUser, presignedUrl, scopeSharingGroups));
     }
 
     /**
@@ -50,11 +54,12 @@ public class UserController implements UserManagementApi {
     public ResponseEntity<UserResponseDto> updateMe(
         String xRequestedWith, UserUpdateRequestDto userUpdateData) {
         Long currentUserId = currentUserProvider.getUserId();
+        List<Long> scopeSharingGroups = sharingGroupService.getUserSharingScopes(currentUserId);
 
         // サービス層でS3キーを更新し更新後のユーザー情報を受け取る
         Users updatedUser = userService.updateMe(currentUserId, userUpdateData);
         URI presignedUrl = userService.generateIconDownloadPresignedUrl(updatedUser);
-        UserResponseDto response = userConverter.toUserResponseDto(updatedUser, presignedUrl);
+        UserResponseDto response = userConverter.toUserResponseDto(updatedUser, presignedUrl, scopeSharingGroups);
         return ResponseEntity.ok(response);
     }
 
@@ -97,11 +102,26 @@ public class UserController implements UserManagementApi {
         // サービス層でユーザー情報一覧とアイコンダウンロード用署名付きURLを取得する
         List<UserService.UsersAndIconResult> usersAndIcon = userService.getUsersAndIcon();
 
-        // レスポンスDTOに変換して返却する
-        return ResponseEntity.ok(usersAndIcon
-            .stream()
-            .map(c -> userConverter.toUserResponseDto(c.user(), c.presignedUrl()))
-            .toList()
+        // 取得したデータからユーザーIDを抽出し手リスト化
+        List<Long> userIds = usersAndIcon.stream()
+            .map(c -> c.user().getId())
+            .toList();
+
+        // IDリストから共有グループを一括取得してMap型で受け取る
+        Map<Long, List<Long>> scopeMap = sharingGroupService.getUserSharingScopesBulk(userIds);
+
+        return ResponseEntity.ok(
+            usersAndIcon
+                .stream()
+                .map(c ->
+                    userConverter.toUserResponseDto(
+                        c.user(),
+                        c.presignedUrl(),
+                        // 事前準備したscopeMapから対象ユーザーのものを取得
+                        scopeMap.getOrDefault(c.user().getId(), List.of())
+                    )
+                )
+                .toList()
         );
     }
 }

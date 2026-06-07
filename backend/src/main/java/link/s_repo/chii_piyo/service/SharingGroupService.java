@@ -1,7 +1,5 @@
 package link.s_repo.chii_piyo.service;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.*;
 import link.s_repo.chii_piyo.repository.gen.SharingGroupMembersDynamicSqlSupport;
@@ -20,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 
 import static link.s_repo.chii_piyo.repository.gen.SharingGroupsDynamicSqlSupport.id;
 import static link.s_repo.chii_piyo.repository.gen.SharingGroupMembersDynamicSqlSupport.sharingGroupId;
@@ -95,7 +92,6 @@ public class SharingGroupService {
             sharingGroupMembersMapper.insertMultiple(members);
         }
     }
-
 
     /**
      * 共有グループ所属メンバー一覧を取得する
@@ -186,7 +182,6 @@ public class SharingGroupService {
         return new MemberAndIconMapResult(usersMap, iconUrlsMap, membersByGroupIdMap);
     }
 
-
     /**
      * 共有グループと所属するメンバーを削除する
      *
@@ -219,6 +214,50 @@ public class SharingGroupService {
     }
 
     /**
+     * 指定のユーザーの所属共有グループを取得する
+     *
+     * @param userId 対象ユーザーID
+     * @return 共有グループのIDリスト
+     */
+    public List<Long> getUserSharingScopes(Long userId) {
+        // ユーザーIDが一致するメンバー情報をDBから取得
+        List<SharingGroupMembers> members = sharingGroupMembersMapper.select(c ->
+            c.where(SharingGroupMembersDynamicSqlSupport.userId, isEqualTo(userId))
+        );
+
+        // 取得したエンティティのリストから 共有グループID だけを抽出して返す
+        return members.stream()
+            .map(SharingGroupMembers::getSharingGroupId)
+            .toList();
+    }
+
+    /**
+     * ユーザーIDのリストを受け取り、各ユーザーの共有グループIDリストをMapで返す
+     *
+     * @param userIds 対象ユーザーIDリスト
+     * @return Map<userId, 共有グループIDリスト>
+     */
+    @Transactional(readOnly = true)
+    public Map<Long, List<Long>> getUserSharingScopesBulk(List<Long> userIds) {
+        // ユーザーIDリストが空の場合空マップを返却
+        if (userIds.isEmpty()) {
+            return Map.of();
+        }
+
+        // 受け取ったユーザーIDリストに該当する共有メンバーを一括取得
+        List<SharingGroupMembers> members = sharingGroupMembersMapper.select(c ->
+            c.where(SharingGroupMembersDynamicSqlSupport.userId, isIn(userIds))
+        );
+
+        // ユーザーIDと共有メンバー情報をMap型にグルーピングして返却
+        return members.stream()
+            .collect(Collectors.groupingBy(
+                SharingGroupMembers::getUserId,
+                Collectors.mapping(SharingGroupMembers::getSharingGroupId, Collectors.toList())
+            ));
+    }
+
+    /**
      * memberAndIconMappingの結果を返すためのレコードクラス
      */
     public record MemberAndIconMapResult(
@@ -226,4 +265,3 @@ public class SharingGroupService {
         Map<Long, List<SharingGroupMembers>> membersByGroupIdMap) {
     }
 }
-
