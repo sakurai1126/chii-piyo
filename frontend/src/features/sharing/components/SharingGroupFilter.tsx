@@ -55,6 +55,23 @@ export const SharingGroupFilter = ({ updateFilter, currentValue = "" }: Props) =
           />
           <p className="text-sm max-md:text-xs">すべて</p>
         </label>
+        <label
+          htmlFor={`allSharingGroupAll-${uid}`}
+          className="has-checked:border-accent-orange has-checked:bg-accent-orange-back has-checked:text-brown-middle border-line-gray flex cursor-pointer items-center gap-2 rounded-lg border bg-white py-1.5 pr-5 pl-3 transition-all max-md:py-1"
+        >
+          <input
+            type="radio"
+            id={`allSharingGroupAll-${uid}`}
+            name={`sharing-group-${uid}`}
+            checked={currentValue === "0"}
+            className="accent-accent-orange-radio"
+            onChange={() => {
+              // 0を指定するでバックエンドで指定なしを取得する
+              updateFilter({ key: "sharingGroupId", value: "0" });
+            }}
+          />
+          <p className="text-sm max-md:text-xs">全員に公開</p>
+        </label>
         {sharingGroupsState.data?.map((group) => (
           <label
             key={group.id}

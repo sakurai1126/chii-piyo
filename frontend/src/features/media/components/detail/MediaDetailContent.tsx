@@ -1,6 +1,8 @@
 import { AlbumMediaDetail } from "@/features/album";
 import { getCurrentUser } from "@/features/auth";
+import { getUsers } from "@/features/auth/actions/getUsers";
 import { ShareGroupMediaDetail } from "@/features/sharing";
+import { getSharingGroups } from "@/features/sharing/api/getSharingGroups";
 import { TagMediaDetail } from "@/features/tag";
 
 import { getMedia } from "../../api/getMedia";
@@ -16,10 +18,12 @@ type Props = {
 };
 
 export const MediaDetailContent = async ({ id, isModal = false }: Props) => {
-  const [media, comments, currentUser] = await Promise.all([
+  const [media, comments, currentUser, sharingGroups, users] = await Promise.all([
     getMedia(Number(id)),
     getMediaComments(Number(id)),
     getCurrentUser(),
+    getSharingGroups(),
+    getUsers(),
   ]);
 
   return (
@@ -43,7 +47,7 @@ export const MediaDetailContent = async ({ id, isModal = false }: Props) => {
           <TagMediaDetail tags={media.tags} />
 
           {/* 共有範囲 */}
-          <ShareGroupMediaDetail />
+          <ShareGroupMediaDetail media={media} sharingGroups={sharingGroups} users={users} />
 
           {/* アルバム */}
           <AlbumMediaDetail />

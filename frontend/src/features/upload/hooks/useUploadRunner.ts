@@ -68,12 +68,6 @@ export const useUploadRunner = ({ onItemUpdate, onAllComplete }: UseUploadParams
       let mediaId: number | undefined;
 
       try {
-        // 共有範囲の選択は必須のため、存在しない場合はエラーにしてアップロード処理を中断
-        if (item.metadata.sharingGroupId === undefined) {
-          updateState({ status: "failed", errorMessage: "共有範囲が選択されていません" });
-          return { success: false };
-        }
-
         // ファイルのMIMEタイプからメディア種別を判定する
         const mediaType = (() => {
           switch (item.file.type.split("/")[0]) {

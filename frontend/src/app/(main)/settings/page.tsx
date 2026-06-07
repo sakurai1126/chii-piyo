@@ -1,6 +1,7 @@
 import Container from "@/components/layout/Container";
 import PageTitle from "@/components/ui/PageTitle";
 import { getCurrentUser } from "@/features/auth";
+import { getUsers } from "@/features/auth/actions/getUsers";
 import {
   Account,
   DisplayMode,
@@ -9,9 +10,14 @@ import {
   SharingGroups,
   Sidebar,
 } from "@/features/settings";
+import { getSharingGroups } from "@/features/sharing/api/getSharingGroups";
 
 export default async function SettingsPage() {
-  const currentUser = await getCurrentUser();
+  const [currentUser, users, sharingGroups] = await Promise.all([
+    getCurrentUser(),
+    getUsers(),
+    getSharingGroups(),
+  ]);
 
   return (
     <Container className="mt-20 max-md:mt-5">
@@ -24,9 +30,9 @@ export default async function SettingsPage() {
           {/* プロフィール */}
           <Profile currentUser={currentUser} />
           {/* メンバー一覧 */}
-          <Members />
+          <Members users={users} sharingGroups={sharingGroups} />
           {/* 共有範囲 */}
-          <SharingGroups />
+          <SharingGroups users={users} sharingGroups={sharingGroups} />
           {/* 表示モード */}
           <DisplayMode currentUser={currentUser} />
           {/* アカウント */}

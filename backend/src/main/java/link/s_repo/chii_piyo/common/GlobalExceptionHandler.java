@@ -1,7 +1,7 @@
 package link.s_repo.chii_piyo.common;
 
-import link.s_repo.chii_piyo.exception.MediaAccessDeniedException;
-import link.s_repo.chii_piyo.exception.MediaNotFoundException;
+import link.s_repo.chii_piyo.exception.ResourceAccessDeniedException;
+import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,12 +24,12 @@ public class GlobalExceptionHandler {
      * リソースが見つからない場合のエラー
      * ログにエラー内容を出力し、404エラーとして処理する
      *
-     * @param e MediaNotFoundException
+     * @param e ResourceNotFoundException
      * @return エラーレスポンス
      */
-    @ExceptionHandler(MediaNotFoundException.class)
-    public ResponseEntity<ApiResponse<Void>> handleMediaNotFound(MediaNotFoundException e) {
-        log.warn("メディアが見つかりません: {}", e.getMessage());
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleResourceNotFound(ResourceNotFoundException e) {
+        log.warn("リソースが見つかりません: {}", e.getMessage());
         return ResponseEntity
             // notFound()はbodyを構築できないためステータスを自分で設定し共通エラーコードを使用したレスポンスを返す
             .status(HttpStatus.NOT_FOUND)
@@ -39,15 +39,15 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * メディアへのアクセス権がない場合のエラー
+     * リソースへのアクセス権がない場合のエラー
      * ログにエラー内容を出力し、403エラーとして処理する
      *
-     * @param e MediaAccessDeniedException
+     * @param e ResourceAccessDeniedException
      * @return エラーレスポンス
      */
-    @ExceptionHandler(MediaAccessDeniedException.class)
-    public ResponseEntity<ApiResponse<Void>> handleMediaAccessDenied(MediaAccessDeniedException e) {
-        log.warn("メディアへのアクセス拒否: {}", e.getMessage());
+    @ExceptionHandler(ResourceAccessDeniedException.class)
+    public ResponseEntity<ApiResponse<Void>> handleMediaAccessDenied(ResourceAccessDeniedException e) {
+        log.warn("リソースへのアクセス拒否: {}", e.getMessage());
         return ResponseEntity
             .status(HttpStatus.FORBIDDEN)
             .body(ApiResponse.error(

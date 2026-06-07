@@ -20,6 +20,12 @@ import { mapValues } from "../runtime";
  */
 export interface SharingGroupMemberResponseDto {
   /**
+   * メンバーID
+   * @type {number}
+   * @memberof SharingGroupMemberResponseDto
+   */
+  id: number;
+  /**
    * ユーザーID
    * @type {number}
    * @memberof SharingGroupMemberResponseDto
@@ -51,6 +57,7 @@ export interface SharingGroupMemberResponseDto {
 export function instanceOfSharingGroupMemberResponseDto(
   value: object,
 ): value is SharingGroupMemberResponseDto {
+  if (!("id" in value) || value["id"] === undefined) return false;
   if (!("userId" in value) || value["userId"] === undefined) return false;
   if (!("displayName" in value) || value["displayName"] === undefined) return false;
   if (!("presignedIconUrl" in value) || value["presignedIconUrl"] === undefined) return false;
@@ -70,6 +77,7 @@ export function SharingGroupMemberResponseDtoFromJSONTyped(
     return json;
   }
   return {
+    id: json["id"],
     userId: json["userId"],
     displayName: json["displayName"],
     presignedIconUrl: json["presignedIconUrl"],
@@ -90,6 +98,7 @@ export function SharingGroupMemberResponseDtoToJSONTyped(
   }
 
   return {
+    id: value["id"],
     userId: value["userId"],
     displayName: value["displayName"],
     presignedIconUrl: value["presignedIconUrl"],

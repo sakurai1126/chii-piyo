@@ -66,7 +66,7 @@ public class MediaController implements MediaManagementApi {
             mediaUploadData.getHeight().orElse(null),
             mediaUploadData.getTakenAt().orElse(null),
             mediaUploadData.getAlbumId().orElse(null),
-            mediaUploadData.getSharingGroupId());
+            mediaUploadData.getSharingGroupId().orElse(null));
 
         // レスポンスDTOを構築
         MediaUploadResponseDto response = mediaUploadConverter.toMediaUploadResponseDto(
@@ -223,14 +223,25 @@ public class MediaController implements MediaManagementApi {
     }
 
     /**
-     * PUT /media/{id} : メディア情報を更新
+     * PUT /media/{id}<br>
+     * メディア情報を更新
+     *
+     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param id             対象のメディアID
+     * @param updateData     更新用データ（アルバムID と 共有グループIDを想定）
+     * @return 更新後のメディア情報
      */
     @Override
-    public ResponseEntity<MediaResponseDto> updateMedia(
+    public ResponseEntity<Void> updateMedia(
         String xRequestedWith,
         Long id,
-        MediaUpdateRequestDto mediaUpdateData) {
-        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+        MediaUpdateRequestDto updateData) {
+
+        // サービス層でデータを更新
+        mediaService.updateMedia(id, updateData);
+
+        // 204 No Contentを返す
+        return ResponseEntity.noContent().build();
     }
 
     /**

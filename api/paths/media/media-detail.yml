@@ -39,12 +39,8 @@ put:
           $ref: "../../components/schemas/media.yml#/MediaUpdateRequestDto"
     required: true
   responses:
-    "200":
-      description: 更新されたメディア情報
-      content:
-        application/json;charset=UTF-8:
-          schema:
-            $ref: "../../components/schemas/media.yml#/MediaResponseDto"
+    "204":
+      description: メディアの更新に成功
     "400":
       $ref: "../../components/responses.yml#/BadRequest"
     "401":

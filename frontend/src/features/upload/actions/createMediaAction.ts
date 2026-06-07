@@ -26,7 +26,7 @@ type Input = {
   height?: number;
   takenAt?: string;
   albumId?: number;
-  sharingGroupId: number;
+  sharingGroupId?: number;
   tagIds?: number[];
   comment?: string;
 };
@@ -62,7 +62,7 @@ export const createMediaAction = async (input: Input): Promise<ActionResult> => 
       height: input.height ?? null,
       takenAt: input.takenAt ? new Date(input.takenAt) : null,
       albumId: input.albumId ?? null,
-      sharingGroupId: input.sharingGroupId,
+      sharingGroupId: input.sharingGroupId ?? null,
     };
 
     // APIを呼び出してメタデータ登録と署名付きURLの取得を行う

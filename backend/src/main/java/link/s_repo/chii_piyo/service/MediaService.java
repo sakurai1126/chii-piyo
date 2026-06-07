@@ -1,9 +1,10 @@
 package link.s_repo.chii_piyo.service;
 
 import link.s_repo.chii_piyo.common.S3KeyGenerator;
-import link.s_repo.chii_piyo.exception.MediaAccessDeniedException;
-import link.s_repo.chii_piyo.exception.MediaNotFoundException;
+import link.s_repo.chii_piyo.exception.ResourceAccessDeniedException;
+import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.Media;
+import link.s_repo.chii_piyo.model.gen.MediaUpdateRequestDto;
 import link.s_repo.chii_piyo.repository.gen.MediaDynamicSqlSupport;
 import link.s_repo.chii_piyo.repository.gen.MediaMapper;
 import link.s_repo.chii_piyo.repository.gen.MediaTagsDynamicSqlSupport;
@@ -17,11 +18,9 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 import static link.s_repo.chii_piyo.repository.gen.MediaDynamicSqlSupport.id;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
@@ -39,6 +38,8 @@ public class MediaService {
     private final S3Service s3Service;
     private final ThumbnailService thumbnailService;
     private final S3KeyGenerator s3KeyGenerator;
+    private final SharingGroupService sharingGroupService;
+    private final AlbumService albumService;
 
     /**
      * メディアをID指定で1件取得する
@@ -49,7 +50,7 @@ public class MediaService {
     @Transactional(readOnly = true)
     public Media getMedia(Long id) {
         return mediaMapper.selectByPrimaryKey(id)
-            .orElseThrow(() -> new MediaNotFoundException("メディアが見つかりません mediaId=" + id)
+            .orElseThrow(() -> new ResourceNotFoundException("メディアが見つかりません mediaId=" + id)
             );
     }
 
@@ -128,7 +129,12 @@ public class MediaService {
         }
 
         if (sharingGroupId != null) {
-            conditions.add(and(MediaDynamicSqlSupport.sharingGroupId, isEqualTo(sharingGroupId)));
+            // 0指定の場合は指定されていない(全員公開)のみを取得する
+            if (sharingGroupId == 0) {
+                conditions.add(and(MediaDynamicSqlSupport.sharingGroupId, isNull()));
+            } else {
+                conditions.add(and(MediaDynamicSqlSupport.sharingGroupId, isEqualTo(sharingGroupId)));
+            }
         }
 
         if (tagId != null && !tagId.isEmpty()) {
@@ -228,18 +234,18 @@ public class MediaService {
      * @param userId       実行ユーザーID
      * @param uploadStatus 更新後のステータス (COMPLETED / FAILED / PROCESSING)
      * @return 更新後のメディア情報
-     * @throws MediaNotFoundException     対象メディアが存在しない場合
-     * @throws MediaAccessDeniedException アップロード者以外が更新しようとした場合
+     * @throws ResourceNotFoundException     対象メディアが存在しない場合
+     * @throws ResourceAccessDeniedException アップロード者以外が更新しようとした場合
      */
     @Transactional
     public Media updateUploadStatus(Long mediaId, Long userId, String uploadStatus) {
         // 対象メディアを取得
         Media media = mediaMapper.selectOne(c -> c.where(id, isEqualTo(mediaId)))
-            .orElseThrow(() -> new MediaNotFoundException("メディアが見つかりません mediaId=" + mediaId));
+            .orElseThrow(() -> new ResourceNotFoundException("メディアが見つかりません mediaId=" + mediaId));
 
         // アップロード者本人かを確認
         if (!media.getUploadedBy().equals(userId)) {
-            throw new MediaAccessDeniedException("このメディアを更新する権限がありません mediaId=" + mediaId);
+            throw new ResourceAccessDeniedException("このメディアを更新する権限がありません mediaId=" + mediaId);
         }
 
         // ステータスのみを更新
@@ -262,6 +268,7 @@ public class MediaService {
 
         return media;
     }
+
     /**
      * 対象メディアの前後のメディア情報を取得し返却する<br>
      * 前後のメディア情報と位置情報を返却する
@@ -322,6 +329,39 @@ public class MediaService {
             results.add(new GetMediaNavigationResult(media, position));
         }
         return results;
+    }
+
+    /**
+     * メディア情報を更新する
+     *
+     * @param id         対象のメディアID
+     * @param updateData 更新用データ（アルバムID と 共有グループIDを想定）
+     */
+    public void updateMedia(Long id, MediaUpdateRequestDto updateData) {
+        // 対象メディアを取得
+        Media media = getMedia(id);
+
+        // isPresentでそのキーが存在したか（undefinedでないか）を判定しnullとundefinedの処理を分岐する
+        if (updateData.getSharingGroupId().isPresent()) {
+            Long newId = updateData.getSharingGroupId().get();
+            // nullではない場合存在するかチェックするため取得処理を挟む（存在しないIDの場合例外になる）
+            if (newId != null) {
+                sharingGroupService.getSharingGroupById(newId);
+            }
+
+            media.setSharingGroupId(newId);
+        }
+
+        if (updateData.getAlbumId().isPresent()) {
+            Long newId = updateData.getAlbumId().get();
+            // nullではない場合存在するかチェックするため取得処理を挟む（存在しないIDの場合例外になる）
+            if (newId != null) {
+                albumService.getAlbumById(newId);
+            }
+            media.setAlbumId(newId);
+        }
+
+        mediaMapper.updateByPrimaryKey(media);
     }
 
     /**

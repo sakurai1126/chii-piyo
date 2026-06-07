@@ -1,8 +1,8 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useId, useState } from "react";
 
-import { UseSharingGroupsResult } from "@/features/sharing/types";
+import { toast } from "@/components/ui/Toast";
 
 import { UploadMetadata } from "../types";
 
@@ -14,11 +14,10 @@ type SelectedState = {
 };
 
 type Props = {
-  sharingGroupsState: UseSharingGroupsResult;
   updateAllMetadata: (patch: Partial<UploadMetadata>) => void;
 };
 
-export const useMultipleSettings = ({ updateAllMetadata, sharingGroupsState }: Props) => {
+export const useMultipleSettings = ({ updateAllMetadata }: Props) => {
   const uid = useId();
   // 一括設定の開閉状態
   const [isOpen, setIsOpen] = useState(false);
@@ -33,18 +32,10 @@ export const useMultipleSettings = ({ updateAllMetadata, sharingGroupsState }: P
     sharingGroupId: undefined,
   });
 
-  // ユーザーへのフィードバックメッセージ
-  const [message, setMessage] = useState("");
-
-  // 複数回の変更やリセットで前のタイマーをクリアできるようrefで保持
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
   /**
    * 一括で変更を適応する関数
    */
   const handleChange = () => {
-    setMessage(""); // 変更前にメッセージをリセット
-
     // 変更がある項目だけをパッチとして作成
     const patch: Partial<UploadMetadata> = {};
     if (selected.albumId !== undefined) patch.albumId = selected.albumId;
@@ -55,35 +46,28 @@ export const useMultipleSettings = ({ updateAllMetadata, sharingGroupsState }: P
     // Reactの状態を更新する関数を呼ぶことで再レンダリングをトリガー
     updateAllMetadata(patch);
 
-    setMessage("すべてのアップロードファイルに変更を適用しました");
-
-    if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => setMessage(""), 5000);
+    toast.success("すべてのアップロードファイルに変更を適用しました");
   };
 
   /**
    * 一括で変更をリセットする関数
    */
   const handleReset = () => {
-    const defaultSharingGroupId = sharingGroupsState.sharingGroups[0]?.id;
-
     setSelected({
       albumId: undefined,
       takenAt: today,
       tagIds: [],
-      sharingGroupId: defaultSharingGroupId,
+      sharingGroupId: undefined,
     });
 
     updateAllMetadata({
       albumId: undefined,
       takenAt: undefined,
       tagIds: [],
-      sharingGroupId: defaultSharingGroupId,
+      sharingGroupId: undefined,
     });
-    setMessage("すべてのアップロードファイルの設定をリセットしました");
 
-    if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => setMessage(""), 5000);
+    toast.success("すべてのアップロードファイルの設定をリセットしました");
   };
-  return { uid, isOpen, setIsOpen, selected, setSelected, message, handleChange, handleReset };
+  return { uid, isOpen, setIsOpen, selected, setSelected, handleChange, handleReset };
 };

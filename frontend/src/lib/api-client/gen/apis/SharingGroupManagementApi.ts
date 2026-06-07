@@ -19,16 +19,6 @@ import {
   ErrorResponseDtoToJSON,
 } from "../models/ErrorResponseDto";
 import {
-  type SharingGroupMemberRequestDto,
-  SharingGroupMemberRequestDtoFromJSON,
-  SharingGroupMemberRequestDtoToJSON,
-} from "../models/SharingGroupMemberRequestDto";
-import {
-  type SharingGroupMemberResponseDto,
-  SharingGroupMemberResponseDtoFromJSON,
-  SharingGroupMemberResponseDtoToJSON,
-} from "../models/SharingGroupMemberResponseDto";
-import {
   type SharingGroupRequestDto,
   SharingGroupRequestDtoFromJSON,
   SharingGroupRequestDtoToJSON,
@@ -38,12 +28,11 @@ import {
   SharingGroupResponseDtoFromJSON,
   SharingGroupResponseDtoToJSON,
 } from "../models/SharingGroupResponseDto";
-
-export interface AddSharingGroupMemberRequest {
-  xRequestedWith: string;
-  id: number;
-  sharingGroupMemberData: SharingGroupMemberRequestDto;
-}
+import {
+  type SharingGroupUpdateRequestDto,
+  SharingGroupUpdateRequestDtoFromJSON,
+  SharingGroupUpdateRequestDtoToJSON,
+} from "../models/SharingGroupUpdateRequestDto";
 
 export interface CreateSharingGroupRequest {
   xRequestedWith: string;
@@ -60,115 +49,20 @@ export interface GetSharingGroupRequest {
   id: number;
 }
 
-export interface GetSharingGroupMembersRequest {
-  xRequestedWith: string;
-  id: number;
-}
-
 export interface GetSharingGroupsRequest {
   xRequestedWith: string;
-}
-
-export interface RemoveSharingGroupMemberRequest {
-  xRequestedWith: string;
-  id: number;
-  memberId: number;
 }
 
 export interface UpdateSharingGroupRequest {
   xRequestedWith: string;
   id: number;
-  sharingGroupData: SharingGroupRequestDto;
+  sharingGroupUpdateData: SharingGroupUpdateRequestDto;
 }
 
 /**
  *
  */
 export class SharingGroupManagementApi extends runtime.BaseAPI {
-  /**
-   * Creates request options for addSharingGroupMember without sending the request
-   */
-  async addSharingGroupMemberRequestOpts(
-    requestParameters: AddSharingGroupMemberRequest,
-  ): Promise<runtime.RequestOpts> {
-    if (requestParameters["xRequestedWith"] == null) {
-      throw new runtime.RequiredError(
-        "xRequestedWith",
-        'Required parameter "xRequestedWith" was null or undefined when calling addSharingGroupMember().',
-      );
-    }
-
-    if (requestParameters["id"] == null) {
-      throw new runtime.RequiredError(
-        "id",
-        'Required parameter "id" was null or undefined when calling addSharingGroupMember().',
-      );
-    }
-
-    if (requestParameters["sharingGroupMemberData"] == null) {
-      throw new runtime.RequiredError(
-        "sharingGroupMemberData",
-        'Required parameter "sharingGroupMemberData" was null or undefined when calling addSharingGroupMember().',
-      );
-    }
-
-    const queryParameters: any = {};
-
-    const headerParameters: runtime.HTTPHeaders = {};
-
-    headerParameters["Content-Type"] = "application/json;charset=UTF-8";
-
-    if (requestParameters["xRequestedWith"] != null) {
-      headerParameters["X-Requested-With"] = String(requestParameters["xRequestedWith"]);
-    }
-
-    if (this.configuration && this.configuration.accessToken) {
-      const token = this.configuration.accessToken;
-      const tokenString = await token("BearerAuth", []);
-
-      if (tokenString) {
-        headerParameters["Authorization"] = `Bearer ${tokenString}`;
-      }
-    }
-
-    let urlPath = `/sharing-groups/{id}/members`;
-    urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-    return {
-      path: urlPath,
-      method: "POST",
-      headers: headerParameters,
-      query: queryParameters,
-      body: SharingGroupMemberRequestDtoToJSON(requestParameters["sharingGroupMemberData"]),
-    };
-  }
-
-  /**
-   * 共有グループにメンバーを追加
-   */
-  async addSharingGroupMemberRaw(
-    requestParameters: AddSharingGroupMemberRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<SharingGroupMemberResponseDto>> {
-    const requestOptions = await this.addSharingGroupMemberRequestOpts(requestParameters);
-    const response = await this.request(requestOptions, initOverrides);
-
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      SharingGroupMemberResponseDtoFromJSON(jsonValue),
-    );
-  }
-
-  /**
-   * 共有グループにメンバーを追加
-   */
-  async addSharingGroupMember(
-    requestParameters: AddSharingGroupMemberRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<SharingGroupMemberResponseDto> {
-    const response = await this.addSharingGroupMemberRaw(requestParameters, initOverrides);
-    return await response.value();
-  }
-
   /**
    * Creates request options for createSharingGroup without sending the request
    */
@@ -225,13 +119,11 @@ export class SharingGroupManagementApi extends runtime.BaseAPI {
   async createSharingGroupRaw(
     requestParameters: CreateSharingGroupRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<SharingGroupResponseDto>> {
+  ): Promise<runtime.ApiResponse<void>> {
     const requestOptions = await this.createSharingGroupRequestOpts(requestParameters);
     const response = await this.request(requestOptions, initOverrides);
 
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      SharingGroupResponseDtoFromJSON(jsonValue),
-    );
+    return new runtime.VoidApiResponse(response);
   }
 
   /**
@@ -240,9 +132,8 @@ export class SharingGroupManagementApi extends runtime.BaseAPI {
   async createSharingGroup(
     requestParameters: CreateSharingGroupRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<SharingGroupResponseDto> {
-    const response = await this.createSharingGroupRaw(requestParameters, initOverrides);
-    return await response.value();
+  ): Promise<void> {
+    await this.createSharingGroupRaw(requestParameters, initOverrides);
   }
 
   /**
@@ -391,80 +282,6 @@ export class SharingGroupManagementApi extends runtime.BaseAPI {
   }
 
   /**
-   * Creates request options for getSharingGroupMembers without sending the request
-   */
-  async getSharingGroupMembersRequestOpts(
-    requestParameters: GetSharingGroupMembersRequest,
-  ): Promise<runtime.RequestOpts> {
-    if (requestParameters["xRequestedWith"] == null) {
-      throw new runtime.RequiredError(
-        "xRequestedWith",
-        'Required parameter "xRequestedWith" was null or undefined when calling getSharingGroupMembers().',
-      );
-    }
-
-    if (requestParameters["id"] == null) {
-      throw new runtime.RequiredError(
-        "id",
-        'Required parameter "id" was null or undefined when calling getSharingGroupMembers().',
-      );
-    }
-
-    const queryParameters: any = {};
-
-    const headerParameters: runtime.HTTPHeaders = {};
-
-    if (requestParameters["xRequestedWith"] != null) {
-      headerParameters["X-Requested-With"] = String(requestParameters["xRequestedWith"]);
-    }
-
-    if (this.configuration && this.configuration.accessToken) {
-      const token = this.configuration.accessToken;
-      const tokenString = await token("BearerAuth", []);
-
-      if (tokenString) {
-        headerParameters["Authorization"] = `Bearer ${tokenString}`;
-      }
-    }
-
-    let urlPath = `/sharing-groups/{id}/members`;
-    urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-    return {
-      path: urlPath,
-      method: "GET",
-      headers: headerParameters,
-      query: queryParameters,
-    };
-  }
-
-  /**
-   * 共有グループのメンバー一覧を取得
-   */
-  async getSharingGroupMembersRaw(
-    requestParameters: GetSharingGroupMembersRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<Array<SharingGroupMemberResponseDto>>> {
-    const requestOptions = await this.getSharingGroupMembersRequestOpts(requestParameters);
-    const response = await this.request(requestOptions, initOverrides);
-
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      jsonValue.map(SharingGroupMemberResponseDtoFromJSON),
-    );
-  }
-
-  /**
-   * 共有グループのメンバー一覧を取得
-   */
-  async getSharingGroupMembers(
-    requestParameters: GetSharingGroupMembersRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<Array<SharingGroupMemberResponseDto>> {
-    const response = await this.getSharingGroupMembersRaw(requestParameters, initOverrides);
-    return await response.value();
-  }
-
-  /**
    * Creates request options for getSharingGroups without sending the request
    */
   async getSharingGroupsRequestOpts(
@@ -531,88 +348,6 @@ export class SharingGroupManagementApi extends runtime.BaseAPI {
   }
 
   /**
-   * Creates request options for removeSharingGroupMember without sending the request
-   */
-  async removeSharingGroupMemberRequestOpts(
-    requestParameters: RemoveSharingGroupMemberRequest,
-  ): Promise<runtime.RequestOpts> {
-    if (requestParameters["xRequestedWith"] == null) {
-      throw new runtime.RequiredError(
-        "xRequestedWith",
-        'Required parameter "xRequestedWith" was null or undefined when calling removeSharingGroupMember().',
-      );
-    }
-
-    if (requestParameters["id"] == null) {
-      throw new runtime.RequiredError(
-        "id",
-        'Required parameter "id" was null or undefined when calling removeSharingGroupMember().',
-      );
-    }
-
-    if (requestParameters["memberId"] == null) {
-      throw new runtime.RequiredError(
-        "memberId",
-        'Required parameter "memberId" was null or undefined when calling removeSharingGroupMember().',
-      );
-    }
-
-    const queryParameters: any = {};
-
-    const headerParameters: runtime.HTTPHeaders = {};
-
-    if (requestParameters["xRequestedWith"] != null) {
-      headerParameters["X-Requested-With"] = String(requestParameters["xRequestedWith"]);
-    }
-
-    if (this.configuration && this.configuration.accessToken) {
-      const token = this.configuration.accessToken;
-      const tokenString = await token("BearerAuth", []);
-
-      if (tokenString) {
-        headerParameters["Authorization"] = `Bearer ${tokenString}`;
-      }
-    }
-
-    let urlPath = `/sharing-groups/{id}/members/{memberId}`;
-    urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-    urlPath = urlPath.replace(
-      "{memberId}",
-      encodeURIComponent(String(requestParameters["memberId"])),
-    );
-
-    return {
-      path: urlPath,
-      method: "DELETE",
-      headers: headerParameters,
-      query: queryParameters,
-    };
-  }
-
-  /**
-   * 共有グループからメンバーを削除
-   */
-  async removeSharingGroupMemberRaw(
-    requestParameters: RemoveSharingGroupMemberRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<void>> {
-    const requestOptions = await this.removeSharingGroupMemberRequestOpts(requestParameters);
-    const response = await this.request(requestOptions, initOverrides);
-
-    return new runtime.VoidApiResponse(response);
-  }
-
-  /**
-   * 共有グループからメンバーを削除
-   */
-  async removeSharingGroupMember(
-    requestParameters: RemoveSharingGroupMemberRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<void> {
-    await this.removeSharingGroupMemberRaw(requestParameters, initOverrides);
-  }
-
-  /**
    * Creates request options for updateSharingGroup without sending the request
    */
   async updateSharingGroupRequestOpts(
@@ -632,10 +367,10 @@ export class SharingGroupManagementApi extends runtime.BaseAPI {
       );
     }
 
-    if (requestParameters["sharingGroupData"] == null) {
+    if (requestParameters["sharingGroupUpdateData"] == null) {
       throw new runtime.RequiredError(
-        "sharingGroupData",
-        'Required parameter "sharingGroupData" was null or undefined when calling updateSharingGroup().',
+        "sharingGroupUpdateData",
+        'Required parameter "sharingGroupUpdateData" was null or undefined when calling updateSharingGroup().',
       );
     }
 
@@ -666,12 +401,12 @@ export class SharingGroupManagementApi extends runtime.BaseAPI {
       method: "PUT",
       headers: headerParameters,
       query: queryParameters,
-      body: SharingGroupRequestDtoToJSON(requestParameters["sharingGroupData"]),
+      body: SharingGroupUpdateRequestDtoToJSON(requestParameters["sharingGroupUpdateData"]),
     };
   }
 
   /**
-   * 共有グループを更新
+   * 共有グループを編集
    */
   async updateSharingGroupRaw(
     requestParameters: UpdateSharingGroupRequest,
@@ -686,7 +421,7 @@ export class SharingGroupManagementApi extends runtime.BaseAPI {
   }
 
   /**
-   * 共有グループを更新
+   * 共有グループを編集
    */
   async updateSharingGroup(
     requestParameters: UpdateSharingGroupRequest,

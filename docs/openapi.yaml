@@ -222,11 +222,7 @@ paths:
         required: true
       responses:
         '201':
-          description: 作成された共有グループ
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/SharingGroupResponseDto'
+          description: 共有グループ作成成功
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -264,22 +260,22 @@ paths:
     put:
       tags:
         - sharingGroupManagement
-      summary: 共有グループを更新
+      summary: 共有グループを編集
       operationId: updateSharingGroup
-      x-codegen-request-body-name: SharingGroupData
+      x-codegen-request-body-name: SharingGroupUpdateData
       parameters:
         - $ref: '#/components/parameters/XRequestedWith'
         - $ref: '#/components/parameters/ResourceId'
       requestBody:
-        description: 更新する共有グループ情報
+        description: 編集する共有グループ情報
         content:
           application/json;charset=UTF-8:
             schema:
-              $ref: '#/components/schemas/SharingGroupRequestDto'
+              $ref: '#/components/schemas/SharingGroupUpdateRequestDto'
         required: true
       responses:
         '200':
-          description: 更新された共有グループ
+          description: 更新された共有グループ情報
           content:
             application/json;charset=UTF-8:
               schema:
@@ -307,90 +303,6 @@ paths:
       responses:
         '204':
           description: 共有グループの削除に成功
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-        default:
-          $ref: '#/components/responses/DefaultErrors'
-  /sharing-groups/{id}/members:
-    get:
-      tags:
-        - sharingGroupManagement
-      summary: 共有グループのメンバー一覧を取得
-      operationId: getSharingGroupMembers
-      parameters:
-        - $ref: '#/components/parameters/XRequestedWith'
-        - $ref: '#/components/parameters/ResourceId'
-      responses:
-        '200':
-          description: メンバー一覧
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/SharingGroupMemberResponseDto'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-        default:
-          $ref: '#/components/responses/DefaultErrors'
-    post:
-      tags:
-        - sharingGroupManagement
-      summary: 共有グループにメンバーを追加
-      operationId: addSharingGroupMember
-      x-codegen-request-body-name: SharingGroupMemberData
-      parameters:
-        - $ref: '#/components/parameters/XRequestedWith'
-        - $ref: '#/components/parameters/ResourceId'
-      requestBody:
-        description: 追加するメンバー情報
-        content:
-          application/json;charset=UTF-8:
-            schema:
-              $ref: '#/components/schemas/SharingGroupMemberRequestDto'
-        required: true
-      responses:
-        '201':
-          description: メンバーの追加に成功
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/SharingGroupMemberResponseDto'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-        default:
-          $ref: '#/components/responses/DefaultErrors'
-  /sharing-groups/{id}/members/{memberId}:
-    delete:
-      tags:
-        - sharingGroupManagement
-      summary: 共有グループからメンバーを削除
-      operationId: removeSharingGroupMember
-      parameters:
-        - $ref: '#/components/parameters/XRequestedWith'
-        - $ref: '#/components/parameters/ResourceId'
-        - $ref: '#/components/parameters/MemberId'
-      responses:
-        '204':
-          description: メンバーの削除に成功
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -503,12 +415,8 @@ paths:
               $ref: '#/components/schemas/MediaUpdateRequestDto'
         required: true
       responses:
-        '200':
-          description: 更新されたメディア情報
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/MediaResponseDto'
+        '204':
+          description: メディアの更新に成功
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -1682,14 +1590,6 @@ components:
       schema:
         type: integer
         format: int64
-    MemberId:
-      name: memberId
-      in: path
-      description: メンバーの一意な識別子
-      required: true
-      schema:
-        type: integer
-        format: int64
     PageOffset:
       name: offset
       in: query
@@ -1806,6 +1706,7 @@ components:
         - displayName
         - email
         - presignedIconUrl
+        - scopeSharingGroups
         - isDarkMode
         - isEasyMode
         - role
@@ -1834,6 +1735,13 @@ components:
           type: string
           format: uri
           description: S3用の署名付きURL
+        scopeSharingGroups:
+          type: array
+          items:
+            type: integer
+            format: int64
+            description: 共有グループID
+            example: 1
         isDarkMode:
           type: boolean
           description: ダークモードフラグ
@@ -1928,6 +1836,11 @@ components:
         - presignedIconUrl
         - createdAt
       properties:
+        id:
+          type: integer
+          format: int64
+          description: メンバーID
+          example: 1
         userId:
           type: integer
           format: int64
@@ -1983,7 +1896,7 @@ components:
           example: '2026-01-01T00:00:00Z'
     SharingGroupRequestDto:
       type: object
-      description: 共有グループ作成・更新リクエスト
+      description: 共有グループ作成リクエスト
       required:
         - name
       properties:
@@ -1993,17 +1906,28 @@ components:
           minLength: 1
           maxLength: 100
           example: 家族全員
-    SharingGroupMemberRequestDto:
+        userIds:
+          type: array
+          description: グループメンバーID一覧
+          items:
+            type: integer
+            format: int64
+    SharingGroupUpdateRequestDto:
       type: object
-      description: 共有グループメンバー追加リクエスト
-      required:
-        - userId
+      description: 共有グループ更新リクエスト
       properties:
-        userId:
-          type: integer
-          format: int64
-          description: 追加するユーザーID
-          example: 2
+        name:
+          type: string
+          description: グループ名
+          minLength: 1
+          maxLength: 100
+          example: 家族全員
+        userIds:
+          type: array
+          description: 新しい共有グループメンバーID一覧
+          items:
+            type: integer
+            format: int64
     TagResponseDto:
       type: object
       description: タグ情報
@@ -2231,7 +2155,6 @@ components:
         - originalFilename
         - contentType
         - fileSize
-        - sharingGroupId
       properties:
         mediaType:
           type: string
@@ -2279,7 +2202,9 @@ components:
           format: int64
           description: 所属アルバムID
         sharingGroupId:
-          type: integer
+          type:
+            - integer
+            - 'null'
           format: int64
           description: 共有範囲グループID
           example: 1
@@ -2311,7 +2236,9 @@ components:
           format: int64
           description: 所属アルバムID
         sharingGroupId:
-          type: integer
+          type:
+            - integer
+            - 'null'
           format: int64
           description: 共有範囲グループID
     MediaUploadStatusRequestDto:

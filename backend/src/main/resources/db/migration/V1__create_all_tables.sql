@@ -65,7 +65,7 @@ CREATE TABLE media
     thumbnail_s3_key  VARCHAR(500),
     taken_at          DATE,
     album_id          BIGINT,
-    sharing_group_id  BIGINT       NOT NULL,
+    sharing_group_id  BIGINT,
     upload_status     VARCHAR(15)  NOT NULL DEFAULT 'PROCESSING',
     created_at        TIMESTAMPTZ  NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at        TIMESTAMPTZ  NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -206,12 +206,12 @@ CREATE TABLE health_details
 CREATE TABLE growth_records
 (
     id               BIGSERIAL PRIMARY KEY,
-    measurement_date DATE        NOT NULL,
+    measurement_date DATE          NOT NULL,
     height           DECIMAL(5, 1) NOT NULL,
     weight           DECIMAL(5, 2) NOT NULL,
     note             TEXT,
-    created_at       TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at       TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at       TIMESTAMPTZ   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at       TIMESTAMPTZ   NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_growth_records_measurement_date ON growth_records (measurement_date);

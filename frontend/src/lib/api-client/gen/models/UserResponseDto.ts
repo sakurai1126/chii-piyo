@@ -50,6 +50,12 @@ export interface UserResponseDto {
    */
   presignedIconUrl: string;
   /**
+   *
+   * @type {Array<number>}
+   * @memberof UserResponseDto
+   */
+  scopeSharingGroups: Array<number>;
+  /**
    * ダークモードフラグ
    * @type {boolean}
    * @memberof UserResponseDto
@@ -100,6 +106,7 @@ export function instanceOfUserResponseDto(value: object): value is UserResponseD
   if (!("displayName" in value) || value["displayName"] === undefined) return false;
   if (!("email" in value) || value["email"] === undefined) return false;
   if (!("presignedIconUrl" in value) || value["presignedIconUrl"] === undefined) return false;
+  if (!("scopeSharingGroups" in value) || value["scopeSharingGroups"] === undefined) return false;
   if (!("isDarkMode" in value) || value["isDarkMode"] === undefined) return false;
   if (!("isEasyMode" in value) || value["isEasyMode"] === undefined) return false;
   if (!("role" in value) || value["role"] === undefined) return false;
@@ -125,6 +132,7 @@ export function UserResponseDtoFromJSONTyped(
     displayName: json["displayName"],
     email: json["email"],
     presignedIconUrl: json["presignedIconUrl"],
+    scopeSharingGroups: json["scopeSharingGroups"],
     isDarkMode: json["isDarkMode"],
     isEasyMode: json["isEasyMode"],
     role: json["role"],
@@ -151,6 +159,7 @@ export function UserResponseDtoToJSONTyped(
     displayName: value["displayName"],
     email: value["email"],
     presignedIconUrl: value["presignedIconUrl"],
+    scopeSharingGroups: value["scopeSharingGroups"],
     isDarkMode: value["isDarkMode"],
     isEasyMode: value["isEasyMode"],
     role: value["role"],

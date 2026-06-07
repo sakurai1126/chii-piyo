@@ -479,13 +479,11 @@ export class MediaManagementApi extends runtime.BaseAPI {
   async updateMediaRaw(
     requestParameters: UpdateMediaRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<MediaResponseDto>> {
+  ): Promise<runtime.ApiResponse<void>> {
     const requestOptions = await this.updateMediaRequestOpts(requestParameters);
     const response = await this.request(requestOptions, initOverrides);
 
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      MediaResponseDtoFromJSON(jsonValue),
-    );
+    return new runtime.VoidApiResponse(response);
   }
 
   /**
@@ -494,9 +492,8 @@ export class MediaManagementApi extends runtime.BaseAPI {
   async updateMedia(
     requestParameters: UpdateMediaRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<MediaResponseDto> {
-    const response = await this.updateMediaRaw(requestParameters, initOverrides);
-    return await response.value();
+  ): Promise<void> {
+    await this.updateMediaRaw(requestParameters, initOverrides);
   }
 
   /**
