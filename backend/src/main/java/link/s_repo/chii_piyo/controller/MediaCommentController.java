@@ -17,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collections;
 import java.util.List;
@@ -61,11 +60,23 @@ public class MediaCommentController implements MediaCommentManagementApi {
     }
 
     /**
-     * DELETE /media/{mediaId}/comments/{id} : コメントを削除
+     * DELETE /media/comments/{id}<br>
+     * コメントを削除
+     *
+     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param id             対象のコメントID
+     * @return 204ステータス
      */
     @Override
-    public ResponseEntity<Void> deleteMediaComment(String xRequestedWith, Long mediaId, Long id) {
-        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+    public ResponseEntity<Void> deleteMediaComment(String xRequestedWith, Long id) {
+        // 認証情報からアプリケーション側のユーザーIDを取得
+        Long currentUserId = currentUserProvider.getUserId();
+
+        // サービス層で削除処理
+        mediaCommentService.deleteMediaComment(id, currentUserId);
+
+        // 204 No Contentを返す
+        return ResponseEntity.noContent().build();
     }
 
     /**
@@ -105,14 +116,5 @@ public class MediaCommentController implements MediaCommentManagementApi {
             .map(c -> mediaCommentConverter.toMediaCommentResponseDto(c,
                 userMap.get(c.getUserId())))
             .toList());
-    }
-
-    /**
-     * PUT /media/{mediaId}/comments/{id} : コメントを更新
-     */
-    @Override
-    public ResponseEntity<MediaCommentResponseDto> updateMediaComment(
-        String xRequestedWith, Long mediaId, Long id, MediaCommentRequestDto mediaCommentData) {
-        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
     }
 }

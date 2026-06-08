@@ -38,7 +38,12 @@ export const MediaDetailContent = async ({ id, isModal = false }: Props) => {
         {/* 詳細情報 */}
         <div className={`w-full max-md:px-5 ${isModal ? "pb-20" : ""}`}>
           {/* コメント */}
-          <MediaComment comments={comments} currentUser={currentUser} />
+          <MediaComment
+            mediaId={media.id}
+            comments={comments}
+            currentUser={currentUser}
+            users={users}
+          />
 
           {/* メタデータ */}
           <MediaMetaData media={media} />

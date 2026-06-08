@@ -37,20 +37,12 @@ export interface CreateMediaCommentRequest {
 
 export interface DeleteMediaCommentRequest {
   xRequestedWith: string;
-  mediaId: number;
   id: number;
 }
 
 export interface GetMediaCommentsRequest {
   xRequestedWith: string;
   mediaId: number;
-}
-
-export interface UpdateMediaCommentRequest {
-  xRequestedWith: string;
-  mediaId: number;
-  id: number;
-  mediaCommentData: MediaCommentRequestDto;
 }
 
 /**
@@ -157,13 +149,6 @@ export class MediaCommentManagementApi extends runtime.BaseAPI {
       );
     }
 
-    if (requestParameters["mediaId"] == null) {
-      throw new runtime.RequiredError(
-        "mediaId",
-        'Required parameter "mediaId" was null or undefined when calling deleteMediaComment().',
-      );
-    }
-
     if (requestParameters["id"] == null) {
       throw new runtime.RequiredError(
         "id",
@@ -188,11 +173,7 @@ export class MediaCommentManagementApi extends runtime.BaseAPI {
       }
     }
 
-    let urlPath = `/media/{mediaId}/comments/{id}`;
-    urlPath = urlPath.replace(
-      "{mediaId}",
-      encodeURIComponent(String(requestParameters["mediaId"])),
-    );
+    let urlPath = `/media/comments/{id}`;
     urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
     return {
@@ -300,101 +281,6 @@ export class MediaCommentManagementApi extends runtime.BaseAPI {
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<Array<MediaCommentResponseDto>> {
     const response = await this.getMediaCommentsRaw(requestParameters, initOverrides);
-    return await response.value();
-  }
-
-  /**
-   * Creates request options for updateMediaComment without sending the request
-   */
-  async updateMediaCommentRequestOpts(
-    requestParameters: UpdateMediaCommentRequest,
-  ): Promise<runtime.RequestOpts> {
-    if (requestParameters["xRequestedWith"] == null) {
-      throw new runtime.RequiredError(
-        "xRequestedWith",
-        'Required parameter "xRequestedWith" was null or undefined when calling updateMediaComment().',
-      );
-    }
-
-    if (requestParameters["mediaId"] == null) {
-      throw new runtime.RequiredError(
-        "mediaId",
-        'Required parameter "mediaId" was null or undefined when calling updateMediaComment().',
-      );
-    }
-
-    if (requestParameters["id"] == null) {
-      throw new runtime.RequiredError(
-        "id",
-        'Required parameter "id" was null or undefined when calling updateMediaComment().',
-      );
-    }
-
-    if (requestParameters["mediaCommentData"] == null) {
-      throw new runtime.RequiredError(
-        "mediaCommentData",
-        'Required parameter "mediaCommentData" was null or undefined when calling updateMediaComment().',
-      );
-    }
-
-    const queryParameters: any = {};
-
-    const headerParameters: runtime.HTTPHeaders = {};
-
-    headerParameters["Content-Type"] = "application/json;charset=UTF-8";
-
-    if (requestParameters["xRequestedWith"] != null) {
-      headerParameters["X-Requested-With"] = String(requestParameters["xRequestedWith"]);
-    }
-
-    if (this.configuration && this.configuration.accessToken) {
-      const token = this.configuration.accessToken;
-      const tokenString = await token("BearerAuth", []);
-
-      if (tokenString) {
-        headerParameters["Authorization"] = `Bearer ${tokenString}`;
-      }
-    }
-
-    let urlPath = `/media/{mediaId}/comments/{id}`;
-    urlPath = urlPath.replace(
-      "{mediaId}",
-      encodeURIComponent(String(requestParameters["mediaId"])),
-    );
-    urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-    return {
-      path: urlPath,
-      method: "PUT",
-      headers: headerParameters,
-      query: queryParameters,
-      body: MediaCommentRequestDtoToJSON(requestParameters["mediaCommentData"]),
-    };
-  }
-
-  /**
-   * コメントを更新
-   */
-  async updateMediaCommentRaw(
-    requestParameters: UpdateMediaCommentRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<MediaCommentResponseDto>> {
-    const requestOptions = await this.updateMediaCommentRequestOpts(requestParameters);
-    const response = await this.request(requestOptions, initOverrides);
-
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      MediaCommentResponseDtoFromJSON(jsonValue),
-    );
-  }
-
-  /**
-   * コメントを更新
-   */
-  async updateMediaComment(
-    requestParameters: UpdateMediaCommentRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<MediaCommentResponseDto> {
-    const response = await this.updateMediaCommentRaw(requestParameters, initOverrides);
     return await response.value();
   }
 }

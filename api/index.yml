@@ -70,7 +70,7 @@ paths:
   # 写真・動画コメント
   /media/{mediaId}/comments:
     $ref: "./paths/media/media-comments.yml"
-  /media/{mediaId}/comments/{id}:
+  /media/comments/{id}:
     $ref: "./paths/media/media-comments-detail.yml"
 
   # 写真・動画タグ
