@@ -1,6 +1,8 @@
 package link.s_repo.chii_piyo.service;
 
 
+import link.s_repo.chii_piyo.exception.ResourceAccessDeniedException;
+import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.MediaComments;
 import link.s_repo.chii_piyo.repository.gen.MediaCommentsDynamicSqlSupport;
 import link.s_repo.chii_piyo.repository.gen.MediaCommentsMapper;
@@ -84,9 +86,31 @@ public class MediaCommentService {
      * @param mediaId 対象メディアのID
      * @return コメントのリスト
      */
+    @Transactional(readOnly = true)
     public List<MediaComments> getMediaComments(Long mediaId) {
         return mediaCommentsMapper.select(
             c -> c.where(MediaCommentsDynamicSqlSupport.mediaId, isEqualTo(mediaId))
         );
+    }
+
+    /**
+     * コメントを削除する
+     *
+     * @param id            対象のコメントID
+     * @param currentUserId リクエストをしたユーザーID
+     */
+    @Transactional
+    public void deleteMediaComment(Long id, Long currentUserId) {
+        // 存在チェック
+        MediaComments comment = mediaCommentsMapper.selectByPrimaryKey(id)
+            .orElseThrow(() -> new ResourceNotFoundException("コメントが見つかりません id=" + id));
+
+        // 現在のユーザーのリクエストかを判別
+        if (!comment.getUserId().equals(currentUserId)) {
+            throw new ResourceAccessDeniedException("他のユーザーのコメントは削除できません");
+        }
+
+        // 削除処理
+        mediaCommentsMapper.deleteByPrimaryKey(id);
     }
 }

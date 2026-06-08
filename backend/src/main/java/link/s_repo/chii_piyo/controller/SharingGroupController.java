@@ -46,10 +46,14 @@ public class SharingGroupController implements SharingGroupManagementApi {
     /**
      * DELETE /sharing-groups/{id}<br>
      * 共有グループを削除する
+     *
+     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param id             対象の共有グループID
+     * @return 204ステータス
      */
     @Override
     public ResponseEntity<Void> deleteSharingGroup(String xRequestedWith, Long id) {
-        // Serviceに削除処理を委譲
+        // サービス層で削除処理
         sharingGroupService.deleteSharingGroup(id);
 
         // 204 No Contentを返す

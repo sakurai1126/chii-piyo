@@ -546,43 +546,7 @@ paths:
           $ref: '#/components/responses/InternalServerError'
         default:
           $ref: '#/components/responses/DefaultErrors'
-  /media/{mediaId}/comments/{id}:
-    put:
-      tags:
-        - mediaCommentManagement
-      summary: コメントを更新
-      operationId: updateMediaComment
-      x-codegen-request-body-name: MediaCommentData
-      parameters:
-        - $ref: '#/components/parameters/XRequestedWith'
-        - $ref: '#/components/parameters/MediaId'
-        - $ref: '#/components/parameters/ResourceId'
-      requestBody:
-        description: 更新するコメント内容
-        content:
-          application/json;charset=UTF-8:
-            schema:
-              $ref: '#/components/schemas/MediaCommentRequestDto'
-        required: true
-      responses:
-        '200':
-          description: 更新されたコメント
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/MediaCommentResponseDto'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-        default:
-          $ref: '#/components/responses/DefaultErrors'
+  /media/comments/{id}:
     delete:
       tags:
         - mediaCommentManagement
@@ -590,7 +554,6 @@ paths:
       operationId: deleteMediaComment
       parameters:
         - $ref: '#/components/parameters/XRequestedWith'
-        - $ref: '#/components/parameters/MediaId'
         - $ref: '#/components/parameters/ResourceId'
       responses:
         '204':
