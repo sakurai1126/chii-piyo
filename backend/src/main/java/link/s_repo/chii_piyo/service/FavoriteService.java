@@ -1,6 +1,8 @@
 package link.s_repo.chii_piyo.service;
 
 import link.s_repo.chii_piyo.model.gen.Favorites;
+import link.s_repo.chii_piyo.model.gen.Media;
+import link.s_repo.chii_piyo.model.gen.Users;
 import link.s_repo.chii_piyo.repository.gen.FavoritesDynamicSqlSupport;
 import link.s_repo.chii_piyo.repository.gen.FavoritesMapper;
 import lombok.RequiredArgsConstructor;
@@ -9,9 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-import static org.mybatis.dynamic.sql.SqlBuilder.and;
-import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 @Slf4j
 @Service
@@ -87,5 +90,19 @@ public class FavoriteService {
         // 受け取ったパラメータに合致するデータを削除する
         favoritesMapper.delete(c -> c.where(FavoritesDynamicSqlSupport.mediaId, isEqualTo(mediaId),
             and(FavoritesDynamicSqlSupport.userId, isEqualTo(currentUserId))));
+    }
+
+    /**
+     * 複数メディアのお気に入りの追加状況を取得する
+     *
+     * @param mediaList 対象のメディアリスト
+     * @return お気に入り情報のリスト
+     */
+    public List<Favorites> getFavoriteList(List<Media> mediaList) {
+        // メディアIDをリスト化
+        List<Long> mediaIds = mediaList.stream().map(Media::getId).toList();
+
+        // リスト化したメディアIDに合致するデータを取得
+        return favoritesMapper.select(c -> c.where(FavoritesDynamicSqlSupport.mediaId, isIn(mediaIds)));
     }
 }

@@ -16,6 +16,8 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * メディア管理コントローラー<br>
@@ -149,12 +151,33 @@ public class MediaController implements MediaManagementApi {
         List<Media> mediaList = mediaService.getMediaList(offset, limit, mediaType, albumId, tagId, sharingGroupId,
             startDate, endDate);
 
+        // 対象メディアのお気に入り情報を取得
+        List<Favorites> favoriteList = favoriteService.getFavoriteList(mediaList);
+
+        // 事前にMediaIDをキーにしてユーザーIDを取得できるように変換
+        Map<Long, List<Long>> favoriteUserIdsByMediaId = favoriteList.stream()
+            .collect(Collectors.groupingBy(
+                Favorites::getMediaId,
+                Collectors.mapping(Favorites::getUserId, Collectors.toList())
+            ));
+
+        // 認証情報から現在のユーザーIDを取得
+        Long currentUserId = currentUserProvider.getUserId();
+
+        // 現在のユーザーがお気に入りに追加したメディアのIDリストを取得
+        Set<Long> favoritedMediaIds = favoriteList.stream()
+            .filter(favorite -> favorite.getUserId().equals(currentUserId))
+            .map(Favorites::getMediaId)
+            .collect(Collectors.toSet());
+
+
         // hasNextの判定
         boolean hasNext = offset + mediaList.size() < totalCount;
 
         List<Long> mediaIds = mediaList.stream().map(Media::getId).toList();
 
         Map<Long, Long> commentCountsByMediaId = mediaCommentService.getCommentCountsByMediaIds(mediaIds);
+
 
         // コンバータでMediaResponseDtoのリストに変換する
         List<MediaResponseDto> responseMediaList = mediaList.stream()
@@ -163,19 +186,27 @@ public class MediaController implements MediaManagementApi {
                     ? s3Service.generateDownloadPresignedUrl(media.getThumbnailS3Key(),
                     media.getOriginalFilename())
                     : null;
+
                 Long commentCount = commentCountsByMediaId.getOrDefault(media.getId(), 0L);
+
+                // 現在のユーザーがお気に入りに追加しているかを判定
+                Boolean isFavorite = favoritedMediaIds.contains(media.getId());
+
+                // メディアIDに紐づくお気に入りユーザーIDのリストを取得
+                List<Long> addFavoriteUserIds = favoriteUserIdsByMediaId.getOrDefault(media.getId(), List.of());
+
                 return mediaConverter.toMediaResponseDto(
                     media,
                     null,
                     null,
                     thumbnailPresignedUrl,
-                    null,
+                    isFavorite,
                     commentCount,
                     null,
                     null,
                     null,
                     null,
-                    null
+                    addFavoriteUserIds
                 );
             })
             .toList();
@@ -240,7 +271,7 @@ public class MediaController implements MediaManagementApi {
 
         // 認証情報から現在のユーザーIDを取得
         Long currentUserId = currentUserProvider.getUserId();
-        boolean isFavorite = favoriteService.getCurrentUserIsFavorite(id, currentUserId);
+        Boolean isFavorite = favoriteService.getCurrentUserIsFavorite(id, currentUserId);
 
         List<Long> addFavoriteUserIds = favoriteService.getAddFavoriteUserIds(id);
 
