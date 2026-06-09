@@ -6,7 +6,11 @@ import { useState } from "react";
 
 import { useModalClose } from "@/components/layout/Modal";
 import { FavoriteMediaDetail } from "@/features/favorite";
-import { MediaNavigationResponseDto, MediaResponseDto } from "@/lib/api-client/gen";
+import {
+  MediaNavigationResponseDto,
+  MediaResponseDto,
+  UserResponseDto,
+} from "@/lib/api-client/gen";
 
 import download from "../../assets/download.svg";
 import leftArrow from "../../assets/left-arrow.svg";
@@ -17,9 +21,10 @@ import zoom from "../../assets/zoom.svg";
 type Props = {
   media: MediaResponseDto;
   isModal?: boolean;
+  users: UserResponseDto[];
 };
 
-export const MediaViewer = ({ media, isModal }: Props) => {
+export const MediaViewer = ({ media, isModal, users }: Props) => {
   const handleClose = useModalClose();
   const [modeExpansion, setModeExpansion] = useState(false);
   return (
@@ -194,7 +199,7 @@ export const MediaViewer = ({ media, isModal }: Props) => {
           </Link>
         )}
         <div className="md:hidden">
-          <FavoriteMediaDetail />
+          <FavoriteMediaDetail media={media} users={users} />
         </div>
       </div>
     </div>

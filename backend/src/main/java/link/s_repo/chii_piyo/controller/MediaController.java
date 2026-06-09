@@ -4,10 +4,7 @@ import link.s_repo.chii_piyo.controller.converter.*;
 import link.s_repo.chii_piyo.controller.gen.MediaManagementApi;
 import link.s_repo.chii_piyo.model.gen.*;
 import link.s_repo.chii_piyo.security.CurrentUserProvider;
-import link.s_repo.chii_piyo.service.MediaCommentService;
-import link.s_repo.chii_piyo.service.MediaService;
-import link.s_repo.chii_piyo.service.S3Service;
-import link.s_repo.chii_piyo.service.TagService;
+import link.s_repo.chii_piyo.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -39,6 +36,7 @@ public class MediaController implements MediaManagementApi {
     private final TagConverter tagConverter;
     private final MediaNavigationConverter mediaNavigationConverter;
     private final MediaUploadConverter mediaUploadConverter;
+    private final FavoriteService favoriteService;
 
     /**
      * POST /media<br>
@@ -103,8 +101,19 @@ public class MediaController implements MediaManagementApi {
             mediaUpdateStatusData.getUploadStatus().getValue());
 
         // レスポンスDTOに変換して返却
-        return ResponseEntity.ok(mediaConverter.toMediaResponseDto(media, null, null,
-            null, null, null, null, null, null, null));
+        return ResponseEntity.ok(mediaConverter.toMediaResponseDto(
+            media,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        ));
     }
 
     /**
@@ -155,8 +164,19 @@ public class MediaController implements MediaManagementApi {
                     media.getOriginalFilename())
                     : null;
                 Long commentCount = commentCountsByMediaId.getOrDefault(media.getId(), 0L);
-                return mediaConverter.toMediaResponseDto(media, null, null,
-                    thumbnailPresignedUrl, null, commentCount, null, null, null, null);
+                return mediaConverter.toMediaResponseDto(
+                    media,
+                    null,
+                    null,
+                    thumbnailPresignedUrl,
+                    null,
+                    commentCount,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                );
             })
             .toList();
 
@@ -218,8 +238,25 @@ public class MediaController implements MediaManagementApi {
             ? s3Service.generateDownloadPresignedUrl(media.getThumbnailS3Key(), media.getOriginalFilename())
             : null;
 
+        // 認証情報から現在のユーザーIDを取得
+        Long currentUserId = currentUserProvider.getUserId();
+        boolean isFavorite = favoriteService.getCurrentUserIsFavorite(id, currentUserId);
+
+        List<Long> addFavoriteUserIds = favoriteService.getAddFavoriteUserIds(id);
+
         return ResponseEntity.ok(mediaConverter.toMediaResponseDto(
-            media, tags, presignedUrl, thumbnailPresignedUrl, true, null, nextMedia, secondNextMedia, previousMedia, secondPreviousMedia));
+            media,
+            tags,
+            presignedUrl,
+            thumbnailPresignedUrl,
+            isFavorite,
+            null,
+            nextMedia,
+            secondNextMedia,
+            previousMedia,
+            secondPreviousMedia,
+            addFavoriteUserIds
+        ));
     }
 
     /**
@@ -229,7 +266,7 @@ public class MediaController implements MediaManagementApi {
      * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
      * @param id             対象のメディアID
      * @param updateData     更新用データ（アルバムID と 共有グループIDを想定）
-     * @return 更新後のメディア情報
+     * @return 204ステータス
      */
     @Override
     public ResponseEntity<Void> updateMedia(
