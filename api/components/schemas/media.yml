@@ -87,6 +87,13 @@ MediaResponseDto:
         - COMPLETED
         - FAILED
       example: "COMPLETED"
+    addFavoriteUserIds:
+      type: array
+      description: お気に入りに追加したユーザーID一覧
+      items:
+        type: integer
+        format: int64
+      example: [1, 2, 3]
     tags:
       type: array
       description: 付与されているタグ一覧

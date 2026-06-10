@@ -119,6 +119,12 @@ export interface MediaResponseDto {
    */
   uploadStatus: MediaResponseDtoUploadStatusEnum;
   /**
+   * お気に入りに追加したユーザーID一覧
+   * @type {Array<number>}
+   * @memberof MediaResponseDto
+   */
+  addFavoriteUserIds?: Array<number>;
+  /**
    * 付与されているタグ一覧
    * @type {Array<TagResponseDto>}
    * @memberof MediaResponseDto
@@ -243,6 +249,7 @@ export function MediaResponseDtoFromJSONTyped(
     albumId: json["albumId"],
     sharingGroupId: json["sharingGroupId"],
     uploadStatus: json["uploadStatus"],
+    addFavoriteUserIds: json["addFavoriteUserIds"] == null ? undefined : json["addFavoriteUserIds"],
     tags:
       json["tags"] == null ? undefined : (json["tags"] as Array<any>).map(TagResponseDtoFromJSON),
     isFavorite: json["isFavorite"] == null ? undefined : json["isFavorite"],
@@ -294,6 +301,7 @@ export function MediaResponseDtoToJSONTyped(
     albumId: value["albumId"],
     sharingGroupId: value["sharingGroupId"],
     uploadStatus: value["uploadStatus"],
+    addFavoriteUserIds: value["addFavoriteUserIds"],
     tags:
       value["tags"] == null ? undefined : (value["tags"] as Array<any>).map(TagResponseDtoToJSON),
     isFavorite: value["isFavorite"],

@@ -3,10 +3,14 @@ import Image from "next/image";
 import Container from "@/components/layout/Container";
 import { AccentLinkButton } from "@/components/ui/AccentLinkButton";
 import PageTitle from "@/components/ui/PageTitle";
+import { getUsers } from "@/features/auth/actions/getUsers";
 import { MediaFilter, getMediaList, MediaListSection } from "@/features/media/";
 
 export default async function MediaPage() {
-  const initialData = await getMediaList({ offset: 0, limit: 12 });
+  const [initialData, users] = await Promise.all([
+    getMediaList({ offset: 0, limit: 12 }),
+    getUsers(),
+  ]);
 
   return (
     <Container className="mt-20 max-md:mt-5">
@@ -28,7 +32,7 @@ export default async function MediaPage() {
       </AccentLinkButton>
 
       {/* 一括編集UI+メディアグリッド */}
-      <MediaListSection initialData={initialData} />
+      <MediaListSection initialData={initialData} users={users} />
     </Container>
   );
 }

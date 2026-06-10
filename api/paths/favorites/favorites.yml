@@ -1,21 +1,38 @@
-get:
+post:
   tags:
     - favoriteManagement
-  summary: お気に入りメディア一覧を取得
-  operationId: getFavorites
+  summary: メディアをお気に入りに追加
+  operationId: addFavorite
   parameters:
     - $ref: "../../components/parameters.yml#/XRequestedWith"
-    - $ref: "../../components/parameters.yml#/PageOffset"
-    - $ref: "../../components/parameters.yml#/PageLimit"
+    - $ref: "../../components/parameters.yml#/MediaId"
   responses:
-    "200":
-      description: お気に入りメディア一覧
-      content:
-        application/json;charset=UTF-8:
-          schema:
-            $ref: "../../components/schemas/favorites.yml#/FavoriteMediaListResponseDto"
+    "201":
+      description: お気に入りの追加に成功
     "401":
       $ref: "../../components/responses.yml#/Unauthorized"
+    "404":
+      $ref: "../../components/responses.yml#/NotFound"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"
+
+delete:
+  tags:
+    - favoriteManagement
+  summary: メディアをお気に入りから削除
+  operationId: removeFavorite
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+    - $ref: "../../components/parameters.yml#/MediaId"
+  responses:
+    "204":
+      description: お気に入りの削除に成功
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "404":
+      $ref: "../../components/responses.yml#/NotFound"
     "500":
       $ref: "../../components/responses.yml#/InternalServerError"
     default:

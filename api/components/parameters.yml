@@ -133,3 +133,11 @@ RecordTypeFilter:
       - MILK
       - DIAPER
       - HEALTH
+
+FavoriteFilter:
+  name: isFavorite
+  in: query
+  description: お気に入りフィルタ
+  required: false
+  schema:
+    type: boolean

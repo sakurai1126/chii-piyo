@@ -3,16 +3,21 @@
 import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 
-import { GetMediaListMediaKindEnum, MediaListResponseDto } from "@/lib/api-client/gen";
+import {
+  GetMediaListMediaKindEnum,
+  MediaListResponseDto,
+  UserResponseDto,
+} from "@/lib/api-client/gen";
 
 import { MediaList } from "./MediaList";
 import { MultiEdit } from "./MultiEdit";
 
 type Props = {
   initialData: MediaListResponseDto;
+  users: UserResponseDto[];
 };
 
-export const MediaListSection = ({ initialData }: Props) => {
+export const MediaListSection = ({ initialData, users }: Props) => {
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   // 例: URLのsearchParamsから構築
   const sp = useSearchParams();
@@ -39,7 +44,12 @@ export const MediaListSection = ({ initialData }: Props) => {
       <MultiEdit isOpen={isSelectionMode} setIsOpen={setIsSelectionMode} />
 
       {/* メディア一覧 */}
-      <MediaList initialData={initialData} isSelectionMode={isSelectionMode} params={params} />
+      <MediaList
+        initialData={initialData}
+        isSelectionMode={isSelectionMode}
+        params={params}
+        users={users}
+      />
     </>
   );
 };

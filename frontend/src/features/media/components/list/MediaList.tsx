@@ -1,7 +1,7 @@
 "use client";
 
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
-import { MediaResponseDto } from "@/lib/api-client/gen";
+import { MediaResponseDto, UserResponseDto } from "@/lib/api-client/gen";
 import { MediaListResponseDto } from "@/lib/api-client/gen/models/MediaListResponseDto";
 
 import { useInfiniteMediaList, UseInfiniteMediaListParams } from "../../hooks/useInfiniteMediaList";
@@ -12,9 +12,10 @@ type MediaListProps = {
   initialData: MediaListResponseDto;
   isSelectionMode?: boolean;
   params?: UseInfiniteMediaListParams;
+  users: UserResponseDto[];
 };
 
-export const MediaList = ({ initialData, isSelectionMode, params }: MediaListProps) => {
+export const MediaList = ({ initialData, isSelectionMode, params, users }: MediaListProps) => {
   const hasActiveFilters =
     params !== undefined &&
     Object.entries(params).some(
@@ -53,7 +54,12 @@ export const MediaList = ({ initialData, isSelectionMode, params }: MediaListPro
           {/* メディアリスト */}
           <div className="mt-4 ml-7 grid grid-cols-4 gap-2 max-md:mt-2 max-md:ml-0 max-md:grid-cols-3 max-md:gap-0.5">
             {items.map((item) => (
-              <MediaListItem key={item.id} data={item} isSelectionMode={isSelectionMode} />
+              <MediaListItem
+                key={item.id}
+                data={item}
+                isSelectionMode={isSelectionMode}
+                users={users}
+              />
             ))}
           </div>
         </div>

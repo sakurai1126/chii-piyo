@@ -4,10 +4,7 @@ import link.s_repo.chii_piyo.controller.converter.*;
 import link.s_repo.chii_piyo.controller.gen.MediaManagementApi;
 import link.s_repo.chii_piyo.model.gen.*;
 import link.s_repo.chii_piyo.security.CurrentUserProvider;
-import link.s_repo.chii_piyo.service.MediaCommentService;
-import link.s_repo.chii_piyo.service.MediaService;
-import link.s_repo.chii_piyo.service.S3Service;
-import link.s_repo.chii_piyo.service.TagService;
+import link.s_repo.chii_piyo.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,6 +16,8 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * メディア管理コントローラー<br>
@@ -39,6 +38,7 @@ public class MediaController implements MediaManagementApi {
     private final TagConverter tagConverter;
     private final MediaNavigationConverter mediaNavigationConverter;
     private final MediaUploadConverter mediaUploadConverter;
+    private final FavoriteService favoriteService;
 
     /**
      * POST /media<br>
@@ -103,8 +103,19 @@ public class MediaController implements MediaManagementApi {
             mediaUpdateStatusData.getUploadStatus().getValue());
 
         // レスポンスDTOに変換して返却
-        return ResponseEntity.ok(mediaConverter.toMediaResponseDto(media, null, null,
-            null, null, null, null, null, null, null));
+        return ResponseEntity.ok(mediaConverter.toMediaResponseDto(
+            media,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        ));
     }
 
     /**
@@ -120,6 +131,7 @@ public class MediaController implements MediaManagementApi {
      * @param sharingGroupId 共有グループIDフィルタ
      * @param startDate      撮影日の開始日フィルタ
      * @param endDate        撮影日の終了日フィルタ
+     * @param isFavorite     お気に入りフィルタ
      * @return MediaListResponseDto
      */
     @Override
@@ -132,13 +144,39 @@ public class MediaController implements MediaManagementApi {
         List<Long> tagId,
         Long sharingGroupId,
         LocalDate startDate,
-        LocalDate endDate) {
+        LocalDate endDate,
+        Boolean isFavorite) {
+        // 認証情報から現在のユーザーIDを取得
+        Long currentUserId = currentUserProvider.getUserId();
+
         // 総件数を取得
-        Long totalCount = mediaService.countMedia(mediaType, albumId, tagId, sharingGroupId, startDate, endDate);
+        Long totalCount = mediaService.countMedia(
+            mediaType, albumId, tagId, sharingGroupId,
+            startDate, endDate, isFavorite, currentUserId
+        );
 
         // サービス層でメディアを取得
-        List<Media> mediaList = mediaService.getMediaList(offset, limit, mediaType, albumId, tagId, sharingGroupId,
-            startDate, endDate);
+        List<Media> mediaList = mediaService.getMediaList(
+            offset, limit, mediaType, albumId, tagId,
+            sharingGroupId, startDate, endDate, isFavorite, currentUserId
+        );
+
+        // 対象メディアのお気に入り情報を取得
+        List<Favorites> favoriteList = favoriteService.getFavoriteList(mediaList);
+
+        // 事前にMediaIDをキーにしてユーザーIDを取得できるように変換
+        Map<Long, List<Long>> favoriteUserIdsByMediaId = favoriteList.stream()
+            .collect(Collectors.groupingBy(
+                Favorites::getMediaId,
+                Collectors.mapping(Favorites::getUserId, Collectors.toList())
+            ));
+
+        // 現在のユーザーがお気に入りに追加したメディアのIDリストを取得
+        Set<Long> favoritedMediaIds = favoriteList.stream()
+            .filter(favorite -> favorite.getUserId().equals(currentUserId))
+            .map(Favorites::getMediaId)
+            .collect(Collectors.toSet());
+
 
         // hasNextの判定
         boolean hasNext = offset + mediaList.size() < totalCount;
@@ -147,6 +185,7 @@ public class MediaController implements MediaManagementApi {
 
         Map<Long, Long> commentCountsByMediaId = mediaCommentService.getCommentCountsByMediaIds(mediaIds);
 
+
         // コンバータでMediaResponseDtoのリストに変換する
         List<MediaResponseDto> responseMediaList = mediaList.stream()
             .map(media -> {
@@ -154,9 +193,28 @@ public class MediaController implements MediaManagementApi {
                     ? s3Service.generateDownloadPresignedUrl(media.getThumbnailS3Key(),
                     media.getOriginalFilename())
                     : null;
+
                 Long commentCount = commentCountsByMediaId.getOrDefault(media.getId(), 0L);
-                return mediaConverter.toMediaResponseDto(media, null, null,
-                    thumbnailPresignedUrl, null, commentCount, null, null, null, null);
+
+                // 現在のユーザーがお気に入りに追加しているかを判定
+                Boolean isFavoriteMedia = favoritedMediaIds.contains(media.getId());
+
+                // メディアIDに紐づくお気に入りユーザーIDのリストを取得
+                List<Long> addFavoriteUserIds = favoriteUserIdsByMediaId.getOrDefault(media.getId(), List.of());
+
+                return mediaConverter.toMediaResponseDto(
+                    media,
+                    null,
+                    null,
+                    thumbnailPresignedUrl,
+                    isFavoriteMedia,
+                    commentCount,
+                    null,
+                    null,
+                    null,
+                    null,
+                    addFavoriteUserIds
+                );
             })
             .toList();
 
@@ -218,8 +276,25 @@ public class MediaController implements MediaManagementApi {
             ? s3Service.generateDownloadPresignedUrl(media.getThumbnailS3Key(), media.getOriginalFilename())
             : null;
 
+        // 認証情報から現在のユーザーIDを取得
+        Long currentUserId = currentUserProvider.getUserId();
+        Boolean isFavorite = favoriteService.getCurrentUserIsFavorite(id, currentUserId);
+
+        List<Long> addFavoriteUserIds = favoriteService.getAddFavoriteUserIds(id);
+
         return ResponseEntity.ok(mediaConverter.toMediaResponseDto(
-            media, tags, presignedUrl, thumbnailPresignedUrl, true, null, nextMedia, secondNextMedia, previousMedia, secondPreviousMedia));
+            media,
+            tags,
+            presignedUrl,
+            thumbnailPresignedUrl,
+            isFavorite,
+            null,
+            nextMedia,
+            secondNextMedia,
+            previousMedia,
+            secondPreviousMedia,
+            addFavoriteUserIds
+        ));
     }
 
     /**
@@ -229,7 +304,7 @@ public class MediaController implements MediaManagementApi {
      * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
      * @param id             対象のメディアID
      * @param updateData     更新用データ（アルバムID と 共有グループIDを想定）
-     * @return 更新後のメディア情報
+     * @return 204ステータス
      */
     @Override
     public ResponseEntity<Void> updateMedia(

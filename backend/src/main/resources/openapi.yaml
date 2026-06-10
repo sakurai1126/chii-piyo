@@ -329,6 +329,7 @@ paths:
         - $ref: '#/components/parameters/SharingGroupIdFilter'
         - $ref: '#/components/parameters/StartDate'
         - $ref: '#/components/parameters/EndDate'
+        - $ref: '#/components/parameters/FavoriteFilter'
       responses:
         '200':
           description: メディア一覧
@@ -659,29 +660,6 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-        default:
-          $ref: '#/components/responses/DefaultErrors'
-  /favorites:
-    get:
-      tags:
-        - favoriteManagement
-      summary: お気に入りメディア一覧を取得
-      operationId: getFavorites
-      parameters:
-        - $ref: '#/components/parameters/XRequestedWith'
-        - $ref: '#/components/parameters/PageOffset'
-        - $ref: '#/components/parameters/PageLimit'
-      responses:
-        '200':
-          description: お気に入りメディア一覧
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/FavoriteMediaListResponseDto'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
         '500':
           $ref: '#/components/responses/InternalServerError'
         default:
@@ -1624,6 +1602,13 @@ components:
       schema:
         type: string
         format: date
+    FavoriteFilter:
+      name: isFavorite
+      in: query
+      description: お気に入りフィルタ
+      required: false
+      schema:
+        type: boolean
     MediaId:
       name: mediaId
       in: path
@@ -2041,6 +2026,16 @@ components:
             - COMPLETED
             - FAILED
           example: COMPLETED
+        addFavoriteUserIds:
+          type: array
+          description: お気に入りに追加したユーザーID一覧
+          items:
+            type: integer
+            format: int64
+          example:
+            - 1
+            - 2
+            - 3
         tags:
           type: array
           description: 付与されているタグ一覧
@@ -2300,27 +2295,6 @@ components:
           minLength: 1
           maxLength: 100
           example: お出かけ
-    FavoriteMediaListResponseDto:
-      type: object
-      description: お気に入りメディア一覧レスポンス
-      required:
-        - items
-        - totalCount
-        - hasNext
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/MediaResponseDto'
-        totalCount:
-          type: integer
-          format: int64
-          description: 総件数
-          example: 10
-        hasNext:
-          type: boolean
-          description: 次のページが存在するかどうか
-          example: true
     AlbumResponseDto:
       type: object
       description: アルバム情報

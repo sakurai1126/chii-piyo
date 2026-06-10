@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * APIレスポンスの組み立てを担当するコンバータークラス<br>
@@ -34,7 +35,8 @@ public class MediaConverter {
         MediaNavigationResponseDto nextMedia,
         MediaNavigationResponseDto secondNextMedia,
         MediaNavigationResponseDto previousMedia,
-        MediaNavigationResponseDto secondPreviousMedia
+        MediaNavigationResponseDto secondPreviousMedia,
+        List<Long> addFavoriteUserIds
     ) {
 
         // 必須フィールドを揃えてコンストラクタに渡す
@@ -66,6 +68,7 @@ public class MediaConverter {
         dto.setSecondNextMedia(secondNextMedia); // 2つ後のメディアのID
         dto.setPreviousMedia(previousMedia); // 前のメディアのID
         dto.setSecondPreviousMedia(secondPreviousMedia); // 2つ前のメディアのID
+        dto.setAddFavoriteUserIds(Optional.ofNullable(addFavoriteUserIds).orElse(List.of()));
 
         return dto;
     }

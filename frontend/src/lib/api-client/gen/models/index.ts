@@ -8,7 +8,6 @@ export * from "./CareRecordRequestDto";
 export * from "./CareRecordResponseDto";
 export * from "./DiaperDetailDto";
 export * from "./ErrorResponseDto";
-export * from "./FavoriteMediaListResponseDto";
 export * from "./FirstRecordRequestDto";
 export * from "./FirstRecordResponseDto";
 export * from "./GrowthRecordRequestDto";

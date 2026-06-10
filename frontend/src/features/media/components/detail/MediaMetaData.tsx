@@ -1,14 +1,16 @@
 import { FavoriteMediaDetail } from "@/features/favorite";
-import { MediaResponseDto } from "@/lib/api-client/gen";
+import { MediaResponseDto, UserResponseDto } from "@/lib/api-client/gen";
 import { formatJapaneseDateNonTime } from "@/utils/date";
 
 type Props = {
   media: MediaResponseDto;
+  users: UserResponseDto[];
 };
 
-export const MediaMetaData = ({ media }: Props) => {
+export const MediaMetaData = ({ media, users }: Props) => {
   const sizeInKB = (media.fileSize / 1024).toFixed(0);
   const sizeInMB = (media.fileSize / 1024 / 1024).toFixed(1);
+
   return (
     <div className="mt-6 flex justify-between">
       <div>
@@ -25,7 +27,7 @@ export const MediaMetaData = ({ media }: Props) => {
         </div>
       </div>
       <div className="max-md:hidden">
-        <FavoriteMediaDetail />
+        <FavoriteMediaDetail media={media} users={users} />
       </div>
     </div>
   );

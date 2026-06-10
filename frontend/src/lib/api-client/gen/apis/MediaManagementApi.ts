@@ -74,6 +74,7 @@ export interface GetMediaListRequest {
   sharingGroupId?: number;
   startDate?: Date;
   endDate?: Date;
+  isFavorite?: boolean;
 }
 
 export interface UpdateMediaRequest {
@@ -362,6 +363,10 @@ export class MediaManagementApi extends runtime.BaseAPI {
       queryParameters["endDate"] = (requestParameters["endDate"] as any)
         .toISOString()
         .substring(0, 10);
+    }
+
+    if (requestParameters["isFavorite"] != null) {
+      queryParameters["isFavorite"] = requestParameters["isFavorite"];
     }
 
     const headerParameters: runtime.HTTPHeaders = {};
