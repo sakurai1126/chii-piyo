@@ -131,6 +131,7 @@ public class MediaController implements MediaManagementApi {
      * @param sharingGroupId 共有グループIDフィルタ
      * @param startDate      撮影日の開始日フィルタ
      * @param endDate        撮影日の終了日フィルタ
+     * @param isFavorite     お気に入りフィルタ
      * @return MediaListResponseDto
      */
     @Override
@@ -143,13 +144,22 @@ public class MediaController implements MediaManagementApi {
         List<Long> tagId,
         Long sharingGroupId,
         LocalDate startDate,
-        LocalDate endDate) {
+        LocalDate endDate,
+        Boolean isFavorite) {
+        // 認証情報から現在のユーザーIDを取得
+        Long currentUserId = currentUserProvider.getUserId();
+
         // 総件数を取得
-        Long totalCount = mediaService.countMedia(mediaType, albumId, tagId, sharingGroupId, startDate, endDate);
+        Long totalCount = mediaService.countMedia(
+            mediaType, albumId, tagId, sharingGroupId,
+            startDate, endDate, isFavorite, currentUserId
+        );
 
         // サービス層でメディアを取得
-        List<Media> mediaList = mediaService.getMediaList(offset, limit, mediaType, albumId, tagId, sharingGroupId,
-            startDate, endDate);
+        List<Media> mediaList = mediaService.getMediaList(
+            offset, limit, mediaType, albumId, tagId,
+            sharingGroupId, startDate, endDate, isFavorite, currentUserId
+        );
 
         // 対象メディアのお気に入り情報を取得
         List<Favorites> favoriteList = favoriteService.getFavoriteList(mediaList);
@@ -160,9 +170,6 @@ public class MediaController implements MediaManagementApi {
                 Favorites::getMediaId,
                 Collectors.mapping(Favorites::getUserId, Collectors.toList())
             ));
-
-        // 認証情報から現在のユーザーIDを取得
-        Long currentUserId = currentUserProvider.getUserId();
 
         // 現在のユーザーがお気に入りに追加したメディアのIDリストを取得
         Set<Long> favoritedMediaIds = favoriteList.stream()
@@ -190,7 +197,7 @@ public class MediaController implements MediaManagementApi {
                 Long commentCount = commentCountsByMediaId.getOrDefault(media.getId(), 0L);
 
                 // 現在のユーザーがお気に入りに追加しているかを判定
-                Boolean isFavorite = favoritedMediaIds.contains(media.getId());
+                Boolean isFavoriteMedia = favoritedMediaIds.contains(media.getId());
 
                 // メディアIDに紐づくお気に入りユーザーIDのリストを取得
                 List<Long> addFavoriteUserIds = favoriteUserIdsByMediaId.getOrDefault(media.getId(), List.of());
@@ -200,7 +207,7 @@ public class MediaController implements MediaManagementApi {
                     null,
                     null,
                     thumbnailPresignedUrl,
-                    isFavorite,
+                    isFavoriteMedia,
                     commentCount,
                     null,
                     null,

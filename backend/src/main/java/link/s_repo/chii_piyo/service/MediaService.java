@@ -3,8 +3,10 @@ package link.s_repo.chii_piyo.service;
 import link.s_repo.chii_piyo.common.S3KeyGenerator;
 import link.s_repo.chii_piyo.exception.ResourceAccessDeniedException;
 import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
+import link.s_repo.chii_piyo.model.gen.Favorites;
 import link.s_repo.chii_piyo.model.gen.Media;
 import link.s_repo.chii_piyo.model.gen.MediaUpdateRequestDto;
+import link.s_repo.chii_piyo.repository.gen.FavoritesDynamicSqlSupport;
 import link.s_repo.chii_piyo.repository.gen.MediaDynamicSqlSupport;
 import link.s_repo.chii_piyo.repository.gen.MediaMapper;
 import link.s_repo.chii_piyo.repository.gen.MediaTagsDynamicSqlSupport;
@@ -40,6 +42,7 @@ public class MediaService {
     private final S3KeyGenerator s3KeyGenerator;
     private final SharingGroupService sharingGroupService;
     private final AlbumService albumService;
+    private final FavoriteService favoriteService;
 
     /**
      * メディアをID指定で1件取得する
@@ -57,6 +60,14 @@ public class MediaService {
     /**
      * メディア総件数を取得する
      *
+     * @param mediaType      メディア種別 (PHOTO / VIDEO)
+     * @param albumId        アルバムID
+     * @param tagId          タグIDのリスト
+     * @param sharingGroupId 共有グループID
+     * @param startDate      日時指定開始日
+     * @param endDate        日時指定終了日
+     * @param isFavorite     お気に入りのみかどうかのフラグ
+     * @param currentUserId  現在のユーザーID (isFavoriteがtrueの場合に使用)
      * @return 総件数の数値
      */
     @Transactional(readOnly = true)
@@ -66,10 +77,24 @@ public class MediaService {
         List<Long> tagId,
         Long sharingGroupId,
         LocalDate startDate,
-        LocalDate endDate) {
+        LocalDate endDate,
+        Boolean isFavorite,
+        Long currentUserId) {
+
         return mediaMapper.count(c -> {
             // 絞り込み条件設定を構築
             List<AndOrCriteriaGroup> conditions = buildMediaFilterConditions(mediaType, albumId, tagId, sharingGroupId, startDate, endDate);
+
+            // isFavoriteがtrueの場合、サブクエリで現在のユーザーがお気に入りに入れているメディアをカウントする
+            if (Boolean.TRUE.equals(isFavorite) && currentUserId != null) {
+                conditions.add(
+                    and(MediaDynamicSqlSupport.id, isIn(
+                        select(FavoritesDynamicSqlSupport.mediaId)
+                            .from(FavoritesDynamicSqlSupport.favorites)
+                            .where(FavoritesDynamicSqlSupport.userId, isEqualTo(currentUserId))
+                    ))
+                );
+            }
 
             if (!conditions.isEmpty()) {
                 c.where(conditions);
@@ -82,8 +107,16 @@ public class MediaService {
     /**
      * メディアの一覧を取得する
      *
-     * @param offset 取得位置
-     * @param limit  最大件数
+     * @param offset         取得位置
+     * @param limit          最大件数
+     * @param mediaType      メディア種別 (PHOTO / VIDEO)
+     * @param albumId        アルバムID
+     * @param tagId          タグIDのリスト
+     * @param sharingGroupId 共有グループID
+     * @param startDate      日時指定開始日
+     * @param endDate        日時指定終了日
+     * @param isFavorite     お気に入りのみかどうかのフラグ
+     * @param currentUserId  現在のユーザーID (isFavoriteがtrueの場合に使用)
      * @return メディアのリスト
      */
     public List<Media> getMediaList(
@@ -94,11 +127,26 @@ public class MediaService {
         List<Long> tagId,
         Long sharingGroupId,
         LocalDate startDate,
-        LocalDate endDate) {
+        LocalDate endDate,
+        Boolean isFavorite,
+        Long currentUserId) {
         // ページネーション込みで一覧取得
         return mediaMapper.select(c -> {
                 // 絞り込み条件設定を構築
                 List<AndOrCriteriaGroup> conditions = buildMediaFilterConditions(mediaType, albumId, tagId, sharingGroupId, startDate, endDate);
+
+                // isFavoriteがtrueの場合はサブクエリでお気に入りに追加しているメディアに絞り込む
+                if (Boolean.TRUE.equals(isFavorite) && currentUserId != null) {
+                    conditions.add(
+                        // 自分（=currentUserId）が登録したfavoritesレコードのmedia_idのリストを取得し
+                        // メイン検索対象の media.id がそのリストの中に含まれているかを判定
+                        and(MediaDynamicSqlSupport.id, isIn(
+                            select(FavoritesDynamicSqlSupport.mediaId)
+                                .from(FavoritesDynamicSqlSupport.favorites)
+                                .where(FavoritesDynamicSqlSupport.userId, isEqualTo(currentUserId))
+                        ))
+                    );
+                }
 
                 if (!conditions.isEmpty()) {
                     c.where(conditions);

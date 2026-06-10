@@ -13,6 +13,7 @@ export const GET = async (request: NextRequest) => {
   const sharingGroupId = params.get("sharingGroupId");
   const startDate = params.get("startDate");
   const endDate = params.get("endDate");
+  const isFavorite = params.get("isFavorite");
 
   try {
     const data = await getMediaList({
@@ -24,6 +25,7 @@ export const GET = async (request: NextRequest) => {
       sharingGroupId: sharingGroupId ? Number(sharingGroupId) : undefined,
       startDate: startDate ? new Date(startDate) : undefined,
       endDate: endDate ? new Date(endDate) : undefined,
+      isFavorite: isFavorite === "true" ? true : undefined,
     });
     return NextResponse.json(data);
   } catch (error) {

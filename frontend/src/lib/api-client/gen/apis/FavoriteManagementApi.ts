@@ -18,21 +18,10 @@ import {
   ErrorResponseDtoFromJSON,
   ErrorResponseDtoToJSON,
 } from "../models/ErrorResponseDto";
-import {
-  type FavoriteMediaListResponseDto,
-  FavoriteMediaListResponseDtoFromJSON,
-  FavoriteMediaListResponseDtoToJSON,
-} from "../models/FavoriteMediaListResponseDto";
 
 export interface AddFavoriteRequest {
   xRequestedWith: string;
   mediaId: number;
-}
-
-export interface GetFavoritesRequest {
-  xRequestedWith: string;
-  offset?: number;
-  limit?: number;
 }
 
 export interface RemoveFavoriteRequest {
@@ -116,80 +105,6 @@ export class FavoriteManagementApi extends runtime.BaseAPI {
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<void> {
     await this.addFavoriteRaw(requestParameters, initOverrides);
-  }
-
-  /**
-   * Creates request options for getFavorites without sending the request
-   */
-  async getFavoritesRequestOpts(
-    requestParameters: GetFavoritesRequest,
-  ): Promise<runtime.RequestOpts> {
-    if (requestParameters["xRequestedWith"] == null) {
-      throw new runtime.RequiredError(
-        "xRequestedWith",
-        'Required parameter "xRequestedWith" was null or undefined when calling getFavorites().',
-      );
-    }
-
-    const queryParameters: any = {};
-
-    if (requestParameters["offset"] != null) {
-      queryParameters["offset"] = requestParameters["offset"];
-    }
-
-    if (requestParameters["limit"] != null) {
-      queryParameters["limit"] = requestParameters["limit"];
-    }
-
-    const headerParameters: runtime.HTTPHeaders = {};
-
-    if (requestParameters["xRequestedWith"] != null) {
-      headerParameters["X-Requested-With"] = String(requestParameters["xRequestedWith"]);
-    }
-
-    if (this.configuration && this.configuration.accessToken) {
-      const token = this.configuration.accessToken;
-      const tokenString = await token("BearerAuth", []);
-
-      if (tokenString) {
-        headerParameters["Authorization"] = `Bearer ${tokenString}`;
-      }
-    }
-
-    let urlPath = `/favorites`;
-
-    return {
-      path: urlPath,
-      method: "GET",
-      headers: headerParameters,
-      query: queryParameters,
-    };
-  }
-
-  /**
-   * お気に入りメディア一覧を取得
-   */
-  async getFavoritesRaw(
-    requestParameters: GetFavoritesRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<FavoriteMediaListResponseDto>> {
-    const requestOptions = await this.getFavoritesRequestOpts(requestParameters);
-    const response = await this.request(requestOptions, initOverrides);
-
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      FavoriteMediaListResponseDtoFromJSON(jsonValue),
-    );
-  }
-
-  /**
-   * お気に入りメディア一覧を取得
-   */
-  async getFavorites(
-    requestParameters: GetFavoritesRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<FavoriteMediaListResponseDto> {
-    const response = await this.getFavoritesRaw(requestParameters, initOverrides);
-    return await response.value();
   }
 
   /**

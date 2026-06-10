@@ -2,7 +2,6 @@ package link.s_repo.chii_piyo.service;
 
 import link.s_repo.chii_piyo.model.gen.Favorites;
 import link.s_repo.chii_piyo.model.gen.Media;
-import link.s_repo.chii_piyo.model.gen.Users;
 import link.s_repo.chii_piyo.repository.gen.FavoritesDynamicSqlSupport;
 import link.s_repo.chii_piyo.repository.gen.FavoritesMapper;
 import lombok.RequiredArgsConstructor;
@@ -11,8 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
@@ -101,6 +98,11 @@ public class FavoriteService {
     public List<Favorites> getFavoriteList(List<Media> mediaList) {
         // メディアIDをリスト化
         List<Long> mediaIds = mediaList.stream().map(Media::getId).toList();
+
+        // 空の場合空リストを返却
+        if (mediaIds.isEmpty()) {
+            return List.of();
+        }
 
         // リスト化したメディアIDに合致するデータを取得
         return favoritesMapper.select(c -> c.where(FavoritesDynamicSqlSupport.mediaId, isIn(mediaIds)));

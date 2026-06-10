@@ -82,10 +82,8 @@ paths:
     $ref: "./paths/tags/tags.yml"
 
   # お気に入り
-  /favorites:
-    $ref: "./paths/favorites/favorites.yml"
   /favorites/{mediaId}:
-    $ref: "./paths/favorites/favorites-detail.yml"
+    $ref: "./paths/favorites/favorites.yml"
 
   # アルバム
   /albums:

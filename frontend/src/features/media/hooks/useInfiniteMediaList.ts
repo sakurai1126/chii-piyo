@@ -14,6 +14,7 @@ export type UseInfiniteMediaListParams = {
   sharingGroupId?: number;
   startDate?: Date;
   endDate?: Date;
+  isFavorite?: boolean;
 };
 
 type Props = {
@@ -64,6 +65,7 @@ export const useInfiniteMediaList = ({ params = {}, initialData }: Props) => {
         // 日付はISO形式の文字列(YYYY-MM-DD)に変換してクエリパラメータに設定する
         if (params.startDate) sp.set("startDate", params.startDate.toISOString().slice(0, 10));
         if (params.endDate) sp.set("endDate", params.endDate.toISOString().slice(0, 10));
+        if (params.isFavorite) sp.set("isFavorite", String(true));
 
         // APIエンドポイントにクエリパラメータを付与してリクエストを送る
         const res = await fetch(`/api/media?${sp.toString()}`);

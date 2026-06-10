@@ -13,6 +13,7 @@ get:
     - $ref: "../../components/parameters.yml#/SharingGroupIdFilter"
     - $ref: "../../components/parameters.yml#/StartDate"
     - $ref: "../../components/parameters.yml#/EndDate"
+    - $ref: "../../components/parameters.yml#/FavoriteFilter"
   responses:
     "200":
       description: メディア一覧

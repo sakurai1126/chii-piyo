@@ -16,6 +16,7 @@ export type GetMediaListParams = {
   sharingGroupId?: number;
   startDate?: Date;
   endDate?: Date;
+  isFavorite?: boolean;
 };
 
 export const getMediaList = async (
