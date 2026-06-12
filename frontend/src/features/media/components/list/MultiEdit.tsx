@@ -7,12 +7,9 @@ import { AccordionContent } from "@/components/ui/AccordionContent";
 import { Button } from "@/components/ui/Button";
 import { SharingGroupsSelector } from "@/features/sharing";
 import { TagSelector } from "@/features/tag";
+import { TagResponseDto } from "@/lib/api-client/gen";
 
 // ダミーデータ
-const dummyTags = [
-  { id: 1, name: "お出かけ", createdAt: new Date() },
-  { id: 2, name: "誕生日", createdAt: new Date() },
-];
 
 const dummySharingGroups = [
   {
@@ -34,9 +31,10 @@ const dummySharingGroups = [
 type Props = {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
+  tags: TagResponseDto[];
 };
 
-export const MultiEdit = ({ isOpen, setIsOpen }: Props) => {
+export const MultiEdit = ({ isOpen, setIsOpen, tags }: Props) => {
   const [selectedTagIds, setSelectedTagIds] = useState<number[]>([]);
   const [selectedGroupId, setSelectedGroupId] = useState<number | undefined>(undefined);
 
@@ -58,7 +56,7 @@ export const MultiEdit = ({ isOpen, setIsOpen }: Props) => {
           </p>
           {/* タグを編集 */}
           <TagSelector
-            tags={dummyTags}
+            tags={tags}
             isLoading={false}
             error={null}
             onRefresh={() => {}}

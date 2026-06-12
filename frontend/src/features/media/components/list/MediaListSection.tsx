@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 import {
   GetMediaListMediaKindEnum,
   MediaListResponseDto,
+  TagResponseDto,
   UserResponseDto,
 } from "@/lib/api-client/gen";
 
@@ -15,9 +16,10 @@ import { MultiEdit } from "./MultiEdit";
 type Props = {
   initialData: MediaListResponseDto;
   users: UserResponseDto[];
+  tags: TagResponseDto[];
 };
 
-export const MediaListSection = ({ initialData, users }: Props) => {
+export const MediaListSection = ({ initialData, users, tags }: Props) => {
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   // 例: URLのsearchParamsから構築
   const sp = useSearchParams();
@@ -41,7 +43,7 @@ export const MediaListSection = ({ initialData, users }: Props) => {
   return (
     <>
       {/* 一括編集UI */}
-      <MultiEdit isOpen={isSelectionMode} setIsOpen={setIsSelectionMode} />
+      <MultiEdit isOpen={isSelectionMode} setIsOpen={setIsSelectionMode} tags={tags} />
 
       {/* メディア一覧 */}
       <MediaList

@@ -4,12 +4,15 @@ import Container from "@/components/layout/Container";
 import { AccentLinkButton } from "@/components/ui/AccentLinkButton";
 import PageTitle from "@/components/ui/PageTitle";
 import { getUsers } from "@/features/auth/actions/getUsers";
-import { MediaFilter, getMediaList, MediaListSection } from "@/features/media/";
+import { MediaFilter, MediaListSection } from "@/features/media";
+import { getMediaList } from "@/features/media/server";
+import { getTags } from "@/features/tag/server";
 
 export default async function MediaPage() {
-  const [initialData, users] = await Promise.all([
+  const [initialData, users, tags] = await Promise.all([
     getMediaList({ offset: 0, limit: 12 }),
     getUsers(),
+    getTags(),
   ]);
 
   return (
@@ -32,7 +35,7 @@ export default async function MediaPage() {
       </AccentLinkButton>
 
       {/* 一括編集UI+メディアグリッド */}
-      <MediaListSection initialData={initialData} users={users} />
+      <MediaListSection initialData={initialData} users={users} tags={tags} />
     </Container>
   );
 }

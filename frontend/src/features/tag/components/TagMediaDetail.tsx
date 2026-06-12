@@ -13,16 +13,11 @@ import plus from "../assets/plus.svg";
 import { TagSelector } from "./TagSelector";
 
 type Props = {
-  tags: TagResponseDto[] | undefined;
+  mediaTags: TagResponseDto[] | undefined;
+  tags: TagResponseDto[];
 };
 
-// ダミーデータ
-const dummyTags = [
-  { id: 1, name: "お出かけ", createdAt: new Date() },
-  { id: 2, name: "誕生日", createdAt: new Date() },
-];
-
-export const TagMediaDetail = ({ tags }: Props) => {
+export const TagMediaDetail = ({ mediaTags, tags }: Props) => {
   const [selectedTagIds, setSelectedTagIds] = useState<number[]>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -31,7 +26,7 @@ export const TagMediaDetail = ({ tags }: Props) => {
       <p className="max-md:text-sm">タグ</p>
 
       <div className="mt-3 flex flex-wrap gap-3">
-        {tags?.map((tag) => (
+        {mediaTags?.map((tag) => (
           <p
             key={tag.id}
             className="bg-accent-orange-back border-brown-middle text-brown-middle grid place-content-center rounded-2xl border px-4 py-1 text-sm max-md:px-3 max-md:text-xs"
@@ -54,7 +49,7 @@ export const TagMediaDetail = ({ tags }: Props) => {
               <div className="flex h-full flex-col justify-between">
                 <div className="-mt-8">
                   <TagSelector
-                    tags={dummyTags}
+                    tags={tags}
                     isLoading={false}
                     error={null}
                     onRefresh={() => {}}
@@ -62,7 +57,6 @@ export const TagMediaDetail = ({ tags }: Props) => {
                     onTagSelect={(tagIds) => setSelectedTagIds(tagIds)}
                   />
                 </div>
-
                 <div className="flex justify-center gap-5 max-md:mt-8">
                   <Button variant="cancel" onClick={() => setIsOpen(false)}>
                     キャンセル

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { getMediaList } from "@/features/media/api/getMediaList";
+import { getMediaList } from "@/features/media/server";
 import { GetMediaListMediaKindEnum } from "@/lib/api-client/gen";
 
 export const GET = async (request: NextRequest) => {
