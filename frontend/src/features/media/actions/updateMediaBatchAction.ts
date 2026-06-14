@@ -9,8 +9,8 @@ import { createAuthorizedConfig } from "@/lib/api-client/server";
 type Input = {
   mediaIds: number[];
   albumId?: number;
-  sharingGroupId?: number | undefined;
-  tagIds?: number[] | undefined;
+  sharingGroupId?: number;
+  tagIds?: number[];
 };
 
 type ActionResult = { success: true } | { success: false; error: string };

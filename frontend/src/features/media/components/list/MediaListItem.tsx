@@ -18,8 +18,8 @@ type Props = {
 export const MediaListItem = ({ data, isSelectionMode, users, setSelectedMedia }: Props) => {
   const uid = useId();
 
-  const setIds = (isChecked: boolean) => {
-    if (isChecked) {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
       setSelectedMedia((prev) => [...prev, data.id]);
     } else {
       setSelectedMedia((prev) => prev.filter((item) => item !== data.id));
@@ -53,7 +53,7 @@ export const MediaListItem = ({ data, isSelectionMode, users, setSelectedMedia }
           aria-label="選択"
           type="checkbox"
           className="accent-accent-pink absolute top-2 left-2 z-1 h-5 w-5 max-md:top-1 max-md:left-1 max-md:h-4 max-md:w-4"
-          onChange={(e) => setIds(e.target.checked)}
+          onChange={handleChange}
         />
       )}
 
