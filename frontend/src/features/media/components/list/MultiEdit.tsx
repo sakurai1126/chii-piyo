@@ -2,7 +2,7 @@
 
 import { AnimatePresence } from "motion/react";
 import Image from "next/image";
-import { useState, useTransition } from "react";
+import { Dispatch, SetStateAction, useState, useTransition } from "react";
 
 import { Modal } from "@/components/layout/Modal";
 import { AccordionContent } from "@/components/ui/AccordionContent";
@@ -39,9 +39,10 @@ type Props = {
   setIsOpen: (isOpen: boolean) => void;
   tags: TagResponseDto[];
   selectedMedia: number[];
+  setSelectedMedia: Dispatch<SetStateAction<number[]>>;
 };
 
-export const MultiEdit = ({ isOpen, setIsOpen, tags, selectedMedia }: Props) => {
+export const MultiEdit = ({ isOpen, setIsOpen, tags, selectedMedia, setSelectedMedia }: Props) => {
   const [editType, setEditType] = useState<"all" | "tag" | "sharing">("all");
   const [selectedTagIds, setSelectedTagIds] = useState<number[]>([]);
   const [selectedGroupId, setSelectedGroupId] = useState<number | undefined>(undefined);
@@ -78,11 +79,17 @@ export const MultiEdit = ({ isOpen, setIsOpen, tags, selectedMedia }: Props) => 
     }
     setIsUpdateConfirmOpen(true);
   };
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+    setSelectedMedia([]);
+  };
+
   return (
     <>
       <Button
         className="-mt-10 flex items-center justify-center gap-2 max-md:w-30"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={toggleMenu}
         variant={isOpen ? "cancel" : "primary"}
       >
         {!isOpen && <Image src="/images/select-start-check.svg" alt="" width={18} height={18} />}

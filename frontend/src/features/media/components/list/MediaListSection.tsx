@@ -49,6 +49,7 @@ export const MediaListSection = ({ initialData, users, tags }: Props) => {
         setIsOpen={setIsSelectionMode}
         tags={tags}
         selectedMedia={selectedMedia}
+        setSelectedMedia={setSelectedMedia}
       />
 
       {/* メディア一覧 */}
