@@ -3,27 +3,26 @@ import Image from "next/image";
 import { useId, useState } from "react";
 
 import { useFlexWrapOverflow } from "@/hooks/useFlexWrapOverflow";
+import { SharingGroupResponseDto } from "@/lib/api-client/gen";
 
 import arrow from "../assets/brown-arrow.svg";
 import icon from "../assets/icon.svg";
-import { useSharingGroups } from "../hooks/useSharingGroups";
 
 type Props = {
+  sharingGroups: SharingGroupResponseDto[];
   updateFilter: ({ key, value }: { key: string; value: string }) => void;
   currentValue?: string;
 };
 
-export const SharingGroupFilter = ({ updateFilter, currentValue = "" }: Props) => {
+export const SharingGroupFilter = ({ sharingGroups, updateFilter, currentValue = "" }: Props) => {
   const uid = useId();
-
-  const sharingGroupsState = useSharingGroups();
 
   // 折り返し展開フラグ
   const [isOpen, setIsOpen] = useState(false);
 
   // 要素の数に応じて折り返しの有無を判定するカスタムフック
   const { ref, hasOverflow, isLoading, closedHeight, fullHeight } = useFlexWrapOverflow(
-    sharingGroupsState.data?.length || 0,
+    sharingGroups.length,
   );
 
   // 共有グループ選択時の処理
@@ -72,7 +71,7 @@ export const SharingGroupFilter = ({ updateFilter, currentValue = "" }: Props) =
           />
           <p className="text-sm max-md:text-xs">全員に公開</p>
         </label>
-        {sharingGroupsState.data?.map((group) => (
+        {sharingGroups.map((group) => (
           <label
             key={group.id}
             htmlFor={`sharing-group-${group.id}`}

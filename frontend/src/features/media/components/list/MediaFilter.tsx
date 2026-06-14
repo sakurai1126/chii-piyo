@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { SharingGroupFilter } from "@/features/sharing";
 import { TagFilter } from "@/features/tag";
-import { TagResponseDto } from "@/lib/api-client/gen";
+import { SharingGroupResponseDto, TagResponseDto } from "@/lib/api-client/gen";
 
 import heart from "../../assets/heart.png";
 import illust from "../../assets/illust.png";
@@ -16,9 +16,10 @@ import { MediaKindFilter } from "./MediaKindFilter";
 
 type Props = {
   tags: TagResponseDto[];
+  sharingGroups: SharingGroupResponseDto[];
 };
 
-export const MediaFilter = ({ tags }: Props) => {
+export const MediaFilter = ({ tags, sharingGroups }: Props) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -83,6 +84,7 @@ export const MediaFilter = ({ tags }: Props) => {
 
               {/* 共有範囲 */}
               <SharingGroupFilter
+                sharingGroups={sharingGroups}
                 updateFilter={updateFilter}
                 currentValue={searchParams.get("sharingGroupId") ?? ""}
               />

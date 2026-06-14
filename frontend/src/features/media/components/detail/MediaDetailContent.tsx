@@ -2,7 +2,7 @@ import { AlbumMediaDetail } from "@/features/album";
 import { getCurrentUser } from "@/features/auth";
 import { getUsers } from "@/features/auth/actions/getUsers";
 import { ShareGroupMediaDetail } from "@/features/sharing";
-import { getSharingGroups } from "@/features/sharing/api/getSharingGroups";
+import { getSharingGroups } from "@/features/sharing/server";
 import { TagMediaDetail } from "@/features/tag";
 import { getTags } from "@/features/tag/server";
 

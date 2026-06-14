@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 import {
   GetMediaListMediaKindEnum,
   MediaListResponseDto,
+  SharingGroupResponseDto,
   TagResponseDto,
   UserResponseDto,
 } from "@/lib/api-client/gen";
@@ -17,9 +18,10 @@ type Props = {
   initialData: MediaListResponseDto;
   users: UserResponseDto[];
   tags: TagResponseDto[];
+  sharingGroups: SharingGroupResponseDto[];
 };
 
-export const MediaListSection = ({ initialData, users, tags }: Props) => {
+export const MediaListSection = ({ initialData, users, tags, sharingGroups }: Props) => {
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState<number[]>([]);
   // 例: URLのsearchParamsから構築
@@ -48,6 +50,7 @@ export const MediaListSection = ({ initialData, users, tags }: Props) => {
         isOpen={isSelectionMode}
         setIsOpen={setIsSelectionMode}
         tags={tags}
+        sharingGroups={sharingGroups}
         selectedMedia={selectedMedia}
         setSelectedMedia={setSelectedMedia}
       />
@@ -58,6 +61,7 @@ export const MediaListSection = ({ initialData, users, tags }: Props) => {
         isSelectionMode={isSelectionMode}
         params={params}
         users={users}
+        selectedMedia={selectedMedia}
         setSelectedMedia={setSelectedMedia}
       />
     </>

@@ -12,15 +12,23 @@ type Props = {
   data: MediaResponseDto;
   isSelectionMode?: boolean;
   users: UserResponseDto[];
+  selectedMedia: number[];
   setSelectedMedia: Dispatch<SetStateAction<number[]>>;
 };
 
-export const MediaListItem = ({ data, isSelectionMode, users, setSelectedMedia }: Props) => {
+export const MediaListItem = ({
+  data,
+  isSelectionMode,
+  users,
+  selectedMedia,
+  setSelectedMedia,
+}: Props) => {
   const uid = useId();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
-      setSelectedMedia((prev) => [...prev, data.id]);
+      // 重複しない場合のみ追加する
+      setSelectedMedia((prev) => (prev.includes(data.id) ? prev : [...prev, data.id]));
     } else {
       setSelectedMedia((prev) => prev.filter((item) => item !== data.id));
     }
@@ -53,6 +61,7 @@ export const MediaListItem = ({ data, isSelectionMode, users, setSelectedMedia }
           aria-label="選択"
           type="checkbox"
           className="accent-accent-pink absolute top-2 left-2 z-1 h-5 w-5 max-md:top-1 max-md:left-1 max-md:h-4 max-md:w-4"
+          checked={selectedMedia.includes(data.id)}
           onChange={handleChange}
         />
       )}
