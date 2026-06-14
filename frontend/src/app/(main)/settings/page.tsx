@@ -11,7 +11,7 @@ import {
   Sidebar,
   Tags,
 } from "@/features/settings";
-import { getSharingGroups } from "@/features/sharing/api/getSharingGroups";
+import { getSharingGroups } from "@/features/sharing/server";
 import { getTags } from "@/features/tag/server";
 
 export default async function SettingsPage() {

@@ -15,6 +15,7 @@ type MediaListProps = {
   isSelectionMode?: boolean;
   params?: UseInfiniteMediaListParams;
   users: UserResponseDto[];
+  selectedMedia: number[];
   setSelectedMedia: Dispatch<SetStateAction<number[]>>;
 };
 
@@ -23,6 +24,7 @@ export const MediaList = ({
   isSelectionMode,
   params,
   users,
+  selectedMedia,
   setSelectedMedia,
 }: MediaListProps) => {
   const hasActiveFilters =
@@ -68,6 +70,7 @@ export const MediaList = ({
                 data={item}
                 isSelectionMode={isSelectionMode}
                 users={users}
+                selectedMedia={selectedMedia}
                 setSelectedMedia={setSelectedMedia}
               />
             ))}

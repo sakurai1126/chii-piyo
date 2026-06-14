@@ -1,5 +1,6 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { AnimatePresence } from "motion/react";
 import Image from "next/image";
 import { Dispatch, SetStateAction, useState, useTransition } from "react";
@@ -11,38 +12,29 @@ import { Button } from "@/components/ui/Button";
 import { toast } from "@/components/ui/Toast";
 import { SharingGroupsSelector } from "@/features/sharing";
 import { TagSelector } from "@/features/tag";
-import { TagResponseDto } from "@/lib/api-client/gen";
+import { SharingGroupResponseDto, TagResponseDto } from "@/lib/api-client/gen";
 
 import { updateMediaBatchAction } from "../../actions/updateMediaBatchAction";
-
-// ダミーデータ
-
-const dummySharingGroups = [
-  {
-    id: 1,
-    name: "家族全員",
-    members: [],
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: 2,
-    name: "夫婦のみ",
-    members: [],
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-];
 
 type Props = {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   tags: TagResponseDto[];
+  sharingGroups: SharingGroupResponseDto[];
   selectedMedia: number[];
   setSelectedMedia: Dispatch<SetStateAction<number[]>>;
 };
 
-export const MultiEdit = ({ isOpen, setIsOpen, tags, selectedMedia, setSelectedMedia }: Props) => {
+export const MultiEdit = ({
+  isOpen,
+  setIsOpen,
+  tags,
+  sharingGroups,
+  selectedMedia,
+  setSelectedMedia,
+}: Props) => {
+  // tanstack queryのキャッシュ破棄用フック
+  const queryClient = useQueryClient();
   const [editType, setEditType] = useState<"all" | "tag" | "sharing">("all");
   const [selectedTagIds, setSelectedTagIds] = useState<number[]>([]);
   const [selectedGroupId, setSelectedGroupId] = useState<number | undefined>(undefined);
@@ -58,7 +50,14 @@ export const MultiEdit = ({ isOpen, setIsOpen, tags, selectedMedia, setSelectedM
         tagIds: editType === "sharing" ? undefined : selectedTagIds,
       });
       if (result.success) {
+        // モーダルを閉じる
         setIsUpdateConfirmOpen(false);
+        // 変更メニューを閉じる
+        setIsOpen(false);
+        // メディアの選択状態をリセット
+        setSelectedMedia([]);
+        // 一覧取得クエリのキャッシュを破棄する
+        queryClient.invalidateQueries({ queryKey: ["media"] });
         toast.success("メディア情報を更新しました");
       } else {
         toast.error(result.error);
@@ -144,7 +143,7 @@ export const MultiEdit = ({ isOpen, setIsOpen, tags, selectedMedia, setSelectedM
           {/* 共有範囲を編集 */}
           {(editType === "all" || editType === "sharing") && (
             <SharingGroupsSelector
-              sharingGroups={dummySharingGroups}
+              sharingGroups={sharingGroups}
               isLoading={false}
               error={null}
               onRefresh={() => {}}
