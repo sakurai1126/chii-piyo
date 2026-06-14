@@ -14,6 +14,7 @@ export * from "./GrowthRecordRequestDto";
 export * from "./GrowthRecordResponseDto";
 export * from "./HealthDetailDto";
 export * from "./MealDetailDto";
+export * from "./MediaBatchUpdateRequestDto";
 export * from "./MediaCommentRequestDto";
 export * from "./MediaCommentResponseDto";
 export * from "./MediaListResponseDto";

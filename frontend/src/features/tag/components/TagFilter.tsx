@@ -4,27 +4,26 @@ import Image from "next/image";
 import { useState } from "react";
 
 import { useFlexWrapOverflow } from "@/hooks/useFlexWrapOverflow";
+import { TagResponseDto } from "@/lib/api-client/gen";
 
 import arrow from "../assets/brown-arrow.svg";
 import checked from "../assets/checked.svg";
 import icon from "../assets/icon.svg";
 import plus from "../assets/plus.svg";
-import { useTags } from "../hooks/useTags";
 
 type Props = {
+  tags: TagResponseDto[];
   updateFilter: ({ key, value }: { key: string; value: string }) => void;
   currentValue?: string | string[];
 };
 
-export const TagFilter = ({ updateFilter, currentValue = [] }: Props) => {
-  const tagsState = useTags();
-
+export const TagFilter = ({ tags, updateFilter, currentValue = [] }: Props) => {
   // 折り返し展開フラグ
   const [isOpen, setIsOpen] = useState(false);
 
   // 要素の数に応じて折り返しの有無を判定するカスタムフック
   const { ref, hasOverflow, isLoading, closedHeight, fullHeight } = useFlexWrapOverflow(
-    tagsState.data?.length || 0,
+    tags.length,
   );
 
   const handleChange = (tagId: number) => {
@@ -41,7 +40,7 @@ export const TagFilter = ({ updateFilter, currentValue = [] }: Props) => {
         className={`mt-3 flex flex-wrap gap-2 overflow-hidden transition-all`}
         style={{ maxHeight: isOpen ? fullHeight : closedHeight }}
       >
-        {tagsState.data?.map((tag) => (
+        {tags.map((tag) => (
           <label
             key={tag.id}
             htmlFor={tag.id.toString()}

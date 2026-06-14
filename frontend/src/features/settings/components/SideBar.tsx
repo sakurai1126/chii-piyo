@@ -8,10 +8,12 @@ import displayMode from "../assets/sidebar/display-mode.svg";
 import members from "../assets/sidebar/members.svg";
 import profile from "../assets/sidebar/profile.svg";
 import sharingGroups from "../assets/sidebar/sharing-groups.svg";
+import tags from "../assets/sidebar/tags.svg";
 
 const items = [
   { id: "profile", label: "プロフィール", icon: profile },
   { id: "members", label: "メンバー一覧", icon: members },
+  { id: "tags", label: "タグ", icon: tags },
   { id: "sharing-groups", label: "共有範囲", icon: sharingGroups },
   { id: "display-mode", label: "表示モード", icon: displayMode },
   { id: "account", label: "アカウント", icon: account },

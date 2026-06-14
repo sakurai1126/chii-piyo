@@ -29,7 +29,7 @@ TagResponseDto:
 
 TagRequestDto:
   type: object
-  description: タグ作成リクエスト
+  description: タグ作成/編集リクエスト
   required:
     - name
   properties:

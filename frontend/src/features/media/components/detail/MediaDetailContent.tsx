@@ -4,6 +4,7 @@ import { getUsers } from "@/features/auth/actions/getUsers";
 import { ShareGroupMediaDetail } from "@/features/sharing";
 import { getSharingGroups } from "@/features/sharing/api/getSharingGroups";
 import { TagMediaDetail } from "@/features/tag";
+import { getTags } from "@/features/tag/server";
 
 import { getMedia } from "../../api/getMedia";
 import { getMediaComments } from "../../api/getMediaComments";
@@ -18,12 +19,13 @@ type Props = {
 };
 
 export const MediaDetailContent = async ({ id, isModal = false }: Props) => {
-  const [media, comments, currentUser, sharingGroups, users] = await Promise.all([
+  const [media, comments, currentUser, sharingGroups, users, tags] = await Promise.all([
     getMedia(Number(id)),
     getMediaComments(Number(id)),
     getCurrentUser(),
     getSharingGroups(),
     getUsers(),
+    getTags(),
   ]);
 
   return (
@@ -49,7 +51,7 @@ export const MediaDetailContent = async ({ id, isModal = false }: Props) => {
           <MediaMetaData media={media} users={users} />
 
           {/* タグ */}
-          <TagMediaDetail tags={media.tags} />
+          <TagMediaDetail mediaId={media.id} mediaTags={media.tags} tags={tags} />
 
           {/* 共有範囲 */}
           <ShareGroupMediaDetail media={media} sharingGroups={sharingGroups} users={users} />

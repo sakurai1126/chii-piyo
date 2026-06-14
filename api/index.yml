@@ -66,6 +66,8 @@ paths:
     $ref: "./paths/media/media-detail.yml"
   /media/{id}/status:
     $ref: "./paths/media/media-status.yml"
+  /media/batch:
+    $ref: "./paths/media/media-batch.yml"
 
   # 写真・動画コメント
   /media/{mediaId}/comments:
@@ -80,6 +82,8 @@ paths:
   # タグ
   /tags:
     $ref: "./paths/tags/tags.yml"
+  /tags/{id}:
+    $ref: "./paths/tags/tags-detail.yml"
 
   # お気に入り
   /favorites/{mediaId}:

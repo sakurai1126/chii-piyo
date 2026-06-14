@@ -1,0 +1,53 @@
+put:
+  tags:
+    - tagManagement
+  summary: タグを編集
+  operationId: updateTag
+  x-codegen-request-body-name: TagUpdateData
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+    - $ref: "../../components/parameters.yml#/ResourceId"
+  requestBody:
+    description: 編集するタグ情報
+    content:
+      application/json;charset=UTF-8:
+        schema:
+          $ref: "../../components/schemas/tags.yml#/TagRequestDto"
+    required: true
+  responses:
+    "204":
+      description: タグの更新に成功
+    "400":
+      $ref: "../../components/responses.yml#/BadRequest"
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "403":
+      $ref: "../../components/responses.yml#/Forbidden"
+    "404":
+      $ref: "../../components/responses.yml#/NotFound"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"
+
+delete:
+  tags:
+    - tagManagement
+  summary: タグを削除
+  operationId: deleteTag
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+    - $ref: "../../components/parameters.yml#/ResourceId"
+  responses:
+    "204":
+      description: タグの削除に成功
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "403":
+      $ref: "../../components/responses.yml#/Forbidden"
+    "404":
+      $ref: "../../components/responses.yml#/NotFound"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"

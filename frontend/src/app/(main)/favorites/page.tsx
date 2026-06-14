@@ -1,7 +1,8 @@
 import Container from "@/components/layout/Container";
 import PageTitle from "@/components/ui/PageTitle";
 import { getUsers } from "@/features/auth/actions/getUsers";
-import { getMediaList, FavoriteMedia } from "@/features/media";
+import { FavoriteMedia } from "@/features/media";
+import { getMediaList } from "@/features/media/server";
 
 export default async function FavoritesPage() {
   const [initialData, users] = await Promise.all([

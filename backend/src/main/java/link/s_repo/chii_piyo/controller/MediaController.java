@@ -78,7 +78,7 @@ public class MediaController implements MediaManagementApi {
     }
 
     /**
-     * PUT /media/{id}/status<br>
+     * PATCH /media/{id}/status<br>
      * メディアのアップロード状態を更新する<br>
      * シーケンス図の S3 アップロード成功/失敗後の状態同期処理に該当する
      *
@@ -298,7 +298,7 @@ public class MediaController implements MediaManagementApi {
     }
 
     /**
-     * PUT /media/{id}<br>
+     * PATCH /media/{id}<br>
      * メディア情報を更新
      *
      * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
@@ -325,5 +325,23 @@ public class MediaController implements MediaManagementApi {
     @Override
     public ResponseEntity<Void> deleteMedia(String xRequestedWith, Long id) {
         throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    /**
+     * PATCH /media/batch : メディアのタグ/共有範囲/アルバムを一括更新
+     *
+     * @param xRequestedWith       X-Requested-With ヘッダ (CSRF防御用)
+     * @param mediaBatchUpdateData 更新用のデータ
+     * @return 204ステータス
+     */
+    @Override
+    public ResponseEntity<Void> updateMediaBatch(
+        String xRequestedWith, MediaBatchUpdateRequestDto mediaBatchUpdateData) {
+
+        // サービス層でデータを更新
+        mediaService.updateMediaBatch(mediaBatchUpdateData);
+
+        // 204 No Contentを返す
+        return ResponseEntity.noContent().build();
     }
 }

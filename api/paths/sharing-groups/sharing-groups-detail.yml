@@ -22,7 +22,7 @@ get:
     default:
       $ref: "../../components/responses.yml#/DefaultErrors"
 
-put:
+patch:
   tags:
     - sharingGroupManagement
   summary: 共有グループを編集

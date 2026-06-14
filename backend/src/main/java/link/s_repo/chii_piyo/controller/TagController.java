@@ -72,7 +72,8 @@ public class TagController implements TagManagementApi {
     }
 
     /**
-     * PUT /media/{mediaId}/tags : メディアのタグを一括更新
+     * PUT /media/{mediaId}/tags<br>
+     * メディアのタグを一括更新
      *
      * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
      * @param mediaId        メディアID
@@ -91,5 +92,43 @@ public class TagController implements TagManagementApi {
             .map(tag -> tagConverter.toTagResponseDto(tag, null))
             .toList();
         return ResponseEntity.ok(response);
+    }
+
+
+    /**
+     * PUT /tags/{tagId}<br>
+     * タグを更新する
+     *
+     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param tagId          タグID
+     * @param tagData        タグの更新データ
+     * @return 204ステータス
+     */
+    @Override
+    public ResponseEntity<Void> updateTag(
+        String xRequestedWith, Long tagId, TagRequestDto tagData) {
+        // タグ名が空の場合は400 Bad Requestを返す
+        if (tagData.getName() == null || tagData.getName().isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        // サービス層でタグを更新する
+        tagService.updateTag(tagId, tagData.getName());
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * DELETE /tags/{tagId}<br>
+     * タグを削除する
+     *
+     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param tagId          タグID
+     * @return 204ステータス
+     */
+    @Override
+    public ResponseEntity<Void> deleteTag(String xRequestedWith, Long tagId) {
+        // サービス層でタグを削除する
+        tagService.deleteTag(tagId);
+        return ResponseEntity.noContent().build();
     }
 }

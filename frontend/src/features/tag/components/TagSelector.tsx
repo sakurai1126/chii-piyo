@@ -28,7 +28,7 @@ export const TagSelector = ({
   tags,
   isLoading = false,
   error = null,
-  onRefresh,
+  onRefresh = () => {},
   onTagSelect,
   selectedTagIds,
   addTag = false,

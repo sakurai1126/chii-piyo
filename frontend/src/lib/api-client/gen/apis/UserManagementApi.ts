@@ -315,7 +315,7 @@ export class UserManagementApi extends runtime.BaseAPI {
 
     return {
       path: urlPath,
-      method: "PUT",
+      method: "PATCH",
       headers: headerParameters,
       query: queryParameters,
       body: UserUpdateRequestDtoToJSON(requestParameters["userUpdateData"]),
@@ -395,7 +395,7 @@ export class UserManagementApi extends runtime.BaseAPI {
 
     return {
       path: urlPath,
-      method: "PUT",
+      method: "PATCH",
       headers: headerParameters,
       query: queryParameters,
       body: UserRoleUpdateRequestDtoToJSON(requestParameters["userUpdateRoleData"]),

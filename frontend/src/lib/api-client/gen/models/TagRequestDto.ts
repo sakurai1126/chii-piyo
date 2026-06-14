@@ -14,7 +14,7 @@
 
 import { mapValues } from "../runtime";
 /**
- * タグ作成リクエスト
+ * タグ作成/編集リクエスト
  * @export
  * @interface TagRequestDto
  */

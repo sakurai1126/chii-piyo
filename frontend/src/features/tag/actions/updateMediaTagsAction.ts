@@ -1,5 +1,7 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+
 import { MediaTagsUpdateRequestDto, TagManagementApi, TagResponseDto } from "@/lib/api-client/gen";
 import { createAuthorizedConfig } from "@/lib/api-client/server";
 
@@ -30,6 +32,9 @@ export const updateMediaTagsAction = async (input: Input): Promise<ActionResult>
       mediaId: input.mediaId,
       mediaTagsData: requestDto,
     });
+
+    // キャッシュを破棄し、サーバーコンポーネントを再レンダリング
+    revalidatePath("/", "layout");
 
     return { success: true, data: response };
   } catch (error) {

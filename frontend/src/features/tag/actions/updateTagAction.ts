@@ -2,21 +2,20 @@
 
 import { revalidatePath } from "next/cache";
 
-import { TagManagementApi, TagRequestDto, TagResponseDto } from "@/lib/api-client/gen";
+import { TagManagementApi, TagRequestDto } from "@/lib/api-client/gen";
 import { createAuthorizedConfig } from "@/lib/api-client/server";
 
 // クライアントに返す結果型
 // 例外をクライアントに直接出さず、成功/失敗を判別可能な形にする
-export type ActionResult =
-  | { success: true; data: TagResponseDto }
-  | { success: false; error: string };
+export type ActionResult = { success: true } | { success: false; error: string };
 
 // クライアントから受け取る入力型
 type Input = {
+  tagId: number;
   name: string;
 };
 
-export const createTagAction = async (input: Input): Promise<ActionResult> => {
+export const updateTagAction = async (input: Input): Promise<ActionResult> => {
   try {
     // 認証トークンを含むAPIクライアントの設定を生成し、TagManagementApiのインスタンスを作成
     const configuration = await createAuthorizedConfig();
@@ -26,20 +25,21 @@ export const createTagAction = async (input: Input): Promise<ActionResult> => {
       name: input.name,
     };
 
-    const response = await apiClient.createTag({
+    await apiClient.updateTag({
       xRequestedWith: "XMLHttpRequest",
-      tagData: requestDto,
+      id: input.tagId,
+      tagUpdateData: requestDto,
     });
 
     // キャッシュを破棄し、サーバーコンポーネントを再レンダリング
     revalidatePath("/", "layout");
 
-    return { success: true, data: response };
+    return { success: true };
   } catch (error) {
-    console.error("createTagAction失敗", error);
+    console.error("updateTagAction失敗", error);
     if (error instanceof Error && error.message === "UNAUTHORIZED") {
       return { success: false, error: "認証が必要です" };
     }
-    return { success: false, error: "タグ登録に失敗しました" };
+    return { success: false, error: "タグ更新に失敗しました" };
   }
 };

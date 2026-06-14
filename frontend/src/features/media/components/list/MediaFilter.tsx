@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { SharingGroupFilter } from "@/features/sharing";
 import { TagFilter } from "@/features/tag";
+import { TagResponseDto } from "@/lib/api-client/gen";
 
 import heart from "../../assets/heart.png";
 import illust from "../../assets/illust.png";
@@ -13,7 +14,11 @@ import illust from "../../assets/illust.png";
 import { DateRangeFilter } from "./DateRangeFilter";
 import { MediaKindFilter } from "./MediaKindFilter";
 
-export const MediaFilter = () => {
+type Props = {
+  tags: TagResponseDto[];
+};
+
+export const MediaFilter = ({ tags }: Props) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -87,6 +92,7 @@ export const MediaFilter = () => {
             <div className="mt-5 flex gap-5 max-md:flex-col max-md:gap-4">
               {/* タグ */}
               <TagFilter
+                tags={tags}
                 updateFilter={updateFilter}
                 currentValue={searchParams.getAll("tagId") ?? ""}
               />

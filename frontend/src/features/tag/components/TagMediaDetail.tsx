@@ -1,37 +1,65 @@
 "use client";
 import { AnimatePresence } from "motion/react";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 
 import { Modal } from "@/components/layout/Modal";
 import { ActionDialog } from "@/components/ui/ActionDialog";
 import { Button } from "@/components/ui/Button";
+import { toast } from "@/components/ui/Toast";
 import { TagResponseDto } from "@/lib/api-client/gen";
 
+import { updateMediaTagsAction } from "../actions/updateMediaTagsAction";
 import plus from "../assets/plus.svg";
 
 import { TagSelector } from "./TagSelector";
 
 type Props = {
-  tags: TagResponseDto[] | undefined;
+  mediaId: number;
+  mediaTags: TagResponseDto[] | undefined;
+  tags: TagResponseDto[];
 };
 
-// ダミーデータ
-const dummyTags = [
-  { id: 1, name: "お出かけ", createdAt: new Date() },
-  { id: 2, name: "誕生日", createdAt: new Date() },
-];
-
-export const TagMediaDetail = ({ tags }: Props) => {
-  const [selectedTagIds, setSelectedTagIds] = useState<number[]>([]);
+export const TagMediaDetail = ({ mediaId, mediaTags, tags }: Props) => {
+  const [selectedTagIds, setSelectedTagIds] = useState<number[]>(
+    mediaTags?.map((tag) => tag.id) || [],
+  );
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isPending, startTransition] = useTransition();
+
+  // キャンセル処理
+  const editCancel = () => {
+    // 選択状態を初期値に戻す
+    setSelectedTagIds(mediaTags?.map((tag) => tag.id) || []);
+
+    // モーダルを閉じる
+    setIsOpen(false);
+  };
+
+  // 保存処理
+  const saveEdit = () => {
+    startTransition(async () => {
+      // サーバーアクションでタグを更新
+      const response = await updateMediaTagsAction({
+        mediaId: mediaId,
+        tagIds: selectedTagIds,
+      });
+
+      if (response.success) {
+        setIsOpen(false);
+        toast.success("タグを編集しました");
+      } else {
+        toast.error("タグの編集に失敗しました");
+      }
+    });
+  };
 
   return (
     <div className="mt-7 max-md:mt-4">
       <p className="max-md:text-sm">タグ</p>
 
       <div className="mt-3 flex flex-wrap gap-3">
-        {tags?.map((tag) => (
+        {mediaTags?.map((tag) => (
           <p
             key={tag.id}
             className="bg-accent-orange-back border-brown-middle text-brown-middle grid place-content-center rounded-2xl border px-4 py-1 text-sm max-md:px-3 max-md:text-xs"
@@ -42,6 +70,7 @@ export const TagMediaDetail = ({ tags }: Props) => {
         <button
           className="border-line-gray text-note-gray hover:bg-line-gray flex cursor-pointer items-center gap-1 rounded-2xl border border-dashed bg-[rgba(255,255,255,0.7)] px-3 py-1 text-sm transition-all hover:text-white max-md:text-xs"
           onClick={() => setIsOpen(true)}
+          disabled={isPending}
         >
           <Image src={plus} alt="" width={14} height={14} className="max-md:h-3 max-md:w-3" />
           <p>編集</p>
@@ -50,24 +79,22 @@ export const TagMediaDetail = ({ tags }: Props) => {
       <AnimatePresence>
         {isOpen && (
           <Modal>
-            <ActionDialog onClose={() => setIsOpen(false)}>
+            <ActionDialog onClose={editCancel}>
               <div className="flex h-full flex-col justify-between">
                 <div className="-mt-8">
                   <TagSelector
-                    tags={dummyTags}
-                    isLoading={false}
-                    error={null}
-                    onRefresh={() => {}}
+                    tags={tags}
                     selectedTagIds={selectedTagIds}
                     onTagSelect={(tagIds) => setSelectedTagIds(tagIds)}
                   />
                 </div>
-
                 <div className="flex justify-center gap-5 max-md:mt-8">
-                  <Button variant="cancel" onClick={() => setIsOpen(false)}>
+                  <Button variant="cancel" onClick={editCancel} disabled={isPending}>
                     キャンセル
                   </Button>
-                  <Button>保存する</Button>
+                  <Button onClick={saveEdit} disabled={isPending}>
+                    保存する
+                  </Button>
                 </div>
               </div>
             </ActionDialog>

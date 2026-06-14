@@ -1,0 +1,26 @@
+patch:
+  tags:
+    - mediaManagement
+  summary: メディアの一括更新
+  operationId: updateMediaBatch
+  x-codegen-request-body-name: MediaBatchUpdateData
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+  requestBody:
+    description: 一括更新するメディアのメタデータ
+    content:
+      application/json;charset=UTF-8:
+        schema:
+          $ref: "../../components/schemas/media.yml#/MediaBatchUpdateRequestDto"
+    required: true
+  responses:
+    "204":
+      description: 複数メディアの更新に成功
+    "400":
+      $ref: "../../components/responses.yml#/BadRequest"
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"
