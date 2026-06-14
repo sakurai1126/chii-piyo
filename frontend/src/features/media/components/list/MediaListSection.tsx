@@ -21,6 +21,7 @@ type Props = {
 
 export const MediaListSection = ({ initialData, users, tags }: Props) => {
   const [isSelectionMode, setIsSelectionMode] = useState(false);
+  const [selectedMedia, setSelectedMedia] = useState<number[]>([]);
   // 例: URLのsearchParamsから構築
   const sp = useSearchParams();
 
@@ -43,7 +44,12 @@ export const MediaListSection = ({ initialData, users, tags }: Props) => {
   return (
     <>
       {/* 一括編集UI */}
-      <MultiEdit isOpen={isSelectionMode} setIsOpen={setIsSelectionMode} tags={tags} />
+      <MultiEdit
+        isOpen={isSelectionMode}
+        setIsOpen={setIsSelectionMode}
+        tags={tags}
+        selectedMedia={selectedMedia}
+      />
 
       {/* メディア一覧 */}
       <MediaList
@@ -51,6 +57,7 @@ export const MediaListSection = ({ initialData, users, tags }: Props) => {
         isSelectionMode={isSelectionMode}
         params={params}
         users={users}
+        setSelectedMedia={setSelectedMedia}
       />
     </>
   );

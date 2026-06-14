@@ -398,7 +398,7 @@ export class SharingGroupManagementApi extends runtime.BaseAPI {
 
     return {
       path: urlPath,
-      method: "PUT",
+      method: "PATCH",
       headers: headerParameters,
       query: queryParameters,
       body: SharingGroupUpdateRequestDtoToJSON(requestParameters["sharingGroupUpdateData"]),

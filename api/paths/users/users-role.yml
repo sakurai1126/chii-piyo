@@ -1,4 +1,4 @@
-put:
+patch:
   tags:
     - userManagement
   summary: ログインユーザーの権限を更新

@@ -19,6 +19,11 @@ import {
   ErrorResponseDtoToJSON,
 } from "../models/ErrorResponseDto";
 import {
+  type MediaBatchUpdateRequestDto,
+  MediaBatchUpdateRequestDtoFromJSON,
+  MediaBatchUpdateRequestDtoToJSON,
+} from "../models/MediaBatchUpdateRequestDto";
+import {
   type MediaListResponseDto,
   MediaListResponseDtoFromJSON,
   MediaListResponseDtoToJSON,
@@ -81,6 +86,11 @@ export interface UpdateMediaRequest {
   xRequestedWith: string;
   id: number;
   mediaUpdateData: MediaUpdateRequestDto;
+}
+
+export interface UpdateMediaBatchRequest {
+  xRequestedWith: string;
+  mediaBatchUpdateData: MediaBatchUpdateRequestDto;
 }
 
 export interface UpdateMediaUploadStatusRequest {
@@ -471,7 +481,7 @@ export class MediaManagementApi extends runtime.BaseAPI {
 
     return {
       path: urlPath,
-      method: "PUT",
+      method: "PATCH",
       headers: headerParameters,
       query: queryParameters,
       body: MediaUpdateRequestDtoToJSON(requestParameters["mediaUpdateData"]),
@@ -499,6 +509,79 @@ export class MediaManagementApi extends runtime.BaseAPI {
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<void> {
     await this.updateMediaRaw(requestParameters, initOverrides);
+  }
+
+  /**
+   * Creates request options for updateMediaBatch without sending the request
+   */
+  async updateMediaBatchRequestOpts(
+    requestParameters: UpdateMediaBatchRequest,
+  ): Promise<runtime.RequestOpts> {
+    if (requestParameters["xRequestedWith"] == null) {
+      throw new runtime.RequiredError(
+        "xRequestedWith",
+        'Required parameter "xRequestedWith" was null or undefined when calling updateMediaBatch().',
+      );
+    }
+
+    if (requestParameters["mediaBatchUpdateData"] == null) {
+      throw new runtime.RequiredError(
+        "mediaBatchUpdateData",
+        'Required parameter "mediaBatchUpdateData" was null or undefined when calling updateMediaBatch().',
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    headerParameters["Content-Type"] = "application/json;charset=UTF-8";
+
+    if (requestParameters["xRequestedWith"] != null) {
+      headerParameters["X-Requested-With"] = String(requestParameters["xRequestedWith"]);
+    }
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken;
+      const tokenString = await token("BearerAuth", []);
+
+      if (tokenString) {
+        headerParameters["Authorization"] = `Bearer ${tokenString}`;
+      }
+    }
+
+    let urlPath = `/media/batch`;
+
+    return {
+      path: urlPath,
+      method: "PATCH",
+      headers: headerParameters,
+      query: queryParameters,
+      body: MediaBatchUpdateRequestDtoToJSON(requestParameters["mediaBatchUpdateData"]),
+    };
+  }
+
+  /**
+   * メディアの一括更新
+   */
+  async updateMediaBatchRaw(
+    requestParameters: UpdateMediaBatchRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<void>> {
+    const requestOptions = await this.updateMediaBatchRequestOpts(requestParameters);
+    const response = await this.request(requestOptions, initOverrides);
+
+    return new runtime.VoidApiResponse(response);
+  }
+
+  /**
+   * メディアの一括更新
+   */
+  async updateMediaBatch(
+    requestParameters: UpdateMediaBatchRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<void> {
+    await this.updateMediaBatchRaw(requestParameters, initOverrides);
   }
 
   /**
@@ -552,7 +635,7 @@ export class MediaManagementApi extends runtime.BaseAPI {
 
     return {
       path: urlPath,
-      method: "PUT",
+      method: "PATCH",
       headers: headerParameters,
       query: queryParameters,
       body: MediaUploadStatusRequestDtoToJSON(requestParameters["mediaUpdateStatusData"]),

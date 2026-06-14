@@ -349,3 +349,32 @@ MediaNavigationResponseDto:
         - PHOTO
         - VIDEO
       example: "PHOTO"
+
+MediaBatchUpdateRequestDto:
+  type: object
+  description: メディア一括更新リクエスト
+  required:
+    - mediaIds
+  properties:
+    mediaIds:
+      type: array
+      description: メディアIDの配列
+      items:
+        type: integer
+        format: int64
+      example: [1, 2, 3]
+    albumId:
+      type: ["integer", "null"]
+      format: int64
+      description: 所属アルバムID
+    sharingGroupId:
+      type: ["integer", "null"]
+      format: int64
+      description: 共有範囲グループID
+    tagIds:
+      type: ["array", "null"]
+      description: タグIDの配列
+      items:
+        type: integer
+        format: int64
+      example: [1, 2, 3]

@@ -3,8 +3,8 @@ package link.s_repo.chii_piyo.service;
 import link.s_repo.chii_piyo.common.S3KeyGenerator;
 import link.s_repo.chii_piyo.exception.ResourceAccessDeniedException;
 import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
-import link.s_repo.chii_piyo.model.gen.Favorites;
 import link.s_repo.chii_piyo.model.gen.Media;
+import link.s_repo.chii_piyo.model.gen.MediaBatchUpdateRequestDto;
 import link.s_repo.chii_piyo.model.gen.MediaUpdateRequestDto;
 import link.s_repo.chii_piyo.repository.gen.FavoritesDynamicSqlSupport;
 import link.s_repo.chii_piyo.repository.gen.MediaDynamicSqlSupport;
@@ -42,7 +42,7 @@ public class MediaService {
     private final S3KeyGenerator s3KeyGenerator;
     private final SharingGroupService sharingGroupService;
     private final AlbumService albumService;
-    private final FavoriteService favoriteService;
+    private final TagService tagService;
 
     /**
      * メディアをID指定で1件取得する
@@ -410,6 +410,89 @@ public class MediaService {
         }
 
         mediaMapper.updateByPrimaryKey(media);
+    }
+
+    /**
+     * メディア情報(タグ/共有範囲/アルバム)を一括更新する
+     *
+     * @param mediaBatchUpdateData 更新用のデータ
+     */
+    @Transactional
+    public void updateMediaBatch(MediaBatchUpdateRequestDto mediaBatchUpdateData) {
+        // 対象メディアを取得する
+        List<Media> mediaList = mediaMapper.select(c -> c.where(id, isIn(mediaBatchUpdateData.getMediaIds())));
+        if (mediaBatchUpdateData.getMediaIds().size() != mediaList.size()) {
+            throw new ResourceNotFoundException("メディアが見つかりません mediaId=" + mediaBatchUpdateData.getMediaIds());
+        }
+
+        // アルバムIDの更新がある場合はアルバムの存在チェックを行う
+        if (mediaBatchUpdateData.getAlbumId().isPresent()) {
+            Long newAlbumId = mediaBatchUpdateData.getAlbumId().get();
+            if (newAlbumId != null) {
+                albumService.getAlbumById(newAlbumId);
+            }
+        }
+
+        // 共有グループIDの更新がある場合は共有グループの存在チェックを行う
+        if (mediaBatchUpdateData.getSharingGroupId().isPresent()) {
+            Long newSharingGroupId = mediaBatchUpdateData.getSharingGroupId().get();
+            if (newSharingGroupId != null) {
+                sharingGroupService.getSharingGroupById(newSharingGroupId);
+            }
+        }
+
+        // 明示的にtagIdsプロパティが送信された場合はタグの存在チェックと更新処理を行う
+        if (mediaBatchUpdateData.getTagIds().isPresent()) {
+            List<Long> tagIds = mediaBatchUpdateData.getTagIds().get();
+            if (tagIds != null && !tagIds.isEmpty()) {
+                // 該当タグの件数をカウント
+                Long count = tagService.count(tagIds);
+                if (count != tagIds.size()) {
+                    throw new ResourceNotFoundException("存在しないタグが含まれています");
+                }
+            }
+
+            if (tagIds != null) {
+                tagService.syncMediaBatchTags(mediaBatchUpdateData.getMediaIds(), tagIds);
+            }
+        }
+
+        // メディアの更新対象(共有範囲グループ/アルバム)がある場合のみ
+        if (mediaBatchUpdateData.getAlbumId().isPresent() || mediaBatchUpdateData.getSharingGroupId().isPresent()) {
+            // メディアの更新を行う
+            mediaMapper.update(updateBuilder -> {
+                // アルバムIDの送信があれば SET 句に追加
+                if (mediaBatchUpdateData.getAlbumId().isPresent()) {
+                    Long newAlbumId = mediaBatchUpdateData.getAlbumId().get();
+                    if (newAlbumId == null) {
+                        // null の場合は explicitly に equalToNull() を使う
+                        updateBuilder = updateBuilder.set(MediaDynamicSqlSupport.albumId).equalToNull();
+                    } else {
+                        // album_idカラムをnewAlbumIdの値に更新する
+                        updateBuilder = updateBuilder
+                            .set(MediaDynamicSqlSupport.albumId)
+                            .equalTo(newAlbumId);
+                    }
+
+                }
+                // 共有グループの送信があれば SET 句に追加
+                if (mediaBatchUpdateData.getSharingGroupId().isPresent()) {
+                    Long newSharingGroupId = mediaBatchUpdateData.getSharingGroupId().get();
+                    if (newSharingGroupId == null) {
+                        updateBuilder = updateBuilder.set(MediaDynamicSqlSupport.sharingGroupId).equalToNull();
+                    } else {
+                        // sharing_group_idカラムをnewSharingGroupIdの値に更新する
+                        updateBuilder = updateBuilder
+                            .set(MediaDynamicSqlSupport.sharingGroupId)
+                            .equalTo(newSharingGroupId);
+                    }
+                }
+
+                // 指定した複数のメディアを対象に更新
+                return updateBuilder.where(MediaDynamicSqlSupport.id,
+                    isIn(mediaBatchUpdateData.getMediaIds()));
+            });
+        }
     }
 
     /**

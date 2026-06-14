@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { useId } from "react";
+import { Dispatch, SetStateAction, useId } from "react";
 
 import { FavoriteMediaList } from "@/features/favorite/components/FavoriteMediaList";
 import { MediaResponseDto, UserResponseDto } from "@/lib/api-client/gen";
@@ -12,10 +12,19 @@ type Props = {
   data: MediaResponseDto;
   isSelectionMode?: boolean;
   users: UserResponseDto[];
+  setSelectedMedia: Dispatch<SetStateAction<number[]>>;
 };
 
-export const MediaListItem = ({ data, isSelectionMode, users }: Props) => {
+export const MediaListItem = ({ data, isSelectionMode, users, setSelectedMedia }: Props) => {
   const uid = useId();
+
+  const setIds = (isChecked: boolean) => {
+    if (isChecked) {
+      setSelectedMedia((prev) => [...prev, data.id]);
+    } else {
+      setSelectedMedia((prev) => prev.filter((item) => item !== data.id));
+    }
+  };
 
   const inner = (
     <div className="group relative aspect-square overflow-hidden">
@@ -44,6 +53,7 @@ export const MediaListItem = ({ data, isSelectionMode, users }: Props) => {
           aria-label="選択"
           type="checkbox"
           className="accent-accent-pink absolute top-2 left-2 z-1 h-5 w-5 max-md:top-1 max-md:left-1 max-md:h-4 max-md:w-4"
+          onChange={(e) => setIds(e.target.checked)}
         />
       )}
 

@@ -20,7 +20,7 @@ export default async function MediaPage() {
       <PageTitle text="写真・動画一覧" />
 
       {/* 絞り込みUI */}
-      <MediaFilter />
+      <MediaFilter tags={tags} />
 
       {/* 遷移ボタン */}
       <AccentLinkButton href="/upload" className="mt-10 ml-auto max-md:mt-4">

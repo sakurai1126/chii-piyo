@@ -1,5 +1,7 @@
 "use client";
 
+import { Dispatch, SetStateAction } from "react";
+
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { MediaResponseDto, UserResponseDto } from "@/lib/api-client/gen";
 import { MediaListResponseDto } from "@/lib/api-client/gen/models/MediaListResponseDto";
@@ -13,9 +15,16 @@ type MediaListProps = {
   isSelectionMode?: boolean;
   params?: UseInfiniteMediaListParams;
   users: UserResponseDto[];
+  setSelectedMedia: Dispatch<SetStateAction<number[]>>;
 };
 
-export const MediaList = ({ initialData, isSelectionMode, params, users }: MediaListProps) => {
+export const MediaList = ({
+  initialData,
+  isSelectionMode,
+  params,
+  users,
+  setSelectedMedia,
+}: MediaListProps) => {
   const hasActiveFilters =
     params !== undefined &&
     Object.entries(params).some(
@@ -59,6 +68,7 @@ export const MediaList = ({ initialData, isSelectionMode, params, users }: Media
                 data={item}
                 isSelectionMode={isSelectionMode}
                 users={users}
+                setSelectedMedia={setSelectedMedia}
               />
             ))}
           </div>

@@ -119,12 +119,12 @@ public class SharingGroupController implements SharingGroupManagementApi {
     }
 
     /**
-     * PUT /sharing-groups/{id}<br>
+     * PATCH /sharing-groups/{id}<br>
      * 共有グループメンバーを編集する
      *
      * @param xRequestedWith         X-Requested-With ヘッダ (CSRF防御用)
      * @param id                     対象共有グループのID
-     * @param sharingGroupMemberData 編集するメンバー情報
+     * @param sharingGroupUpdateData 編集するメンバー情報
      * @return 更新されたメンバー情報一覧
      */
     @Override

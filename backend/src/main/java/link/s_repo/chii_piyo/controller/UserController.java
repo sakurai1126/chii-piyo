@@ -43,7 +43,7 @@ public class UserController implements UserManagementApi {
     }
 
     /**
-     * PUT /users/me
+     * PATCH /users/me
      * 現在ログインしているユーザーのログイン情報を更新
      *
      * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)

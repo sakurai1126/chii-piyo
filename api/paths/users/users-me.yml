@@ -22,7 +22,7 @@ get:
     default:
       $ref: "../../components/responses.yml#/DefaultErrors"
 
-put:
+patch:
   tags:
     - userManagement
   summary: ログインユーザーの情報を更新

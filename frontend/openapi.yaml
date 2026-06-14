@@ -81,7 +81,7 @@ paths:
           $ref: '#/components/responses/InternalServerError'
         default:
           $ref: '#/components/responses/DefaultErrors'
-    put:
+    patch:
       tags:
         - userManagement
       summary: ログインユーザーの情報を更新
@@ -147,7 +147,7 @@ paths:
         default:
           $ref: '#/components/responses/DefaultErrors'
   /users/{id}/role:
-    put:
+    patch:
       tags:
         - userManagement
       summary: ログインユーザーの権限を更新
@@ -257,7 +257,7 @@ paths:
           $ref: '#/components/responses/InternalServerError'
         default:
           $ref: '#/components/responses/DefaultErrors'
-    put:
+    patch:
       tags:
         - sharingGroupManagement
       summary: 共有グループを編集
@@ -399,7 +399,7 @@ paths:
           $ref: '#/components/responses/InternalServerError'
         default:
           $ref: '#/components/responses/DefaultErrors'
-    put:
+    patch:
       tags:
         - mediaManagement
       summary: メディア情報を更新
@@ -453,7 +453,7 @@ paths:
         default:
           $ref: '#/components/responses/DefaultErrors'
   /media/{id}/status:
-    put:
+    patch:
       tags:
         - mediaManagement
       summary: メディアのアップロード状態を更新
@@ -484,6 +484,33 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+  /media/batch:
+    patch:
+      tags:
+        - mediaManagement
+      summary: メディアの一括更新
+      operationId: updateMediaBatch
+      x-codegen-request-body-name: MediaBatchUpdateData
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+      requestBody:
+        description: 一括更新するメディアのメタデータ
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/MediaBatchUpdateRequestDto'
+        required: true
+      responses:
+        '204':
+          description: 複数メディアの更新に成功
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '500':
           $ref: '#/components/responses/InternalServerError'
         default:
@@ -2266,6 +2293,46 @@ components:
             - COMPLETED
             - FAILED
           example: COMPLETED
+    MediaBatchUpdateRequestDto:
+      type: object
+      description: メディア一括更新リクエスト
+      required:
+        - mediaIds
+      properties:
+        mediaIds:
+          type: array
+          description: メディアIDの配列
+          items:
+            type: integer
+            format: int64
+          example:
+            - 1
+            - 2
+            - 3
+        albumId:
+          type:
+            - integer
+            - 'null'
+          format: int64
+          description: 所属アルバムID
+        sharingGroupId:
+          type:
+            - integer
+            - 'null'
+          format: int64
+          description: 共有範囲グループID
+        tagIds:
+          type:
+            - array
+            - 'null'
+          description: タグIDの配列
+          items:
+            type: integer
+            format: int64
+          example:
+            - 1
+            - 2
+            - 3
     MediaCommentResponseDto:
       type: object
       description: メディアコメント情報
