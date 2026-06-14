@@ -664,6 +664,59 @@ paths:
           $ref: '#/components/responses/InternalServerError'
         default:
           $ref: '#/components/responses/DefaultErrors'
+  /tags/{id}:
+    put:
+      tags:
+        - tagManagement
+      summary: タグを編集
+      operationId: updateTag
+      x-codegen-request-body-name: TagUpdateData
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+      requestBody:
+        description: 編集するタグ情報
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/TagRequestDto'
+        required: true
+      responses:
+        '204':
+          description: タグの更新に成功
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+    delete:
+      tags:
+        - tagManagement
+      summary: タグを削除
+      operationId: deleteTag
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+      responses:
+        '204':
+          description: タグの削除に成功
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
   /favorites/{mediaId}:
     post:
       tags:
@@ -2285,7 +2338,7 @@ components:
             - 3
     TagRequestDto:
       type: object
-      description: タグ作成リクエスト
+      description: タグ作成/編集リクエスト
       required:
         - name
       properties:

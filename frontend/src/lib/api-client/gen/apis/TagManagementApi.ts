@@ -39,6 +39,11 @@ export interface CreateTagRequest {
   tagData: TagRequestDto;
 }
 
+export interface DeleteTagRequest {
+  xRequestedWith: string;
+  id: number;
+}
+
 export interface GetTagsRequest {
   xRequestedWith: string;
 }
@@ -47,6 +52,12 @@ export interface UpdateMediaTagsRequest {
   xRequestedWith: string;
   mediaId: number;
   mediaTagsData: MediaTagsUpdateRequestDto;
+}
+
+export interface UpdateTagRequest {
+  xRequestedWith: string;
+  id: number;
+  tagUpdateData: TagRequestDto;
 }
 
 /**
@@ -123,6 +134,75 @@ export class TagManagementApi extends runtime.BaseAPI {
   ): Promise<TagResponseDto> {
     const response = await this.createTagRaw(requestParameters, initOverrides);
     return await response.value();
+  }
+
+  /**
+   * Creates request options for deleteTag without sending the request
+   */
+  async deleteTagRequestOpts(requestParameters: DeleteTagRequest): Promise<runtime.RequestOpts> {
+    if (requestParameters["xRequestedWith"] == null) {
+      throw new runtime.RequiredError(
+        "xRequestedWith",
+        'Required parameter "xRequestedWith" was null or undefined when calling deleteTag().',
+      );
+    }
+
+    if (requestParameters["id"] == null) {
+      throw new runtime.RequiredError(
+        "id",
+        'Required parameter "id" was null or undefined when calling deleteTag().',
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    if (requestParameters["xRequestedWith"] != null) {
+      headerParameters["X-Requested-With"] = String(requestParameters["xRequestedWith"]);
+    }
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken;
+      const tokenString = await token("BearerAuth", []);
+
+      if (tokenString) {
+        headerParameters["Authorization"] = `Bearer ${tokenString}`;
+      }
+    }
+
+    let urlPath = `/tags/{id}`;
+    urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+    return {
+      path: urlPath,
+      method: "DELETE",
+      headers: headerParameters,
+      query: queryParameters,
+    };
+  }
+
+  /**
+   * タグを削除
+   */
+  async deleteTagRaw(
+    requestParameters: DeleteTagRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<void>> {
+    const requestOptions = await this.deleteTagRequestOpts(requestParameters);
+    const response = await this.request(requestOptions, initOverrides);
+
+    return new runtime.VoidApiResponse(response);
+  }
+
+  /**
+   * タグを削除
+   */
+  async deleteTag(
+    requestParameters: DeleteTagRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<void> {
+    await this.deleteTagRaw(requestParameters, initOverrides);
   }
 
   /**
@@ -274,5 +354,84 @@ export class TagManagementApi extends runtime.BaseAPI {
   ): Promise<Array<TagResponseDto>> {
     const response = await this.updateMediaTagsRaw(requestParameters, initOverrides);
     return await response.value();
+  }
+
+  /**
+   * Creates request options for updateTag without sending the request
+   */
+  async updateTagRequestOpts(requestParameters: UpdateTagRequest): Promise<runtime.RequestOpts> {
+    if (requestParameters["xRequestedWith"] == null) {
+      throw new runtime.RequiredError(
+        "xRequestedWith",
+        'Required parameter "xRequestedWith" was null or undefined when calling updateTag().',
+      );
+    }
+
+    if (requestParameters["id"] == null) {
+      throw new runtime.RequiredError(
+        "id",
+        'Required parameter "id" was null or undefined when calling updateTag().',
+      );
+    }
+
+    if (requestParameters["tagUpdateData"] == null) {
+      throw new runtime.RequiredError(
+        "tagUpdateData",
+        'Required parameter "tagUpdateData" was null or undefined when calling updateTag().',
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    headerParameters["Content-Type"] = "application/json;charset=UTF-8";
+
+    if (requestParameters["xRequestedWith"] != null) {
+      headerParameters["X-Requested-With"] = String(requestParameters["xRequestedWith"]);
+    }
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken;
+      const tokenString = await token("BearerAuth", []);
+
+      if (tokenString) {
+        headerParameters["Authorization"] = `Bearer ${tokenString}`;
+      }
+    }
+
+    let urlPath = `/tags/{id}`;
+    urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+    return {
+      path: urlPath,
+      method: "PUT",
+      headers: headerParameters,
+      query: queryParameters,
+      body: TagRequestDtoToJSON(requestParameters["tagUpdateData"]),
+    };
+  }
+
+  /**
+   * タグを編集
+   */
+  async updateTagRaw(
+    requestParameters: UpdateTagRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<void>> {
+    const requestOptions = await this.updateTagRequestOpts(requestParameters);
+    const response = await this.request(requestOptions, initOverrides);
+
+    return new runtime.VoidApiResponse(response);
+  }
+
+  /**
+   * タグを編集
+   */
+  async updateTag(
+    requestParameters: UpdateTagRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<void> {
+    await this.updateTagRaw(requestParameters, initOverrides);
   }
 }

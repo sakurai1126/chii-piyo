@@ -1,5 +1,8 @@
 package link.s_repo.chii_piyo.service;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.TagMediaCount;
 import link.s_repo.chii_piyo.model.gen.MediaTags;
 import link.s_repo.chii_piyo.model.gen.Tags;
@@ -178,5 +181,45 @@ public class TagService {
                 TagMediaCount::getTagId,
                 TagMediaCount::getMediaCount
             ));
+    }
+
+    /**
+     * タグをID指定で1件取得する
+     *
+     * @param id 対象タグのID
+     * @return タグデータ
+     */
+    @Transactional(readOnly = true)
+    public Tags getTagById(Long id) {
+        return tagsMapper.selectByPrimaryKey(id)
+            .orElseThrow(() -> new ResourceNotFoundException("タグが見つかりません id=" + id));
+    }
+
+
+    /**
+     * タグの名前を更新する
+     *
+     * @param tagId 対象タグのID
+     * @param name 変更する名前
+     */
+    @Transactional
+    public void updateTag(Long tagId, String name) {
+        // tagIdからタグを取得
+        Tags tag = getTagById(tagId);
+
+        // 新しい名前をセットして更新する
+        tag.setName(name);
+        tagsMapper.updateByPrimaryKeySelective(tag);
+    }
+
+    /**
+     * タグを削除する
+     *
+     * @param tagId タグID
+     */
+    @Transactional
+    public void deleteTag(Long tagId) {
+        mediaTagsMapper.delete(c -> c.where(MediaTagsDynamicSqlSupport.tagId, isEqualTo(tagId)));
+        tagsMapper.delete(c -> c.where(id, isEqualTo(tagId)));
     }
 }

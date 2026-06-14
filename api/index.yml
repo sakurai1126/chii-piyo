@@ -80,6 +80,8 @@ paths:
   # タグ
   /tags:
     $ref: "./paths/tags/tags.yml"
+  /tags/{id}:
+    $ref: "./paths/tags/tags-detail.yml"
 
   # お気に入り
   /favorites/{mediaId}:

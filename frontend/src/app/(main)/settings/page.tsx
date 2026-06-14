@@ -9,14 +9,17 @@ import {
   Profile,
   SharingGroups,
   Sidebar,
+  Tags,
 } from "@/features/settings";
 import { getSharingGroups } from "@/features/sharing/api/getSharingGroups";
+import { getTags } from "@/features/tag/server";
 
 export default async function SettingsPage() {
-  const [currentUser, users, sharingGroups] = await Promise.all([
+  const [currentUser, users, sharingGroups, tags] = await Promise.all([
     getCurrentUser(),
     getUsers(),
     getSharingGroups(),
+    getTags(),
   ]);
 
   return (
@@ -31,6 +34,8 @@ export default async function SettingsPage() {
           <Profile currentUser={currentUser} />
           {/* メンバー一覧 */}
           <Members users={users} sharingGroups={sharingGroups} />
+          {/* タグ */}
+          <Tags tags={tags} />
           {/* 共有範囲 */}
           <SharingGroups users={users} sharingGroups={sharingGroups} />
           {/* 表示モード */}
