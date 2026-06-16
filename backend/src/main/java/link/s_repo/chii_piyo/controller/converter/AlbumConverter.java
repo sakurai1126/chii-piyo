@@ -6,6 +6,7 @@ import link.s_repo.chii_piyo.service.AlbumService;
 import org.springframework.stereotype.Component;
 
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -17,19 +18,18 @@ public class AlbumConverter {
     /**
      * AlbumsエンティティをAlbumResponseDtoに変換する
      *
-     * @param album      Albumエンティティ
-     * @param urls       カバーURLのリスト
-     * @param mediaCount 画像数と動画数のレコード
+     * @param album     Albumエンティティ
+     * @param mediaData 画像数と動画数とカバーURLのリストのレコード
      * @return AlbumResponseDto
      */
     public AlbumResponseDto toAlbumResponseDto(
-        Albums album, List<String> urls, AlbumService.MediaCountResult mediaCount) {
+        Albums album, AlbumService.MediaDataResult mediaData) {
         return new AlbumResponseDto(
             album.getId(), // ID
             album.getTitle(), // アルバムのタイトル
-            urls, // カバーURL一覧
-            mediaCount.photoCount(), // 画像数
-            mediaCount.videoCount(), // 動画数
+            mediaData.urls(), // カバーURL一覧
+            mediaData.photoCount(), // 画像数
+            mediaData.videoCount(), // 動画数
             album.getCreatedAt(), // 作成日時
             album.getUpdatedAt() // 更新日時
         );

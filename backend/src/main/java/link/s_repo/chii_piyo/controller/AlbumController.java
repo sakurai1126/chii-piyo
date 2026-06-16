@@ -29,7 +29,6 @@ public class AlbumController implements AlbumManagementApi {
     private final AlbumService albumService;
     private final AlbumConverter albumConverter;
 
-
     /**
      * POST /albums/{id}/media
      * アルバムにメディアを追加する
@@ -54,12 +53,10 @@ public class AlbumController implements AlbumManagementApi {
         // サービス層でアルバムを作成する
         Albums createdAlbum = albumService.createAlbum(albumData.getTitle());
 
-
         // 作成されたアルバムをDTOに変換してレスポンスする
         AlbumResponseDto response = albumConverter.toAlbumResponseDto(
             createdAlbum,
-            Collections.emptyList(),
-            new AlbumService.MediaCountResult(0, 0)
+            new AlbumService.MediaDataResult(0, 0, Collections.emptyList())
         );
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -91,16 +88,29 @@ public class AlbumController implements AlbumManagementApi {
 
         // サービス層でエンティティを取得し、コンバータでDTOに変換する
         List<Albums> albums = albumService.getAlbums();
-        List<Long> albumIds = albums.stream().map(Albums::getId).toList();
-        Map<Long, AlbumService.MediaCountResult> counts =
-            albumService.getMediaCountsByAlbumIds(albumIds);
 
+        // アルバムIDを抽出してリストを作成
+        List<Long> albumIds = albums.stream().map(Albums::getId).toList();
+
+        // アルバムIDをキー、画像数と動画数のレコードを値とするマップを一括取得
+        Map<Long, AlbumService.MediaDataResult> mediaData =
+            albumService.getMediaDataByAlbumIds(albumIds);
+
+        // アルバムエンティティのリストをDTOのリストに変換
         List<AlbumResponseDto> response = albums.stream()
             .map(album -> {
-                    AlbumService.MediaCountResult count = counts.getOrDefault(
-                        album.getId(), new AlbumService.MediaCountResult(0, 0)
+                    // アルバムIDをキーにして画像数と動画数、URLリストのレコードをマップから取得
+                    AlbumService.MediaDataResult data = mediaData.getOrDefault(
+                        album.getId(),
+                        new AlbumService.MediaDataResult(
+                            0,
+                            0,
+                            Collections.emptyList()
+                        )
                     );
-                    return albumConverter.toAlbumResponseDto(album, Collections.emptyList(), count);
+
+                    // コンバータでDTOに変換
+                    return albumConverter.toAlbumResponseDto(album, data);
                 }
             )
             .toList();

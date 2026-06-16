@@ -10,12 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.URI;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static link.s_repo.chii_piyo.repository.gen.AlbumsDynamicSqlSupport.id;
 import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
@@ -30,6 +28,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
 public class AlbumService {
     private final AlbumsMapper albumsMapper;
     private final MediaMapper mediaMapper;
+    private final S3Service s3Service;
 
     /**
      * アルバムを新規作成する<br>
@@ -73,14 +72,15 @@ public class AlbumService {
         return albumsMapper.selectByPrimaryKey(id)
             .orElseThrow(() -> new ResourceNotFoundException("アルバムが見つかりません id=" + id));
     }
+
     /**
      * 指定したIDのアルバムに紐づくメディアの件数を取得する<br>
      *
      * @param albumIds 取得するアルバムのIDのリスト
-     * @return アルバムに紐づくメディアの件数レコードのリスト
+     * @return アルバムに紐づくメディア件数とカバーURLのリストを格納したマップ
      */
     @Transactional(readOnly = true)
-    public Map<Long, MediaCountResult> getMediaCountsByAlbumIds(List<Long> albumIds) {
+    public Map<Long, MediaDataResult> getMediaDataByAlbumIds(List<Long> albumIds) {
         // アルバムIDのリストが空の場合は空のマップを返す
         if (albumIds.isEmpty()) return Collections.emptyMap();
 
@@ -90,26 +90,53 @@ public class AlbumService {
         );
 
         // アルバムIDをキー、画像数と動画数を値とするマップを作成
-        Map<Long, MediaCountResult> result = new HashMap<>();
+        Map<Long, MediaDataResult> result = new HashMap<>();
 
-        // media_typeから画像か動画化を判別してそれぞれの件数をマップに格納
+        // media_typeから画像か動画かを判別してそれぞれの件数をマップに格納
         for (Media media : mediaList) {
             Long albumId = media.getAlbumId();
             // すでにマップにアルバムIDが存在するか確認し、存在しない場合は初期値をセット
-            MediaCountResult current = result.getOrDefault(albumId, new MediaCountResult(0, 0));
+            MediaDataResult current = result.get(albumId);
+            if (current == null) {
+                current = new MediaDataResult(0, 0, new ArrayList<>());
+            }
 
-            // アルバムIDをキーにしてマップに画像数と動画数を格納、存在する場合は上書き
-            if (media.getMediaType().equals("PHOTO")) {
-                result.put(albumId, new MediaCountResult(current.photoCount() + 1, current.videoCount()));
+            // カウントアップ用の一時変数を用意
+            int newPhotoCount = current.photoCount();
+            int newVideoCount = current.videoCount();
+            List<String> newUrls = current.urls();
+
+            // アルバムIDをキーにして画像数を更新
+            if ("PHOTO".equals(media.getMediaType())) {
+                newPhotoCount++;
             }
-            if (media.getMediaType().equals("VIDEO")) {
-                result.put(albumId, new MediaCountResult(current.photoCount(), current.videoCount() + 1));
+
+            // アルバムIDをキーにして動画数を更新
+            if ("VIDEO".equals(media.getMediaType())) {
+                newVideoCount++;
             }
+
+            if (current.urls().size() < 3) {
+                // カバーURLのリストを更新
+                URI thumbnailPresignedUrl = media.getThumbnailS3Key() != null
+                    ? s3Service.generateDownloadPresignedUrl(media.getThumbnailS3Key(), media.getOriginalFilename())
+                    : null;
+
+                if (thumbnailPresignedUrl != null) {
+                    newUrls.add(thumbnailPresignedUrl.toString());
+                }
+            }
+
+            result.put(albumId, new MediaDataResult(
+                newPhotoCount,
+                newVideoCount,
+                newUrls
+            ));
         }
 
         return result;
     }
 
-    public record MediaCountResult(int photoCount, int videoCount) {
+    public record MediaDataResult(int photoCount, int videoCount, List<String> urls) {
     }
 }
