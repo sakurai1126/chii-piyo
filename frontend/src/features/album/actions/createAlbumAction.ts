@@ -33,6 +33,7 @@ export const createAlbumAction = async (input: Input): Promise<ActionResult> => 
 
     // キャッシュを破棄し、サーバーコンポーネントを再レンダリング
     revalidatePath("/albums");
+    revalidatePath("/settings");
 
     return { success: true, data: response };
   } catch (error) {
