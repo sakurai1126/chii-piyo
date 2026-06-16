@@ -497,13 +497,11 @@ export class AlbumManagementApi extends runtime.BaseAPI {
   async updateAlbumRaw(
     requestParameters: UpdateAlbumRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<AlbumResponseDto>> {
+  ): Promise<runtime.ApiResponse<void>> {
     const requestOptions = await this.updateAlbumRequestOpts(requestParameters);
     const response = await this.request(requestOptions, initOverrides);
 
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      AlbumResponseDtoFromJSON(jsonValue),
-    );
+    return new runtime.VoidApiResponse(response);
   }
 
   /**
@@ -512,8 +510,7 @@ export class AlbumManagementApi extends runtime.BaseAPI {
   async updateAlbum(
     requestParameters: UpdateAlbumRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<AlbumResponseDto> {
-    const response = await this.updateAlbumRaw(requestParameters, initOverrides);
-    return await response.value();
+  ): Promise<void> {
+    await this.updateAlbumRaw(requestParameters, initOverrides);
   }
 }

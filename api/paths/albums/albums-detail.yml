@@ -39,12 +39,8 @@ put:
           $ref: "../../components/schemas/albums.yml#/AlbumRequestDto"
     required: true
   responses:
-    "200":
-      description: 更新されたアルバム
-      content:
-        application/json;charset=UTF-8:
-          schema:
-            $ref: "../../components/schemas/albums.yml#/AlbumResponseDto"
+    "204":
+      description: アルバムの更新に成功
     "400":
       $ref: "../../components/responses.yml#/BadRequest"
     "401":

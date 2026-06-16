@@ -1,5 +1,7 @@
 package link.s_repo.chii_piyo.service;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.Albums;
 import link.s_repo.chii_piyo.model.gen.Media;
@@ -146,14 +148,30 @@ public class AlbumService {
     @Transactional
     public void deleteAlbum(Long albumId) {
         // 削除前に存在チェック
-        albumsMapper.selectByPrimaryKey(albumId)
-            .orElseThrow(() -> new ResourceNotFoundException("アルバムが見つかりません id=" + albumId));
+        getAlbumById(albumId);
 
         // アルバムに紐づくメディアのalbum_idをnullに更新
         mediaMapper.update(c -> c.set(MediaDynamicSqlSupport.albumId).equalToNull()
             .where(MediaDynamicSqlSupport.albumId, isEqualTo(albumId)));
 
         albumsMapper.deleteByPrimaryKey(albumId);
+    }
+
+    /**
+     * アルバムのタイトルを更新する
+     *
+     * @param albumId アルバムID
+     * @param title   新しいアルバムタイトル
+     */
+    @Transactional
+    public void updateAlbum(Long albumId, String title) {
+        // 更新前に存在チェック
+        Albums album = getAlbumById(albumId);
+
+        // タイトルを更新してDBに保存
+        album.setTitle(title);
+        album.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
+        albumsMapper.updateByPrimaryKeySelective(album);
     }
 
     public record MediaDataResult(int photoCount, int videoCount, List<String> urls) {

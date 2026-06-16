@@ -112,11 +112,23 @@ public class AlbumController implements AlbumManagementApi {
     /**
      * PUT /albums/{albumId}<br>
      * 指定したIDのアルバムを更新する
+     *
+     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param albumId        アルバムID
+     * @param albumData      リクエストデータ(新しいアルバムのタイトル)
+     * @return 204ステータス
      */
     @Override
-    public ResponseEntity<AlbumResponseDto> updateAlbum(
+    public ResponseEntity<Void> updateAlbum(
         String xRequestedWith, Long albumId, AlbumRequestDto albumData) {
-        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+        // アルバム名が空の場合は400 Bad Requestを返す
+        if (albumData.getTitle() == null || albumData.getTitle().isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        // サービス層でアルバムを更新する
+        albumService.updateAlbum(albumId, albumData.getTitle());
+        return ResponseEntity.noContent().build();
     }
 
     /**
