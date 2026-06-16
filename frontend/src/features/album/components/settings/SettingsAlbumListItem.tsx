@@ -6,8 +6,11 @@ import { useState, useTransition } from "react";
 import { Modal } from "@/components/layout/Modal";
 import { ActionDialog } from "@/components/ui/ActionDialog";
 import { Button } from "@/components/ui/Button";
+import { toast } from "@/components/ui/Toast";
 import { AlbumResponseDto } from "@/lib/api-client/gen";
 import { formatJapaneseDateNonTime } from "@/utils/date";
+
+import { deleteAlbumAction } from "../../actions/deleteAlbumAction";
 
 type Props = {
   album: AlbumResponseDto;
@@ -20,7 +23,18 @@ export const SettingsAlbumListItem = ({ album, index }: Props) => {
   const [isPending, startTransition] = useTransition();
 
   const deleteAction = () => {
-    startTransition(async () => {});
+    startTransition(async () => {
+      const result = await deleteAlbumAction({
+        albumId: album.id,
+      });
+
+      if (result.success) {
+        setIsDeleteConfirm(false);
+        toast.success("アルバムの削除に成功しました");
+      } else {
+        toast.error(result.error);
+      }
+    });
   };
 
   return (

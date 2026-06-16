@@ -62,15 +62,6 @@ public class AlbumController implements AlbumManagementApi {
     }
 
     /**
-     * DELETE /albums/{albumId}<br>
-     * 指定したIDのアルバムを削除する
-     */
-    @Override
-    public ResponseEntity<Void> deleteAlbum(String xRequestedWith, Long albumId) {
-        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
-    }
-
-    /**
      * GET /albums/{albumId}<br>
      * 指定したIDのアルバムを取得する
      */
@@ -126,5 +117,20 @@ public class AlbumController implements AlbumManagementApi {
     public ResponseEntity<AlbumResponseDto> updateAlbum(
         String xRequestedWith, Long albumId, AlbumRequestDto albumData) {
         throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    /**
+     * DELETE /albums/{albumId}<br>
+     * 指定したIDのアルバムを削除する
+     *
+     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param albumId        アルバムID
+     * @return 204ステータス
+     */
+    @Override
+    public ResponseEntity<Void> deleteAlbum(String xRequestedWith, Long albumId) {
+        // サービス層でアルバムを削除する
+        albumService.deleteAlbum(albumId);
+        return ResponseEntity.noContent().build();
     }
 }

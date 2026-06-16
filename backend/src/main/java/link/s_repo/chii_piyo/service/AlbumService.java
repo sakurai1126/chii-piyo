@@ -16,6 +16,7 @@ import java.time.ZoneOffset;
 import java.util.*;
 
 import static link.s_repo.chii_piyo.repository.gen.AlbumsDynamicSqlSupport.id;
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
 
 /**
@@ -135,6 +136,24 @@ public class AlbumService {
         }
 
         return result;
+    }
+
+    /**
+     * アルバムを削除する
+     *
+     * @param albumId アルバムID
+     */
+    @Transactional
+    public void deleteAlbum(Long albumId) {
+        // 削除前に存在チェック
+        albumsMapper.selectByPrimaryKey(albumId)
+            .orElseThrow(() -> new ResourceNotFoundException("アルバムが見つかりません id=" + albumId));
+
+        // アルバムに紐づくメディアのalbum_idをnullに更新
+        mediaMapper.update(c -> c.set(MediaDynamicSqlSupport.albumId).equalToNull()
+            .where(MediaDynamicSqlSupport.albumId, isEqualTo(albumId)));
+
+        albumsMapper.deleteByPrimaryKey(albumId);
     }
 
     public record MediaDataResult(int photoCount, int videoCount, List<String> urls) {
