@@ -67,7 +67,19 @@ public class AlbumController implements AlbumManagementApi {
      */
     @Override
     public ResponseEntity<AlbumResponseDto> getAlbum(String xRequestedWith, Long albumId) {
-        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+        // サービス層でアルバムを取得する
+        Albums album = albumService.getAlbumById(albumId);
+
+        List<Long> albumIds = List.of(albumId);
+
+        // アルバムIDをキーにして画像数と動画数、URLリストのレコードを取得
+        AlbumService.MediaDataResult mediaData =
+            albumService.getMediaDataByAlbumIds(albumIds, false).getOrDefault(
+                albumId, new AlbumService.MediaDataResult(0, 0, Collections.emptyList()));
+
+        // コンバータでDTOに変換
+        AlbumResponseDto response = albumConverter.toAlbumResponseDto(album, mediaData);
+        return ResponseEntity.ok(response);
     }
 
     /**

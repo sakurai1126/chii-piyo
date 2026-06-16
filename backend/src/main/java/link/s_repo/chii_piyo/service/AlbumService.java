@@ -76,14 +76,17 @@ public class AlbumService {
             .orElseThrow(() -> new ResourceNotFoundException("アルバムが見つかりません id=" + id));
     }
 
+
     /**
      * 指定したIDのアルバムに紐づくメディアの件数を取得する<br>
      *
      * @param albumIds 取得するアルバムのIDのリスト
+     * @param includeCoverUrls カバーURLを含めるかどうか
      * @return アルバムに紐づくメディア件数とカバーURLのリストを格納したマップ
      */
     @Transactional(readOnly = true)
-    public Map<Long, MediaDataResult> getMediaDataByAlbumIds(List<Long> albumIds) {
+    public Map<Long, MediaDataResult> getMediaDataByAlbumIds(
+        List<Long> albumIds, boolean includeCoverUrls) {
         // アルバムIDのリストが空の場合は空のマップを返す
         if (albumIds.isEmpty()) return Collections.emptyMap();
 
@@ -119,7 +122,7 @@ public class AlbumService {
                 newVideoCount++;
             }
 
-            if (current.urls().size() < 3) {
+            if (includeCoverUrls && current.urls().size() < 3) {
                 // カバーURLのリストを更新
                 URI thumbnailPresignedUrl = media.getThumbnailS3Key() != null
                     ? s3Service.generateDownloadPresignedUrl(media.getThumbnailS3Key(), media.getOriginalFilename())
@@ -138,6 +141,17 @@ public class AlbumService {
         }
 
         return result;
+    }
+
+    /**
+     * 指定したIDのアルバムに紐づくメディアの件数を取得する<br>
+     *
+     * @param albumIds 取得するアルバムのIDのリスト
+     * @return アルバムに紐づくメディア件数とカバーURLのリストを格納したマップ
+     */
+    @Transactional(readOnly = true)
+    public Map<Long, MediaDataResult> getMediaDataByAlbumIds(List<Long> albumIds) {
+        return getMediaDataByAlbumIds(albumIds, true);
     }
 
     /**
