@@ -1,6 +1,6 @@
 import Container from "@/components/layout/Container";
-import { AccentButton } from "@/components/ui/AccentButton";
 import PageTitle from "@/components/ui/PageTitle";
+import { AddMediaAlbum } from "@/features/album/components/AddMediaAlbum";
 import { getAlbum } from "@/features/album/server";
 import { getUsers } from "@/features/auth/actions/getUsers";
 import { MediaFilter, MediaListSection } from "@/features/media";
@@ -31,10 +31,8 @@ export default async function AlbumDetailPage({ params }: Readonly<Props>) {
           {/* 絞り込みUI */}
           <MediaFilter tags={tags} sharingGroups={sharingGroups} />
 
-          {/* 遷移ボタン */}
-          <AccentButton className="mt-10 ml-auto max-md:mt-4" variant="button">
-            <p>アルバムにメディアを追加する</p>
-          </AccentButton>
+          {/* メディア追加UI */}
+          <AddMediaAlbum tags={tags} sharingGroups={sharingGroups} albumId={Number(id)} />
 
           {/* 一括編集UI+メディアグリッド */}
           <MediaListSection
@@ -46,7 +44,11 @@ export default async function AlbumDetailPage({ params }: Readonly<Props>) {
           />
         </>
       ) : (
-        <p className="py-20 text-center font-medium">アルバムにメディアが追加されていません</p>
+        <>
+          {/* メディア追加UI */}
+          <AddMediaAlbum tags={tags} sharingGroups={sharingGroups} albumId={Number(id)} />
+          <p className="py-20 text-center font-medium">アルバムにメディアが追加されていません</p>
+        </>
       )}
     </Container>
   );

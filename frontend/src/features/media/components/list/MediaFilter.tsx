@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/Button";
@@ -22,6 +22,7 @@ type Props = {
 export const MediaFilter = ({ tags, sharingGroups }: Props) => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   const updateFilter = ({ key, value }: { key: string; value: string }) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -46,7 +47,7 @@ export const MediaFilter = ({ tags, sharingGroups }: Props) => {
   };
 
   const paramsReset = () => {
-    router.push("/media", { scroll: false });
+    router.push(pathname, { scroll: false });
   };
 
   const [isOpen, setIsOpen] = useState(false);

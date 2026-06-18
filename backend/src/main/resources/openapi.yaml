@@ -325,6 +325,7 @@ paths:
         - $ref: '#/components/parameters/PageLimit'
         - $ref: '#/components/parameters/MediaTypeFilter'
         - $ref: '#/components/parameters/AlbumIdFilter'
+        - $ref: '#/components/parameters/AlbumIdExclude'
         - $ref: '#/components/parameters/TagIdFilter'
         - $ref: '#/components/parameters/SharingGroupIdFilter'
         - $ref: '#/components/parameters/StartDate'
@@ -1644,6 +1645,14 @@ components:
       schema:
         type: integer
         format: int64
+    AlbumIdExclude:
+      name: excludeAlbumId
+      in: query
+      description: アルバムIDで除外
+      required: false
+      schema:
+        type: integer
+        format: int64
     TagIdFilter:
       name: tagId
       in: query
@@ -2305,12 +2314,6 @@ components:
             - 1
             - 2
             - 3
-        albumId:
-          type:
-            - integer
-            - 'null'
-          format: int64
-          description: 所属アルバムID
         sharingGroupId:
           type:
             - integer

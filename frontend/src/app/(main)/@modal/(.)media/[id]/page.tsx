@@ -1,5 +1,5 @@
 import { Modal } from "@/components/layout/Modal";
-import { MediaDetailContent } from "@/features/media";
+import { MediaDetailContent } from "@/features/media/server";
 
 type Props = {
   params: Promise<{ id: string }>;

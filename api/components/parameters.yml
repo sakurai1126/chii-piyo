@@ -83,6 +83,15 @@ AlbumIdFilter:
     type: integer
     format: int64
 
+AlbumIdExclude:
+  name: excludeAlbumId
+  in: query
+  description: アルバムIDで除外
+  required: false
+  schema:
+    type: integer
+    format: int64
+
 TagIdFilter:
   name: tagId
   in: query

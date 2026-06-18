@@ -363,10 +363,6 @@ MediaBatchUpdateRequestDto:
         type: integer
         format: int64
       example: [1, 2, 3]
-    albumId:
-      type: ["integer", "null"]
-      format: int64
-      description: 所属アルバムID
     sharingGroupId:
       type: ["integer", "null"]
       format: int64

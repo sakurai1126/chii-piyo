@@ -26,12 +26,6 @@ export interface MediaBatchUpdateRequestDto {
    */
   mediaIds: Array<number>;
   /**
-   * 所属アルバムID
-   * @type {number}
-   * @memberof MediaBatchUpdateRequestDto
-   */
-  albumId?: number | null;
-  /**
    * 共有範囲グループID
    * @type {number}
    * @memberof MediaBatchUpdateRequestDto
@@ -68,7 +62,6 @@ export function MediaBatchUpdateRequestDtoFromJSONTyped(
   }
   return {
     mediaIds: json["mediaIds"],
-    albumId: json["albumId"] == null ? undefined : json["albumId"],
     sharingGroupId: json["sharingGroupId"] == null ? undefined : json["sharingGroupId"],
     tagIds: json["tagIds"] == null ? undefined : json["tagIds"],
   };
@@ -88,7 +81,6 @@ export function MediaBatchUpdateRequestDtoToJSONTyped(
 
   return {
     mediaIds: value["mediaIds"],
-    albumId: value["albumId"],
     sharingGroupId: value["sharingGroupId"],
     tagIds: value["tagIds"],
   };

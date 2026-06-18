@@ -10,6 +10,7 @@ const LIMIT = 12;
 export type UseInfiniteMediaListParams = {
   mediaKind?: GetMediaListMediaKindEnum;
   albumId?: number;
+  excludeAlbumId?: number;
   tagId?: number[];
   sharingGroupId?: number;
   startDate?: Date;
@@ -58,6 +59,8 @@ export const useInfiniteMediaList = ({ params = {}, initialData }: Props) => {
         // その他のフィルタリングパラメータがある場合追加でクエリパラメータに設定する
         if (params.mediaKind) sp.set("mediaKind", params.mediaKind);
         if (params.albumId !== undefined) sp.set("albumId", String(params.albumId));
+        if (params.excludeAlbumId !== undefined)
+          sp.set("excludeAlbumId", String(params.excludeAlbumId));
         if (params.tagId && params.tagId.length > 0)
           params.tagId.forEach((id) => sp.append("tagId", String(id)));
         if (params.sharingGroupId !== undefined)

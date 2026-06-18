@@ -9,6 +9,7 @@ get:
     - $ref: "../../components/parameters.yml#/PageLimit"
     - $ref: "../../components/parameters.yml#/MediaTypeFilter"
     - $ref: "../../components/parameters.yml#/AlbumIdFilter"
+    - $ref: "../../components/parameters.yml#/AlbumIdExclude"
     - $ref: "../../components/parameters.yml#/TagIdFilter"
     - $ref: "../../components/parameters.yml#/SharingGroupIdFilter"
     - $ref: "../../components/parameters.yml#/StartDate"

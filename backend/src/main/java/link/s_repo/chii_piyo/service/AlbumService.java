@@ -1,7 +1,5 @@
 package link.s_repo.chii_piyo.service;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.Albums;
 import link.s_repo.chii_piyo.model.gen.Media;
@@ -16,6 +14,7 @@ import java.net.URI;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
+
 
 import static link.s_repo.chii_piyo.repository.gen.AlbumsDynamicSqlSupport.id;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
@@ -80,7 +79,7 @@ public class AlbumService {
     /**
      * 指定したIDのアルバムに紐づくメディアの件数を取得する<br>
      *
-     * @param albumIds 取得するアルバムのIDのリスト
+     * @param albumIds         取得するアルバムのIDのリスト
      * @param includeCoverUrls カバーURLを含めるかどうか
      * @return アルバムに紐づくメディア件数とカバーURLのリストを格納したマップ
      */
@@ -186,6 +185,32 @@ public class AlbumService {
         album.setTitle(title);
         album.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         albumsMapper.updateByPrimaryKeySelective(album);
+    }
+
+    /**
+     * アルバムに複数メディアを追加する
+     *
+     * @param albumId  対象のアルバムID
+     * @param mediaIds 対象のメディアIDリスト
+     */
+    public void addAlbumMedia(Long albumId, List<Long> mediaIds) {
+        if (mediaIds == null || mediaIds.isEmpty()) {
+            throw new IllegalArgumentException("IDが指定されていません");
+        }
+
+        // アルバムの存在チェック
+        getAlbumById(albumId);
+
+        // mediaIdsのメディアの存在チェック
+        List<Media> mediaList = mediaMapper.select(c -> c.where(MediaDynamicSqlSupport.id, isIn(mediaIds)));
+
+        if (mediaList.size() != mediaIds.stream().distinct().toList().size()) {
+            throw new ResourceNotFoundException("メディアが見つかりません mediaId=" + mediaIds);
+        }
+
+        // 対象メディアを一括更新する
+        mediaMapper.update(c -> c.set(MediaDynamicSqlSupport.albumId).equalTo(albumId)
+            .where(MediaDynamicSqlSupport.id, isIn(mediaIds)));
     }
 
     public record MediaDataResult(int photoCount, int videoCount, List<String> urls) {

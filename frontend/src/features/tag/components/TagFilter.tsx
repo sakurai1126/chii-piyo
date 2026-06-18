@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useId, useState } from "react";
 
 import { useFlexWrapOverflow } from "@/hooks/useFlexWrapOverflow";
 import { TagResponseDto } from "@/lib/api-client/gen";
@@ -18,6 +18,7 @@ type Props = {
 };
 
 export const TagFilter = ({ tags, updateFilter, currentValue = [] }: Props) => {
+  const uid = useId();
   // 折り返し展開フラグ
   const [isOpen, setIsOpen] = useState(false);
 
@@ -43,12 +44,12 @@ export const TagFilter = ({ tags, updateFilter, currentValue = [] }: Props) => {
         {tags.map((tag) => (
           <label
             key={tag.id}
-            htmlFor={tag.id.toString()}
+            htmlFor={`${tag.id.toString()}-${uid}`}
             className="border-line-gray has-checked:border-accent-orange has-checked:bg-accent-orange-back has-checked:text-brown-middle flex cursor-pointer items-center gap-2 rounded-4xl border bg-white py-1.5 pr-5 pl-3 transition-all max-md:py-1 max-md:pr-3"
           >
             <input
               type="checkbox"
-              id={tag.id.toString()}
+              id={`${tag.id.toString()}-${uid}`}
               checked={currentValue.includes(tag.id.toString())}
               onChange={() => handleChange(tag.id)}
               className="hidden"

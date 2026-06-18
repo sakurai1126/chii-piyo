@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collections;
 import java.util.List;
@@ -32,11 +31,20 @@ public class AlbumController implements AlbumManagementApi {
     /**
      * POST /albums/{id}/media
      * アルバムにメディアを追加する
+     *
+     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param id             対象のアルバムID
+     * @param albumMediaData アルバムに追加するメディアの情報(メディアIDリスト)
+     * @return 204ステータス
      */
     @Override
     public ResponseEntity<Void> addAlbumMedia(
         String xRequestedWith, Long id, AlbumMediaAddRequestDto albumMediaData) {
-        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+
+        // サービス層でアルバムにメディアを追加する
+        albumService.addAlbumMedia(id, albumMediaData.getMediaIds());
+        // 204 No Contentを返す
+        return ResponseEntity.noContent().build();
     }
 
     /**

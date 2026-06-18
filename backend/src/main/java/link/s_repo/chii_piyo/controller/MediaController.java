@@ -127,6 +127,7 @@ public class MediaController implements MediaManagementApi {
      * @param limit          ページネーションのリミット
      * @param mediaType      メディア種別フィルタ (IMAGE / VIDEO)
      * @param albumId        アルバムIDフィルタ
+     * @param excludeAlbumId 除外するアルバムIDフィルタ
      * @param tagId          タグIDフィルタのリスト
      * @param sharingGroupId 共有グループIDフィルタ
      * @param startDate      撮影日の開始日フィルタ
@@ -141,6 +142,7 @@ public class MediaController implements MediaManagementApi {
         Integer limit,
         String mediaType,
         Long albumId,
+        Long excludeAlbumId,
         List<Long> tagId,
         Long sharingGroupId,
         LocalDate startDate,
@@ -151,13 +153,13 @@ public class MediaController implements MediaManagementApi {
 
         // 総件数を取得
         Long totalCount = mediaService.countMedia(
-            mediaType, albumId, tagId, sharingGroupId,
+            mediaType, albumId, excludeAlbumId, tagId, sharingGroupId,
             startDate, endDate, isFavorite, currentUserId
         );
 
         // サービス層でメディアを取得
         List<Media> mediaList = mediaService.getMediaList(
-            offset, limit, mediaType, albumId, tagId,
+            offset, limit, mediaType, albumId, excludeAlbumId, tagId,
             sharingGroupId, startDate, endDate, isFavorite, currentUserId
         );
 
