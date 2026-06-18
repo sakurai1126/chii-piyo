@@ -1,5 +1,6 @@
 package link.s_repo.chii_piyo.service;
 
+import jakarta.validation.constraints.NotNull;
 import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.Albums;
 import link.s_repo.chii_piyo.model.gen.Media;
@@ -210,6 +211,39 @@ public class AlbumService {
 
         // 対象メディアを一括更新する
         mediaMapper.update(c -> c.set(MediaDynamicSqlSupport.albumId).equalTo(albumId)
+            .where(MediaDynamicSqlSupport.id, isIn(mediaIds)));
+    }
+
+    /**
+     * アルバムから複数メディアを削除する
+     *
+     * @param albumId  対象のアルバムID
+     * @param mediaIds 対象のメディアIDリスト
+     */
+    public void deleteAlbumMedia(Long albumId, List<Long> mediaIds) {
+        if (mediaIds == null || mediaIds.isEmpty()) {
+            throw new IllegalArgumentException("IDが指定されていません");
+        }
+
+        // アルバムの存在チェック
+        getAlbumById(albumId);
+
+        // mediaIdsのメディアの存在チェック
+        List<Media> mediaList = mediaMapper.select(c -> c.where(MediaDynamicSqlSupport.id, isIn(mediaIds)));
+
+        if (mediaList.size() != mediaIds.stream().distinct().toList().size()) {
+            throw new ResourceNotFoundException("メディアが見つかりません mediaId=" + mediaIds);
+        }
+
+        // 全部渡されたアルバムに紐づいたものかを確認
+        boolean mediaInAlbum =
+            mediaList.stream().allMatch(media -> albumId.equals(media.getAlbumId()));
+        if (!mediaInAlbum) {
+            throw new IllegalArgumentException("指定されたアルバムに属していないメディアが含まれています");
+        }
+
+        // 対象メディアを一括削除する
+        mediaMapper.update(c -> c.set(MediaDynamicSqlSupport.albumId).equalToNull()
             .where(MediaDynamicSqlSupport.id, isIn(mediaIds)));
     }
 

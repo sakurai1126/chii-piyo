@@ -150,3 +150,15 @@ FavoriteFilter:
   required: false
   schema:
     type: boolean
+
+
+MediaIds:
+  name: mediaIds
+  in: query
+  description: メディアのIDリスト
+  required: true
+  schema:
+    type: array
+    items:
+      type: integer
+      format: int64

@@ -167,7 +167,9 @@ export const AddMediaModal = ({ tags, sharingGroups, isOpen, setIsOpen, albumId 
             <div className="grid h-screen w-screen place-content-center">
               <div className="bg-white-back border-brown-dark relative mx-auto h-[85vh] w-[calc(100vw-40px)] max-w-250 overflow-y-scroll rounded-lg border p-10 max-md:min-h-0 max-md:p-5 max-md:pb-9">
                 <div className="flex items-center justify-between">
-                  <p className="text-xl font-medium">アルバムにメディアを追加する</p>
+                  <p className="text-xl font-medium max-md:text-[16px]">
+                    アルバムにメディアを追加する
+                  </p>
                   <button
                     className="block w-fit cursor-pointer transition-all hover:opacity-70"
                     onClick={modalClose}

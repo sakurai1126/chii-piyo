@@ -31,7 +31,7 @@ export const AddMediaAlbum = ({ tags, sharingGroups, albumId }: Props) => {
         variant="button"
         onClick={() => setIsOpen(true)}
       >
-        <p>アルバムにメディアを追加する</p>
+        <p>アルバムにメディアを追加</p>
       </AccentButton>
     </>
   );

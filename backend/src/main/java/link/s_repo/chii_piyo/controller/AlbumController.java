@@ -2,12 +2,10 @@ package link.s_repo.chii_piyo.controller;
 
 import link.s_repo.chii_piyo.controller.converter.AlbumConverter;
 import link.s_repo.chii_piyo.controller.gen.AlbumManagementApi;
-import link.s_repo.chii_piyo.model.gen.AlbumMediaAddRequestDto;
-import link.s_repo.chii_piyo.model.gen.AlbumRequestDto;
-import link.s_repo.chii_piyo.model.gen.AlbumResponseDto;
-import link.s_repo.chii_piyo.model.gen.Albums;
+import link.s_repo.chii_piyo.model.gen.*;
 import link.s_repo.chii_piyo.service.AlbumService;
 import lombok.RequiredArgsConstructor;
+import lombok.With;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +41,26 @@ public class AlbumController implements AlbumManagementApi {
 
         // サービス層でアルバムにメディアを追加する
         albumService.addAlbumMedia(id, albumMediaData.getMediaIds());
+        // 204 No Contentを返す
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * POST /albums/{id}/media
+     * アルバムにメディアを追加する
+     *
+     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param id             対象のアルバムID
+     * @param mediaIds       アルバムから削除するメディアのIDリスト
+     * @return 204ステータス
+     */
+    @Override
+    public ResponseEntity<Void> deleteAlbumMedia(
+        String xRequestedWith, Long id, List<Long> mediaIds) {
+
+        // サービス層でアルバムにメディアを追加する
+        albumService.deleteAlbumMedia(id, mediaIds);
+
         // 204 No Contentを返す
         return ResponseEntity.noContent().build();
     }

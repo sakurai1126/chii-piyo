@@ -3,6 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 
+import { DeleteMediaAlbum } from "@/features/album";
 import {
   GetMediaListMediaKindEnum,
   MediaListResponseDto,
@@ -62,6 +63,16 @@ export const MediaListSection = ({ initialData, users, tags, sharingGroups, albu
         selectedMedia={selectedMedia}
         setSelectedMedia={setSelectedMedia}
       />
+
+      {albumId && (
+        <DeleteMediaAlbum
+          albumId={albumId}
+          isOpen={isSelectionMode}
+          setIsOpen={setIsSelectionMode}
+          selectedMedia={selectedMedia}
+          setSelectedMedia={setSelectedMedia}
+        />
+      )}
 
       {/* メディア一覧 */}
       <MediaList

@@ -941,6 +941,29 @@ paths:
           $ref: '#/components/responses/InternalServerError'
         default:
           $ref: '#/components/responses/DefaultErrors'
+    delete:
+      tags:
+        - albumManagement
+      summary: アルバムからメディアを削除
+      operationId: deleteAlbumMedia
+      x-codegen-request-body-name: AlbumMediaData
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/ResourceId'
+        - $ref: '#/components/parameters/MediaIds'
+      responses:
+        '204':
+          description: メディアの削除に成功
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
   /care-records:
     get:
       tags:
@@ -1702,6 +1725,16 @@ components:
       schema:
         type: integer
         format: int64
+    MediaIds:
+      name: mediaIds
+      in: query
+      description: メディアのIDリスト
+      required: true
+      schema:
+        type: array
+        items:
+          type: integer
+          format: int64
     RecordTypeFilter:
       name: recordType
       in: query
