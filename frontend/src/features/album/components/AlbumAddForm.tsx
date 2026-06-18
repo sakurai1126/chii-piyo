@@ -11,7 +11,7 @@ type Props = {
 };
 
 export const AlbumAddForm = ({ onAlbumCreated }: Readonly<Props>) => {
-  const [albumTitle, setAlbumTitle] = useState("");
+  const [albumTitle, setAlbumTitle] = useState<string>("");
 
   // 追加成功時の処理
   const onSuccess = () => {
@@ -21,7 +21,7 @@ export const AlbumAddForm = ({ onAlbumCreated }: Readonly<Props>) => {
     setAlbumTitle("");
   };
 
-  const { createAlbum, isCreating, error } = useCreateAlbum({ onSuccess });
+  const { createAlbum, isCreating } = useCreateAlbum({ onSuccess });
 
   // アルバム追加ボタンのクリックハンドラー
   const handleAddAlbum = () => {
@@ -43,7 +43,6 @@ export const AlbumAddForm = ({ onAlbumCreated }: Readonly<Props>) => {
           追加
         </Button>
       </div>
-      {error && <p className="text-warning mt-2 text-sm">{error}</p>}
     </>
   );
 };

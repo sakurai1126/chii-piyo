@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import { toast } from "@/components/ui/Toast";
+
 import { createAlbumAction } from "../actions/createAlbumAction";
 
 type Options = {
@@ -20,9 +22,6 @@ export const useCreateAlbum = ({ onSuccess }: Options = {}) => {
   // ボタンの二重押下防止に使用するアップロード中かどうかのステータス
   const [isCreating, setIsCreating] = useState(false);
 
-  // アルバム作成中に発生したエラーメッセージを保持
-  const [error, setError] = useState<string | null>(null);
-
   /**
    * アルバムを作成する関数
    *
@@ -34,26 +33,25 @@ export const useCreateAlbum = ({ onSuccess }: Options = {}) => {
 
     // アルバム名が空の場合はエラーにする
     if (!title.trim()) {
-      setError("アルバム名を入力してください");
+      toast.error("アルバム名を入力してください");
       return;
     }
 
     // アルバム作成処理開始前に状態をリセット
     setIsCreating(true);
-    setError(null);
 
     try {
       const result = await createAlbumAction({ title });
       if (!result.success) {
-        setError(result.error);
+        toast.error(result.error || "アルバム作成に失敗しました");
         return;
       }
-
+      toast.success("アルバムを作成しました");
       // 成功時のコールバックを呼び出す
       onSuccess?.();
     } catch (error) {
       console.error("アルバム作成失敗", error);
-      setError("アルバム作成に失敗しました");
+      toast.error("アルバム作成に失敗しました");
     } finally {
       setIsCreating(false);
     }
@@ -61,6 +59,5 @@ export const useCreateAlbum = ({ onSuccess }: Options = {}) => {
   return {
     createAlbum,
     isCreating,
-    error,
   };
 };
