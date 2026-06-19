@@ -50,6 +50,12 @@ export interface DeleteAlbumRequest {
   id: number;
 }
 
+export interface DeleteAlbumMediaRequest {
+  xRequestedWith: string;
+  id: number;
+  mediaIds: Array<number>;
+}
+
 export interface GetAlbumRequest {
   xRequestedWith: string;
   id: number;
@@ -298,6 +304,88 @@ export class AlbumManagementApi extends runtime.BaseAPI {
   }
 
   /**
+   * Creates request options for deleteAlbumMedia without sending the request
+   */
+  async deleteAlbumMediaRequestOpts(
+    requestParameters: DeleteAlbumMediaRequest,
+  ): Promise<runtime.RequestOpts> {
+    if (requestParameters["xRequestedWith"] == null) {
+      throw new runtime.RequiredError(
+        "xRequestedWith",
+        'Required parameter "xRequestedWith" was null or undefined when calling deleteAlbumMedia().',
+      );
+    }
+
+    if (requestParameters["id"] == null) {
+      throw new runtime.RequiredError(
+        "id",
+        'Required parameter "id" was null or undefined when calling deleteAlbumMedia().',
+      );
+    }
+
+    if (requestParameters["mediaIds"] == null) {
+      throw new runtime.RequiredError(
+        "mediaIds",
+        'Required parameter "mediaIds" was null or undefined when calling deleteAlbumMedia().',
+      );
+    }
+
+    const queryParameters: any = {};
+
+    if (requestParameters["mediaIds"] != null) {
+      queryParameters["mediaIds"] = requestParameters["mediaIds"];
+    }
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    if (requestParameters["xRequestedWith"] != null) {
+      headerParameters["X-Requested-With"] = String(requestParameters["xRequestedWith"]);
+    }
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken;
+      const tokenString = await token("BearerAuth", []);
+
+      if (tokenString) {
+        headerParameters["Authorization"] = `Bearer ${tokenString}`;
+      }
+    }
+
+    let urlPath = `/albums/{id}/media`;
+    urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+    return {
+      path: urlPath,
+      method: "DELETE",
+      headers: headerParameters,
+      query: queryParameters,
+    };
+  }
+
+  /**
+   * アルバムからメディアを削除
+   */
+  async deleteAlbumMediaRaw(
+    requestParameters: DeleteAlbumMediaRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<void>> {
+    const requestOptions = await this.deleteAlbumMediaRequestOpts(requestParameters);
+    const response = await this.request(requestOptions, initOverrides);
+
+    return new runtime.VoidApiResponse(response);
+  }
+
+  /**
+   * アルバムからメディアを削除
+   */
+  async deleteAlbumMedia(
+    requestParameters: DeleteAlbumMediaRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<void> {
+    await this.deleteAlbumMediaRaw(requestParameters, initOverrides);
+  }
+
+  /**
    * Creates request options for getAlbum without sending the request
    */
   async getAlbumRequestOpts(requestParameters: GetAlbumRequest): Promise<runtime.RequestOpts> {
@@ -497,13 +585,11 @@ export class AlbumManagementApi extends runtime.BaseAPI {
   async updateAlbumRaw(
     requestParameters: UpdateAlbumRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<AlbumResponseDto>> {
+  ): Promise<runtime.ApiResponse<void>> {
     const requestOptions = await this.updateAlbumRequestOpts(requestParameters);
     const response = await this.request(requestOptions, initOverrides);
 
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      AlbumResponseDtoFromJSON(jsonValue),
-    );
+    return new runtime.VoidApiResponse(response);
   }
 
   /**
@@ -512,8 +598,7 @@ export class AlbumManagementApi extends runtime.BaseAPI {
   async updateAlbum(
     requestParameters: UpdateAlbumRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<AlbumResponseDto> {
-    const response = await this.updateAlbumRaw(requestParameters, initOverrides);
-    return await response.value();
+  ): Promise<void> {
+    await this.updateAlbumRaw(requestParameters, initOverrides);
   }
 }

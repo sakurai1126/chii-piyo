@@ -8,7 +8,6 @@ import { createAuthorizedConfig } from "@/lib/api-client/server";
 // クライアントから受け取る入力型
 type Input = {
   mediaIds: number[];
-  albumId?: number;
   sharingGroupId?: number;
   tagIds?: number[];
 };
@@ -25,7 +24,6 @@ export const updateMediaBatchAction = async (input: Input): Promise<ActionResult
       xRequestedWith: "XMLHttpRequest",
       mediaBatchUpdateData: {
         mediaIds: input.mediaIds,
-        albumId: input.albumId,
         sharingGroupId: input.sharingGroupId,
         tagIds: input.tagIds,
       },

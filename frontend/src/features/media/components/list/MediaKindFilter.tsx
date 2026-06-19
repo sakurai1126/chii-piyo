@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useId } from "react";
 
 import icon from "../../assets/file-type-icon.svg";
 
@@ -8,6 +9,7 @@ type Props = {
 };
 
 export const MediaKindFilter = ({ updateFilter, currentValue = "" }: Props) => {
+  const uid = useId();
   return (
     <div className="bg-brown-back shrink-0 rounded-lg px-7 pt-6 pb-8 max-md:p-3 max-md:pb-4">
       <div className="flex items-center gap-1.5">
@@ -16,13 +18,13 @@ export const MediaKindFilter = ({ updateFilter, currentValue = "" }: Props) => {
       </div>
       <div className="mt-3 flex gap-2">
         <label
-          htmlFor="allMedia"
+          htmlFor={`allMedia-${uid}`}
           className="has-checked:border-accent-orange has-checked:bg-accent-orange-back has-checked:text-brown-middle border-line-gray flex cursor-pointer items-center gap-2 rounded-lg border bg-white py-1.5 pr-5 pl-3 transition-all max-md:py-1"
         >
           <input
             type="radio"
-            id="allMedia"
-            name="mediaType"
+            id={`allMedia-${uid}`}
+            name={`mediaType-${uid}`}
             checked={currentValue === ""}
             onChange={() => {
               updateFilter({ key: "mediaKind", value: "" });
@@ -32,13 +34,13 @@ export const MediaKindFilter = ({ updateFilter, currentValue = "" }: Props) => {
           <p className="text-sm max-md:text-xs">すべて</p>
         </label>
         <label
-          htmlFor="photo"
+          htmlFor={`photo-${uid}`}
           className="has-checked:border-accent-orange has-checked:bg-accent-orange-back has-checked:text-brown-middle border-line-gray flex cursor-pointer items-center gap-2 rounded-lg border bg-white py-1.5 pr-5 pl-3 transition-all max-md:py-1"
         >
           <input
             type="radio"
-            id="photo"
-            name="mediaType"
+            id={`photo-${uid}`}
+            name={`mediaType-${uid}`}
             checked={currentValue === "PHOTO"}
             onChange={(e) => {
               updateFilter({ key: "mediaKind", value: e.target.checked ? "PHOTO" : "" });
@@ -48,13 +50,13 @@ export const MediaKindFilter = ({ updateFilter, currentValue = "" }: Props) => {
           <p className="text-sm max-md:text-xs">写真</p>
         </label>
         <label
-          htmlFor="video"
+          htmlFor={`video-${uid}`}
           className="has-checked:border-accent-orange has-checked:bg-accent-orange-back has-checked:text-brown-middle border-line-gray flex cursor-pointer items-center gap-2 rounded-lg border bg-white py-1.5 pr-5 pl-3 transition-all max-md:py-1"
         >
           <input
             type="radio"
-            id="video"
-            name="mediaType"
+            id={`video-${uid}`}
+            name={`mediaType-${uid}`}
             checked={currentValue === "VIDEO"}
             onChange={(e) => {
               updateFilter({ key: "mediaKind", value: e.target.checked ? "VIDEO" : "" });

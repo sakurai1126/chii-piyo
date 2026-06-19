@@ -1,14 +1,44 @@
 "use client";
+import { useQueryClient } from "@tanstack/react-query";
 import { AnimatePresence } from "motion/react";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 
 import { Modal } from "@/components/layout/Modal";
 import { ActionDialog } from "@/components/ui/ActionDialog";
 import { Button } from "@/components/ui/Button";
+import { toast } from "@/components/ui/Toast";
+import { AlbumResponseDto, MediaResponseDto } from "@/lib/api-client/gen";
 
-export const AlbumMediaDetail = () => {
+import { deleteAlbumMediaAction } from "../actions/deleteAlbumMediaAction";
+
+type Props = {
+  album: AlbumResponseDto;
+  media: MediaResponseDto;
+};
+export const AlbumMediaDetail = ({ album, media }: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  // 非同期処理中のボタン状態管理
+  const [isPending, startTransition] = useTransition();
+  // 一覧画面のtanstack queryのキャッシュ破棄用フック
+  const queryClient = useQueryClient();
+
+  const deleteAction = () => {
+    startTransition(async () => {
+      const result = await deleteAlbumMediaAction({
+        albumId: album.id,
+        mediaIds: [media.id],
+      });
+
+      if (result.success) {
+        queryClient.invalidateQueries({ queryKey: ["media"] });
+        setIsOpen(false);
+        toast.success("メディアをアルバムから削除しました");
+      } else {
+        toast.error(result.error);
+      }
+    });
+  };
 
   return (
     <div className="mt-7">
@@ -16,20 +46,23 @@ export const AlbumMediaDetail = () => {
       <div className="border-brown-dark mt-2 flex justify-between rounded-lg border bg-[rgba(255,255,255,0.5)] p-4 backdrop-blur-[7.5px] max-md:flex-col">
         <div className="flex gap-3">
           <Image
-            src="/images/mock-img.jpg"
+            src={album.coverMediaUrls[0] ?? "/images/no-image.svg"}
             alt=""
             width={80}
             height={80}
             className="aspect-square h-20 w-20 rounded-sm object-cover"
           />
           <div>
-            <p className="text-sm max-md:text-[13px]">タイトル</p>
-            <p className="mt-1 text-xs max-md:text-[11px]">画像：1枚</p>
-            <p className="mt-1 text-xs max-md:text-[11px]">動画：1本</p>
+            <p className="text-sm max-md:text-[13px]">{album.title}</p>
+            <p className="mt-1 text-xs max-md:text-[11px]">画像：{album.photoCount}枚</p>
+            <p className="mt-1 text-xs max-md:text-[11px]">動画：{album.videoCount}本</p>
           </div>
         </div>
         <div className="flex flex-col items-end justify-between max-md:mt-3 max-md:flex-row max-md:items-center">
-          <Button className="w-32 max-md:h-8 max-md:w-30">アルバムを見る</Button>
+          <a href={`/albums/${album.id}`}>
+            <Button className="w-32 max-md:h-8 max-md:w-30">アルバムを見る</Button>
+          </a>
+
           <button
             className="text-warning cursor-pointer text-xs underline transition-all hover:opacity-70 max-md:text-[10px]"
             onClick={() => setIsOpen(true)}
@@ -51,10 +84,12 @@ export const AlbumMediaDetail = () => {
                 </p>
 
                 <div className="flex justify-center gap-5">
-                  <Button variant="cancel" onClick={() => setIsOpen(false)}>
+                  <Button variant="cancel" onClick={() => setIsOpen(false)} disabled={isPending}>
                     キャンセル
                   </Button>
-                  <Button variant="remove">削除する</Button>
+                  <Button variant="remove" onClick={deleteAction} disabled={isPending}>
+                    削除する
+                  </Button>
                 </div>
               </div>
             </ActionDialog>

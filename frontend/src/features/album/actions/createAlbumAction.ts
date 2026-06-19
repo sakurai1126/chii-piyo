@@ -1,5 +1,7 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+
 import { AlbumManagementApi, AlbumRequestDto, AlbumResponseDto } from "@/lib/api-client/gen";
 import { createAuthorizedConfig } from "@/lib/api-client/server";
 
@@ -28,6 +30,10 @@ export const createAlbumAction = async (input: Input): Promise<ActionResult> => 
       xRequestedWith: "XMLHttpRequest",
       albumData: requestDto,
     });
+
+    // キャッシュを破棄し、サーバーコンポーネントを再レンダリング
+    revalidatePath("/albums");
+    revalidatePath("/settings");
 
     return { success: true, data: response };
   } catch (error) {

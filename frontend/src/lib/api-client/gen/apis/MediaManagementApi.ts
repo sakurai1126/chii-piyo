@@ -75,6 +75,7 @@ export interface GetMediaListRequest {
   limit?: number;
   mediaKind?: GetMediaListMediaKindEnum;
   albumId?: number;
+  excludeAlbumId?: number;
   tagId?: Array<number>;
   sharingGroupId?: number;
   startDate?: Date;
@@ -353,6 +354,10 @@ export class MediaManagementApi extends runtime.BaseAPI {
 
     if (requestParameters["albumId"] != null) {
       queryParameters["albumId"] = requestParameters["albumId"];
+    }
+
+    if (requestParameters["excludeAlbumId"] != null) {
+      queryParameters["excludeAlbumId"] = requestParameters["excludeAlbumId"];
     }
 
     if (requestParameters["tagId"] != null) {

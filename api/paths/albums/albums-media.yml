@@ -27,3 +27,27 @@ post:
       $ref: "../../components/responses.yml#/InternalServerError"
     default:
       $ref: "../../components/responses.yml#/DefaultErrors"
+
+delete:
+  tags:
+    - albumManagement
+  summary: アルバムからメディアを削除
+  operationId: deleteAlbumMedia
+  x-codegen-request-body-name: AlbumMediaData
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+    - $ref: "../../components/parameters.yml#/ResourceId"
+    - $ref: "../../components/parameters.yml#/MediaIds"
+  responses:
+    "204":
+      description: メディアの削除に成功
+    "400":
+      $ref: "../../components/responses.yml#/BadRequest"
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "404":
+      $ref: "../../components/responses.yml#/NotFound"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"

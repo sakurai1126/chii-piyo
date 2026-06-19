@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 import Container from "@/components/layout/Container";
-import { AccentLinkButton } from "@/components/ui/AccentLinkButton";
+import { AccentButton } from "@/components/ui/AccentButton";
 import PageTitle from "@/components/ui/PageTitle";
 import { getUsers } from "@/features/auth/actions/getUsers";
 import { MediaFilter, MediaListSection } from "@/features/media";
@@ -25,7 +25,7 @@ export default async function MediaPage() {
       <MediaFilter tags={tags} sharingGroups={sharingGroups} />
 
       {/* 遷移ボタン */}
-      <AccentLinkButton href="/upload" className="mt-10 ml-auto max-md:mt-4">
+      <AccentButton href="/upload" className="mt-10 ml-auto max-md:mt-4" variant="link">
         <p>新規アップロード</p>
         <Image
           src="/images/upload.svg"
@@ -34,7 +34,7 @@ export default async function MediaPage() {
           height={22}
           className="max-md:h-4 max-md:w-4"
         />
-      </AccentLinkButton>
+      </AccentButton>
 
       {/* 一括編集UI+メディアグリッド */}
       <MediaListSection

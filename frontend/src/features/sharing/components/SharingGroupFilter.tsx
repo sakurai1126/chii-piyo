@@ -26,7 +26,6 @@ export const SharingGroupFilter = ({ sharingGroups, updateFilter, currentValue =
   );
 
   // 共有グループ選択時の処理
-
   return (
     <div className="bg-brown-back w-full rounded-lg px-7 pt-6 pb-8 max-md:p-3 max-md:pb-4">
       <div className="flex items-center gap-1.5">
@@ -39,12 +38,12 @@ export const SharingGroupFilter = ({ sharingGroups, updateFilter, currentValue =
         style={{ maxHeight: isOpen ? fullHeight : closedHeight }}
       >
         <label
-          htmlFor="allSharingGroup"
+          htmlFor={`allSharingGroup-${uid}`}
           className="has-checked:border-accent-orange has-checked:bg-accent-orange-back has-checked:text-brown-middle border-line-gray flex cursor-pointer items-center gap-2 rounded-lg border bg-white py-1.5 pr-5 pl-3 transition-all max-md:py-1"
         >
           <input
             type="radio"
-            id="allSharingGroup"
+            id={`allSharingGroup-${uid}`}
             name={`sharing-group-${uid}`}
             checked={currentValue === ""}
             className="accent-accent-orange-radio"
@@ -74,12 +73,12 @@ export const SharingGroupFilter = ({ sharingGroups, updateFilter, currentValue =
         {sharingGroups.map((group) => (
           <label
             key={group.id}
-            htmlFor={`sharing-group-${group.id}`}
+            htmlFor={`sharing-group-${group.id}-${uid}`}
             className="has-checked:border-accent-orange has-checked:bg-accent-orange-back has-checked:text-brown-middle border-line-gray flex cursor-pointer items-center gap-2 rounded-lg border bg-white py-1.5 pr-5 pl-3 transition-all max-md:py-1"
           >
             <input
               type="radio"
-              id={`sharing-group-${group.id}`}
+              id={`sharing-group-${group.id}-${uid}`}
               name={`sharing-group-${uid}`}
               checked={currentValue === group.id.toString()}
               className="accent-accent-orange-radio"

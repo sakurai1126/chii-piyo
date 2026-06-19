@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 import account from "../assets/sidebar/account.svg";
+import albums from "../assets/sidebar/albums.svg";
 import arrow from "../assets/sidebar/arrow.svg";
 import displayMode from "../assets/sidebar/display-mode.svg";
 import members from "../assets/sidebar/members.svg";
@@ -15,6 +16,7 @@ const items = [
   { id: "members", label: "メンバー一覧", icon: members },
   { id: "tags", label: "タグ", icon: tags },
   { id: "sharing-groups", label: "共有範囲", icon: sharingGroups },
+  { id: "albums", label: "アルバム", icon: albums },
   { id: "display-mode", label: "表示モード", icon: displayMode },
   { id: "account", label: "アカウント", icon: account },
 ];

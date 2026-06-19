@@ -62,6 +62,7 @@ public class MediaService {
      *
      * @param mediaType      メディア種別 (PHOTO / VIDEO)
      * @param albumId        アルバムID
+     * @param excludeAlbumId 除外するアルバムID
      * @param tagId          タグIDのリスト
      * @param sharingGroupId 共有グループID
      * @param startDate      日時指定開始日
@@ -74,6 +75,7 @@ public class MediaService {
     public Long countMedia(
         String mediaType,
         Long albumId,
+        Long excludeAlbumId,
         List<Long> tagId,
         Long sharingGroupId,
         LocalDate startDate,
@@ -83,7 +85,8 @@ public class MediaService {
 
         return mediaMapper.count(c -> {
             // 絞り込み条件設定を構築
-            List<AndOrCriteriaGroup> conditions = buildMediaFilterConditions(mediaType, albumId, tagId, sharingGroupId, startDate, endDate);
+            List<AndOrCriteriaGroup> conditions = buildMediaFilterConditions(mediaType, albumId,
+                excludeAlbumId, tagId, sharingGroupId, startDate, endDate);
 
             // isFavoriteがtrueの場合、サブクエリで現在のユーザーがお気に入りに入れているメディアをカウントする
             if (Boolean.TRUE.equals(isFavorite) && currentUserId != null) {
@@ -111,6 +114,7 @@ public class MediaService {
      * @param limit          最大件数
      * @param mediaType      メディア種別 (PHOTO / VIDEO)
      * @param albumId        アルバムID
+     * @param excludeAlbumId 除外するアルバムID
      * @param tagId          タグIDのリスト
      * @param sharingGroupId 共有グループID
      * @param startDate      日時指定開始日
@@ -124,6 +128,7 @@ public class MediaService {
         Integer limit,
         String mediaType,
         Long albumId,
+        Long excludeAlbumId,
         List<Long> tagId,
         Long sharingGroupId,
         LocalDate startDate,
@@ -133,7 +138,8 @@ public class MediaService {
         // ページネーション込みで一覧取得
         return mediaMapper.select(c -> {
                 // 絞り込み条件設定を構築
-                List<AndOrCriteriaGroup> conditions = buildMediaFilterConditions(mediaType, albumId, tagId, sharingGroupId, startDate, endDate);
+                List<AndOrCriteriaGroup> conditions = buildMediaFilterConditions(mediaType,
+                    albumId, excludeAlbumId, tagId, sharingGroupId, startDate, endDate);
 
                 // isFavoriteがtrueの場合はサブクエリでお気に入りに追加しているメディアに絞り込む
                 if (Boolean.TRUE.equals(isFavorite) && currentUserId != null) {
@@ -161,6 +167,7 @@ public class MediaService {
     private List<AndOrCriteriaGroup> buildMediaFilterConditions(
         String mediaType,
         Long albumId,
+        Long excludeAlbumId,
         List<Long> tagId,
         Long sharingGroupId,
         LocalDate startDate,
@@ -170,6 +177,12 @@ public class MediaService {
         List<AndOrCriteriaGroup> conditions = new ArrayList<>();
         if (albumId != null) {
             conditions.add(and(MediaDynamicSqlSupport.albumId, isEqualTo(albumId)));
+        }
+
+        if (excludeAlbumId != null) {
+            // 指定したアルバムIDと一致しないまたはアルバムIDがNULLのメディア
+            conditions.add(and(MediaDynamicSqlSupport.albumId, isNotEqualTo(excludeAlbumId),
+                or(MediaDynamicSqlSupport.albumId, isNull())));
         }
 
         if ("PHOTO".equals(mediaType) || "VIDEO".equals(mediaType)) {
@@ -425,14 +438,6 @@ public class MediaService {
             throw new ResourceNotFoundException("メディアが見つかりません mediaId=" + mediaBatchUpdateData.getMediaIds());
         }
 
-        // アルバムIDの更新がある場合はアルバムの存在チェックを行う
-        if (mediaBatchUpdateData.getAlbumId().isPresent()) {
-            Long newAlbumId = mediaBatchUpdateData.getAlbumId().get();
-            if (newAlbumId != null) {
-                albumService.getAlbumById(newAlbumId);
-            }
-        }
-
         // 共有グループIDの更新がある場合は共有グループの存在チェックを行う
         if (mediaBatchUpdateData.getSharingGroupId().isPresent()) {
             Long newSharingGroupId = mediaBatchUpdateData.getSharingGroupId().get();
@@ -457,24 +462,10 @@ public class MediaService {
             }
         }
 
-        // メディアの更新対象(共有範囲グループ/アルバム)がある場合のみ
-        if (mediaBatchUpdateData.getAlbumId().isPresent() || mediaBatchUpdateData.getSharingGroupId().isPresent()) {
+        // 共有範囲グループがある場合のみ
+        if (mediaBatchUpdateData.getSharingGroupId().isPresent()) {
             // メディアの更新を行う
             mediaMapper.update(updateBuilder -> {
-                // アルバムIDの送信があれば SET 句に追加
-                if (mediaBatchUpdateData.getAlbumId().isPresent()) {
-                    Long newAlbumId = mediaBatchUpdateData.getAlbumId().get();
-                    if (newAlbumId == null) {
-                        // null の場合は explicitly に equalToNull() を使う
-                        updateBuilder = updateBuilder.set(MediaDynamicSqlSupport.albumId).equalToNull();
-                    } else {
-                        // album_idカラムをnewAlbumIdの値に更新する
-                        updateBuilder = updateBuilder
-                            .set(MediaDynamicSqlSupport.albumId)
-                            .equalTo(newAlbumId);
-                    }
-
-                }
                 // 共有グループの送信があれば SET 句に追加
                 if (mediaBatchUpdateData.getSharingGroupId().isPresent()) {
                     Long newSharingGroupId = mediaBatchUpdateData.getSharingGroupId().get();

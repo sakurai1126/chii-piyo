@@ -1,9 +1,11 @@
 import Container from "@/components/layout/Container";
 import PageTitle from "@/components/ui/PageTitle";
+import { getAlbums } from "@/features/album/server";
 import { getCurrentUser } from "@/features/auth";
 import { getUsers } from "@/features/auth/actions/getUsers";
 import {
   Account,
+  Albums,
   DisplayMode,
   Members,
   Profile,
@@ -15,11 +17,12 @@ import { getSharingGroups } from "@/features/sharing/server";
 import { getTags } from "@/features/tag/server";
 
 export default async function SettingsPage() {
-  const [currentUser, users, sharingGroups, tags] = await Promise.all([
+  const [currentUser, users, sharingGroups, tags, albums] = await Promise.all([
     getCurrentUser(),
     getUsers(),
     getSharingGroups(),
     getTags(),
+    getAlbums(),
   ]);
 
   return (
@@ -38,6 +41,8 @@ export default async function SettingsPage() {
           <Tags tags={tags} />
           {/* 共有範囲 */}
           <SharingGroups users={users} sharingGroups={sharingGroups} />
+          {/* アルバム */}
+          <Albums albums={albums} />
           {/* 表示モード */}
           <DisplayMode currentUser={currentUser} />
           {/* アカウント */}
