@@ -2967,7 +2967,6 @@ components:
       required:
         - id
         - mediaId
-        - deletedBy
         - expiresAt
         - createdAt
       properties:
@@ -2983,11 +2982,6 @@ components:
           example: 10
         media:
           $ref: '#/components/schemas/MediaResponseDto'
-        deletedBy:
-          type: integer
-          format: int64
-          description: 削除したユーザーID
-          example: 1
         expiresAt:
           type: string
           format: date-time

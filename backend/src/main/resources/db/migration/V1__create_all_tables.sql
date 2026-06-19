@@ -271,12 +271,10 @@ CREATE TABLE trash_items
 (
     id         BIGSERIAL PRIMARY KEY,
     media_id   BIGINT      NOT NULL,
-    deleted_by BIGINT      NOT NULL,
     expires_at TIMESTAMPTZ NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT uk_trash_items_media_id UNIQUE (media_id),
-    CONSTRAINT fk_trash_items_media FOREIGN KEY (media_id) REFERENCES media (id),
-    CONSTRAINT fk_trash_items_user FOREIGN KEY (deleted_by) REFERENCES users (id)
+    CONSTRAINT fk_trash_items_media FOREIGN KEY (media_id) REFERENCES media (id)
 );
 
 CREATE INDEX idx_trash_items_expires_at ON trash_items (expires_at);

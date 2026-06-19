@@ -5,7 +5,6 @@ TrashItemResponseDto:
   required:
     - id
     - mediaId
-    - deletedBy
     - expiresAt
     - createdAt
   properties:
@@ -21,11 +20,6 @@ TrashItemResponseDto:
       example: 10
     media:
       $ref: "./media.yml#/MediaResponseDto"
-    deletedBy:
-      type: integer
-      format: int64
-      description: 削除したユーザーID
-      example: 1
     expiresAt:
       type: string
       format: date-time

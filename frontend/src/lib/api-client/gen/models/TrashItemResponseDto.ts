@@ -46,12 +46,6 @@ export interface TrashItemResponseDto {
    */
   media?: MediaResponseDto;
   /**
-   * 削除したユーザーID
-   * @type {number}
-   * @memberof TrashItemResponseDto
-   */
-  deletedBy: number;
-  /**
    * 完全削除予定日時
    * @type {Date}
    * @memberof TrashItemResponseDto
@@ -71,7 +65,6 @@ export interface TrashItemResponseDto {
 export function instanceOfTrashItemResponseDto(value: object): value is TrashItemResponseDto {
   if (!("id" in value) || value["id"] === undefined) return false;
   if (!("mediaId" in value) || value["mediaId"] === undefined) return false;
-  if (!("deletedBy" in value) || value["deletedBy"] === undefined) return false;
   if (!("expiresAt" in value) || value["expiresAt"] === undefined) return false;
   if (!("createdAt" in value) || value["createdAt"] === undefined) return false;
   return true;
@@ -92,7 +85,6 @@ export function TrashItemResponseDtoFromJSONTyped(
     id: json["id"],
     mediaId: json["mediaId"],
     media: json["media"] == null ? undefined : MediaResponseDtoFromJSON(json["media"]),
-    deletedBy: json["deletedBy"],
     expiresAt: new Date(json["expiresAt"]),
     createdAt: new Date(json["createdAt"]),
   };
@@ -114,7 +106,6 @@ export function TrashItemResponseDtoToJSONTyped(
     id: value["id"],
     mediaId: value["mediaId"],
     media: MediaResponseDtoToJSON(value["media"]),
-    deletedBy: value["deletedBy"],
     expiresAt: value["expiresAt"].toISOString(),
     createdAt: value["createdAt"].toISOString(),
   };

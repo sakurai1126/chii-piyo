@@ -347,7 +347,6 @@
 | --- | --- | --- | --- | --- | --- |
 | id | BIGSERIAL | NO | AUTO | PK | 主キー |
 | media_id | BIGINT | NO | - | FK, UK | メディアID |
-| deleted_by | BIGINT | NO | - | FK | 削除したユーザーID |
 | expires_at | TIMESTAMPTZ | NO | - | | 完全削除予定日時 |
 | created_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 作成日時 |
 ##### インデックス/複合ユニーク制約

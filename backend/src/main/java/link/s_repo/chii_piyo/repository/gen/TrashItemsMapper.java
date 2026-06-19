@@ -32,7 +32,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 @Mapper
 public interface TrashItemsMapper extends CommonCountMapper, CommonDeleteMapper, CommonUpdateMapper {
-    BasicColumn[] selectList = BasicColumn.columnList(id, mediaId, deletedBy, expiresAt, createdAt);
+    BasicColumn[] selectList = BasicColumn.columnList(id, mediaId, expiresAt, createdAt);
 
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
     @Options(useGeneratedKeys=true, keyProperty="row.id", keyColumn="id")
@@ -46,7 +46,6 @@ public interface TrashItemsMapper extends CommonCountMapper, CommonDeleteMapper,
     @Results(id="TrashItemsResult", value = {
         @Result(column="id", property="id", jdbcType=JdbcType.BIGINT, id=true),
         @Result(column="media_id", property="mediaId", jdbcType=JdbcType.BIGINT),
-        @Result(column="deleted_by", property="deletedBy", jdbcType=JdbcType.BIGINT),
         @Result(column="expires_at", property="expiresAt", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="created_at", property="createdAt", jdbcType=JdbcType.TIMESTAMP)
     })
@@ -73,7 +72,6 @@ public interface TrashItemsMapper extends CommonCountMapper, CommonDeleteMapper,
     default int insert(TrashItems row) {
         return MyBatis3Utils.insert(this::insert, row, trashItems, c ->
             c.withMappedColumn(mediaId)
-            .withMappedColumn(deletedBy)
             .withMappedColumn(expiresAt)
             .withMappedColumn(createdAt)
         );
@@ -82,7 +80,6 @@ public interface TrashItemsMapper extends CommonCountMapper, CommonDeleteMapper,
     default int insertMultiple(Collection<TrashItems> records) {
         return MyBatis3Utils.insertMultipleWithGeneratedKeys(this::insertMultiple, records, trashItems, c ->
             c.withMappedColumn(mediaId)
-            .withMappedColumn(deletedBy)
             .withMappedColumn(expiresAt)
             .withMappedColumn(createdAt)
         );
@@ -91,7 +88,6 @@ public interface TrashItemsMapper extends CommonCountMapper, CommonDeleteMapper,
     default int insertSelective(TrashItems row) {
         return MyBatis3Utils.insert(this::insert, row, trashItems, c ->
             c.withMappedColumnWhenPresent(mediaId, row::getMediaId)
-            .withMappedColumnWhenPresent(deletedBy, row::getDeletedBy)
             .withMappedColumnWhenPresent(expiresAt, row::getExpiresAt)
             .withMappedColumnWhenPresent(createdAt, row::getCreatedAt)
         );
@@ -122,7 +118,6 @@ public interface TrashItemsMapper extends CommonCountMapper, CommonDeleteMapper,
     static UpdateDSL updateAllColumns(TrashItems row, UpdateDSL dsl) {
         return dsl.set(id).equalTo(row::getId)
                 .set(mediaId).equalTo(row::getMediaId)
-                .set(deletedBy).equalTo(row::getDeletedBy)
                 .set(expiresAt).equalTo(row::getExpiresAt)
                 .set(createdAt).equalTo(row::getCreatedAt);
     }
@@ -130,7 +125,6 @@ public interface TrashItemsMapper extends CommonCountMapper, CommonDeleteMapper,
     static UpdateDSL updateSelectiveColumns(TrashItems row, UpdateDSL dsl) {
         return dsl.set(id).equalToWhenPresent(row::getId)
                 .set(mediaId).equalToWhenPresent(row::getMediaId)
-                .set(deletedBy).equalToWhenPresent(row::getDeletedBy)
                 .set(expiresAt).equalToWhenPresent(row::getExpiresAt)
                 .set(createdAt).equalToWhenPresent(row::getCreatedAt);
     }
@@ -138,7 +132,6 @@ public interface TrashItemsMapper extends CommonCountMapper, CommonDeleteMapper,
     default int updateByPrimaryKey(TrashItems row) {
         return update(c ->
             c.set(mediaId).equalTo(row::getMediaId)
-            .set(deletedBy).equalTo(row::getDeletedBy)
             .set(expiresAt).equalTo(row::getExpiresAt)
             .set(createdAt).equalTo(row::getCreatedAt)
             .where(id, isEqualTo(row::getId))
@@ -148,7 +141,6 @@ public interface TrashItemsMapper extends CommonCountMapper, CommonDeleteMapper,
     default int updateByPrimaryKeySelective(TrashItems row) {
         return update(c ->
             c.set(mediaId).equalToWhenPresent(row::getMediaId)
-            .set(deletedBy).equalToWhenPresent(row::getDeletedBy)
             .set(expiresAt).equalToWhenPresent(row::getExpiresAt)
             .set(createdAt).equalToWhenPresent(row::getCreatedAt)
             .where(id, isEqualTo(row::getId))
