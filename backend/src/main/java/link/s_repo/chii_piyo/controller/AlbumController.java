@@ -5,7 +5,6 @@ import link.s_repo.chii_piyo.controller.gen.AlbumManagementApi;
 import link.s_repo.chii_piyo.model.gen.*;
 import link.s_repo.chii_piyo.service.AlbumService;
 import lombok.RequiredArgsConstructor;
-import lombok.With;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,8 +45,8 @@ public class AlbumController implements AlbumManagementApi {
     }
 
     /**
-     * POST /albums/{id}/media
-     * アルバムにメディアを追加する
+     * DELETE /albums/{id}/media
+     * アルバムから複数メディアを削除する
      *
      * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
      * @param id             対象のアルバムID
@@ -64,6 +63,8 @@ public class AlbumController implements AlbumManagementApi {
         // 204 No Contentを返す
         return ResponseEntity.noContent().build();
     }
+
+
 
     /**
      * POST /albums<br>
@@ -100,7 +101,7 @@ public class AlbumController implements AlbumManagementApi {
 
         // アルバムIDをキーにして画像数と動画数、URLリストのレコードを取得
         AlbumService.MediaDataResult mediaData =
-            albumService.getMediaDataByAlbumIds(albumIds, false).getOrDefault(
+            albumService.getMediaDataByAlbumIds(albumIds).getOrDefault(
                 albumId, new AlbumService.MediaDataResult(0, 0, Collections.emptyList()));
 
         // コンバータでDTOに変換

@@ -1,4 +1,5 @@
 import { AlbumMediaDetail } from "@/features/album";
+import { getAlbum } from "@/features/album/server";
 import { getCurrentUser } from "@/features/auth";
 import { getUsers } from "@/features/auth/actions/getUsers";
 import { ShareGroupMediaDetail } from "@/features/sharing";
@@ -27,6 +28,8 @@ export const MediaDetailContent = async ({ id, isModal = false }: Props) => {
     getUsers(),
     getTags(),
   ]);
+
+  const album = media.albumId ? await getAlbum({ albumId: media.albumId }) : null;
 
   return (
     <div
@@ -57,7 +60,7 @@ export const MediaDetailContent = async ({ id, isModal = false }: Props) => {
           <ShareGroupMediaDetail media={media} sharingGroups={sharingGroups} users={users} />
 
           {/* アルバム */}
-          <AlbumMediaDetail />
+          {album && <AlbumMediaDetail album={album} media={media} />}
         </div>
       </div>
     </div>
