@@ -151,7 +151,6 @@ FavoriteFilter:
   schema:
     type: boolean
 
-
 MediaIds:
   name: mediaIds
   in: query

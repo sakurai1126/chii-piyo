@@ -64,6 +64,11 @@ export interface DeleteMediaRequest {
   id: number;
 }
 
+export interface DeleteMultipleMediaRequest {
+  xRequestedWith: string;
+  mediaIds: Array<number>;
+}
+
 export interface GetMediaRequest {
   xRequestedWith: string;
   id: number;
@@ -251,6 +256,82 @@ export class MediaManagementApi extends runtime.BaseAPI {
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<void> {
     await this.deleteMediaRaw(requestParameters, initOverrides);
+  }
+
+  /**
+   * Creates request options for deleteMultipleMedia without sending the request
+   */
+  async deleteMultipleMediaRequestOpts(
+    requestParameters: DeleteMultipleMediaRequest,
+  ): Promise<runtime.RequestOpts> {
+    if (requestParameters["xRequestedWith"] == null) {
+      throw new runtime.RequiredError(
+        "xRequestedWith",
+        'Required parameter "xRequestedWith" was null or undefined when calling deleteMultipleMedia().',
+      );
+    }
+
+    if (requestParameters["mediaIds"] == null) {
+      throw new runtime.RequiredError(
+        "mediaIds",
+        'Required parameter "mediaIds" was null or undefined when calling deleteMultipleMedia().',
+      );
+    }
+
+    const queryParameters: any = {};
+
+    if (requestParameters["mediaIds"] != null) {
+      queryParameters["mediaIds"] = requestParameters["mediaIds"];
+    }
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    if (requestParameters["xRequestedWith"] != null) {
+      headerParameters["X-Requested-With"] = String(requestParameters["xRequestedWith"]);
+    }
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken;
+      const tokenString = await token("BearerAuth", []);
+
+      if (tokenString) {
+        headerParameters["Authorization"] = `Bearer ${tokenString}`;
+      }
+    }
+
+    let urlPath = `/media`;
+
+    return {
+      path: urlPath,
+      method: "DELETE",
+      headers: headerParameters,
+      query: queryParameters,
+    };
+  }
+
+  /**
+   * ゴミ箱に移動し30日間保持
+   * 複数メディアを削除
+   */
+  async deleteMultipleMediaRaw(
+    requestParameters: DeleteMultipleMediaRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<void>> {
+    const requestOptions = await this.deleteMultipleMediaRequestOpts(requestParameters);
+    const response = await this.request(requestOptions, initOverrides);
+
+    return new runtime.VoidApiResponse(response);
+  }
+
+  /**
+   * ゴミ箱に移動し30日間保持
+   * 複数メディアを削除
+   */
+  async deleteMultipleMedia(
+    requestParameters: DeleteMultipleMediaRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<void> {
+    await this.deleteMultipleMediaRaw(requestParameters, initOverrides);
   }
 
   /**

@@ -376,6 +376,28 @@ paths:
           $ref: '#/components/responses/InternalServerError'
         default:
           $ref: '#/components/responses/DefaultErrors'
+    delete:
+      tags:
+        - mediaManagement
+      summary: 複数メディアを削除
+      description: ゴミ箱に移動し30日間保持
+      operationId: deleteMultipleMedia
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/MediaIds'
+      responses:
+        '204':
+          description: メディアの削除に成功
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
   /media/{id}:
     get:
       tags:
@@ -1717,14 +1739,6 @@ components:
       required: false
       schema:
         type: boolean
-    MediaId:
-      name: mediaId
-      in: path
-      description: メディアの一意な識別子
-      required: true
-      schema:
-        type: integer
-        format: int64
     MediaIds:
       name: mediaIds
       in: query
@@ -1735,6 +1749,14 @@ components:
         items:
           type: integer
           format: int64
+    MediaId:
+      name: mediaId
+      in: path
+      description: メディアの一意な識別子
+      required: true
+      schema:
+        type: integer
+        format: int64
     RecordTypeFilter:
       name: recordType
       in: query
