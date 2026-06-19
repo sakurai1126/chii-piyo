@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { AlbumResponseDto } from "@/lib/api-client/gen";
@@ -39,11 +40,11 @@ export const AlbumsGridSlide = ({ album }: Props) => {
   };
 
   return (
-    <div
-      className="group relative aspect-square overflow-hidden"
+    <Link
+      href={`/albums/${album.id}`}
+      className="group relative block aspect-square overflow-hidden"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={handleMouseLeave}
-      role="presentation"
     >
       {album.coverMediaUrls.map((url, index) => (
         <Image
@@ -57,6 +58,6 @@ export const AlbumsGridSlide = ({ album }: Props) => {
           key={url}
         />
       ))}
-    </div>
+    </Link>
   );
 };
