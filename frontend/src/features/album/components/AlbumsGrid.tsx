@@ -48,24 +48,12 @@ export const AlbumsGrid = ({ albums }: Props) => {
               </div>
             </div>
           </div>
-          {album.coverMediaUrls.length ? (
-            album.coverMediaUrls.length > 1 ? (
-              <AlbumsGridSlide album={album} />
-            ) : (
-              <div className="group overflow-hidden">
-                <Image
-                  src={album.coverMediaUrls[0] ?? "/images/no-image.svg"}
-                  alt=""
-                  className="aspect-square transition-all duration-700 group-hover:scale-110"
-                  width={245}
-                  height={245}
-                />
-              </div>
-            )
+          {album.coverMediaUrls.length > 1 ? (
+            <AlbumsGridSlide album={album} />
           ) : (
             <div className="group overflow-hidden">
               <Image
-                src="/images/no-image.svg"
+                src={album.coverMediaUrls[0] ?? "/images/no-image.svg"}
                 alt=""
                 className="aspect-square transition-all duration-700 group-hover:scale-110"
                 width={245}

@@ -75,7 +75,7 @@ export const AddMediaModal = ({ tags, sharingGroups, isOpen, setIsOpen, albumId 
       params: {
         mediaKind: filters.mediaKind as GetMediaListMediaKindEnum,
         sharingGroupId: filters.sharingGroupId ? Number(filters.sharingGroupId) : undefined,
-        tagId: filters.tagId.map((v) => Number(v)),
+        tagId: filters.tagId.map(Number),
         excludeAlbumId: albumId,
         startDate: filters.startDate ? new Date(filters.startDate) : undefined,
         endDate: filters.endDate ? new Date(filters.endDate) : undefined,
@@ -111,13 +111,14 @@ export const AddMediaModal = ({ tags, sharingGroups, isOpen, setIsOpen, albumId 
     });
   };
 
-  // チェックボックスの変更処理
-  const handleCheck = (id: number, checked: boolean) => {
-    if (checked) {
-      setSelectedMediaIds((prev) => [...prev, id]);
-    } else {
-      setSelectedMediaIds((prev) => prev.filter((prevId) => prevId !== id));
-    }
+  // メディアを選択する処理
+  const addSelectedMedia = (id: number) => {
+    setSelectedMediaIds((prev) => [...prev, id]);
+  };
+
+  // メディアの選択を解除する処理
+  const removeSelectedMedia = (id: number) => {
+    setSelectedMediaIds((prev) => prev.filter((prevId) => prevId !== id));
   };
 
   const confirmOpen = () => {
@@ -290,7 +291,11 @@ export const AddMediaModal = ({ tags, sharingGroups, isOpen, setIsOpen, albumId 
                           name={`${uid}-check`}
                           id={`${uid}-${item.id}`}
                           checked={selectedMediaIds.includes(item.id)}
-                          onChange={(e) => handleCheck(item.id, e.target.checked)}
+                          onChange={(e) =>
+                            e.target.checked
+                              ? addSelectedMedia(item.id)
+                              : removeSelectedMedia(item.id)
+                          }
                           value={item.id}
                           className="accent-accent-pink absolute top-1 left-1 z-1"
                         />

@@ -43,10 +43,11 @@ export const AlbumsGridSlide = ({ album }: Props) => {
       className="group relative aspect-square overflow-hidden"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={handleMouseLeave}
+      role="presentation"
     >
       {album.coverMediaUrls.map((url, index) => (
         <Image
-          src={url ?? ""}
+          src={url ?? "/images/no-thumbnail.png"}
           alt=""
           className={`absolute top-0 right-0 bottom-0 left-0 aspect-square transition-all duration-700 group-hover:scale-110 ${
             index === activeIndex ? "opacity-100" : "opacity-0"
