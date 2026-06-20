@@ -2,9 +2,17 @@ import Image from "next/image";
 import { useId } from "react";
 
 import { Button } from "@/components/ui/Button";
+import { TrashItemResponseDto } from "@/lib/api-client/gen";
+import { calculateRemainingDays, formatJapaneseDateNonTime } from "@/utils/date";
 
-export const TrashItem = () => {
+type Props = {
+  trashItem: TrashItemResponseDto;
+};
+export const TrashItem = ({ trashItem }: Props) => {
   const uid = useId();
+  const sizeInKB = (trashItem.media.fileSize / 1024).toFixed(0);
+  const sizeInMB = (trashItem.media.fileSize / 1024 / 1024).toFixed(1);
+
   return (
     <div className="bg-white-back border-brown-dark flex items-center justify-between rounded-lg border py-5 pr-12 pl-7 max-md:flex-col max-md:items-start max-md:px-5 max-md:py-4">
       <div className="flex items-center gap-7 max-md:gap-4">
@@ -18,7 +26,7 @@ export const TrashItem = () => {
             className="accent-accent-pink h-4.5 w-4.5 max-md:h-4 max-md:w-4"
           />
           <Image
-            src="/images/mock-img.jpg"
+            src={trashItem.media.thumbnailPresignedUrl ?? "/images/no-thumbnail.png"}
             alt=""
             className="aspect-square rounded-lg object-cover max-md:h-20 max-md:w-20"
             width={140}
@@ -26,10 +34,17 @@ export const TrashItem = () => {
           />
         </label>
         <div>
-          <p className="max-md:text-xs">IMG_0001.jpg</p>
-          <p className="mt-1 text-[13px] max-md:text-[11px]">4.2MB 3024 × 4032</p>
-          <p className="mt-1 text-[13px] max-md:text-[11px]">削除日：2026年1月1日</p>
-          <p className="text-warning mt-1 text-[13px] max-md:text-[11px]">あと3日</p>
+          <p className="max-md:text-xs">{trashItem.media.originalFilename}</p>
+          <p className="mt-1 text-[13px] max-md:text-[11px]">
+            {Number(sizeInKB) >= 1024 ? `${sizeInMB}MB` : `${sizeInKB}KB`} {trashItem.media.width} ×{" "}
+            {trashItem.media.height}
+          </p>
+          <p className="mt-1 text-[13px] max-md:text-[11px]">
+            削除日：{formatJapaneseDateNonTime(trashItem.expiresAt)}
+          </p>
+          <p className="text-warning mt-1 text-[13px] max-md:text-[11px]">
+            あと{calculateRemainingDays(trashItem.expiresAt)}日
+          </p>
         </div>
       </div>
       <div className="flex gap-5 max-lg:flex-col max-md:mt-5 max-md:flex-row max-md:gap-4">

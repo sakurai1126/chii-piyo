@@ -6,6 +6,7 @@ import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.Media;
 import link.s_repo.chii_piyo.model.gen.MediaBatchUpdateRequestDto;
 import link.s_repo.chii_piyo.model.gen.MediaUpdateRequestDto;
+import link.s_repo.chii_piyo.model.gen.TrashItems;
 import link.s_repo.chii_piyo.repository.gen.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,9 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static link.s_repo.chii_piyo.repository.gen.MediaDynamicSqlSupport.id;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
@@ -515,6 +519,45 @@ public class MediaService {
     }
 
     /**
+     * ゴミ箱データからメディアエンティティを取得しレコードにして返却する
+     *
+     * @param trashItems ゴミ箱データエンティティ
+     * @return ゴミ箱データとメディアデータをまとめたレコードのリスト
+     */
+    public List<TrashItemAndMediaResult> getTrashItemAndMedia(List<TrashItems> trashItems) {
+        // 空の場合空リストで即時リターン
+        if (trashItems == null || trashItems.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // ゴミ箱データからメディアIDを抽出
+        List<Long> mediaIds = trashItems.stream().map(TrashItems::getMediaId).toList();
+
+        // 抽出したメディアIDに一致するメディアを取得
+        List<Media> mediaList = mediaMapper.select(c -> c.where(id, isIn(mediaIds)));
+
+        // 取り出せるようにIDをキーにマップ化
+        Map<Long, Media> mediaMapList = mediaList.stream()
+            .collect(Collectors.toMap(Media::getId, Function.identity()));
+
+        // レコードにまとめつつリスト化して返却
+        return trashItems.stream().map(
+            trashItem -> new TrashItemAndMediaResult(
+                trashItem,
+                mediaMapList.get(trashItem.getMediaId())
+            )
+        ).toList();
+    }
+
+
+    /**
+     * ゴミ箱のデータとそれに連動したメディアのレコード
+     */
+    public record TrashItemAndMediaResult(TrashItems trashItem, Media media) {
+    }
+
+
+    /**
      * Mediaエンティティと署名付きURLをまとめて返すための内部クラス
      */
     public record CreateMediaResult(Media media, URI presignedUrl) {
@@ -533,4 +576,6 @@ public class MediaService {
      */
     public record GetMediaNavigationResult(Media media, NavigationPosition position) {
     }
+
+
 }
