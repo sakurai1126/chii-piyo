@@ -2,6 +2,7 @@ package link.s_repo.chii_piyo.controller;
 
 import link.s_repo.chii_piyo.controller.converter.*;
 import link.s_repo.chii_piyo.controller.gen.MediaManagementApi;
+import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.*;
 import link.s_repo.chii_piyo.security.CurrentUserProvider;
 import link.s_repo.chii_piyo.service.*;
@@ -39,6 +40,7 @@ public class MediaController implements MediaManagementApi {
     private final MediaNavigationConverter mediaNavigationConverter;
     private final MediaUploadConverter mediaUploadConverter;
     private final FavoriteService favoriteService;
+    private final TrashService trashService;
 
     /**
      * POST /media<br>
@@ -327,6 +329,33 @@ public class MediaController implements MediaManagementApi {
     @Override
     public ResponseEntity<Void> deleteMedia(String xRequestedWith, Long id) {
         throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    /**
+     * DELETE /media<br>
+     * 複数メディアを削除<br>
+     * ※ゴミ箱に移動し30日間保持
+     *
+     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param mediaIds       対象メディアのIDリスト
+     * @return 204ステータス
+     */
+    @Override
+    public ResponseEntity<Void> deleteMultipleMedia(String xRequestedWith, List<Long> mediaIds) {
+        // メディアの存在チェック
+        List<Media> mediaList = mediaService.getMediabyIds(mediaIds);
+
+        List<Long> distinctMediaIds = mediaIds.stream().distinct().toList();
+
+        if (mediaList.size() != distinctMediaIds.size()) {
+            throw new ResourceNotFoundException("メディアが見つかりません mediaId=" + mediaIds);
+        }
+
+        // Trashサービス層を呼び出しフラグデータを追加する
+        trashService.createTrashItems(distinctMediaIds);
+
+        // 204 No Contentを返す
+        return ResponseEntity.noContent().build();
     }
 
     /**

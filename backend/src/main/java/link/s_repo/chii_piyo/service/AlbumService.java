@@ -1,6 +1,5 @@
 package link.s_repo.chii_piyo.service;
 
-import jakarta.validation.constraints.NotNull;
 import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.Albums;
 import link.s_repo.chii_piyo.model.gen.Media;
@@ -18,8 +17,7 @@ import java.util.*;
 
 
 import static link.s_repo.chii_piyo.repository.gen.AlbumsDynamicSqlSupport.id;
-import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
-import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 /**
  * アルバム管理サービス<br>
@@ -79,7 +77,7 @@ public class AlbumService {
     /**
      * 指定したIDのアルバムに紐づくメディアの件数を取得する<br>
      *
-     * @param albumIds         取得するアルバムのIDのリスト
+     * @param albumIds 取得するアルバムのIDのリスト
      * @return アルバムに紐づくメディア件数とカバーURLのリストを格納したマップ
      */
     @Transactional(readOnly = true)
@@ -91,6 +89,10 @@ public class AlbumService {
         // メディアの中からalbum_idカラムと受け取ったアルバムIDのリストに含まれるものを全件取得
         List<Media> mediaList = mediaMapper.select(
             c -> c.where(MediaDynamicSqlSupport.albumId, isIn(albumIds))
+                .and(MediaDynamicSqlSupport.id, isNotIn(
+                    select(TrashItemsDynamicSqlSupport.mediaId)
+                        .from(TrashItemsDynamicSqlSupport.trashItems)
+                ))
         );
 
         // アルバムIDをキー、画像数と動画数を値とするマップを作成
@@ -191,15 +193,26 @@ public class AlbumService {
         getAlbumById(albumId);
 
         // mediaIdsのメディアの存在チェック
-        List<Media> mediaList = mediaMapper.select(c -> c.where(MediaDynamicSqlSupport.id, isIn(mediaIds)));
+        List<Media> mediaList = mediaMapper.select(c ->
+            c.where(MediaDynamicSqlSupport.id, isIn(mediaIds))
+                .and(MediaDynamicSqlSupport.id, isNotIn(
+                    select(TrashItemsDynamicSqlSupport.mediaId)
+                        .from(TrashItemsDynamicSqlSupport.trashItems)
+                )));
 
         if (mediaList.size() != mediaIds.stream().distinct().toList().size()) {
             throw new ResourceNotFoundException("メディアが見つかりません mediaId=" + mediaIds);
         }
 
         // 対象メディアを一括更新する
-        mediaMapper.update(c -> c.set(MediaDynamicSqlSupport.albumId).equalTo(albumId)
-            .where(MediaDynamicSqlSupport.id, isIn(mediaIds)));
+        mediaMapper.update(
+            c -> c.set(MediaDynamicSqlSupport.albumId).equalTo(albumId)
+                .where(MediaDynamicSqlSupport.id, isIn(mediaIds))
+                .and(MediaDynamicSqlSupport.id, isNotIn(
+                    select(TrashItemsDynamicSqlSupport.mediaId)
+                        .from(TrashItemsDynamicSqlSupport.trashItems)
+                ))
+        );
     }
 
     /**
@@ -217,7 +230,13 @@ public class AlbumService {
         getAlbumById(albumId);
 
         // mediaIdsのメディアの存在チェック
-        List<Media> mediaList = mediaMapper.select(c -> c.where(MediaDynamicSqlSupport.id, isIn(mediaIds)));
+        List<Media> mediaList = mediaMapper.select(
+            c -> c.where(MediaDynamicSqlSupport.id, isIn(mediaIds))
+                .and(MediaDynamicSqlSupport.id, isNotIn(
+                    select(TrashItemsDynamicSqlSupport.mediaId)
+                        .from(TrashItemsDynamicSqlSupport.trashItems)
+                ))
+        );
 
         if (mediaList.size() != mediaIds.stream().distinct().toList().size()) {
             throw new ResourceNotFoundException("メディアが見つかりません mediaId=" + mediaIds);
@@ -232,7 +251,12 @@ public class AlbumService {
 
         // 対象メディアを一括削除する
         mediaMapper.update(c -> c.set(MediaDynamicSqlSupport.albumId).equalToNull()
-            .where(MediaDynamicSqlSupport.id, isIn(mediaIds)));
+            .where(MediaDynamicSqlSupport.id, isIn(mediaIds))
+            .and(MediaDynamicSqlSupport.id, isNotIn(
+                select(TrashItemsDynamicSqlSupport.mediaId)
+                    .from(TrashItemsDynamicSqlSupport.trashItems)
+            ))
+        );
     }
 
     public record MediaDataResult(int photoCount, int videoCount, List<String> urls) {

@@ -14,6 +14,7 @@ import { SharingGroupsSelector } from "@/features/sharing";
 import { TagSelector } from "@/features/tag";
 import { SharingGroupResponseDto, TagResponseDto } from "@/lib/api-client/gen";
 
+import { deleteMultipleMediaAction } from "../../actions/deleteMultipleMediaAction";
 import { updateMediaBatchAction } from "../../actions/updateMediaBatchAction";
 
 type Props = {
@@ -66,9 +67,25 @@ export const MultiEdit = ({
   };
 
   const deleteAction = () => {
-    // ゴミ箱への移動処理を後ほど実装
-    setIsDeleteConfirmOpen(false);
-    toast.success("メディアをゴミ箱に移動しました");
+    startTransition(async () => {
+      const result = await deleteMultipleMediaAction({
+        mediaIds: selectedMedia,
+      });
+
+      if (result.success) {
+        // モーダルを閉じる
+        setIsDeleteConfirmOpen(false);
+        // 変更メニューを閉じる
+        setIsOpen(false);
+        // メディアの選択状態をリセット
+        setSelectedMedia([]);
+        // 一覧取得クエリのキャッシュを破棄する
+        queryClient.invalidateQueries({ queryKey: ["media"] });
+        toast.success("メディアをゴミ箱に移動しました");
+      } else {
+        toast.error(result.error);
+      }
+    });
   };
 
   const updateConfirm = () => {
@@ -97,7 +114,7 @@ export const MultiEdit = ({
       <AccordionContent isOpen={isOpen}>
         <div className="bg-white-back border-brown-dark mt-8 rounded-xl border px-8 py-6 max-md:mt-4 max-md:px-4 max-md:pt-4">
           <p className="border-line-gray w-fit border-b pb-2 text-xl font-medium max-md:text-sm">
-            選択したアイテムを一括で編集する
+            選択したメディアを一括で編集する
           </p>
           <div className="mt-6 flex items-center gap-4">
             <label htmlFor="editTypeAll" className="flex items-center gap-2">
@@ -162,7 +179,7 @@ export const MultiEdit = ({
               disabled={isPending}
               onClick={() => setIsDeleteConfirmOpen(true)}
             >
-              選択したアイテムをすべてゴミ箱に移動する
+              選択したメディアをすべてゴミ箱に移動する
             </button>
           </div>
         </div>
@@ -174,7 +191,7 @@ export const MultiEdit = ({
               <div className="flex h-full flex-col justify-center">
                 <p className="text-center text-xl font-medium max-md:text-sm">確認</p>
                 <p className="mt-5 mb-10 text-center max-md:mt-2 max-md:mb-6 max-md:text-xs">
-                  選択したアイテムを一括でゴミ箱に移動します。
+                  選択したメディアを一括でゴミ箱に移動します。
                   <br />
                   本当によろしいですか？
                 </p>
@@ -202,7 +219,7 @@ export const MultiEdit = ({
               <div className="flex h-full flex-col justify-center">
                 <p className="text-center text-xl font-medium max-md:text-sm">確認</p>
                 <p className="mt-5 mb-10 text-center max-md:mt-2 max-md:mb-6 max-md:text-xs">
-                  選択したアイテムの
+                  選択したメディアの
                   {editType === "all" && "タグと共有範囲"}
                   {editType === "tag" && "タグ"}
                   {editType === "sharing" && "共有範囲"}

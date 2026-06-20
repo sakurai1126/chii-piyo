@@ -4,8 +4,7 @@ package link.s_repo.chii_piyo.service;
 import link.s_repo.chii_piyo.exception.ResourceAccessDeniedException;
 import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.MediaComments;
-import link.s_repo.chii_piyo.repository.gen.MediaCommentsDynamicSqlSupport;
-import link.s_repo.chii_piyo.repository.gen.MediaCommentsMapper;
+import link.s_repo.chii_piyo.repository.gen.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,8 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
-import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 /**
  * コメント管理サービス<br>
@@ -29,6 +27,19 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
 @RequiredArgsConstructor
 public class MediaCommentService {
     private final MediaCommentsMapper mediaCommentsMapper;
+
+    /**
+     * コメントをIDで1件取得する<br>
+     *
+     * @param commentId 対象コメントのID
+     * @return メディアID
+     */
+    @Transactional
+    public MediaComments getMediaComment(Long commentId) {
+        return mediaCommentsMapper.selectOne(c -> c
+            .where(MediaCommentsDynamicSqlSupport.id, isEqualTo(commentId))
+        ).orElseThrow(() -> new ResourceNotFoundException("コメントが見つかりません mediaId=" + commentId));
+    }
 
     /**
      * コメントを新規作成する<br>
@@ -96,21 +107,17 @@ public class MediaCommentService {
     /**
      * コメントを削除する
      *
-     * @param id            対象のコメントID
+     * @param comment       対象のコメント
      * @param currentUserId リクエストをしたユーザーID
      */
     @Transactional
-    public void deleteMediaComment(Long id, Long currentUserId) {
-        // 存在チェック
-        MediaComments comment = mediaCommentsMapper.selectByPrimaryKey(id)
-            .orElseThrow(() -> new ResourceNotFoundException("コメントが見つかりません id=" + id));
-
+    public void deleteMediaComment(MediaComments comment, Long currentUserId) {
         // 現在のユーザーのリクエストかを判別
         if (!comment.getUserId().equals(currentUserId)) {
             throw new ResourceAccessDeniedException("他のユーザーのコメントは削除できません");
         }
 
         // 削除処理
-        mediaCommentsMapper.deleteByPrimaryKey(id);
+        mediaCommentsMapper.deleteByPrimaryKey(comment.getId());
     }
 }
