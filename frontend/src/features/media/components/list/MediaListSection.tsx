@@ -1,8 +1,9 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
+import { toast } from "@/components/ui/Toast";
 import { DeleteMediaAlbum } from "@/features/album";
 import {
   GetMediaListMediaKindEnum,
@@ -35,6 +36,17 @@ export const MediaListSection = ({ initialData, users, tags, sharingGroups, albu
   } else if (sp.get("albumId")) {
     albumIdParam = Number(sp.get("albumId"));
   }
+
+  useEffect(() => {
+    // URLに ?deleted=true がある場合（ゴミ箱への移動後）のみトーストを表示
+    if (sp.get("deleted") === "true") {
+      // 遷移後挙動安定のため若干待ってからトーストを表示する
+      setTimeout(() => toast.success("メディアをゴミ箱に移動しました"), 200);
+      // 次回リロード時に再度トーストが出ないようURLパラメータを削除
+      const cleanUrl = window.location.pathname;
+      window.history.replaceState(null, "", cleanUrl);
+    }
+  }, [sp]);
 
   // useMemoでクエリパラメータの変更時のみparamsを再計算
   const params = useMemo(

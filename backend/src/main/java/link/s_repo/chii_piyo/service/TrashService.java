@@ -24,6 +24,25 @@ public class TrashService {
     private final TrashItemsMapper trashItemsMapper;
 
     /**
+     * IDを受け取りゴミ箱データを作成する
+     *
+     * @param id 対象メディアのID
+     */
+    public void createTrashItem(Long id) {
+        TrashItems trashItem = new TrashItems();
+        trashItem.setMediaId(id);
+        // 削除予定日時に日本時間で30日後のAM2:00を指定
+        trashItem.setExpiresAt(
+            OffsetDateTime.now(ZoneId.of("Asia/Tokyo"))
+                .plusDays(30)
+                .with(LocalTime.of(2, 0))
+        );
+        trashItem.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
+
+        trashItemsMapper.insertSelective(trashItem);
+    }
+
+    /**
      * IDリストを受け取りゴミ箱データを作成する
      *
      * @param mediaIds 対象メディアのIDリスト
@@ -44,4 +63,6 @@ public class TrashService {
         }).toList();
         trashItemsMapper.insertMultiple(trashItems);
     }
+
+
 }
