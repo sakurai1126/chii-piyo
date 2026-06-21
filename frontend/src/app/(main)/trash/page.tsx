@@ -7,7 +7,7 @@ type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export default async function TrashPage({ searchParams }: Props) {
+export default async function TrashPage({ searchParams }: Readonly<Props>) {
   // パラメータからページ数を取得
   const params = await searchParams;
   // ページ数を指定（不正な値は1に）

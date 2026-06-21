@@ -21,7 +21,7 @@ export const MediaDelete = ({ mediaId }: Props) => {
 
       if (result.success) {
         // 削除後はモーダル等の挙動制御等もあるためキャッシュ制御ではなくフルロードで一覧画面に繊維
-        window.location.href = "/media?deleted=true";
+        globalThis.location.href = "/media?deleted=true";
       } else {
         toast.error(result.error);
       }

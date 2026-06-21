@@ -43,5 +43,5 @@ export const calculateRemainingDays = (expiresAt: string | Date): number => {
   // 差分をミリ秒から日数に変換
   const diffTime = expireDate.getTime() - today.getTime();
   const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
-  return diffDays > 0 ? diffDays : 0;
+  return Math.max(0, diffDays);
 };

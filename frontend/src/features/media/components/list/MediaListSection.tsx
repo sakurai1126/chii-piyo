@@ -44,8 +44,8 @@ export const MediaListSection = ({ initialData, users, tags, sharingGroups, albu
       // 遷移後挙動安定のため若干待ってからトーストを表示する
       setTimeout(() => toast.success("メディアをゴミ箱に移動しました"), 200);
       // 次回リロード時に再度トーストが出ないようURLパラメータを削除
-      const cleanUrl = window.location.pathname;
-      window.history.replaceState(null, "", cleanUrl);
+      const cleanUrl = globalThis.location.pathname;
+      globalThis.history.replaceState(null, "", cleanUrl);
     }
   }, [isDeleted]);
 

@@ -23,15 +23,15 @@ export const TrashInfo = ({ trashItems }: Props) => {
               <span className="text-lg font-medium max-md:text-[15px]">
                 {trashItems.totalCount}件
               </span>
-              のアイテムがゴミ箱にあります。
+              {"のアイテムがゴミ箱にあります。"}
               {trashItems.earliest && (
                 <>
                   <br className="md:hidden" />
-                  最も期限が近いアイテムはあと
+                  {"最も期限が近いアイテムはあと"}
                   <span className="text-lg font-medium max-md:text-[15px]">
                     {trashItems.earliest}日
                   </span>
-                  で完全削除されます。
+                  {"で完全削除されます。"}
                 </>
               )}
             </>

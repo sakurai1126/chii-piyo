@@ -44,9 +44,7 @@ export const TrashItem = ({
     startTransition(async () => {
       const result = await restoreTrashItemAction({ trashItemId: trashItem.id });
       if (result.success) {
-        setIsRestoreOpen(false);
-        // 成功時、選択中IDリストから自身のIDを除外
-        setSelectedIds((prev) => prev.filter((id) => id !== trashItem.id));
+        successAfterReset();
         toast.success("メディアを復元しました");
       } else {
         toast.error(result.error);
@@ -59,14 +57,20 @@ export const TrashItem = ({
     startTransition(async () => {
       const result = await deleteTrashItemAction({ trashItemId: trashItem.id });
       if (result.success) {
-        setIsDeleteOpen(false);
-        // 成功時、選択中IDリストから自身のIDを除外
-        setSelectedIds((prev) => prev.filter((id) => id !== trashItem.id));
+        successAfterReset();
         toast.success("メディアを完全に削除しました");
       } else {
         toast.error(result.error);
       }
     });
+  };
+
+  const successAfterReset = () => {
+    // モーダルを閉じる
+    setIsRestoreOpen(false);
+    setIsDeleteOpen(false);
+    // 成功時、選択中IDリストから自身のIDを除外
+    setSelectedIds((prev) => prev.filter((id) => id !== trashItem.id));
   };
 
   return (
