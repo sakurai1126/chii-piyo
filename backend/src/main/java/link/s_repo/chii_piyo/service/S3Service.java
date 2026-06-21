@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import software.amazon.awssdk.core.exception.SdkException;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
@@ -142,4 +143,19 @@ public class S3Service {
         s3Client.putObject(objectRequest, RequestBody.fromBytes(data));
     }
 
+    /**
+     * S3からオブジェクトを削除する
+     *
+     * @param s3Key S3オブジェクトキー
+     */
+    public void deleteObject(String s3Key) {
+        if (!StringUtils.hasText(s3Key)) {
+            return;
+        }
+        DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+            .bucket(s3Bucket)
+            .key(s3Key)
+            .build();
+        s3Client.deleteObject(deleteObjectRequest);
+    }
 }

@@ -120,4 +120,5 @@ public class MediaCommentService {
         // 削除処理
         mediaCommentsMapper.deleteByPrimaryKey(comment.getId());
     }
+
 }

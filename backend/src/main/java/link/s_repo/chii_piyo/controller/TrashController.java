@@ -46,7 +46,11 @@ public class TrashController implements TrashManagementApi {
      */
     @Override
     public ResponseEntity<Void> deleteTrashItem(String xRequestedWith, Long id) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        // サービス層でメディアごと削除
+        trashService.permanentlyDelete(id);
+
+        // 204ステータスを返す
+        return ResponseEntity.noContent().build();
     }
 
     /**
@@ -60,7 +64,6 @@ public class TrashController implements TrashManagementApi {
     public ResponseEntity<Void> emptyTrash(String xRequestedWith) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
-
 
     /**
      * GET /trash<br>

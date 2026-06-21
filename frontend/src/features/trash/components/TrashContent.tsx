@@ -34,7 +34,6 @@ export const TrashContent = ({ trashItems }: Props) => {
       toast.error("選択されていません。");
       return;
     }
-
     setIsRestoreOpen(true);
   };
 

@@ -1,6 +1,16 @@
 package link.s_repo.chii_piyo.service;
 
+import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
+import link.s_repo.chii_piyo.model.gen.Media;
+import link.s_repo.chii_piyo.model.gen.MediaComments;
 import link.s_repo.chii_piyo.model.gen.TrashItems;
+import link.s_repo.chii_piyo.repository.gen.FavoritesDynamicSqlSupport;
+import link.s_repo.chii_piyo.repository.gen.FavoritesMapper;
+import link.s_repo.chii_piyo.repository.gen.MediaCommentsDynamicSqlSupport;
+import link.s_repo.chii_piyo.repository.gen.MediaCommentsMapper;
+import link.s_repo.chii_piyo.repository.gen.MediaMapper;
+import link.s_repo.chii_piyo.repository.gen.MediaTagsDynamicSqlSupport;
+import link.s_repo.chii_piyo.repository.gen.MediaTagsMapper;
 import link.s_repo.chii_piyo.repository.gen.TrashItemsDynamicSqlSupport;
 import link.s_repo.chii_piyo.repository.gen.TrashItemsMapper;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.mybatis.dynamic.sql.dsl.CountDSLCompleter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.*;
 import java.time.temporal.ChronoUnit;
@@ -26,6 +37,11 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
 @RequiredArgsConstructor
 public class TrashService {
     private final TrashItemsMapper trashItemsMapper;
+    private final MediaMapper mediaMapper;
+    private final S3Service s3Service;
+    private final MediaCommentsMapper mediaCommentsMapper;
+    private final FavoritesMapper favoritesMapper;
+    private final MediaTagsMapper mediaTagsMapper;
 
     /**
      * IDを受け取りゴミ箱データを作成する
@@ -130,5 +146,46 @@ public class TrashService {
      */
     public void restoreTrashItems(List<Long> ids) {
         trashItemsMapper.delete(c -> c.where(TrashItemsDynamicSqlSupport.id, isIn(ids)));
+    }
+
+    /**
+     * 単一の完全削除処理を実行する
+     *
+     * @param id 対象のゴミ箱テーブルのデータID
+     */
+    @Transactional
+    public void permanentlyDelete(Long id) {
+        // ゴミ箱データを取得しメディアIDを抽出
+        TrashItems trashItem = trashItemsMapper.selectByPrimaryKey(id).
+            orElseThrow(() -> new ResourceNotFoundException("データが見つかりません id=" + id));
+        Long mediaId = trashItem.getMediaId();
+
+        // Mediaテーブルから削除対象のレコードを取得
+        Media media = mediaMapper.selectByPrimaryKey(mediaId).
+            orElseThrow(() -> new ResourceNotFoundException("メディアが見つかりません id=" + mediaId));
+
+        // 関連するコメントを削除する
+        mediaCommentsMapper.delete(c -> c.where(MediaCommentsDynamicSqlSupport.mediaId, isEqualTo(mediaId)));
+
+        // 関連するお気に入りを削除する
+        favoritesMapper.delete(c -> c.where(FavoritesDynamicSqlSupport.mediaId, isEqualTo(mediaId)));
+
+        // 関連するタグデータを削除する
+        mediaTagsMapper.delete(c -> c.where(MediaTagsDynamicSqlSupport.mediaId, isEqualTo(mediaId)));
+
+        // ゴミ箱データを削除
+        trashItemsMapper.deleteByPrimaryKey(id);
+
+        // メディアデータを削除
+        mediaMapper.deleteByPrimaryKey(mediaId);
+
+        // S3上のオリジナルファイルとサムネイルを削除
+        if (StringUtils.hasText(media.getS3Key())) {
+            s3Service.deleteObject(media.getS3Key());
+        }
+
+        if (StringUtils.hasText(media.getThumbnailS3Key())) {
+            s3Service.deleteObject(media.getThumbnailS3Key());
+        }
     }
 }

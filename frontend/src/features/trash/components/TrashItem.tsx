@@ -10,6 +10,7 @@ import { toast } from "@/components/ui/Toast";
 import { TrashItemResponseDto } from "@/lib/api-client/gen";
 import { calculateRemainingDays, formatJapaneseDateNonTime } from "@/utils/date";
 
+import { deleteTrashItemAction } from "../actions/deleteTrashItemAction";
 import { restoreTrashItemAction } from "../actions/restoreTrashItemAction";
 
 type Props = {
@@ -30,6 +31,7 @@ export const TrashItem = ({
   const sizeInKB = (trashItem.media.fileSize / 1024).toFixed(0);
   const sizeInMB = (trashItem.media.fileSize / 1024 / 1024).toFixed(1);
   const [isRestoreOpen, setIsRestoreOpen] = useState<boolean>(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
 
   // 選択する処理
   const addSelectedId = (id: number) => setSelectedIds((prev) => [...prev, id]);
@@ -38,6 +40,7 @@ export const TrashItem = ({
   const removeSelectedId = (id: number) =>
     setSelectedIds((prev) => prev.filter((prevId) => prevId !== id));
 
+  // 復元処理
   const restoreAction = () => {
     startTransition(async () => {
       const result = await restoreTrashItemAction({ trashItemId: trashItem.id });
@@ -51,8 +54,24 @@ export const TrashItem = ({
       }
     });
   };
+
+  // 削除処理
+  const deleteAction = () => {
+    startTransition(async () => {
+      const result = await deleteTrashItemAction({ trashItemId: trashItem.id });
+      if (result.success) {
+        setIsDeleteOpen(false);
+        // 成功時、選択中IDリストから自身のIDを除外
+        setSelectedIds((prev) => prev.filter((id) => id !== trashItem.id));
+        toast.success("メディアを完全に削除しました");
+      } else {
+        toast.error(result.error);
+      }
+    });
+  };
+
   return (
-    <>
+    <div>
       <div className="bg-white-back border-brown-dark flex items-center justify-between rounded-lg border py-5 pr-12 pl-7 max-md:flex-col max-md:items-start max-md:px-5 max-md:py-4">
         <div className="flex items-center gap-7 max-md:gap-4">
           <label
@@ -95,7 +114,7 @@ export const TrashItem = ({
           <Button variant="cancel" disabled={isPending} onClick={() => setIsRestoreOpen(true)}>
             復元する
           </Button>
-          <Button variant="remove" disabled={isPending}>
+          <Button variant="remove" disabled={isPending} onClick={() => setIsDeleteOpen(true)}>
             完全に削除する
           </Button>
         </div>
@@ -128,6 +147,34 @@ export const TrashItem = ({
           </Modal>
         )}
       </AnimatePresence>
-    </>
+      <AnimatePresence>
+        {isDeleteOpen && (
+          <Modal>
+            <ActionDialog onClose={isPending ? undefined : () => setIsDeleteOpen(false)}>
+              <div className="flex h-full flex-col justify-center">
+                <p className="text-center text-xl font-medium max-md:text-sm">確認</p>
+                <p className="mt-5 mb-10 text-center max-md:mt-2 max-md:mb-6 max-md:text-xs">
+                  {trashItem.media.originalFilename} を削除します。
+                  <br />
+                  本当によろしいですか？
+                </p>
+                <div className="flex justify-center gap-5">
+                  <Button
+                    variant="cancel"
+                    onClick={() => setIsDeleteOpen(false)}
+                    disabled={isPending}
+                  >
+                    キャンセル
+                  </Button>
+                  <Button disabled={isPending} onClick={deleteAction} variant="remove">
+                    削除する
+                  </Button>
+                </div>
+              </div>
+            </ActionDialog>
+          </Modal>
+        )}
+      </AnimatePresence>
+    </div>
   );
 };
