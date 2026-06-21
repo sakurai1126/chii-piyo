@@ -1543,7 +1543,7 @@ paths:
     get:
       tags:
         - trashManagement
-      summary: ゴミ箱内のアイテム一覧を取得
+      summary: ゴミ箱内のメディア一覧を取得
       operationId: getTrashItems
       parameters:
         - $ref: '#/components/parameters/XRequestedWith'
@@ -1551,7 +1551,7 @@ paths:
         - $ref: '#/components/parameters/PageLimit'
       responses:
         '200':
-          description: ゴミ箱アイテム一覧
+          description: ゴミ箱メディア一覧
           content:
             application/json;charset=UTF-8:
               schema:
@@ -1567,13 +1567,14 @@ paths:
     delete:
       tags:
         - trashManagement
-      summary: ゴミ箱の中身をすべて空にする
-      operationId: emptyTrash
+      summary: ゴミ箱からメディアを完全に削除
+      operationId: deleteTrashItems
       parameters:
         - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/TrashItemIds'
       responses:
         '204':
-          description: すべてのアイテムの完全削除に成功
+          description: メディアの完全削除に成功
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -1585,7 +1586,7 @@ paths:
     post:
       tags:
         - trashManagement
-      summary: ゴミ箱からアイテムを復元
+      summary: ゴミ箱からメディアを復元
       operationId: restoreTrashItems
       parameters:
         - $ref: '#/components/parameters/XRequestedWith'
@@ -1608,11 +1609,30 @@ paths:
           $ref: '#/components/responses/InternalServerError'
         default:
           $ref: '#/components/responses/DefaultErrors'
+  /trash/empty:
+    delete:
+      tags:
+        - trashManagement
+      summary: ゴミ箱の中身をすべて空にする
+      operationId: emptyTrash
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+      responses:
+        '204':
+          description: すべてのメディアの完全削除に成功
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
   /trash/{id}:
     delete:
       tags:
         - trashManagement
-      summary: ゴミ箱からアイテムを完全に削除
+      summary: ゴミ箱からメディアを完全に削除
       operationId: deleteTrashItem
       parameters:
         - $ref: '#/components/parameters/XRequestedWith'
@@ -1634,7 +1654,7 @@ paths:
     post:
       tags:
         - trashManagement
-      summary: ゴミ箱からアイテムを復元
+      summary: ゴミ箱からメディアを復元
       operationId: restoreTrashItem
       parameters:
         - $ref: '#/components/parameters/XRequestedWith'
@@ -1791,6 +1811,16 @@ components:
           - MILK
           - DIAPER
           - HEALTH
+    TrashItemIds:
+      name: trashItemIds
+      in: query
+      description: ゴミ箱データのIDリスト
+      required: true
+      schema:
+        type: array
+        items:
+          type: integer
+          format: int64
   schemas:
     ErrorResponseDto:
       type: object
@@ -3007,7 +3037,7 @@ components:
             - 1002
     TrashItemResponseDto:
       type: object
-      description: ゴミ箱アイテム情報
+      description: ゴミ箱メディア情報
       required:
         - id
         - media
@@ -3049,7 +3079,7 @@ components:
             - integer
             - null
           format: int64
-          description: 最も期限が近いアイテムの完全削除までの残り日数
+          description: 最も期限が近いメディアの完全削除までの残り日数
           example: 3
         totalCount:
           type: integer
@@ -3071,7 +3101,7 @@ components:
           items:
             type: integer
             format: int64
-          description: ゴミ箱アイテムのID配列
+          description: ゴミ箱メディアのID配列
           example:
             - 1
             - 2

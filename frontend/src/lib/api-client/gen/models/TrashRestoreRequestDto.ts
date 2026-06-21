@@ -20,7 +20,7 @@ import { mapValues } from "../runtime";
  */
 export interface TrashRestoreRequestDto {
   /**
-   * ゴミ箱アイテムのID配列
+   * ゴミ箱メディアのID配列
    * @type {Array<number>}
    * @memberof TrashRestoreRequestDto
    */

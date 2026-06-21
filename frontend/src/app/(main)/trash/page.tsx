@@ -22,9 +22,13 @@ export default async function TrashPage({ searchParams }: Props) {
     <Container className="mt-20 max-md:mt-5">
       <PageTitle text="ゴミ箱" />
       <TrashInfo trashItems={trashItems} />
-      <TrashContent key={page} trashItems={trashItems} />
-      <TrashPagination totalCount={trashItems.totalCount} currentPage={page} limit={limit} />
-      <TrashAllDelete />
+      {trashItems.totalCount > 0 && (
+        <>
+          <TrashContent key={page} trashItems={trashItems} />
+          <TrashPagination totalCount={trashItems.totalCount} currentPage={page} limit={limit} />
+          <TrashAllDelete />
+        </>
+      )}
     </Container>
   );
 }

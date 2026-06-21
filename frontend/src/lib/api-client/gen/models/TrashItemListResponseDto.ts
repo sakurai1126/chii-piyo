@@ -34,7 +34,7 @@ export interface TrashItemListResponseDto {
    */
   items: Array<TrashItemResponseDto>;
   /**
-   * 最も期限が近いアイテムの完全削除までの残り日数
+   * 最も期限が近いメディアの完全削除までの残り日数
    * @type {number}
    * @memberof TrashItemListResponseDto
    */

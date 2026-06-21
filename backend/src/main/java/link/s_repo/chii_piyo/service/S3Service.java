@@ -6,8 +6,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import software.amazon.awssdk.core.exception.SdkException;
+import software.amazon.awssdk.services.s3.model.Delete;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.DeleteObjectsRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.ObjectIdentifier;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
@@ -20,6 +23,8 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -144,18 +149,38 @@ public class S3Service {
     }
 
     /**
-     * S3からオブジェクトを削除する
+     * S3から複数のオブジェクトを一括削除する
      *
-     * @param s3Key S3オブジェクトキー
+     * @param s3Keys S3オブジェクトキーのリスト
      */
-    public void deleteObject(String s3Key) {
-        if (!StringUtils.hasText(s3Key)) {
+    public void deleteObjects(List<String> s3Keys) {
+        if (s3Keys == null || s3Keys.isEmpty()) {
             return;
         }
-        DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
-            .bucket(s3Bucket)
-            .key(s3Key)
+
+        // S3キーのリストをAWS処理用の型(ObjectIdentifier)に変換
+        List<ObjectIdentifier> identifiers = s3Keys.stream()
+            .filter(StringUtils::hasText) // 空文字やnullを除外
+            .map(key -> ObjectIdentifier.builder().key(key).build())
+            .collect(Collectors.toList());
+
+        if (identifiers.isEmpty()) {
+            return;
+        }
+
+        // 削除対象のリストをDeleteオブジェクトで生成
+        Delete delete = Delete.builder()
+            .objects(identifiers)
             .build();
-        s3Client.deleteObject(deleteObjectRequest);
+
+        // 上記生成のDeleteオブジェクトを使って削除処理リクエストを作成
+        DeleteObjectsRequest deleteObjectsRequest = DeleteObjectsRequest.builder()
+            .bucket(s3Bucket)
+            .delete(delete)
+            .build();
+
+        // 削除処理リクエストを送信
+        s3Client.deleteObjects(deleteObjectsRequest);
     }
 }
+

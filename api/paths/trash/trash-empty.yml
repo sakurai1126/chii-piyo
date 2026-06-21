@@ -1,20 +1,17 @@
-post:
+delete:
   tags:
     - trashManagement
-  summary: ゴミ箱からメディアを復元
-  operationId: restoreTrashItem
+  summary: ゴミ箱の中身をすべて空にする
+  operationId: emptyTrash
   parameters:
     - $ref: "../../components/parameters.yml#/XRequestedWith"
-    - $ref: "../../components/parameters.yml#/ResourceId"
   responses:
     "204":
-      description: メディアの復元に成功
+      description: すべてのメディアの完全削除に成功
     "401":
       $ref: "../../components/responses.yml#/Unauthorized"
     "403":
       $ref: "../../components/responses.yml#/Forbidden"
-    "404":
-      $ref: "../../components/responses.yml#/NotFound"
     "500":
       $ref: "../../components/responses.yml#/InternalServerError"
     default:

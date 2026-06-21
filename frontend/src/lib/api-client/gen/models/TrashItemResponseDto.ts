@@ -22,7 +22,7 @@ import {
 } from "./MediaResponseDto";
 
 /**
- * ゴミ箱アイテム情報
+ * ゴミ箱メディア情報
  * @export
  * @interface TrashItemResponseDto
  */

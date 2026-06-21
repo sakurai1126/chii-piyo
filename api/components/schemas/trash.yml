@@ -1,7 +1,7 @@
 # ゴミ箱
 TrashItemResponseDto:
   type: object
-  description: ゴミ箱アイテム情報
+  description: ゴミ箱メディア情報
   required:
     - id
     - media
@@ -42,7 +42,7 @@ TrashItemListResponseDto:
     earliest:
       type: [integer, null]
       format: int64
-      description: 最も期限が近いアイテムの完全削除までの残り日数
+      description: 最も期限が近いメディアの完全削除までの残り日数
       example: 3
     totalCount:
       type: integer
@@ -65,5 +65,5 @@ TrashRestoreRequestDto:
       items:
         type: integer
         format: int64
-      description: ゴミ箱アイテムのID配列
+      description: ゴミ箱メディアのID配列
       example: [1, 2, 3]

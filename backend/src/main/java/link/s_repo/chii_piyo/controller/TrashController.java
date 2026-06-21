@@ -14,7 +14,6 @@ import link.s_repo.chii_piyo.service.S3Service;
 import link.s_repo.chii_piyo.service.TrashService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,6 +54,23 @@ public class TrashController implements TrashManagementApi {
 
     /**
      * DELETE /trash<br>
+     * ゴミ箱からメディアを完全に削除
+     *
+     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param trashItemIds   ゴミ箱データのIDリスト
+     * @return 204ステータス
+     */
+    @Override
+    public ResponseEntity<Void> deleteTrashItems(String xRequestedWith, List<Long> trashItemIds) {
+        // サービス層でメディアごと複数削除
+        trashService.multiplePermanentlyDelete(trashItemIds);
+
+        // 204ステータスを返す
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * DELETE /trash/empty<br>
      * ゴミ箱の中身をすべて空にする
      *
      * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
@@ -62,7 +78,11 @@ public class TrashController implements TrashManagementApi {
      */
     @Override
     public ResponseEntity<Void> emptyTrash(String xRequestedWith) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        // サービス層でメディアごと全件削除
+        trashService.allDelete();
+
+        // 204ステータスを返す
+        return ResponseEntity.noContent().build();
     }
 
     /**
@@ -154,7 +174,7 @@ public class TrashController implements TrashManagementApi {
     public ResponseEntity<Void> restoreTrashItems(
         String xRequestedWith, TrashRestoreRequestDto trashRestoreRequestDto) {
 
-        if(trashRestoreRequestDto.getTrashItemIds() == null || trashRestoreRequestDto.getTrashItemIds().isEmpty()) {
+        if (trashRestoreRequestDto.getTrashItemIds() == null || trashRestoreRequestDto.getTrashItemIds().isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
 

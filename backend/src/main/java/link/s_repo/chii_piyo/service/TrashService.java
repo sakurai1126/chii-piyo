@@ -2,20 +2,12 @@ package link.s_repo.chii_piyo.service;
 
 import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.Media;
-import link.s_repo.chii_piyo.model.gen.MediaComments;
 import link.s_repo.chii_piyo.model.gen.TrashItems;
-import link.s_repo.chii_piyo.repository.gen.FavoritesDynamicSqlSupport;
-import link.s_repo.chii_piyo.repository.gen.FavoritesMapper;
-import link.s_repo.chii_piyo.repository.gen.MediaCommentsDynamicSqlSupport;
-import link.s_repo.chii_piyo.repository.gen.MediaCommentsMapper;
-import link.s_repo.chii_piyo.repository.gen.MediaMapper;
-import link.s_repo.chii_piyo.repository.gen.MediaTagsDynamicSqlSupport;
-import link.s_repo.chii_piyo.repository.gen.MediaTagsMapper;
-import link.s_repo.chii_piyo.repository.gen.TrashItemsDynamicSqlSupport;
-import link.s_repo.chii_piyo.repository.gen.TrashItemsMapper;
+import link.s_repo.chii_piyo.repository.gen.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.dynamic.sql.dsl.CountDSLCompleter;
+import org.mybatis.dynamic.sql.dsl.SelectDSLCompleter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -24,6 +16,7 @@ import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
@@ -180,12 +173,79 @@ public class TrashService {
         mediaMapper.deleteByPrimaryKey(mediaId);
 
         // S3上のオリジナルファイルとサムネイルを削除
-        if (StringUtils.hasText(media.getS3Key())) {
-            s3Service.deleteObject(media.getS3Key());
+        List<String> s3Keys = Stream.of(media.getS3Key(), media.getThumbnailS3Key()).filter(StringUtils::hasText).toList();
+        if (!s3Keys.isEmpty()) {
+            s3Service.deleteObjects(s3Keys);
+        }
+    }
+
+    /**
+     * ゴミ箱内の複数メディアの完全削除処理を実行する
+     */
+    @Transactional
+    public void multiplePermanentlyDelete(List<Long> trashItemIds) {
+        // 指定されたIDでゴミ箱内データを取得
+        List<TrashItems> trashItems = trashItemsMapper.select(c -> c.where(TrashItemsDynamicSqlSupport.id, isIn(trashItemIds)));
+        if (trashItems.isEmpty()) {
+            throw new ResourceNotFoundException("データが見つかりません id=" + trashItemIds);
         }
 
-        if (StringUtils.hasText(media.getThumbnailS3Key())) {
-            s3Service.deleteObject(media.getThumbnailS3Key());
+        // 削除処理
+        multipleDelete(trashItems);
+    }
+
+    /**
+     * ゴミ箱内の全てのメディアの完全削除処理を実行する
+     */
+    @Transactional
+    public void allDelete() {
+        // ゴミ箱内データを全件取得
+        List<TrashItems> trashItems = trashItemsMapper.select(SelectDSLCompleter.allRows());
+
+        // 削除処理
+        multipleDelete(trashItems);
+    }
+
+    /**
+     * ゴミ箱内データ一覧を受け取り各データを削除する
+     *
+     * @param trashItems ゴミ箱内データ一覧
+     */
+    private void multipleDelete(List<TrashItems> trashItems) {
+        List<Long> ids = trashItems.stream().map(TrashItems::getId).toList();
+        List<Long> mediaIds = trashItems.stream().map(TrashItems::getMediaId).toList();
+
+        // Mediaテーブルから削除対象のレコードを取得
+        List<Media> mediaList = mediaMapper.select(
+            c -> c.where(MediaDynamicSqlSupport.id, isIn(mediaIds)));
+
+        // S3キーとサムネイルS3キーを取り出しリスト化
+        List<String> s3Keys = mediaList.stream()
+            .flatMap(media -> Stream.of(media.getS3Key(), media.getThumbnailS3Key()))
+            .filter(StringUtils::hasText)
+            .toList();
+
+        // 関連するコメントを削除する
+        mediaCommentsMapper.delete(
+            c -> c.where(MediaCommentsDynamicSqlSupport.mediaId, isIn(mediaIds)));
+
+        // 関連するお気に入りを削除する
+        favoritesMapper.delete(
+            c -> c.where(FavoritesDynamicSqlSupport.mediaId, isIn(mediaIds)));
+
+        // 関連するタグデータを削除する
+        mediaTagsMapper.delete(
+            c -> c.where(MediaTagsDynamicSqlSupport.mediaId, isIn(mediaIds)));
+
+        // ゴミ箱データを削除
+        trashItemsMapper.delete(c -> c.where(TrashItemsDynamicSqlSupport.id, isIn(ids)));
+
+        // メディアデータを削除
+        mediaMapper.delete(c -> c.where(MediaDynamicSqlSupport.id, isIn(mediaIds)));
+
+        // S3上のデータの一括削除
+        if (!s3Keys.isEmpty()) {
+            s3Service.deleteObjects(s3Keys);
         }
     }
 }
