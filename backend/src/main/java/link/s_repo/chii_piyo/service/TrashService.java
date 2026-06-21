@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.dynamic.sql.dsl.CountDSLCompleter;
 import org.mybatis.dynamic.sql.dsl.SelectDSLCompleter;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -20,6 +21,7 @@ import java.util.stream.Stream;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
+import static org.mybatis.dynamic.sql.SqlBuilder.isLessThanOrEqualTo;
 
 /**
  * ゴミ箱管理サービス<br>
@@ -246,6 +248,34 @@ public class TrashService {
         // S3上のデータの一括削除
         if (!s3Keys.isEmpty()) {
             s3Service.deleteObjects(s3Keys);
+        }
+    }
+
+    /**
+     * ゴミ箱の定期クリーンアップ処理<br>
+     * 毎日午前4時に実行し、期限切れのゴミ箱データを完全削除する
+     */
+    @Scheduled(cron = "0 0 4 * * *", zone = "Asia/Tokyo")
+    public void cleanupExpiredTrashItems() {
+        log.info("ゴミ箱データの自動削除バッチを開始します。");
+
+        // 削除予定日時（expiresAt）が現在時刻以前のアイテムを取得
+        OffsetDateTime now = OffsetDateTime.now(ZoneId.of("Asia/Tokyo"));
+        List<TrashItems> expiredItems = trashItemsMapper.select(c ->
+            c.where(TrashItemsDynamicSqlSupport.expiresAt, isLessThanOrEqualTo(now))
+        );
+
+        if (expiredItems.isEmpty()) {
+            log.info("削除対象のゴミ箱データはありませんでした。");
+            return;
+        }
+
+        // 削除処理
+        try {
+            multipleDelete(expiredItems);
+            log.info("{} 件のゴミ箱データを完全に削除しました。", expiredItems.size());
+        } catch (Exception e) {
+            log.error("ゴミ箱データの自動削除中にエラーが発生しました。", e);
         }
     }
 }
