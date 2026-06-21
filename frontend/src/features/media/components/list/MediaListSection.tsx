@@ -37,16 +37,17 @@ export const MediaListSection = ({ initialData, users, tags, sharingGroups, albu
     albumIdParam = Number(sp.get("albumId"));
   }
 
+  // URLに ?deleted=true がある場合（ゴミ箱への移動後）のみトーストを表示
+  const isDeleted = sp.get("deleted");
   useEffect(() => {
-    // URLに ?deleted=true がある場合（ゴミ箱への移動後）のみトーストを表示
-    if (sp.get("deleted") === "true") {
+    if (isDeleted === "true") {
       // 遷移後挙動安定のため若干待ってからトーストを表示する
       setTimeout(() => toast.success("メディアをゴミ箱に移動しました"), 200);
       // 次回リロード時に再度トーストが出ないようURLパラメータを削除
       const cleanUrl = window.location.pathname;
       window.history.replaceState(null, "", cleanUrl);
     }
-  }, [sp]);
+  }, [isDeleted]);
 
   // useMemoでクエリパラメータの変更時のみparamsを再計算
   const params = useMemo(

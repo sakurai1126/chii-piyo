@@ -364,10 +364,9 @@ public class MediaController implements MediaManagementApi {
      */
     @Override
     public ResponseEntity<Void> deleteMultipleMedia(String xRequestedWith, List<Long> mediaIds) {
-        // メディアの存在チェック
-        List<Media> mediaList = mediaService.getMediabyIds(mediaIds);
-
+        // 重複を削除しメディアの存在チェック
         List<Long> distinctMediaIds = mediaIds.stream().distinct().toList();
+        List<Media> mediaList = mediaService.getMediabyIds(distinctMediaIds);
 
         if (mediaList.size() != distinctMediaIds.size()) {
             throw new ResourceNotFoundException("メディアが見つかりません mediaId=" + mediaIds);
