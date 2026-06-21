@@ -41,3 +41,30 @@ delete:
       $ref: "../../components/responses.yml#/InternalServerError"
     default:
       $ref: "../../components/responses.yml#/DefaultErrors"
+
+post:
+  tags:
+    - trashManagement
+  summary: ゴミ箱からアイテムを復元
+  operationId: restoreTrashItems
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+  requestBody:
+    required: true
+    content:
+      application/json;charset=UTF-8:
+        schema:
+          $ref: "../../components/schemas/trash.yml#/TrashRestoreRequestDto"
+  responses:
+    "204":
+      description: メディアの復元に成功
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "403":
+      $ref: "../../components/responses.yml#/Forbidden"
+    "404":
+      $ref: "../../components/responses.yml#/NotFound"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"

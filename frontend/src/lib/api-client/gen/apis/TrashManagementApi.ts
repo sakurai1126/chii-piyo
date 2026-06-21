@@ -19,15 +19,15 @@ import {
   ErrorResponseDtoToJSON,
 } from "../models/ErrorResponseDto";
 import {
-  type MediaResponseDto,
-  MediaResponseDtoFromJSON,
-  MediaResponseDtoToJSON,
-} from "../models/MediaResponseDto";
-import {
   type TrashItemListResponseDto,
   TrashItemListResponseDtoFromJSON,
   TrashItemListResponseDtoToJSON,
 } from "../models/TrashItemListResponseDto";
+import {
+  type TrashRestoreRequestDto,
+  TrashRestoreRequestDtoFromJSON,
+  TrashRestoreRequestDtoToJSON,
+} from "../models/TrashRestoreRequestDto";
 
 export interface DeleteTrashItemRequest {
   xRequestedWith: string;
@@ -47,6 +47,11 @@ export interface GetTrashItemsRequest {
 export interface RestoreTrashItemRequest {
   xRequestedWith: string;
   id: number;
+}
+
+export interface RestoreTrashItemsRequest {
+  xRequestedWith: string;
+  trashRestoreRequestDto: TrashRestoreRequestDto;
 }
 
 /**
@@ -313,13 +318,11 @@ export class TrashManagementApi extends runtime.BaseAPI {
   async restoreTrashItemRaw(
     requestParameters: RestoreTrashItemRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<MediaResponseDto>> {
+  ): Promise<runtime.ApiResponse<void>> {
     const requestOptions = await this.restoreTrashItemRequestOpts(requestParameters);
     const response = await this.request(requestOptions, initOverrides);
 
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      MediaResponseDtoFromJSON(jsonValue),
-    );
+    return new runtime.VoidApiResponse(response);
   }
 
   /**
@@ -328,8 +331,80 @@ export class TrashManagementApi extends runtime.BaseAPI {
   async restoreTrashItem(
     requestParameters: RestoreTrashItemRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<MediaResponseDto> {
-    const response = await this.restoreTrashItemRaw(requestParameters, initOverrides);
-    return await response.value();
+  ): Promise<void> {
+    await this.restoreTrashItemRaw(requestParameters, initOverrides);
+  }
+
+  /**
+   * Creates request options for restoreTrashItems without sending the request
+   */
+  async restoreTrashItemsRequestOpts(
+    requestParameters: RestoreTrashItemsRequest,
+  ): Promise<runtime.RequestOpts> {
+    if (requestParameters["xRequestedWith"] == null) {
+      throw new runtime.RequiredError(
+        "xRequestedWith",
+        'Required parameter "xRequestedWith" was null or undefined when calling restoreTrashItems().',
+      );
+    }
+
+    if (requestParameters["trashRestoreRequestDto"] == null) {
+      throw new runtime.RequiredError(
+        "trashRestoreRequestDto",
+        'Required parameter "trashRestoreRequestDto" was null or undefined when calling restoreTrashItems().',
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    headerParameters["Content-Type"] = "application/json;charset=UTF-8";
+
+    if (requestParameters["xRequestedWith"] != null) {
+      headerParameters["X-Requested-With"] = String(requestParameters["xRequestedWith"]);
+    }
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken;
+      const tokenString = await token("BearerAuth", []);
+
+      if (tokenString) {
+        headerParameters["Authorization"] = `Bearer ${tokenString}`;
+      }
+    }
+
+    let urlPath = `/trash`;
+
+    return {
+      path: urlPath,
+      method: "POST",
+      headers: headerParameters,
+      query: queryParameters,
+      body: TrashRestoreRequestDtoToJSON(requestParameters["trashRestoreRequestDto"]),
+    };
+  }
+
+  /**
+   * ゴミ箱からアイテムを復元
+   */
+  async restoreTrashItemsRaw(
+    requestParameters: RestoreTrashItemsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<void>> {
+    const requestOptions = await this.restoreTrashItemsRequestOpts(requestParameters);
+    const response = await this.request(requestOptions, initOverrides);
+
+    return new runtime.VoidApiResponse(response);
+  }
+
+  /**
+   * ゴミ箱からアイテムを復元
+   */
+  async restoreTrashItems(
+    requestParameters: RestoreTrashItemsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<void> {
+    await this.restoreTrashItemsRaw(requestParameters, initOverrides);
   }
 }

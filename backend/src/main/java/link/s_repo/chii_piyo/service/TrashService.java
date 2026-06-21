@@ -14,6 +14,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
+
 /**
  * ゴミ箱管理サービス<br>
  * メディアのゴミ箱データの作成・削除を行う
@@ -113,5 +116,19 @@ public class TrashService {
         } else {
             return null;
         }
+    }
+
+    /**
+     * 指定されたIDのゴミ箱データを削除する
+     */
+    public void restoreTrashItem(Long id) {
+        trashItemsMapper.delete(c -> c.where(TrashItemsDynamicSqlSupport.id, isEqualTo(id)));
+    }
+
+    /**
+     * 指定された複数IDのゴミ箱データを削除する
+     */
+    public void restoreTrashItems(List<Long> ids) {
+        trashItemsMapper.delete(c -> c.where(TrashItemsDynamicSqlSupport.id, isIn(ids)));
     }
 }

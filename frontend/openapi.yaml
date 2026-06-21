@@ -1582,6 +1582,32 @@ paths:
           $ref: '#/components/responses/InternalServerError'
         default:
           $ref: '#/components/responses/DefaultErrors'
+    post:
+      tags:
+        - trashManagement
+      summary: ゴミ箱からアイテムを復元
+      operationId: restoreTrashItems
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+      requestBody:
+        required: true
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/TrashRestoreRequestDto'
+      responses:
+        '204':
+          description: メディアの復元に成功
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
   /trash/{id}:
     delete:
       tags:
@@ -1614,12 +1640,8 @@ paths:
         - $ref: '#/components/parameters/XRequestedWith'
         - $ref: '#/components/parameters/ResourceId'
       responses:
-        '200':
-          description: 復元されたメディア情報
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/MediaResponseDto'
+        '204':
+          description: メディアの復元に成功
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -3038,6 +3060,22 @@ components:
           type: boolean
           description: 次のページが存在するかどうか
           example: true
+    TrashRestoreRequestDto:
+      type: object
+      description: 複数ゴミ箱復元リクエスト
+      required:
+        - trashItemIds
+      properties:
+        trashItemIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+          description: ゴミ箱アイテムのID配列
+          example:
+            - 1
+            - 2
+            - 3
   responses:
     DefaultErrors:
       description: 予期しないエラーが発生

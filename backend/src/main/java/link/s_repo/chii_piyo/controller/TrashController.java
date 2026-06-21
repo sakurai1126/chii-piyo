@@ -8,6 +8,7 @@ import link.s_repo.chii_piyo.model.gen.MediaResponseDto;
 import link.s_repo.chii_piyo.model.gen.TrashItemListResponseDto;
 import link.s_repo.chii_piyo.model.gen.TrashItemResponseDto;
 import link.s_repo.chii_piyo.model.gen.TrashItems;
+import link.s_repo.chii_piyo.model.gen.TrashRestoreRequestDto;
 import link.s_repo.chii_piyo.service.MediaService;
 import link.s_repo.chii_piyo.service.S3Service;
 import link.s_repo.chii_piyo.service.TrashService;
@@ -88,7 +89,6 @@ public class TrashController implements TrashManagementApi {
         List<MediaService.TrashItemAndMediaResult> trashItemAndMedia =
             mediaService.getTrashItemAndMedia(trashItems);
 
-
         // コンバーターでレスポンスDTOに変換
         List<TrashItemResponseDto> itemsDto =
             trashItemAndMedia.stream().map(c -> {
@@ -127,10 +127,38 @@ public class TrashController implements TrashManagementApi {
      *
      * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
      * @param id             対象のリソースID
-     * @return 復元されたメディア情報
+     * @return 204ステータス
      */
     @Override
-    public ResponseEntity<MediaResponseDto> restoreTrashItem(String xRequestedWith, Long id) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    public ResponseEntity<Void> restoreTrashItem(String xRequestedWith, Long id) {
+        // サービス層でゴミ箱内データの削除処理
+        trashService.restoreTrashItem(id);
+
+        // 204ステータスを返す
+        return ResponseEntity.noContent().build();
+    }
+
+
+    /**
+     * POST /trash/<br>
+     * ゴミ箱から複数アイテムを復元
+     *
+     * @param xRequestedWith         X-Requested-With ヘッダ (CSRF防御用)
+     * @param trashRestoreRequestDto 復元するIDリスト
+     * @return 204ステータス
+     */
+    @Override
+    public ResponseEntity<Void> restoreTrashItems(
+        String xRequestedWith, TrashRestoreRequestDto trashRestoreRequestDto) {
+
+        if(trashRestoreRequestDto.getTrashItemIds() == null || trashRestoreRequestDto.getTrashItemIds().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        // サービス層でゴミ箱内データの削除処理
+        trashService.restoreTrashItems(trashRestoreRequestDto.getTrashItemIds());
+
+        // 204ステータスを返す
+        return ResponseEntity.noContent().build();
     }
 }

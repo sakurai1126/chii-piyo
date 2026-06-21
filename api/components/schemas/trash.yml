@@ -53,3 +53,17 @@ TrashItemListResponseDto:
       type: boolean
       description: 次のページが存在するかどうか
       example: true
+
+TrashRestoreRequestDto:
+  type: object
+  description: 複数ゴミ箱復元リクエスト
+  required:
+    - trashItemIds
+  properties:
+    trashItemIds:
+      type: array
+      items:
+        type: integer
+        format: int64
+      description: ゴミ箱アイテムのID配列
+      example: [1, 2, 3]

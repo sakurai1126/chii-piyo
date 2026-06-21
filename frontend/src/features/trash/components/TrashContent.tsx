@@ -1,26 +1,72 @@
+"use client";
+
+import { AnimatePresence } from "motion/react";
+import { useState, useTransition } from "react";
+
+import { Modal } from "@/components/layout/Modal";
+import { ActionDialog } from "@/components/ui/ActionDialog";
 import { Button } from "@/components/ui/Button";
+import { toast } from "@/components/ui/Toast";
 import { TrashItemListResponseDto } from "@/lib/api-client/gen";
+
+import { restoreTrashItemsAction } from "../actions/restoreTrashItemsAction";
 
 import { TrashItem } from "./TrashItem";
 
 type Props = {
   trashItems: TrashItemListResponseDto;
 };
+
 export const TrashContent = ({ trashItems }: Props) => {
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [isRestoreOpen, setIsRestoreOpen] = useState<boolean>(false);
+  // 非同期処理中のボタン状態管理
+  const [isPending, startTransition] = useTransition();
+
+  // 全選択の制御
+  const allIds = trashItems.items.map((trashItem) => trashItem.id);
+  const allChecked = allIds.length > 0 && selectedIds.length === allIds.length;
+  const allCheck = () => setSelectedIds(allIds);
+  const allClear = () => setSelectedIds([]);
+
+  const restoreConfirmOpen = () => {
+    if (selectedIds.length === 0) {
+      toast.error("選択されていません。");
+      return;
+    }
+
+    setIsRestoreOpen(true);
+  };
+
+  const restoreAction = () => {
+    startTransition(async () => {
+      const result = await restoreTrashItemsAction({ trashItemIds: selectedIds });
+
+      if (result.success) {
+        setIsRestoreOpen(false);
+        setSelectedIds([]);
+        toast.success("メディアを復元しました");
+      } else {
+        toast.error(result.error);
+      }
+    });
+  };
+
   return (
     <>
       <div className="mt-10 flex gap-10 max-md:mt-8 max-md:flex-col-reverse max-md:gap-6">
         <label htmlFor="allCheck" className="flex cursor-pointer items-center gap-3">
           <input
             type="checkbox"
-            name=""
             id="allCheck"
             className="accent-accent-pink h-4.5 w-4.5 max-md:h-4 max-md:w-4"
+            checked={allChecked}
+            onChange={(e) => (e.target.checked ? allCheck() : allClear())}
           />
           <p className="text-lg max-md:text-[13px]">すべて選択</p>
         </label>
         <div className="flex gap-3 max-md:flex-col">
-          <Button variant="cancel" className="w-fit px-4">
+          <Button variant="cancel" className="w-fit px-4" onClick={restoreConfirmOpen}>
             選択したメディアを復元
           </Button>
           <Button variant="remove" className="w-fit px-4">
@@ -30,7 +76,15 @@ export const TrashContent = ({ trashItems }: Props) => {
       </div>
       <div className="mt-10 grid gap-5 max-md:mt-8">
         {trashItems.items.map((trashItem) => (
-          <TrashItem key={trashItem.id} trashItem={trashItem} />
+          <TrashItem
+            key={trashItem.id}
+            trashItem={trashItem}
+            selectedIds={selectedIds}
+            setSelectedIds={setSelectedIds}
+            // ページ全体のボタンを一時無効化するため
+            isPending={isPending}
+            startTransition={startTransition}
+          />
         ))}
       </div>
       <div className="border-line-gray mt-10 flex items-center justify-between border-t pt-7 max-md:flex-col max-md:items-start">
@@ -46,6 +100,34 @@ export const TrashContent = ({ trashItems }: Props) => {
           ゴミ箱を空にする
         </Button>
       </div>
+      <AnimatePresence>
+        {isRestoreOpen && (
+          <Modal>
+            <ActionDialog onClose={isPending ? undefined : () => setIsRestoreOpen(false)}>
+              <div className="flex h-full flex-col justify-center">
+                <p className="text-center text-xl font-medium max-md:text-sm">確認</p>
+                <p className="mt-5 mb-10 text-center max-md:mt-2 max-md:mb-6 max-md:text-xs">
+                  選択したメディアを復元します。
+                  <br />
+                  本当によろしいですか？
+                </p>
+                <div className="flex justify-center gap-5">
+                  <Button
+                    variant="cancel"
+                    onClick={() => setIsRestoreOpen(false)}
+                    disabled={isPending}
+                  >
+                    キャンセル
+                  </Button>
+                  <Button disabled={isPending} onClick={restoreAction}>
+                    復元する
+                  </Button>
+                </div>
+              </div>
+            </ActionDialog>
+          </Modal>
+        )}
+      </AnimatePresence>
     </>
   );
 };
