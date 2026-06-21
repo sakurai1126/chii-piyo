@@ -1,11 +1,9 @@
 "use client";
 import { useQueryClient } from "@tanstack/react-query";
-import { AnimatePresence } from "motion/react";
 import { Dispatch, SetStateAction, useState, useTransition } from "react";
 
-import { Modal } from "@/components/layout/Modal";
-import { ActionDialog } from "@/components/ui/ActionDialog";
 import { Button } from "@/components/ui/Button";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { toast } from "@/components/ui/Toast";
 
 import { deleteAlbumMediaAction } from "../actions/deleteAlbumMediaAction";
@@ -77,36 +75,15 @@ export const DeleteMediaAlbum = ({
         </Button>
       )}
 
-      <div className="relative z-100">
-        <AnimatePresence>
-          {isConfirmOpen && (
-            <Modal>
-              <ActionDialog onClose={() => setIsConfirmOpen(false)}>
-                <div className="flex h-full flex-col justify-center">
-                  <p className="text-center text-xl font-medium max-md:text-sm">確認</p>
-                  <p className="mt-5 mb-10 text-center max-md:mt-2 max-md:mb-6 max-md:text-xs">
-                    選択したメディアをアルバムから削除します。
-                    <br />
-                    実行してもよろしいですか？
-                  </p>
-                  <div className="flex justify-center gap-5">
-                    <Button
-                      variant="cancel"
-                      onClick={() => setIsConfirmOpen(false)}
-                      disabled={isPending}
-                    >
-                      キャンセル
-                    </Button>
-                    <Button disabled={isPending} onClick={deleteAction} variant="remove">
-                      実行する
-                    </Button>
-                  </div>
-                </div>
-              </ActionDialog>
-            </Modal>
-          )}
-        </AnimatePresence>
-      </div>
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        isPending={isPending}
+        action={deleteAction}
+        closeAction={() => setIsConfirmOpen(false)}
+        message="選択したメディアをアルバムから削除します。"
+        buttonType="remove"
+        buttonMessage="実行する"
+      />
     </>
   );
 };

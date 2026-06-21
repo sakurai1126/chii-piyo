@@ -10,6 +10,7 @@ import link.s_repo.chii_piyo.model.gen.MediaComments;
 import link.s_repo.chii_piyo.model.gen.Users;
 import link.s_repo.chii_piyo.security.CurrentUserProvider;
 import link.s_repo.chii_piyo.service.MediaCommentService;
+import link.s_repo.chii_piyo.service.MediaService;
 import link.s_repo.chii_piyo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,7 @@ public class MediaCommentController implements MediaCommentManagementApi {
     private final MediaCommentConverter mediaCommentConverter;
     private final CurrentUserProvider currentUserProvider;
     private final UserService userService;
+    private final MediaService mediaService;
 
     /**
      * POST /media/{mediaId}/comments<br>
@@ -49,6 +51,9 @@ public class MediaCommentController implements MediaCommentManagementApi {
         Long userId = currentUserProvider.getUserId();
 
         Users user = userService.getUserById(userId);
+
+        // メディアの存在チェック
+        mediaService.getMedia(mediaId);
 
         // サービス層でコメントを作成する
         MediaComments createMediaComment = mediaCommentService.createMediaComment(mediaId, userId, mediaCommentData.getContent());
@@ -72,8 +77,14 @@ public class MediaCommentController implements MediaCommentManagementApi {
         // 認証情報からアプリケーション側のユーザーIDを取得
         Long currentUserId = currentUserProvider.getUserId();
 
+        // コメントを取得
+        MediaComments comment = mediaCommentService.getMediaComment(id);
+
+        // 該当メディアの存在チェック
+        mediaService.getMedia(comment.getMediaId());
+
         // サービス層で削除処理
-        mediaCommentService.deleteMediaComment(id, currentUserId);
+        mediaCommentService.deleteMediaComment(comment, currentUserId);
 
         // 204 No Contentを返す
         return ResponseEntity.noContent().build();

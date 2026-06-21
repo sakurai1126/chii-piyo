@@ -1,18 +1,14 @@
 post:
   tags:
     - trashManagement
-  summary: ゴミ箱からアイテムを復元
+  summary: ゴミ箱からメディアを復元
   operationId: restoreTrashItem
   parameters:
     - $ref: "../../components/parameters.yml#/XRequestedWith"
     - $ref: "../../components/parameters.yml#/ResourceId"
   responses:
-    "200":
-      description: 復元されたメディア情報
-      content:
-        application/json;charset=UTF-8:
-          schema:
-            $ref: "../../components/schemas/media.yml#/MediaResponseDto"
+    "204":
+      description: メディアの復元に成功
     "401":
       $ref: "../../components/responses.yml#/Unauthorized"
     "403":

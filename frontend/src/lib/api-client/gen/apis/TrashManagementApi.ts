@@ -19,19 +19,24 @@ import {
   ErrorResponseDtoToJSON,
 } from "../models/ErrorResponseDto";
 import {
-  type MediaResponseDto,
-  MediaResponseDtoFromJSON,
-  MediaResponseDtoToJSON,
-} from "../models/MediaResponseDto";
-import {
   type TrashItemListResponseDto,
   TrashItemListResponseDtoFromJSON,
   TrashItemListResponseDtoToJSON,
 } from "../models/TrashItemListResponseDto";
+import {
+  type TrashRestoreRequestDto,
+  TrashRestoreRequestDtoFromJSON,
+  TrashRestoreRequestDtoToJSON,
+} from "../models/TrashRestoreRequestDto";
 
 export interface DeleteTrashItemRequest {
   xRequestedWith: string;
   id: number;
+}
+
+export interface DeleteTrashItemsRequest {
+  xRequestedWith: string;
+  trashItemIds: Array<number>;
 }
 
 export interface EmptyTrashRequest {
@@ -47,6 +52,11 @@ export interface GetTrashItemsRequest {
 export interface RestoreTrashItemRequest {
   xRequestedWith: string;
   id: number;
+}
+
+export interface RestoreTrashItemsRequest {
+  xRequestedWith: string;
+  trashRestoreRequestDto: TrashRestoreRequestDto;
 }
 
 /**
@@ -102,7 +112,7 @@ export class TrashManagementApi extends runtime.BaseAPI {
   }
 
   /**
-   * ゴミ箱からアイテムを完全に削除
+   * ゴミ箱からメディアを完全に削除
    */
   async deleteTrashItemRaw(
     requestParameters: DeleteTrashItemRequest,
@@ -115,13 +125,87 @@ export class TrashManagementApi extends runtime.BaseAPI {
   }
 
   /**
-   * ゴミ箱からアイテムを完全に削除
+   * ゴミ箱からメディアを完全に削除
    */
   async deleteTrashItem(
     requestParameters: DeleteTrashItemRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<void> {
     await this.deleteTrashItemRaw(requestParameters, initOverrides);
+  }
+
+  /**
+   * Creates request options for deleteTrashItems without sending the request
+   */
+  async deleteTrashItemsRequestOpts(
+    requestParameters: DeleteTrashItemsRequest,
+  ): Promise<runtime.RequestOpts> {
+    if (requestParameters["xRequestedWith"] == null) {
+      throw new runtime.RequiredError(
+        "xRequestedWith",
+        'Required parameter "xRequestedWith" was null or undefined when calling deleteTrashItems().',
+      );
+    }
+
+    if (requestParameters["trashItemIds"] == null) {
+      throw new runtime.RequiredError(
+        "trashItemIds",
+        'Required parameter "trashItemIds" was null or undefined when calling deleteTrashItems().',
+      );
+    }
+
+    const queryParameters: any = {};
+
+    if (requestParameters["trashItemIds"] != null) {
+      queryParameters["trashItemIds"] = requestParameters["trashItemIds"];
+    }
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    if (requestParameters["xRequestedWith"] != null) {
+      headerParameters["X-Requested-With"] = String(requestParameters["xRequestedWith"]);
+    }
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken;
+      const tokenString = await token("BearerAuth", []);
+
+      if (tokenString) {
+        headerParameters["Authorization"] = `Bearer ${tokenString}`;
+      }
+    }
+
+    let urlPath = `/trash`;
+
+    return {
+      path: urlPath,
+      method: "DELETE",
+      headers: headerParameters,
+      query: queryParameters,
+    };
+  }
+
+  /**
+   * ゴミ箱からメディアを完全に削除
+   */
+  async deleteTrashItemsRaw(
+    requestParameters: DeleteTrashItemsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<void>> {
+    const requestOptions = await this.deleteTrashItemsRequestOpts(requestParameters);
+    const response = await this.request(requestOptions, initOverrides);
+
+    return new runtime.VoidApiResponse(response);
+  }
+
+  /**
+   * ゴミ箱からメディアを完全に削除
+   */
+  async deleteTrashItems(
+    requestParameters: DeleteTrashItemsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<void> {
+    await this.deleteTrashItemsRaw(requestParameters, initOverrides);
   }
 
   /**
@@ -152,7 +236,7 @@ export class TrashManagementApi extends runtime.BaseAPI {
       }
     }
 
-    let urlPath = `/trash`;
+    let urlPath = `/trash/empty`;
 
     return {
       path: urlPath,
@@ -234,7 +318,7 @@ export class TrashManagementApi extends runtime.BaseAPI {
   }
 
   /**
-   * ゴミ箱内のアイテム一覧を取得
+   * ゴミ箱内のメディア一覧を取得
    */
   async getTrashItemsRaw(
     requestParameters: GetTrashItemsRequest,
@@ -249,7 +333,7 @@ export class TrashManagementApi extends runtime.BaseAPI {
   }
 
   /**
-   * ゴミ箱内のアイテム一覧を取得
+   * ゴミ箱内のメディア一覧を取得
    */
   async getTrashItems(
     requestParameters: GetTrashItemsRequest,
@@ -308,28 +392,98 @@ export class TrashManagementApi extends runtime.BaseAPI {
   }
 
   /**
-   * ゴミ箱からアイテムを復元
+   * ゴミ箱からメディアを復元
    */
   async restoreTrashItemRaw(
     requestParameters: RestoreTrashItemRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<MediaResponseDto>> {
+  ): Promise<runtime.ApiResponse<void>> {
     const requestOptions = await this.restoreTrashItemRequestOpts(requestParameters);
     const response = await this.request(requestOptions, initOverrides);
 
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      MediaResponseDtoFromJSON(jsonValue),
-    );
+    return new runtime.VoidApiResponse(response);
   }
 
   /**
-   * ゴミ箱からアイテムを復元
+   * ゴミ箱からメディアを復元
    */
   async restoreTrashItem(
     requestParameters: RestoreTrashItemRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<MediaResponseDto> {
-    const response = await this.restoreTrashItemRaw(requestParameters, initOverrides);
-    return await response.value();
+  ): Promise<void> {
+    await this.restoreTrashItemRaw(requestParameters, initOverrides);
+  }
+
+  /**
+   * Creates request options for restoreTrashItems without sending the request
+   */
+  async restoreTrashItemsRequestOpts(
+    requestParameters: RestoreTrashItemsRequest,
+  ): Promise<runtime.RequestOpts> {
+    if (requestParameters["xRequestedWith"] == null) {
+      throw new runtime.RequiredError(
+        "xRequestedWith",
+        'Required parameter "xRequestedWith" was null or undefined when calling restoreTrashItems().',
+      );
+    }
+
+    if (requestParameters["trashRestoreRequestDto"] == null) {
+      throw new runtime.RequiredError(
+        "trashRestoreRequestDto",
+        'Required parameter "trashRestoreRequestDto" was null or undefined when calling restoreTrashItems().',
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    headerParameters["Content-Type"] = "application/json;charset=UTF-8";
+
+    if (requestParameters["xRequestedWith"] != null) {
+      headerParameters["X-Requested-With"] = String(requestParameters["xRequestedWith"]);
+    }
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken;
+      const tokenString = await token("BearerAuth", []);
+
+      if (tokenString) {
+        headerParameters["Authorization"] = `Bearer ${tokenString}`;
+      }
+    }
+
+    let urlPath = `/trash`;
+
+    return {
+      path: urlPath,
+      method: "POST",
+      headers: headerParameters,
+      query: queryParameters,
+      body: TrashRestoreRequestDtoToJSON(requestParameters["trashRestoreRequestDto"]),
+    };
+  }
+
+  /**
+   * ゴミ箱からメディアを復元
+   */
+  async restoreTrashItemsRaw(
+    requestParameters: RestoreTrashItemsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<void>> {
+    const requestOptions = await this.restoreTrashItemsRequestOpts(requestParameters);
+    const response = await this.request(requestOptions, initOverrides);
+
+    return new runtime.VoidApiResponse(response);
+  }
+
+  /**
+   * ゴミ箱からメディアを復元
+   */
+  async restoreTrashItems(
+    requestParameters: RestoreTrashItemsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<void> {
+    await this.restoreTrashItemsRaw(requestParameters, initOverrides);
   }
 }

@@ -12,8 +12,6 @@ public final class TrashItemsDynamicSqlSupport {
 
     public static final SqlColumn<Long> mediaId = trashItems.mediaId;
 
-    public static final SqlColumn<Long> deletedBy = trashItems.deletedBy;
-
     public static final SqlColumn<OffsetDateTime> expiresAt = trashItems.expiresAt;
 
     public static final SqlColumn<OffsetDateTime> createdAt = trashItems.createdAt;
@@ -22,8 +20,6 @@ public final class TrashItemsDynamicSqlSupport {
         public final SqlColumn<Long> id = column("id", JDBCType.BIGINT).withJavaProperty("id");
 
         public final SqlColumn<Long> mediaId = column("media_id", JDBCType.BIGINT).withJavaProperty("mediaId");
-
-        public final SqlColumn<Long> deletedBy = column("deleted_by", JDBCType.BIGINT).withJavaProperty("deletedBy");
 
         public final SqlColumn<OffsetDateTime> expiresAt = column("expires_at", JDBCType.TIMESTAMP).withJavaProperty("expiresAt");
 

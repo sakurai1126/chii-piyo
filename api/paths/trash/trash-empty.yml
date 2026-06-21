@@ -1,0 +1,18 @@
+delete:
+  tags:
+    - trashManagement
+  summary: ゴミ箱の中身をすべて空にする
+  operationId: emptyTrash
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+  responses:
+    "204":
+      description: すべてのメディアの完全削除に成功
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "403":
+      $ref: "../../components/responses.yml#/Forbidden"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"

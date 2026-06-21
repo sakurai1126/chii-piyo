@@ -7,8 +7,6 @@ public class TrashItems {
 
     private Long mediaId;
 
-    private Long deletedBy;
-
     private OffsetDateTime expiresAt;
 
     private OffsetDateTime createdAt;
@@ -27,14 +25,6 @@ public class TrashItems {
 
     public void setMediaId(Long mediaId) {
         this.mediaId = mediaId;
-    }
-
-    public Long getDeletedBy() {
-        return deletedBy;
-    }
-
-    public void setDeletedBy(Long deletedBy) {
-        this.deletedBy = deletedBy;
     }
 
     public OffsetDateTime getExpiresAt() {

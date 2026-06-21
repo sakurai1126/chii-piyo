@@ -226,12 +226,10 @@ erDiagram
     trash_items {
         bigserial id PK
         bigint media_id FK, UK
-        bigint deleted_by FK
         timestamptz expires_at
         timestamptz created_at
     }
 
-    users ||--o{ trash_items : ""
     media ||--o| trash_items : ""
 ```
 

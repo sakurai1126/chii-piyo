@@ -1,11 +1,10 @@
 # ゴミ箱
 TrashItemResponseDto:
   type: object
-  description: ゴミ箱アイテム情報
+  description: ゴミ箱メディア情報
   required:
     - id
-    - mediaId
-    - deletedBy
+    - media
     - expiresAt
     - createdAt
   properties:
@@ -14,18 +13,8 @@ TrashItemResponseDto:
       format: int64
       description: ゴミ箱ID
       example: 1
-    mediaId:
-      type: integer
-      format: int64
-      description: メディアID
-      example: 10
     media:
       $ref: "./media.yml#/MediaResponseDto"
-    deletedBy:
-      type: integer
-      format: int64
-      description: 削除したユーザーID
-      example: 1
     expiresAt:
       type: string
       format: date-time
@@ -42,6 +31,7 @@ TrashItemListResponseDto:
   description: ゴミ箱一覧レスポンス
   required:
     - items
+    - earliest
     - totalCount
     - hasNext
   properties:
@@ -49,6 +39,11 @@ TrashItemListResponseDto:
       type: array
       items:
         $ref: "#/TrashItemResponseDto"
+    earliest:
+      type: [integer, null]
+      format: int64
+      description: 最も期限が近いメディアの完全削除までの残り日数
+      example: 3
     totalCount:
       type: integer
       format: int64
@@ -58,3 +53,17 @@ TrashItemListResponseDto:
       type: boolean
       description: 次のページが存在するかどうか
       example: true
+
+TrashRestoreRequestDto:
+  type: object
+  description: 複数ゴミ箱復元リクエスト
+  required:
+    - trashItemIds
+  properties:
+    trashItemIds:
+      type: array
+      items:
+        type: integer
+        format: int64
+      description: ゴミ箱メディアのID配列
+      example: [1, 2, 3]

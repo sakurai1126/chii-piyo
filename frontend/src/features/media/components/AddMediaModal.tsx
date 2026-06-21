@@ -6,8 +6,8 @@ import Image from "next/image";
 import React, { useId, useState, useTransition } from "react";
 
 import { Modal } from "@/components/layout/Modal";
-import { ActionDialog } from "@/components/ui/ActionDialog";
 import { Button } from "@/components/ui/Button";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { toast } from "@/components/ui/Toast";
 import { addAlbumMediaAction } from "@/features/album/";
 import { DateRangeFilter } from "@/features/media/components/list/DateRangeFilter";
@@ -337,36 +337,21 @@ export const AddMediaModal = ({ tags, sharingGroups, isOpen, setIsOpen, albumId 
           </Modal>
         )}
       </AnimatePresence>
-      <AnimatePresence>
-        {isConfirmOpen && (
-          <Modal>
-            <ActionDialog onClose={() => setIsConfirmOpen(false)}>
-              <div className="flex h-full flex-col justify-center">
-                <p className="text-center text-xl font-medium max-md:text-sm">確認</p>
-                <p className="mt-5 mb-10 text-center max-md:mt-2 max-md:mb-6 max-md:text-xs">
-                  選択したメディアをアルバムに追加します。
-                  <br />
-                  既に別のアルバムに紐づいている場合は、新しいアルバムに上書きされます。
-                  <br />
-                  実行してもよろしいですか？
-                </p>
-                <div className="flex justify-center gap-5">
-                  <Button
-                    variant="cancel"
-                    onClick={() => setIsConfirmOpen(false)}
-                    disabled={isPending}
-                  >
-                    キャンセル
-                  </Button>
-                  <Button disabled={isPending} onClick={addMediaAction}>
-                    実行する
-                  </Button>
-                </div>
-              </div>
-            </ActionDialog>
-          </Modal>
-        )}
-      </AnimatePresence>
+
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        isPending={isPending}
+        action={addMediaAction}
+        closeAction={() => setIsConfirmOpen(false)}
+        message={
+          <>
+            選択したメディアをアルバムに追加します。
+            <br />
+            既に別のアルバムに紐づいている場合は、新しいアルバムに上書きされます。
+          </>
+        }
+        buttonMessage="実行する"
+      />
     </div>
   );
 };

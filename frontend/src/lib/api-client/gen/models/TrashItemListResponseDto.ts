@@ -34,6 +34,12 @@ export interface TrashItemListResponseDto {
    */
   items: Array<TrashItemResponseDto>;
   /**
+   * 最も期限が近いメディアの完全削除までの残り日数
+   * @type {number}
+   * @memberof TrashItemListResponseDto
+   */
+  earliest: number | null;
+  /**
    * 総件数
    * @type {number}
    * @memberof TrashItemListResponseDto
@@ -54,6 +60,7 @@ export function instanceOfTrashItemListResponseDto(
   value: object,
 ): value is TrashItemListResponseDto {
   if (!("items" in value) || value["items"] === undefined) return false;
+  if (!("earliest" in value) || value["earliest"] === undefined) return false;
   if (!("totalCount" in value) || value["totalCount"] === undefined) return false;
   if (!("hasNext" in value) || value["hasNext"] === undefined) return false;
   return true;
@@ -72,6 +79,7 @@ export function TrashItemListResponseDtoFromJSONTyped(
   }
   return {
     items: (json["items"] as Array<any>).map(TrashItemResponseDtoFromJSON),
+    earliest: json["earliest"],
     totalCount: json["totalCount"],
     hasNext: json["hasNext"],
   };
@@ -91,6 +99,7 @@ export function TrashItemListResponseDtoToJSONTyped(
 
   return {
     items: (value["items"] as Array<any>).map(TrashItemResponseDtoToJSON),
+    earliest: value["earliest"],
     totalCount: value["totalCount"],
     hasNext: value["hasNext"],
   };

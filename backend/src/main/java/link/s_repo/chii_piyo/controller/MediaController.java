@@ -1,7 +1,16 @@
 package link.s_repo.chii_piyo.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.constraints.NotNull;
 import link.s_repo.chii_piyo.controller.converter.*;
 import link.s_repo.chii_piyo.controller.gen.MediaManagementApi;
+import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.*;
 import link.s_repo.chii_piyo.security.CurrentUserProvider;
 import link.s_repo.chii_piyo.service.*;
@@ -39,6 +48,7 @@ public class MediaController implements MediaManagementApi {
     private final MediaNavigationConverter mediaNavigationConverter;
     private final MediaUploadConverter mediaUploadConverter;
     private final FavoriteService favoriteService;
+    private final TrashService trashService;
 
     /**
      * POST /media<br>
@@ -321,12 +331,52 @@ public class MediaController implements MediaManagementApi {
         return ResponseEntity.noContent().build();
     }
 
+
     /**
-     * DELETE /media/{id} : メディアを削除
+     * DELETE /media/{id}<br>
+     * メディアを削除<br>
+     * ※ゴミ箱に移動し30日間保持
+     *
+     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param id             対象のメディアID
+     * @return 204ステータス
      */
     @Override
     public ResponseEntity<Void> deleteMedia(String xRequestedWith, Long id) {
-        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+        // メディアの存在チェック
+        mediaService.getMedia(id);
+
+        // Trashサービス層を呼び出しフラグデータを追加する
+        trashService.createTrashItem(id);
+
+        // 204 No Contentを返す
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * DELETE /media<br>
+     * 複数メディアを削除<br>
+     * ※ゴミ箱に移動し30日間保持
+     *
+     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param mediaIds       対象メディアのIDリスト
+     * @return 204ステータス
+     */
+    @Override
+    public ResponseEntity<Void> deleteMultipleMedia(String xRequestedWith, List<Long> mediaIds) {
+        // 重複を削除しメディアの存在チェック
+        List<Long> distinctMediaIds = mediaIds.stream().distinct().toList();
+        List<Media> mediaList = mediaService.getMediabyIds(distinctMediaIds);
+
+        if (mediaList.size() != distinctMediaIds.size()) {
+            throw new ResourceNotFoundException("メディアが見つかりません mediaId=" + mediaIds);
+        }
+
+        // Trashサービス層を呼び出しフラグデータを追加する
+        trashService.createTrashItems(distinctMediaIds);
+
+        // 204 No Contentを返す
+        return ResponseEntity.noContent().build();
     }
 
     /**

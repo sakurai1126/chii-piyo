@@ -8,6 +8,7 @@ import link.s_repo.chii_piyo.model.gen.MediaTagsUpdateRequestDto;
 import link.s_repo.chii_piyo.model.gen.TagRequestDto;
 import link.s_repo.chii_piyo.model.gen.TagResponseDto;
 import link.s_repo.chii_piyo.model.gen.Tags;
+import link.s_repo.chii_piyo.service.MediaService;
 import link.s_repo.chii_piyo.service.TagService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,7 @@ public class TagController implements TagManagementApi {
 
     private final TagService tagService;
     private final TagConverter tagConverter;
+    private final MediaService mediaService;
 
     /**
      * POST /tags<br>
@@ -83,6 +85,8 @@ public class TagController implements TagManagementApi {
     @Override
     public ResponseEntity<List<TagResponseDto>> updateMediaTags(
         String xRequestedWith, Long mediaId, MediaTagsUpdateRequestDto mediaTagsData) {
+        // メディアの存在チェック
+        mediaService.getMedia(mediaId);
 
         // サービス層でタグを更新する
         List<Tags> updatedTags = tagService.syncMediaTags(mediaId, mediaTagsData.getTagIds());

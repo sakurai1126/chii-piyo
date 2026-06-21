@@ -29,3 +29,19 @@ export const formatJapaneseDateNonTime = (date: Date): string => {
     dateStyle: "long",
   }).format(date);
 };
+
+/**
+ * 指定された日付までの残り日数を計算する
+ * @param expiresAt 削除予定日時
+ * @returns 残り日数
+ */
+export const calculateRemainingDays = (expiresAt: string | Date): number => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const expireDate = new Date(expiresAt);
+  expireDate.setHours(0, 0, 0, 0);
+  // 差分をミリ秒から日数に変換
+  const diffTime = expireDate.getTime() - today.getTime();
+  const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+  return Math.max(0, diffDays);
+};

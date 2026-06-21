@@ -34,6 +34,7 @@ export * from "./TagRequestDto";
 export * from "./TagResponseDto";
 export * from "./TrashItemListResponseDto";
 export * from "./TrashItemResponseDto";
+export * from "./TrashRestoreRequestDto";
 export * from "./UserGenerateIconDataResponseDto";
 export * from "./UserResponseDto";
 export * from "./UserRoleUpdateRequestDto";

@@ -1,7 +1,7 @@
 get:
   tags:
     - trashManagement
-  summary: ゴミ箱内のアイテム一覧を取得
+  summary: ゴミ箱内のメディア一覧を取得
   operationId: getTrashItems
   parameters:
     - $ref: "../../components/parameters.yml#/XRequestedWith"
@@ -9,7 +9,7 @@ get:
     - $ref: "../../components/parameters.yml#/PageLimit"
   responses:
     "200":
-      description: ゴミ箱アイテム一覧
+      description: ゴミ箱メディア一覧
       content:
         application/json;charset=UTF-8:
           schema:
@@ -26,17 +26,45 @@ get:
 delete:
   tags:
     - trashManagement
-  summary: ゴミ箱の中身をすべて空にする
-  operationId: emptyTrash
+  summary: ゴミ箱からメディアを完全に削除
+  operationId: deleteTrashItems
   parameters:
     - $ref: "../../components/parameters.yml#/XRequestedWith"
+    - $ref: "../../components/parameters.yml#/TrashItemIds"
   responses:
     "204":
-      description: すべてのアイテムの完全削除に成功
+      description: メディアの完全削除に成功
     "401":
       $ref: "../../components/responses.yml#/Unauthorized"
     "403":
       $ref: "../../components/responses.yml#/Forbidden"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"
+
+post:
+  tags:
+    - trashManagement
+  summary: ゴミ箱からメディアを復元
+  operationId: restoreTrashItems
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+  requestBody:
+    required: true
+    content:
+      application/json;charset=UTF-8:
+        schema:
+          $ref: "../../components/schemas/trash.yml#/TrashRestoreRequestDto"
+  responses:
+    "204":
+      description: メディアの復元に成功
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "403":
+      $ref: "../../components/responses.yml#/Forbidden"
+    "404":
+      $ref: "../../components/responses.yml#/NotFound"
     "500":
       $ref: "../../components/responses.yml#/InternalServerError"
     default:

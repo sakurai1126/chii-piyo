@@ -1,9 +1,9 @@
 package link.s_repo.chii_piyo.service;
 
+import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.Favorites;
 import link.s_repo.chii_piyo.model.gen.Media;
-import link.s_repo.chii_piyo.repository.gen.FavoritesDynamicSqlSupport;
-import link.s_repo.chii_piyo.repository.gen.FavoritesMapper;
+import link.s_repo.chii_piyo.repository.gen.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

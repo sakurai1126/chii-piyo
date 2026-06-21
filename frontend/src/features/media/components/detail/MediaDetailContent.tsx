@@ -11,6 +11,7 @@ import { getMedia } from "../../api/getMedia";
 import { getMediaComments } from "../../api/getMediaComments";
 
 import { MediaComment } from "./MediaComment";
+import { MediaDelete } from "./MediaDelete";
 import { MediaMetaData } from "./MediaMetaData";
 import { MediaViewer } from "./MediaViewer";
 
@@ -61,6 +62,7 @@ export const MediaDetailContent = async ({ id, isModal = false }: Props) => {
 
           {/* アルバム */}
           {album && <AlbumMediaDetail album={album} media={media} />}
+          <MediaDelete mediaId={media.id} />
         </div>
       </div>
     </div>

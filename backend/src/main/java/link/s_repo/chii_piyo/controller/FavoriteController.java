@@ -3,6 +3,7 @@ package link.s_repo.chii_piyo.controller;
 import link.s_repo.chii_piyo.controller.gen.FavoriteManagementApi;
 import link.s_repo.chii_piyo.security.CurrentUserProvider;
 import link.s_repo.chii_piyo.service.FavoriteService;
+import link.s_repo.chii_piyo.service.MediaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class FavoriteController implements FavoriteManagementApi {
     private final FavoriteService favoriteService;
+    private final MediaService mediaService;
     private final CurrentUserProvider currentUserProvider;
 
     /**
@@ -33,6 +35,9 @@ public class FavoriteController implements FavoriteManagementApi {
     public ResponseEntity<Void> addFavorite(String xRequestedWith, Long mediaId) {
         // 認証情報から現在のユーザーIDを取得
         Long currentUserId = currentUserProvider.getUserId();
+
+        // メディアの存在チェック
+        mediaService.getMedia(mediaId);
 
         // サービス層でデータを登録
         favoriteService.addFavorite(mediaId, currentUserId);
@@ -53,6 +58,9 @@ public class FavoriteController implements FavoriteManagementApi {
     public ResponseEntity<Void> removeFavorite(String xRequestedWith, Long mediaId) {
         // 認証情報から現在のユーザーIDを取得
         Long currentUserId = currentUserProvider.getUserId();
+
+        // メディアの存在チェック
+        mediaService.getMedia(mediaId);
 
         // サービス層でデータを削除
         favoriteService.removeFavorite(mediaId, currentUserId);

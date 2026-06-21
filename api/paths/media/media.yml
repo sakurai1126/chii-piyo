@@ -61,3 +61,26 @@ post:
       $ref: "../../components/responses.yml#/InternalServerError"
     default:
       $ref: "../../components/responses.yml#/DefaultErrors"
+
+delete:
+  tags:
+    - mediaManagement
+  summary: 複数メディアを削除
+  description: ゴミ箱に移動し30日間保持
+  operationId: deleteMultipleMedia
+  parameters:
+    - $ref: "../../components/parameters.yml#/XRequestedWith"
+    - $ref: "../../components/parameters.yml#/MediaIds"
+  responses:
+    "204":
+      description: メディアの削除に成功
+    "401":
+      $ref: "../../components/responses.yml#/Unauthorized"
+    "403":
+      $ref: "../../components/responses.yml#/Forbidden"
+    "404":
+      $ref: "../../components/responses.yml#/NotFound"
+    "500":
+      $ref: "../../components/responses.yml#/InternalServerError"
+    default:
+      $ref: "../../components/responses.yml#/DefaultErrors"

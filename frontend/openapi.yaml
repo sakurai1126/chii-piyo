@@ -376,6 +376,28 @@ paths:
           $ref: '#/components/responses/InternalServerError'
         default:
           $ref: '#/components/responses/DefaultErrors'
+    delete:
+      tags:
+        - mediaManagement
+      summary: 複数メディアを削除
+      description: ゴミ箱に移動し30日間保持
+      operationId: deleteMultipleMedia
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/MediaIds'
+      responses:
+        '204':
+          description: メディアの削除に成功
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
   /media/{id}:
     get:
       tags:
@@ -1521,7 +1543,7 @@ paths:
     get:
       tags:
         - trashManagement
-      summary: ゴミ箱内のアイテム一覧を取得
+      summary: ゴミ箱内のメディア一覧を取得
       operationId: getTrashItems
       parameters:
         - $ref: '#/components/parameters/XRequestedWith'
@@ -1529,7 +1551,7 @@ paths:
         - $ref: '#/components/parameters/PageLimit'
       responses:
         '200':
-          description: ゴミ箱アイテム一覧
+          description: ゴミ箱メディア一覧
           content:
             application/json;charset=UTF-8:
               schema:
@@ -1545,13 +1567,59 @@ paths:
     delete:
       tags:
         - trashManagement
+      summary: ゴミ箱からメディアを完全に削除
+      operationId: deleteTrashItems
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+        - $ref: '#/components/parameters/TrashItemIds'
+      responses:
+        '204':
+          description: メディアの完全削除に成功
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+    post:
+      tags:
+        - trashManagement
+      summary: ゴミ箱からメディアを復元
+      operationId: restoreTrashItems
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+      requestBody:
+        required: true
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/TrashRestoreRequestDto'
+      responses:
+        '204':
+          description: メディアの復元に成功
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+  /trash/empty:
+    delete:
+      tags:
+        - trashManagement
       summary: ゴミ箱の中身をすべて空にする
       operationId: emptyTrash
       parameters:
         - $ref: '#/components/parameters/XRequestedWith'
       responses:
         '204':
-          description: すべてのアイテムの完全削除に成功
+          description: すべてのメディアの完全削除に成功
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -1564,7 +1632,7 @@ paths:
     delete:
       tags:
         - trashManagement
-      summary: ゴミ箱からアイテムを完全に削除
+      summary: ゴミ箱からメディアを完全に削除
       operationId: deleteTrashItem
       parameters:
         - $ref: '#/components/parameters/XRequestedWith'
@@ -1586,18 +1654,14 @@ paths:
     post:
       tags:
         - trashManagement
-      summary: ゴミ箱からアイテムを復元
+      summary: ゴミ箱からメディアを復元
       operationId: restoreTrashItem
       parameters:
         - $ref: '#/components/parameters/XRequestedWith'
         - $ref: '#/components/parameters/ResourceId'
       responses:
-        '200':
-          description: 復元されたメディア情報
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/MediaResponseDto'
+        '204':
+          description: メディアの復元に成功
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -1717,14 +1781,6 @@ components:
       required: false
       schema:
         type: boolean
-    MediaId:
-      name: mediaId
-      in: path
-      description: メディアの一意な識別子
-      required: true
-      schema:
-        type: integer
-        format: int64
     MediaIds:
       name: mediaIds
       in: query
@@ -1735,6 +1791,14 @@ components:
         items:
           type: integer
           format: int64
+    MediaId:
+      name: mediaId
+      in: path
+      description: メディアの一意な識別子
+      required: true
+      schema:
+        type: integer
+        format: int64
     RecordTypeFilter:
       name: recordType
       in: query
@@ -1747,6 +1811,16 @@ components:
           - MILK
           - DIAPER
           - HEALTH
+    TrashItemIds:
+      name: trashItemIds
+      in: query
+      description: ゴミ箱データのIDリスト
+      required: true
+      schema:
+        type: array
+        items:
+          type: integer
+          format: int64
   schemas:
     ErrorResponseDto:
       type: object
@@ -2963,11 +3037,10 @@ components:
             - 1002
     TrashItemResponseDto:
       type: object
-      description: ゴミ箱アイテム情報
+      description: ゴミ箱メディア情報
       required:
         - id
-        - mediaId
-        - deletedBy
+        - media
         - expiresAt
         - createdAt
       properties:
@@ -2976,18 +3049,8 @@ components:
           format: int64
           description: ゴミ箱ID
           example: 1
-        mediaId:
-          type: integer
-          format: int64
-          description: メディアID
-          example: 10
         media:
           $ref: '#/components/schemas/MediaResponseDto'
-        deletedBy:
-          type: integer
-          format: int64
-          description: 削除したユーザーID
-          example: 1
         expiresAt:
           type: string
           format: date-time
@@ -3003,6 +3066,7 @@ components:
       description: ゴミ箱一覧レスポンス
       required:
         - items
+        - earliest
         - totalCount
         - hasNext
       properties:
@@ -3010,6 +3074,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TrashItemResponseDto'
+        earliest:
+          type:
+            - integer
+            - null
+          format: int64
+          description: 最も期限が近いメディアの完全削除までの残り日数
+          example: 3
         totalCount:
           type: integer
           format: int64
@@ -3019,6 +3090,22 @@ components:
           type: boolean
           description: 次のページが存在するかどうか
           example: true
+    TrashRestoreRequestDto:
+      type: object
+      description: 複数ゴミ箱復元リクエスト
+      required:
+        - trashItemIds
+      properties:
+        trashItemIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+          description: ゴミ箱メディアのID配列
+          example:
+            - 1
+            - 2
+            - 3
   responses:
     DefaultErrors:
       description: 予期しないエラーが発生

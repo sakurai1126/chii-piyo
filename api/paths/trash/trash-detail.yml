@@ -1,7 +1,7 @@
 delete:
   tags:
     - trashManagement
-  summary: ゴミ箱からアイテムを完全に削除
+  summary: ゴミ箱からメディアを完全に削除
   operationId: deleteTrashItem
   parameters:
     - $ref: "../../components/parameters.yml#/XRequestedWith"

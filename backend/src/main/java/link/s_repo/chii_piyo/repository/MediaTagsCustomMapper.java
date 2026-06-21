@@ -15,6 +15,8 @@ public interface MediaTagsCustomMapper {
     // タグIDごとのメディア数を取得するクエリ
     // tagIdとmediaCountのセットを格納したクラスのリストを返す
     @Select("SELECT tag_id AS tagId, COUNT(*) AS mediaCount "
-        + "FROM media_tags GROUP BY tag_id")
+        + "FROM media_tags "
+        + "WHERE media_id NOT IN (SELECT media_id FROM trash_items) "
+        + "GROUP BY tag_id")
     List<TagMediaCount> selectMediaCountByTagId();
 }

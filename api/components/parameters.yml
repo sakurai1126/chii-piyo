@@ -151,11 +151,21 @@ FavoriteFilter:
   schema:
     type: boolean
 
-
 MediaIds:
   name: mediaIds
   in: query
   description: メディアのIDリスト
+  required: true
+  schema:
+    type: array
+    items:
+      type: integer
+      format: int64
+
+TrashItemIds:
+  name: trashItemIds
+  in: query
+  description: ゴミ箱データのIDリスト
   required: true
   schema:
     type: array

@@ -6,10 +6,8 @@ import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.Media;
 import link.s_repo.chii_piyo.model.gen.MediaBatchUpdateRequestDto;
 import link.s_repo.chii_piyo.model.gen.MediaUpdateRequestDto;
-import link.s_repo.chii_piyo.repository.gen.FavoritesDynamicSqlSupport;
-import link.s_repo.chii_piyo.repository.gen.MediaDynamicSqlSupport;
-import link.s_repo.chii_piyo.repository.gen.MediaMapper;
-import link.s_repo.chii_piyo.repository.gen.MediaTagsDynamicSqlSupport;
+import link.s_repo.chii_piyo.model.gen.TrashItems;
+import link.s_repo.chii_piyo.repository.gen.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
@@ -23,6 +21,9 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static link.s_repo.chii_piyo.repository.gen.MediaDynamicSqlSupport.id;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
@@ -52,9 +53,30 @@ public class MediaService {
      */
     @Transactional(readOnly = true)
     public Media getMedia(Long id) {
-        return mediaMapper.selectByPrimaryKey(id)
-            .orElseThrow(() -> new ResourceNotFoundException("メディアが見つかりません mediaId=" + id)
-            );
+        return mediaMapper.selectOne(c -> c
+            .where(MediaDynamicSqlSupport.id, isEqualTo(id))
+            .and(MediaDynamicSqlSupport.id, isNotIn(
+                select(TrashItemsDynamicSqlSupport.mediaId)
+                    .from(TrashItemsDynamicSqlSupport.trashItems)
+            ))
+        ).orElseThrow(() -> new ResourceNotFoundException("メディアが見つかりません mediaId=" + id));
+    }
+
+    /**
+     * メディアをID指定で複数件取得する
+     *
+     * @param ids 対象のメディアのIDリスト
+     * @return メディアデータリスト
+     */
+    @Transactional(readOnly = true)
+    public List<Media> getMediabyIds(List<Long> ids) {
+        return mediaMapper.select(c -> c
+            .where(MediaDynamicSqlSupport.id, isIn(ids))
+            .and(MediaDynamicSqlSupport.id, isNotIn(
+                select(TrashItemsDynamicSqlSupport.mediaId)
+                    .from(TrashItemsDynamicSqlSupport.trashItems)
+            ))
+        );
     }
 
     /**
@@ -85,23 +107,8 @@ public class MediaService {
 
         return mediaMapper.count(c -> {
             // 絞り込み条件設定を構築
-            List<AndOrCriteriaGroup> conditions = buildMediaFilterConditions(mediaType, albumId,
-                excludeAlbumId, tagId, sharingGroupId, startDate, endDate);
-
-            // isFavoriteがtrueの場合、サブクエリで現在のユーザーがお気に入りに入れているメディアをカウントする
-            if (Boolean.TRUE.equals(isFavorite) && currentUserId != null) {
-                conditions.add(
-                    and(MediaDynamicSqlSupport.id, isIn(
-                        select(FavoritesDynamicSqlSupport.mediaId)
-                            .from(FavoritesDynamicSqlSupport.favorites)
-                            .where(FavoritesDynamicSqlSupport.userId, isEqualTo(currentUserId))
-                    ))
-                );
-            }
-
-            if (!conditions.isEmpty()) {
-                c.where(conditions);
-            }
+            c.where(buildMediaFilterConditions(mediaType, albumId, excludeAlbumId, tagId,
+                sharingGroupId, isFavorite, currentUserId, startDate, endDate));
 
             return c;
         });
@@ -138,25 +145,8 @@ public class MediaService {
         // ページネーション込みで一覧取得
         return mediaMapper.select(c -> {
                 // 絞り込み条件設定を構築
-                List<AndOrCriteriaGroup> conditions = buildMediaFilterConditions(mediaType,
-                    albumId, excludeAlbumId, tagId, sharingGroupId, startDate, endDate);
-
-                // isFavoriteがtrueの場合はサブクエリでお気に入りに追加しているメディアに絞り込む
-                if (Boolean.TRUE.equals(isFavorite) && currentUserId != null) {
-                    conditions.add(
-                        // 自分（=currentUserId）が登録したfavoritesレコードのmedia_idのリストを取得し
-                        // メイン検索対象の media.id がそのリストの中に含まれているかを判定
-                        and(MediaDynamicSqlSupport.id, isIn(
-                            select(FavoritesDynamicSqlSupport.mediaId)
-                                .from(FavoritesDynamicSqlSupport.favorites)
-                                .where(FavoritesDynamicSqlSupport.userId, isEqualTo(currentUserId))
-                        ))
-                    );
-                }
-
-                if (!conditions.isEmpty()) {
-                    c.where(conditions);
-                }
+                c.where(buildMediaFilterConditions(mediaType, albumId, excludeAlbumId, tagId,
+                    sharingGroupId, isFavorite, currentUserId, startDate, endDate));
 
                 c.orderBy(MediaDynamicSqlSupport.createdAt.descending());
                 return c.limit(limit).offset(offset);
@@ -170,6 +160,8 @@ public class MediaService {
         Long excludeAlbumId,
         List<Long> tagId,
         Long sharingGroupId,
+        Boolean isFavorite,
+        Long currentUserId,
         LocalDate startDate,
         LocalDate endDate) {
 
@@ -223,6 +215,27 @@ public class MediaService {
             conditions.add(and(MediaDynamicSqlSupport.createdAt,
                 isLessThan(endDate.plusDays(1).atStartOfDay(ZoneOffset.UTC).toOffsetDateTime())));
         }
+
+        // isFavoriteがtrueの場合、サブクエリで現在のユーザーがお気に入りに入れているメディアをカウントする
+        if (Boolean.TRUE.equals(isFavorite) && currentUserId != null) {
+            conditions.add(
+                // 自分（=currentUserId）が登録したfavoritesレコードのmedia_idのリストを取得し
+                // メイン検索対象の media.id がそのリストの中に含まれているかを判定
+                and(MediaDynamicSqlSupport.id, isIn(
+                    select(FavoritesDynamicSqlSupport.mediaId)
+                        .from(FavoritesDynamicSqlSupport.favorites)
+                        .where(FavoritesDynamicSqlSupport.userId, isEqualTo(currentUserId))
+                ))
+            );
+        }
+
+        // ゴミ箱のテーブル内に存在しないもののみで限定する
+        conditions.add(
+            and(MediaDynamicSqlSupport.id, isNotIn(
+                select(TrashItemsDynamicSqlSupport.mediaId)
+                    .from(TrashItemsDynamicSqlSupport.trashItems)
+            ))
+        );
 
         return conditions;
     }
@@ -301,7 +314,9 @@ public class MediaService {
     @Transactional
     public Media updateUploadStatus(Long mediaId, Long userId, String uploadStatus) {
         // 対象メディアを取得
-        Media media = mediaMapper.selectOne(c -> c.where(id, isEqualTo(mediaId)))
+        // 生成に必須の処理のためゴミ箱フィルターはなし
+        Media media = mediaMapper.selectOne(
+                c -> c.where(id, isEqualTo(mediaId)))
             .orElseThrow(() -> new ResourceNotFoundException("メディアが見つかりません mediaId=" + mediaId));
 
         // アップロード者本人かを確認
@@ -342,6 +357,11 @@ public class MediaService {
         List<Media> previousMediaList = mediaMapper.select(c -> c
             // IDが小さいものが前のメディアになるため、ID < 対象IDで絞り込む
             .where(MediaDynamicSqlSupport.id, isLessThan(mediaId))
+            // ゴミ箱フィルター
+            .and(MediaDynamicSqlSupport.id, isNotIn(
+                select(TrashItemsDynamicSqlSupport.mediaId)
+                    .from(TrashItemsDynamicSqlSupport.trashItems)
+            ))
             // ID降順で対象に近いものから順番に2件取得する
             .orderBy(MediaDynamicSqlSupport.id.descending())
             .limit(2)
@@ -353,6 +373,11 @@ public class MediaService {
         List<Media> nextMediaList = mediaMapper.select(c -> c
             // IDが大きいものが後のメディアになるため、ID > 対象IDで絞り込む
             .where(MediaDynamicSqlSupport.id, isGreaterThan(mediaId))
+            // ゴミ箱フィルター
+            .and(MediaDynamicSqlSupport.id, isNotIn(
+                select(TrashItemsDynamicSqlSupport.mediaId)
+                    .from(TrashItemsDynamicSqlSupport.trashItems)
+            ))
             // ID昇順で対象から順番に取得する
             .orderBy(MediaDynamicSqlSupport.id)
             .limit(2)
@@ -433,7 +458,14 @@ public class MediaService {
     @Transactional
     public void updateMediaBatch(MediaBatchUpdateRequestDto mediaBatchUpdateData) {
         // 対象メディアを取得する
-        List<Media> mediaList = mediaMapper.select(c -> c.where(id, isIn(mediaBatchUpdateData.getMediaIds())));
+        List<Media> mediaList = mediaMapper.select(
+            c -> c.where(id, isIn(mediaBatchUpdateData.getMediaIds()))
+                // ゴミ箱フィルター
+                .and(MediaDynamicSqlSupport.id, isNotIn(
+                    select(TrashItemsDynamicSqlSupport.mediaId)
+                        .from(TrashItemsDynamicSqlSupport.trashItems)
+                ))
+        );
         if (mediaBatchUpdateData.getMediaIds().size() != mediaList.size()) {
             throw new ResourceNotFoundException("メディアが見つかりません mediaId=" + mediaBatchUpdateData.getMediaIds());
         }
@@ -487,6 +519,45 @@ public class MediaService {
     }
 
     /**
+     * ゴミ箱データからメディアエンティティを取得しレコードにして返却する
+     *
+     * @param trashItems ゴミ箱データエンティティ
+     * @return ゴミ箱データとメディアデータをまとめたレコードのリスト
+     */
+    public List<TrashItemAndMediaResult> getTrashItemAndMedia(List<TrashItems> trashItems) {
+        // 空の場合空リストで即時リターン
+        if (trashItems == null || trashItems.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // ゴミ箱データからメディアIDを抽出
+        List<Long> mediaIds = trashItems.stream().map(TrashItems::getMediaId).toList();
+
+        // 抽出したメディアIDに一致するメディアを取得
+        List<Media> mediaList = mediaMapper.select(c -> c.where(id, isIn(mediaIds)));
+
+        // 取り出せるようにIDをキーにマップ化
+        Map<Long, Media> mediaMapList = mediaList.stream()
+            .collect(Collectors.toMap(Media::getId, Function.identity()));
+
+        // レコードにまとめつつリスト化して返却
+        return trashItems.stream().map(
+            trashItem -> new TrashItemAndMediaResult(
+                trashItem,
+                mediaMapList.get(trashItem.getMediaId())
+            )
+        ).toList();
+    }
+
+
+    /**
+     * ゴミ箱のデータとそれに連動したメディアのレコード
+     */
+    public record TrashItemAndMediaResult(TrashItems trashItem, Media media) {
+    }
+
+
+    /**
      * Mediaエンティティと署名付きURLをまとめて返すための内部クラス
      */
     public record CreateMediaResult(Media media, URI presignedUrl) {
@@ -505,4 +576,6 @@ public class MediaService {
      */
     public record GetMediaNavigationResult(Media media, NavigationPosition position) {
     }
+
+
 }

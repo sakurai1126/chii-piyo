@@ -124,6 +124,8 @@ paths:
   # ゴミ箱
   /trash:
     $ref: "./paths/trash/trash.yml"
+  /trash/empty:
+    $ref: "./paths/trash/trash-empty.yml"
   /trash/{id}:
     $ref: "./paths/trash/trash-detail.yml"
   /trash/{id}/restore:
