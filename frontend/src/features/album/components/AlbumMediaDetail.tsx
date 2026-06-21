@@ -1,12 +1,10 @@
 "use client";
 import { useQueryClient } from "@tanstack/react-query";
-import { AnimatePresence } from "motion/react";
 import Image from "next/image";
 import { useState, useTransition } from "react";
 
-import { Modal } from "@/components/layout/Modal";
-import { ActionDialog } from "@/components/ui/ActionDialog";
 import { Button } from "@/components/ui/Button";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { toast } from "@/components/ui/Toast";
 import { AlbumResponseDto, MediaResponseDto } from "@/lib/api-client/gen";
 
@@ -71,31 +69,15 @@ export const AlbumMediaDetail = ({ album, media }: Props) => {
           </button>
         </div>
       </div>
-      <AnimatePresence>
-        {isOpen && (
-          <Modal>
-            <ActionDialog onClose={() => setIsOpen(false)}>
-              <div className="flex h-full flex-col justify-center">
-                <p className="text-center text-xl font-medium max-md:text-sm">確認</p>
-                <p className="mt-5 mb-10 text-center max-md:mt-2 max-md:mb-6 max-md:text-xs">
-                  選択したメディアをアルバムから削除します。
-                  <br />
-                  本当によろしいですか？
-                </p>
-
-                <div className="flex justify-center gap-5">
-                  <Button variant="cancel" onClick={() => setIsOpen(false)} disabled={isPending}>
-                    キャンセル
-                  </Button>
-                  <Button variant="remove" onClick={deleteAction} disabled={isPending}>
-                    削除する
-                  </Button>
-                </div>
-              </div>
-            </ActionDialog>
-          </Modal>
-        )}
-      </AnimatePresence>
+      <ConfirmModal
+        isOpen={isOpen}
+        isPending={isPending}
+        action={deleteAction}
+        closeAction={() => setIsOpen(false)}
+        message="選択したメディアをアルバムから削除します。"
+        buttonType="remove"
+        buttonMessage="削除する"
+      />
     </div>
   );
 };

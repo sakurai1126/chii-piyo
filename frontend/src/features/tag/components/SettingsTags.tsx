@@ -1,11 +1,9 @@
 "use client";
-import { AnimatePresence } from "motion/react";
+
 import Image from "next/image";
 import { useState, useTransition } from "react";
 
-import { Modal } from "@/components/layout/Modal";
-import { ActionDialog } from "@/components/ui/ActionDialog";
-import { Button } from "@/components/ui/Button";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { toast } from "@/components/ui/Toast";
 import { TagResponseDto } from "@/lib/api-client/gen";
 
@@ -139,34 +137,15 @@ const TagItem = ({ tag }: { tag: TagResponseDto }) => {
           </>
         )}
       </div>
-      <AnimatePresence>
-        {isDeleteConfirm && (
-          <Modal>
-            <ActionDialog onClose={isPending ? undefined : () => setIsDeleteConfirm(false)}>
-              <div className="flex h-full flex-col justify-center">
-                <p className="text-center text-xl font-medium max-md:text-sm">確認</p>
-                <p className="mt-5 mb-10 text-center max-md:mt-2 max-md:mb-6 max-md:text-xs">
-                  タグ【{tag.name}】を削除します。
-                  <br />
-                  本当によろしいですか？
-                </p>
-                <div className="flex justify-center gap-5">
-                  <Button
-                    variant="cancel"
-                    onClick={() => setIsDeleteConfirm(false)}
-                    disabled={isPending}
-                  >
-                    キャンセル
-                  </Button>
-                  <Button variant="remove" disabled={isPending} onClick={deleteAction}>
-                    削除する
-                  </Button>
-                </div>
-              </div>
-            </ActionDialog>
-          </Modal>
-        )}
-      </AnimatePresence>
+      <ConfirmModal
+        isOpen={isDeleteConfirm}
+        isPending={isPending}
+        action={deleteAction}
+        closeAction={() => setIsDeleteConfirm(false)}
+        message={`タグ【${tag.name}】を削除します。`}
+        buttonType="remove"
+        buttonMessage="削除する"
+      />
     </>
   );
 };

@@ -1,11 +1,10 @@
 "use client";
-import { AnimatePresence } from "motion/react";
+
 import Image from "next/image";
 import { Dispatch, SetStateAction, TransitionStartFunction, useId, useState } from "react";
 
-import { Modal } from "@/components/layout/Modal";
-import { ActionDialog } from "@/components/ui/ActionDialog";
 import { Button } from "@/components/ui/Button";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { toast } from "@/components/ui/Toast";
 import { TrashItemResponseDto } from "@/lib/api-client/gen";
 import { calculateRemainingDays, formatJapaneseDateNonTime } from "@/utils/date";
@@ -119,62 +118,23 @@ export const TrashItem = ({
           </Button>
         </div>
       </div>
-      <AnimatePresence>
-        {isRestoreOpen && (
-          <Modal>
-            <ActionDialog onClose={isPending ? undefined : () => setIsRestoreOpen(false)}>
-              <div className="flex h-full flex-col justify-center">
-                <p className="text-center text-xl font-medium max-md:text-sm">確認</p>
-                <p className="mt-5 mb-10 text-center max-md:mt-2 max-md:mb-6 max-md:text-xs">
-                  {trashItem.media.originalFilename} を復元します。
-                  <br />
-                  本当によろしいですか？
-                </p>
-                <div className="flex justify-center gap-5">
-                  <Button
-                    variant="cancel"
-                    onClick={() => setIsRestoreOpen(false)}
-                    disabled={isPending}
-                  >
-                    キャンセル
-                  </Button>
-                  <Button disabled={isPending} onClick={restoreAction}>
-                    復元する
-                  </Button>
-                </div>
-              </div>
-            </ActionDialog>
-          </Modal>
-        )}
-      </AnimatePresence>
-      <AnimatePresence>
-        {isDeleteOpen && (
-          <Modal>
-            <ActionDialog onClose={isPending ? undefined : () => setIsDeleteOpen(false)}>
-              <div className="flex h-full flex-col justify-center">
-                <p className="text-center text-xl font-medium max-md:text-sm">確認</p>
-                <p className="mt-5 mb-10 text-center max-md:mt-2 max-md:mb-6 max-md:text-xs">
-                  {trashItem.media.originalFilename} を削除します。
-                  <br />
-                  本当によろしいですか？
-                </p>
-                <div className="flex justify-center gap-5">
-                  <Button
-                    variant="cancel"
-                    onClick={() => setIsDeleteOpen(false)}
-                    disabled={isPending}
-                  >
-                    キャンセル
-                  </Button>
-                  <Button disabled={isPending} onClick={deleteAction} variant="remove">
-                    削除する
-                  </Button>
-                </div>
-              </div>
-            </ActionDialog>
-          </Modal>
-        )}
-      </AnimatePresence>
+      <ConfirmModal
+        isOpen={isRestoreOpen}
+        isPending={isPending}
+        action={restoreAction}
+        closeAction={() => setIsRestoreOpen(false)}
+        message={`${trashItem.media.originalFilename} を復元します。`}
+        buttonMessage="復元する"
+      />
+      <ConfirmModal
+        isOpen={isDeleteOpen}
+        isPending={isPending}
+        action={deleteAction}
+        closeAction={() => setIsDeleteOpen(false)}
+        message={`${trashItem.media.originalFilename} を削除します。`}
+        buttonType="remove"
+        buttonMessage="削除する"
+      />
     </div>
   );
 };

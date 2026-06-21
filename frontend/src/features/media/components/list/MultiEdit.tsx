@@ -1,14 +1,12 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { AnimatePresence } from "motion/react";
 import Image from "next/image";
 import { Dispatch, SetStateAction, useState, useTransition } from "react";
 
-import { Modal } from "@/components/layout/Modal";
 import { AccordionContent } from "@/components/ui/AccordionContent";
-import { ActionDialog } from "@/components/ui/ActionDialog";
 import { Button } from "@/components/ui/Button";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { toast } from "@/components/ui/Toast";
 import { SharingGroupsSelector } from "@/features/sharing";
 import { TagSelector } from "@/features/tag";
@@ -184,66 +182,37 @@ export const MultiEdit = ({
           </div>
         </div>
       </AccordionContent>
-      <AnimatePresence>
-        {isDeleteConfirmOpen && (
-          <Modal>
-            <ActionDialog onClose={() => setIsDeleteConfirmOpen(false)}>
-              <div className="flex h-full flex-col justify-center">
-                <p className="text-center text-xl font-medium max-md:text-sm">確認</p>
-                <p className="mt-5 mb-10 text-center max-md:mt-2 max-md:mb-6 max-md:text-xs">
-                  選択したメディアを一括でゴミ箱に移動します。
-                  <br />
-                  本当によろしいですか？
-                </p>
-                <div className="flex justify-center gap-5">
-                  <Button
-                    variant="cancel"
-                    onClick={() => setIsDeleteConfirmOpen(false)}
-                    disabled={isPending}
-                  >
-                    キャンセル
-                  </Button>
-                  <Button variant="remove" onClick={deleteAction} disabled={isPending}>
-                    実行する
-                  </Button>
-                </div>
-              </div>
-            </ActionDialog>
-          </Modal>
-        )}
-      </AnimatePresence>
-      <AnimatePresence>
-        {isUpdateConfirmOpen && (
-          <Modal>
-            <ActionDialog onClose={() => setIsUpdateConfirmOpen(false)}>
-              <div className="flex h-full flex-col justify-center">
-                <p className="text-center text-xl font-medium max-md:text-sm">確認</p>
-                <p className="mt-5 mb-10 text-center max-md:mt-2 max-md:mb-6 max-md:text-xs">
-                  選択したメディアの
-                  {editType === "all" && "タグと共有範囲"}
-                  {editType === "tag" && "タグ"}
-                  {editType === "sharing" && "共有範囲"}
-                  を一括で更新します。
-                  <br />
-                  本当によろしいですか？
-                </p>
-                <div className="flex justify-center gap-5">
-                  <Button
-                    variant="cancel"
-                    onClick={() => setIsUpdateConfirmOpen(false)}
-                    disabled={isPending}
-                  >
-                    キャンセル
-                  </Button>
-                  <Button onClick={updateAction} disabled={isPending}>
-                    実行する
-                  </Button>
-                </div>
-              </div>
-            </ActionDialog>
-          </Modal>
-        )}
-      </AnimatePresence>
+
+      <ConfirmModal
+        isOpen={isDeleteConfirmOpen}
+        isPending={isPending}
+        action={deleteAction}
+        closeAction={() => setIsDeleteConfirmOpen(false)}
+        message="選択したメディアを一括でゴミ箱に移動します。"
+        buttonType="remove"
+        buttonMessage="実行する"
+      />
+      <ConfirmModal
+        isOpen={isUpdateConfirmOpen}
+        isPending={isPending}
+        action={updateAction}
+        closeAction={() => setIsUpdateConfirmOpen(false)}
+        message={createMessage(editType)}
+        buttonMessage="実行する"
+      />
     </>
   );
+};
+
+const createMessage = (editType: "all" | "tag" | "sharing") => {
+  switch (editType) {
+    case "all":
+      return "選択したメディアのタグと共有範囲を一括で更新します。";
+    case "tag":
+      return "選択したメディアのタグを一括で更新します。";
+    case "sharing":
+      return "選択したメディアの共有範囲を一括で更新します。";
+    default:
+      return "";
+  }
 };

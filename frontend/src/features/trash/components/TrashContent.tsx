@@ -1,11 +1,9 @@
 "use client";
 
-import { AnimatePresence } from "motion/react";
 import { useState, useTransition } from "react";
 
-import { Modal } from "@/components/layout/Modal";
-import { ActionDialog } from "@/components/ui/ActionDialog";
 import { Button } from "@/components/ui/Button";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { toast } from "@/components/ui/Toast";
 import { TrashItemListResponseDto } from "@/lib/api-client/gen";
 
@@ -110,64 +108,23 @@ export const TrashContent = ({ trashItems }: Props) => {
           />
         ))}
       </div>
-
-      <AnimatePresence>
-        {isRestoreOpen && (
-          <Modal>
-            <ActionDialog onClose={isPending ? undefined : () => setIsRestoreOpen(false)}>
-              <div className="flex h-full flex-col justify-center">
-                <p className="text-center text-xl font-medium max-md:text-sm">確認</p>
-                <p className="mt-5 mb-10 text-center max-md:mt-2 max-md:mb-6 max-md:text-xs">
-                  選択したメディアを復元します。
-                  <br />
-                  本当によろしいですか？
-                </p>
-                <div className="flex justify-center gap-5">
-                  <Button
-                    variant="cancel"
-                    onClick={() => setIsRestoreOpen(false)}
-                    disabled={isPending}
-                  >
-                    キャンセル
-                  </Button>
-                  <Button disabled={isPending} onClick={restoreAction}>
-                    復元する
-                  </Button>
-                </div>
-              </div>
-            </ActionDialog>
-          </Modal>
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {isDeleteOpen && (
-          <Modal>
-            <ActionDialog onClose={isPending ? undefined : () => setIsDeleteOpen(false)}>
-              <div className="flex h-full flex-col justify-center">
-                <p className="text-center text-xl font-medium max-md:text-sm">確認</p>
-                <p className="mt-5 mb-10 text-center max-md:mt-2 max-md:mb-6 max-md:text-xs">
-                  選択したメディアを完全に削除します。
-                  <br />
-                  本当によろしいですか？
-                </p>
-                <div className="flex justify-center gap-5">
-                  <Button
-                    variant="cancel"
-                    onClick={() => setIsDeleteOpen(false)}
-                    disabled={isPending}
-                  >
-                    キャンセル
-                  </Button>
-                  <Button disabled={isPending} onClick={deleteAction} variant="remove">
-                    完全に削除する
-                  </Button>
-                </div>
-              </div>
-            </ActionDialog>
-          </Modal>
-        )}
-      </AnimatePresence>
+      <ConfirmModal
+        isOpen={isRestoreOpen}
+        isPending={isPending}
+        action={restoreAction}
+        closeAction={() => setIsRestoreOpen(false)}
+        message="選択したメディアを復元します。"
+        buttonMessage="復元する"
+      />
+      <ConfirmModal
+        isOpen={isDeleteOpen}
+        isPending={isPending}
+        action={deleteAction}
+        closeAction={() => setIsDeleteOpen(false)}
+        message="選択したメディアを完全に削除します。"
+        buttonType="remove"
+        buttonMessage="完全に削除する"
+      />
     </>
   );
 };
