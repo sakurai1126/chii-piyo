@@ -6,7 +6,9 @@ import link.s_repo.chii_piyo.model.gen.TrashItems;
 import link.s_repo.chii_piyo.repository.FavoriteRepository;
 import link.s_repo.chii_piyo.repository.MediaCommentRepository;
 import link.s_repo.chii_piyo.repository.MediaRepository;
-import link.s_repo.chii_piyo.repository.gen.*;
+import link.s_repo.chii_piyo.repository.TagRepository;
+import link.s_repo.chii_piyo.repository.gen.TrashItemsDynamicSqlSupport;
+import link.s_repo.chii_piyo.repository.gen.TrashItemsMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.dynamic.sql.dsl.CountDSLCompleter;
@@ -16,7 +18,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
@@ -40,7 +46,7 @@ public class TrashService {
     private final S3Service s3Service;
     private final MediaCommentRepository mediaCommentRepository;
     private final FavoriteRepository favoriteRepository;
-    private final MediaTagsMapper mediaTagsMapper;
+    private final TagRepository tagRepository;
 
     /**
      * IDを受け取りゴミ箱データを作成する
@@ -170,7 +176,7 @@ public class TrashService {
         favoriteRepository.deleteByMediaId(mediaId);
 
         // 関連するタグデータを削除する
-        mediaTagsMapper.delete(c -> c.where(MediaTagsDynamicSqlSupport.mediaId, isEqualTo(mediaId)));
+        tagRepository.deleteMediaTagsByMediaId(mediaId);
 
         // ゴミ箱データを削除
         trashItemsMapper.deleteByPrimaryKey(id);
@@ -237,8 +243,7 @@ public class TrashService {
         favoriteRepository.deleteByMediaIds(mediaIds);
 
         // 関連するタグデータを削除する
-        mediaTagsMapper.delete(
-            c -> c.where(MediaTagsDynamicSqlSupport.mediaId, isIn(mediaIds)));
+        tagRepository.deleteMediaTagsByMediaIds(mediaIds);
 
         // ゴミ箱データを削除
         trashItemsMapper.delete(c -> c.where(TrashItemsDynamicSqlSupport.id, isIn(ids)));

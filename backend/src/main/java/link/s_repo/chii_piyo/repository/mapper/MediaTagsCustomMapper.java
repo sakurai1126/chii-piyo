@@ -1,4 +1,4 @@
-package link.s_repo.chii_piyo.repository;
+package link.s_repo.chii_piyo.repository.mapper;
 
 import link.s_repo.chii_piyo.model.TagMediaCount;
 import org.apache.ibatis.annotations.Mapper;

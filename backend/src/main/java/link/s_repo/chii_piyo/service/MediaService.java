@@ -6,11 +6,13 @@ import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.MediaSearchCriteria;
 import link.s_repo.chii_piyo.model.gen.Media;
 import link.s_repo.chii_piyo.model.gen.MediaBatchUpdateRequestDto;
+import link.s_repo.chii_piyo.model.gen.MediaTags;
 import link.s_repo.chii_piyo.model.gen.MediaUpdateRequestDto;
 import link.s_repo.chii_piyo.model.gen.TrashItems;
 import link.s_repo.chii_piyo.repository.AlbumRepository;
 import link.s_repo.chii_piyo.repository.MediaRepository;
 import link.s_repo.chii_piyo.repository.SharingGroupRepository;
+import link.s_repo.chii_piyo.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -42,7 +44,7 @@ public class MediaService {
     private final S3KeyGenerator s3KeyGenerator;
     private final SharingGroupRepository sharingGroupRepository;
     private final AlbumRepository albumRepository;
-    private final TagService tagService;
+    private final TagRepository tagRepository;
 
     /**
      * メディアをID指定で1件取得する
@@ -89,7 +91,6 @@ public class MediaService {
         // 一覧取得
         return mediaRepository.findBySearchCriteria(mediaSearchCriteria);
     }
-
 
     /**
      * メディアレコードを作成し、署名付きアップロードURLを返却する<br>
@@ -306,14 +307,38 @@ public class MediaService {
             List<Long> tagIds = mediaBatchUpdateData.getTagIds().get();
             if (tagIds != null && !tagIds.isEmpty()) {
                 // 該当タグの件数をカウント
-                Long count = tagService.count(tagIds);
+                Long count = tagRepository.countByTagIds(tagIds);
                 if (count != tagIds.size()) {
                     throw new ResourceNotFoundException("存在しないタグが含まれています");
                 }
             }
 
+            // 複数メディアのタグを一括で入替更新する
             if (tagIds != null) {
-                tagService.syncMediaBatchTags(mediaBatchUpdateData.getMediaIds(), tagIds);
+                List<Long> mediaIds = mediaBatchUpdateData.getMediaIds();
+                // 対象メディアに紐づく既存タグを一括削除
+                tagRepository.deleteMediaTagsByMediaIds(mediaIds);
+
+                // 新しいタグが指定されている場合のみ登録処理を行う
+                if (!tagIds.isEmpty()) {
+                    // 登録用のエンティティを作成しメディアの数 × タグの数だけループしてMediaTagsエンティティを作成しリスト化する
+                    List<MediaTags> insertList = new ArrayList<>();
+
+                    for (Long mediaId : mediaIds) {
+                        for (Long tagId : tagIds) {
+                            MediaTags mediaTag = new MediaTags();
+                            mediaTag.setMediaId(mediaId);
+                            mediaTag.setTagId(tagId);
+                            mediaTag.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
+                            insertList.add(mediaTag);
+                        }
+                    }
+
+                    // 一括登録する
+                    if (!insertList.isEmpty()) {
+                        tagRepository.saveMediaTags(insertList);
+                    }
+                }
             }
         }
 
