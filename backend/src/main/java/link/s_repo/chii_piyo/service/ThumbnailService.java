@@ -1,6 +1,8 @@
 package link.s_repo.chii_piyo.service;
 
-import link.s_repo.chii_piyo.repository.MediaUpdateRepository;
+import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
+import link.s_repo.chii_piyo.model.gen.Media;
+import link.s_repo.chii_piyo.repository.MediaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
@@ -30,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 public class ThumbnailService {
 
     private final S3Service s3Service;
-    private final MediaUpdateRepository mediaUpdateRepository;
+    private final MediaRepository mediaRepository;
 
     @Value("${thumbnail.max-edge-pixels}")
     private int maxEdgePixels;
@@ -98,7 +100,10 @@ public class ThumbnailService {
             // サムネイルをS3にアップロードし、MediaレコードのサムネイルS3キーのカラムを更新する
             String thumbnailS3Key = buildThumbnailS3Key(originalFilename);
             s3Service.uploadThumbnail(thumbnailS3Key, thumbnail);
-            mediaUpdateRepository.updateThumbnailKey(mediaId, thumbnailS3Key);
+            Media media = mediaRepository.findUnscopedById(mediaId).orElseThrow(
+                () -> new ResourceNotFoundException("メディアが見つかりません mediaId=" + mediaId)
+            );
+            mediaRepository.updateThumbnailKey(media, thumbnailS3Key);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             log.error("サムネイル生成が中断されました mediaId={}", mediaId, e);

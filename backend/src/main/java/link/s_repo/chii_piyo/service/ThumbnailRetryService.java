@@ -1,7 +1,7 @@
 package link.s_repo.chii_piyo.service;
 
 import link.s_repo.chii_piyo.model.gen.Media;
-import link.s_repo.chii_piyo.repository.gen.MediaMapper;
+import link.s_repo.chii_piyo.repository.MediaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static link.s_repo.chii_piyo.repository.gen.MediaDynamicSqlSupport.*;
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 /**
  * サムネイル生成失敗を救済する定期実行サービス<br>
@@ -22,7 +20,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 @RequiredArgsConstructor
 public class ThumbnailRetryService {
 
-    private final MediaMapper mediaMapper;
+    private final MediaRepository mediaRepository;
     private final ThumbnailService thumbnailService;
 
     /**
@@ -31,12 +29,9 @@ public class ThumbnailRetryService {
      */
     @Scheduled(fixedDelayString = "${thumbnail.retry-interval-ms}")
     public void retryMissingThumbnails() {
-        // アップロードが完了していてサムネイルのキーがデータ登録されていないものを最大20件取得
-        List<Media> targets = mediaMapper.select(c -> c
-            .where(uploadStatus, isEqualTo("COMPLETED"))
-            .and(thumbnailS3Key, isNull())
-            .limit(20)
-        );
+
+        // アップロードが完了していてサムネイルのキーがデータ登録されていないもの最大20件取得
+        List<Media> targets = mediaRepository.findMissingThumbnails(20L);
 
         // 対象がなければ何もしない
         if (targets.isEmpty()) return;

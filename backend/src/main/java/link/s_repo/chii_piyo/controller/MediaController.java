@@ -1,16 +1,9 @@
 package link.s_repo.chii_piyo.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.validation.constraints.NotNull;
 import link.s_repo.chii_piyo.controller.converter.*;
 import link.s_repo.chii_piyo.controller.gen.MediaManagementApi;
 import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
+import link.s_repo.chii_piyo.model.MediaSearchCriteria;
 import link.s_repo.chii_piyo.model.gen.*;
 import link.s_repo.chii_piyo.security.CurrentUserProvider;
 import link.s_repo.chii_piyo.service.*;
@@ -19,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URI;
 import java.time.LocalDate;
@@ -161,17 +153,16 @@ public class MediaController implements MediaManagementApi {
         // 認証情報から現在のユーザーIDを取得
         Long currentUserId = currentUserProvider.getUserId();
 
+        // 検索条件をレコードクラスでまとめる
+        MediaSearchCriteria criteria = new MediaSearchCriteria(
+            offset, limit, mediaType, albumId, excludeAlbumId, tagId, sharingGroupId,
+            startDate, endDate, isFavorite, currentUserId);
+
         // 総件数を取得
-        Long totalCount = mediaService.countMedia(
-            mediaType, albumId, excludeAlbumId, tagId, sharingGroupId,
-            startDate, endDate, isFavorite, currentUserId
-        );
+        Long totalCount = mediaService.countMedia(criteria);
 
         // サービス層でメディアを取得
-        List<Media> mediaList = mediaService.getMediaList(
-            offset, limit, mediaType, albumId, excludeAlbumId, tagId,
-            sharingGroupId, startDate, endDate, isFavorite, currentUserId
-        );
+        List<Media> mediaList = mediaService.getMediaList(criteria);
 
         // 対象メディアのお気に入り情報を取得
         List<Favorites> favoriteList = favoriteService.getFavoriteList(mediaList);

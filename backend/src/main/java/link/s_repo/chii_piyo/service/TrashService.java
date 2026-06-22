@@ -5,6 +5,7 @@ import link.s_repo.chii_piyo.model.gen.Media;
 import link.s_repo.chii_piyo.model.gen.TrashItems;
 import link.s_repo.chii_piyo.repository.FavoriteRepository;
 import link.s_repo.chii_piyo.repository.MediaCommentRepository;
+import link.s_repo.chii_piyo.repository.MediaRepository;
 import link.s_repo.chii_piyo.repository.gen.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,8 +34,9 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isLessThanOrEqualTo;
 @Service
 @RequiredArgsConstructor
 public class TrashService {
+
     private final TrashItemsMapper trashItemsMapper;
-    private final MediaMapper mediaMapper;
+    private final MediaRepository mediaRepository;
     private final S3Service s3Service;
     private final MediaCommentRepository mediaCommentRepository;
     private final FavoriteRepository favoriteRepository;
@@ -158,7 +160,7 @@ public class TrashService {
         Long mediaId = trashItem.getMediaId();
 
         // Mediaテーブルから削除対象のレコードを取得
-        Media media = mediaMapper.selectByPrimaryKey(mediaId).
+        Media media = mediaRepository.findUnscopedById(mediaId).
             orElseThrow(() -> new ResourceNotFoundException("メディアが見つかりません id=" + mediaId));
 
         // 関連するコメントを削除する
@@ -174,7 +176,7 @@ public class TrashService {
         trashItemsMapper.deleteByPrimaryKey(id);
 
         // メディアデータを削除
-        mediaMapper.deleteByPrimaryKey(mediaId);
+        mediaRepository.deleteById(mediaId);
 
         // S3上のオリジナルファイルとサムネイルを削除
         List<String> s3Keys = Stream.of(media.getS3Key(), media.getThumbnailS3Key()).filter(StringUtils::hasText).toList();
@@ -220,8 +222,7 @@ public class TrashService {
         List<Long> mediaIds = trashItems.stream().map(TrashItems::getMediaId).toList();
 
         // Mediaテーブルから削除対象のレコードを取得
-        List<Media> mediaList = mediaMapper.select(
-            c -> c.where(MediaDynamicSqlSupport.id, isIn(mediaIds)));
+        List<Media> mediaList = mediaRepository.findUnscopedByIds(mediaIds);
 
         // S3キーとサムネイルS3キーを取り出しリスト化
         List<String> s3Keys = mediaList.stream()
@@ -243,7 +244,7 @@ public class TrashService {
         trashItemsMapper.delete(c -> c.where(TrashItemsDynamicSqlSupport.id, isIn(ids)));
 
         // メディアデータを削除
-        mediaMapper.delete(c -> c.where(MediaDynamicSqlSupport.id, isIn(mediaIds)));
+        mediaRepository.deleteByIds(mediaIds);
 
         // S3上のデータの一括削除
         if (!s3Keys.isEmpty()) {
