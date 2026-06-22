@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
 /**
  * 共有グループ管理サービス<br>
  * 共有グループの取得・作成およびメディアとの共有グループ紐付け、メンバーの管理を担う
