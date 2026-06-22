@@ -2,7 +2,10 @@ package link.s_repo.chii_piyo.controller;
 
 import link.s_repo.chii_piyo.controller.converter.AlbumConverter;
 import link.s_repo.chii_piyo.controller.gen.AlbumManagementApi;
-import link.s_repo.chii_piyo.model.gen.*;
+import link.s_repo.chii_piyo.model.gen.AlbumMediaAddRequestDto;
+import link.s_repo.chii_piyo.model.gen.AlbumRequestDto;
+import link.s_repo.chii_piyo.model.gen.AlbumResponseDto;
+import link.s_repo.chii_piyo.model.gen.Albums;
 import link.s_repo.chii_piyo.service.AlbumService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

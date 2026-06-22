@@ -7,7 +7,12 @@ import link.s_repo.chii_piyo.model.gen.Media;
 import link.s_repo.chii_piyo.model.gen.MediaBatchUpdateRequestDto;
 import link.s_repo.chii_piyo.model.gen.MediaUpdateRequestDto;
 import link.s_repo.chii_piyo.model.gen.TrashItems;
-import link.s_repo.chii_piyo.repository.gen.*;
+import link.s_repo.chii_piyo.repository.AlbumRepository;
+import link.s_repo.chii_piyo.repository.gen.FavoritesDynamicSqlSupport;
+import link.s_repo.chii_piyo.repository.gen.MediaDynamicSqlSupport;
+import link.s_repo.chii_piyo.repository.gen.MediaMapper;
+import link.s_repo.chii_piyo.repository.gen.MediaTagsDynamicSqlSupport;
+import link.s_repo.chii_piyo.repository.gen.TrashItemsDynamicSqlSupport;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
@@ -42,7 +47,7 @@ public class MediaService {
     private final ThumbnailService thumbnailService;
     private final S3KeyGenerator s3KeyGenerator;
     private final SharingGroupService sharingGroupService;
-    private final AlbumService albumService;
+    private final AlbumRepository albumRepository;
     private final TagService tagService;
 
     /**
@@ -442,7 +447,8 @@ public class MediaService {
             Long newId = updateData.getAlbumId().get();
             // nullではない場合存在するかチェックするため取得処理を挟む（存在しないIDの場合例外になる）
             if (newId != null) {
-                albumService.getAlbumById(newId);
+                albumRepository.findById(newId).orElseThrow(() ->
+                    new ResourceNotFoundException("アルバムが見つかりません " + "id=" + newId));
             }
             media.setAlbumId(newId);
         }

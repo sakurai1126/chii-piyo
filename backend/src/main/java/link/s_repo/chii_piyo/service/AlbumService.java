@@ -4,7 +4,10 @@ import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.Albums;
 import link.s_repo.chii_piyo.model.gen.Media;
 
-import link.s_repo.chii_piyo.repository.gen.*;
+import link.s_repo.chii_piyo.repository.AlbumRepository;
+import link.s_repo.chii_piyo.repository.gen.MediaDynamicSqlSupport;
+import link.s_repo.chii_piyo.repository.gen.MediaMapper;
+import link.s_repo.chii_piyo.repository.gen.TrashItemsDynamicSqlSupport;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,10 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
-import static link.s_repo.chii_piyo.repository.gen.AlbumsDynamicSqlSupport.id;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 /**
@@ -27,9 +33,9 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 @Service
 @RequiredArgsConstructor
 public class AlbumService {
-    private final AlbumsMapper albumsMapper;
     private final MediaMapper mediaMapper;
     private final S3Service s3Service;
+    private final AlbumRepository albumRepository;
 
     /**
      * アルバムを新規作成する<br>
@@ -39,27 +45,25 @@ public class AlbumService {
      */
     @Transactional
     public Albums createAlbum(String title) {
-        Albums albums = new Albums();
+        Albums album = new Albums();
 
         // アルバムエンティティに値をセット
-        albums.setTitle(title);
-        albums.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
-        albums.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
+        album.setTitle(title);
 
         // アルバムをDBに保存
-        albumsMapper.insert(albums);
-        return albums;
+        albumRepository.save(album);
+        return album;
     }
 
     /**
      * アルバム一覧を取得する<br>
      * 全件をID昇順で返す
      *
-     * @return アルバムエンティティの一覧
+     * @return アルバムエンティティのリスト
      */
     @Transactional(readOnly = true)
     public List<Albums> getAlbums() {
-        return albumsMapper.select(c -> c.orderBy(id));
+        return albumRepository.findAll();
     }
 
     /**
@@ -70,8 +74,8 @@ public class AlbumService {
      */
     @Transactional(readOnly = true)
     public Albums getAlbumById(Long id) {
-        return albumsMapper.selectByPrimaryKey(id)
-            .orElseThrow(() -> new ResourceNotFoundException("アルバムが見つかりません id=" + id));
+        return albumRepository.findById(id).orElseThrow(() ->
+            new ResourceNotFoundException("アルバムが見つかりません " + "id=" + id));
     }
 
     /**
@@ -158,7 +162,7 @@ public class AlbumService {
         mediaMapper.update(c -> c.set(MediaDynamicSqlSupport.albumId).equalToNull()
             .where(MediaDynamicSqlSupport.albumId, isEqualTo(albumId)));
 
-        albumsMapper.deleteByPrimaryKey(albumId);
+        albumRepository.deleteById(albumId);
     }
 
     /**
@@ -175,7 +179,7 @@ public class AlbumService {
         // タイトルを更新してDBに保存
         album.setTitle(title);
         album.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
-        albumsMapper.updateByPrimaryKeySelective(album);
+        albumRepository.update(album);
     }
 
     /**
