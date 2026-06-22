@@ -2,6 +2,7 @@ package link.s_repo.chii_piyo.service;
 
 import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.*;
+import link.s_repo.chii_piyo.repository.MediaRepository;
 import link.s_repo.chii_piyo.repository.gen.SharingGroupMembersDynamicSqlSupport;
 import link.s_repo.chii_piyo.repository.gen.SharingGroupMembersMapper;
 import link.s_repo.chii_piyo.repository.gen.SharingGroupsMapper;
@@ -32,6 +33,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 @Service
 @RequiredArgsConstructor
 public class SharingGroupService {
+    private final MediaRepository mediaRepository;
     private final SharingGroupsMapper sharingGroupsMapper;
     private final SharingGroupMembersMapper sharingGroupMembersMapper;
     private final UserService userService;
@@ -191,6 +193,9 @@ public class SharingGroupService {
     public void deleteSharingGroup(Long id) {
         // 存在チェック
         getSharingGroupById(id);
+
+        // メディアの共有グループ選択を削除する
+        mediaRepository.clearSharingGroupId(id);
 
         // 所属メンバーの削除
         sharingGroupMembersMapper.delete(c -> c.where(sharingGroupId, isEqualTo(id)));

@@ -254,6 +254,16 @@ public class MediaRepository {
     }
 
     /**
+     * 共有グループに紐づくメディアのsharing_group_idをnullに更新
+     *
+     * @param sharingGroupId 対象の共有グループID
+     */
+    public void clearSharingGroupId(Long sharingGroupId) {
+        mediaMapper.update(c -> c.set(MediaDynamicSqlSupport.sharingGroupId).equalToNull()
+            .where(MediaDynamicSqlSupport.sharingGroupId, isEqualTo(sharingGroupId)));
+    }
+
+    /**
      * 各パラメータを受け取りフィルタリング用の条件を構築する
      *
      * @param mediaSearchCriteria 検索条件
