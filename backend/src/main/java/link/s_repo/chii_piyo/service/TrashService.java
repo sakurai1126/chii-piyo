@@ -4,6 +4,7 @@ import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.Media;
 import link.s_repo.chii_piyo.model.gen.TrashItems;
 import link.s_repo.chii_piyo.repository.FavoriteRepository;
+import link.s_repo.chii_piyo.repository.MediaCommentRepository;
 import link.s_repo.chii_piyo.repository.gen.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +36,7 @@ public class TrashService {
     private final TrashItemsMapper trashItemsMapper;
     private final MediaMapper mediaMapper;
     private final S3Service s3Service;
-    private final MediaCommentsMapper mediaCommentsMapper;
+    private final MediaCommentRepository mediaCommentRepository;
     private final FavoriteRepository favoriteRepository;
     private final MediaTagsMapper mediaTagsMapper;
 
@@ -161,7 +162,7 @@ public class TrashService {
             orElseThrow(() -> new ResourceNotFoundException("メディアが見つかりません id=" + mediaId));
 
         // 関連するコメントを削除する
-        mediaCommentsMapper.delete(c -> c.where(MediaCommentsDynamicSqlSupport.mediaId, isEqualTo(mediaId)));
+        mediaCommentRepository.deleteByMediaId(mediaId);
 
         // 関連するお気に入りを削除する
         favoriteRepository.deleteByMediaId(mediaId);
@@ -229,8 +230,7 @@ public class TrashService {
             .toList();
 
         // 関連するコメントを削除する
-        mediaCommentsMapper.delete(
-            c -> c.where(MediaCommentsDynamicSqlSupport.mediaId, isIn(mediaIds)));
+        mediaCommentRepository.deleteByMediaIds(mediaIds);
 
         // 関連するお気に入りを削除する
         favoriteRepository.deleteByMediaIds(mediaIds);
