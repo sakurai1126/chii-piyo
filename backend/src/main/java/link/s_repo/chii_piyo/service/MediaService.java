@@ -10,6 +10,7 @@ import link.s_repo.chii_piyo.model.gen.MediaUpdateRequestDto;
 import link.s_repo.chii_piyo.model.gen.TrashItems;
 import link.s_repo.chii_piyo.repository.AlbumRepository;
 import link.s_repo.chii_piyo.repository.MediaRepository;
+import link.s_repo.chii_piyo.repository.SharingGroupRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -39,7 +40,7 @@ public class MediaService {
     private final S3Service s3Service;
     private final ThumbnailService thumbnailService;
     private final S3KeyGenerator s3KeyGenerator;
-    private final SharingGroupService sharingGroupService;
+    private final SharingGroupRepository sharingGroupRepository;
     private final AlbumRepository albumRepository;
     private final TagService tagService;
 
@@ -257,7 +258,8 @@ public class MediaService {
             Long newId = updateData.getSharingGroupId().get();
             // nullではない場合存在するかチェックするため取得処理を挟む（存在しないIDの場合例外になる）
             if (newId != null) {
-                sharingGroupService.getSharingGroupById(newId);
+                sharingGroupRepository.findById(newId)
+                    .orElseThrow(() -> new ResourceNotFoundException("共有グループが見つかりません id=" + newId));
             }
 
             media.setSharingGroupId(newId);
@@ -294,7 +296,8 @@ public class MediaService {
         if (mediaBatchUpdateData.getSharingGroupId().isPresent()) {
             Long newSharingGroupId = mediaBatchUpdateData.getSharingGroupId().get();
             if (newSharingGroupId != null) {
-                sharingGroupService.getSharingGroupById(newSharingGroupId);
+                sharingGroupRepository.findById(newSharingGroupId)
+                    .orElseThrow(() -> new ResourceNotFoundException("共有グループが見つかりません id=" + newSharingGroupId));
             }
         }
 
