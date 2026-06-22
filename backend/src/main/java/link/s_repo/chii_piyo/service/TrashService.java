@@ -3,6 +3,7 @@ package link.s_repo.chii_piyo.service;
 import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.Media;
 import link.s_repo.chii_piyo.model.gen.TrashItems;
+import link.s_repo.chii_piyo.repository.FavoriteRepository;
 import link.s_repo.chii_piyo.repository.gen.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +36,7 @@ public class TrashService {
     private final MediaMapper mediaMapper;
     private final S3Service s3Service;
     private final MediaCommentsMapper mediaCommentsMapper;
-    private final FavoritesMapper favoritesMapper;
+    private final FavoriteRepository favoriteRepository;
     private final MediaTagsMapper mediaTagsMapper;
 
     /**
@@ -163,7 +164,7 @@ public class TrashService {
         mediaCommentsMapper.delete(c -> c.where(MediaCommentsDynamicSqlSupport.mediaId, isEqualTo(mediaId)));
 
         // 関連するお気に入りを削除する
-        favoritesMapper.delete(c -> c.where(FavoritesDynamicSqlSupport.mediaId, isEqualTo(mediaId)));
+        favoriteRepository.deleteByMediaId(mediaId);
 
         // 関連するタグデータを削除する
         mediaTagsMapper.delete(c -> c.where(MediaTagsDynamicSqlSupport.mediaId, isEqualTo(mediaId)));
@@ -232,8 +233,7 @@ public class TrashService {
             c -> c.where(MediaCommentsDynamicSqlSupport.mediaId, isIn(mediaIds)));
 
         // 関連するお気に入りを削除する
-        favoritesMapper.delete(
-            c -> c.where(FavoritesDynamicSqlSupport.mediaId, isIn(mediaIds)));
+        favoriteRepository.deleteByMediaIds(mediaIds);
 
         // 関連するタグデータを削除する
         mediaTagsMapper.delete(

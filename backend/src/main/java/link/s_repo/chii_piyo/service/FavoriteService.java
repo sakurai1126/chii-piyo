@@ -1,9 +1,8 @@
 package link.s_repo.chii_piyo.service;
 
-import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.Favorites;
 import link.s_repo.chii_piyo.model.gen.Media;
-import link.s_repo.chii_piyo.repository.gen.*;
+import link.s_repo.chii_piyo.repository.FavoriteRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -11,14 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class FavoriteService {
-    private final FavoritesMapper favoritesMapper;
-
+    private final FavoriteRepository favoriteRepository;
     /**
      * お気に入りに追加したユーザーのIDリストを取得する
      *
@@ -27,12 +24,10 @@ public class FavoriteService {
      */
     @Transactional(readOnly = true)
     public List<Long> getAddFavoriteUserIds(Long mediaId) {
-        List<Favorites> favorites =
-            favoritesMapper.select(c -> c.where(
-                FavoritesDynamicSqlSupport.mediaId,
-                isEqualTo(mediaId)
-            ));
+        // メディアIDに一致するお気に入りデータを取得
+        List<Favorites> favorites = favoriteRepository.findByMediaId(mediaId);
 
+        // 取得したデータからユーザーIDを抽出して返却
         return favorites.stream().map(Favorites::getUserId).toList();
     }
 
@@ -46,10 +41,7 @@ public class FavoriteService {
     @Transactional(readOnly = true)
     public boolean getCurrentUserIsFavorite(Long mediaId, Long currentUserId) {
         // mediaIdとuserIdが一致するものの件数を取得する
-        long count = favoritesMapper.count(c -> c.where(
-            FavoritesDynamicSqlSupport.mediaId, isEqualTo(mediaId),
-            and(FavoritesDynamicSqlSupport.userId, isEqualTo(currentUserId))
-        ));
+        Long count = favoriteRepository.countByMediaIdAndUserId(mediaId, currentUserId);
 
         // 1件以上かどうかの真偽値を返す
         return count > 0;
@@ -73,7 +65,7 @@ public class FavoriteService {
         favorite.setMediaId(mediaId);
         favorite.setUserId(currentUserId);
 
-        favoritesMapper.insertSelective(favorite);
+        favoriteRepository.save(favorite);
     }
 
     /**
@@ -85,8 +77,7 @@ public class FavoriteService {
     @Transactional
     public void removeFavorite(Long mediaId, Long currentUserId) {
         // 受け取ったパラメータに合致するデータを削除する
-        favoritesMapper.delete(c -> c.where(FavoritesDynamicSqlSupport.mediaId, isEqualTo(mediaId),
-            and(FavoritesDynamicSqlSupport.userId, isEqualTo(currentUserId))));
+        favoriteRepository.deleteByMediaIdAndUserId(mediaId, currentUserId);
     }
 
     /**
@@ -105,6 +96,6 @@ public class FavoriteService {
         }
 
         // リスト化したメディアIDに合致するデータを取得
-        return favoritesMapper.select(c -> c.where(FavoritesDynamicSqlSupport.mediaId, isIn(mediaIds)));
+        return favoriteRepository.findByMediaIds(mediaIds);
     }
 }
