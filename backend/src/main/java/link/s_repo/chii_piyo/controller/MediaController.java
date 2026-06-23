@@ -1,25 +1,27 @@
 package link.s_repo.chii_piyo.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.validation.constraints.NotNull;
-import link.s_repo.chii_piyo.controller.converter.*;
+import link.s_repo.chii_piyo.component.S3StorageManager;
+
+import link.s_repo.chii_piyo.controller.converter.MediaConverter;
+import link.s_repo.chii_piyo.controller.converter.MediaListConverter;
+import link.s_repo.chii_piyo.controller.converter.MediaNavigationConverter;
+import link.s_repo.chii_piyo.controller.converter.MediaUploadConverter;
+import link.s_repo.chii_piyo.controller.converter.TagConverter;
 import link.s_repo.chii_piyo.controller.gen.MediaManagementApi;
 import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
+import link.s_repo.chii_piyo.model.MediaSearchCriteria;
 import link.s_repo.chii_piyo.model.gen.*;
 import link.s_repo.chii_piyo.security.CurrentUserProvider;
-import link.s_repo.chii_piyo.service.*;
+import link.s_repo.chii_piyo.service.FavoriteService;
+import link.s_repo.chii_piyo.service.MediaCommentService;
+import link.s_repo.chii_piyo.service.MediaService;
+import link.s_repo.chii_piyo.service.TagService;
+import link.s_repo.chii_piyo.service.TrashService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.time.LocalDate;
@@ -36,13 +38,12 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 public class MediaController implements MediaManagementApi {
-
     private final MediaService mediaService;
     private final MediaConverter mediaConverter;
     private final MediaListConverter mediaListConverter;
     private final CurrentUserProvider currentUserProvider;
     private final MediaCommentService mediaCommentService;
-    private final S3Service s3Service;
+    private final S3StorageManager s3StorageManager;
     private final TagService tagService;
     private final TagConverter tagConverter;
     private final MediaNavigationConverter mediaNavigationConverter;
@@ -161,17 +162,16 @@ public class MediaController implements MediaManagementApi {
         // 認証情報から現在のユーザーIDを取得
         Long currentUserId = currentUserProvider.getUserId();
 
+        // 検索条件をレコードクラスでまとめる
+        MediaSearchCriteria criteria = new MediaSearchCriteria(
+            offset, limit, mediaType, albumId, excludeAlbumId, tagId, sharingGroupId,
+            startDate, endDate, isFavorite, currentUserId);
+
         // 総件数を取得
-        Long totalCount = mediaService.countMedia(
-            mediaType, albumId, excludeAlbumId, tagId, sharingGroupId,
-            startDate, endDate, isFavorite, currentUserId
-        );
+        Long totalCount = mediaService.countMedia(criteria);
 
         // サービス層でメディアを取得
-        List<Media> mediaList = mediaService.getMediaList(
-            offset, limit, mediaType, albumId, excludeAlbumId, tagId,
-            sharingGroupId, startDate, endDate, isFavorite, currentUserId
-        );
+        List<Media> mediaList = mediaService.getMediaList(criteria);
 
         // 対象メディアのお気に入り情報を取得
         List<Favorites> favoriteList = favoriteService.getFavoriteList(mediaList);
@@ -202,7 +202,7 @@ public class MediaController implements MediaManagementApi {
         List<MediaResponseDto> responseMediaList = mediaList.stream()
             .map(media -> {
                 URI thumbnailPresignedUrl = media.getThumbnailS3Key() != null
-                    ? s3Service.generateDownloadPresignedUrl(media.getThumbnailS3Key(),
+                    ? s3StorageManager.generateDownloadPresignedUrl(media.getThumbnailS3Key(),
                     media.getOriginalFilename())
                     : null;
 
@@ -246,7 +246,7 @@ public class MediaController implements MediaManagementApi {
         // サービス層でIDに基づくメディアを取得する
         Media media = mediaService.getMedia(id);
 
-        URI presignedUrl = s3Service.generateDownloadPresignedUrl(media.getS3Key(), media.getOriginalFilename());
+        URI presignedUrl = s3StorageManager.generateDownloadPresignedUrl(media.getS3Key(), media.getOriginalFilename());
 
         // メディアに紐づくタグを取得してDTOに変換する
         List<TagResponseDto> tags = tagService.getMediaTags(id)
@@ -265,7 +265,7 @@ public class MediaController implements MediaManagementApi {
         for (MediaService.GetMediaNavigationResult nav : mediaNavigation) {
             // ナビゲーション対象のメディアのサムネイル画像の署名付きURLを生成する
             URI navMediaPresignedUrl = nav.media().getThumbnailS3Key() != null
-                ? s3Service.generateDownloadPresignedUrl(
+                ? s3StorageManager.generateDownloadPresignedUrl(
                 nav.media().getThumbnailS3Key(), nav.media().getOriginalFilename())
                 : null;
 
@@ -285,7 +285,7 @@ public class MediaController implements MediaManagementApi {
         }
 
         URI thumbnailPresignedUrl = media.getThumbnailS3Key() != null
-            ? s3Service.generateDownloadPresignedUrl(media.getThumbnailS3Key(), media.getOriginalFilename())
+            ? s3StorageManager.generateDownloadPresignedUrl(media.getThumbnailS3Key(), media.getOriginalFilename())
             : null;
 
         // 認証情報から現在のユーザーIDを取得

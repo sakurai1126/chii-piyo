@@ -1,13 +1,10 @@
 package link.s_repo.chii_piyo.service;
 
-
 import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.TagMediaCount;
 import link.s_repo.chii_piyo.model.gen.MediaTags;
 import link.s_repo.chii_piyo.model.gen.Tags;
-
-import link.s_repo.chii_piyo.repository.MediaTagsCustomMapper;
-import link.s_repo.chii_piyo.repository.gen.*;
+import link.s_repo.chii_piyo.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,16 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static link.s_repo.chii_piyo.repository.gen.TagsDynamicSqlSupport.id;
-import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
-import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
 
 
 /**
@@ -35,10 +27,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
 @Service
 @RequiredArgsConstructor
 public class TagService {
-
-    private final TagsMapper tagsMapper;
-    private final MediaTagsMapper mediaTagsMapper;
-    private final MediaTagsCustomMapper mediaTagsCustomMapper;
+    private final TagRepository tagRepository;
 
     /**
      * タグを新規作成する<br>
@@ -48,15 +37,14 @@ public class TagService {
      */
     @Transactional
     public Tags createTag(String name) {
-        Tags tags = new Tags();
+        Tags tag = new Tags();
 
         // タグエンティティに値をセット
-        tags.setName(name);
-        tags.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
+        tag.setName(name);
 
         // タグをDBに保存
-        tagsMapper.insert(tags);
-        return tags;
+        tagRepository.save(tag);
+        return tag;
     }
 
     /**
@@ -67,7 +55,7 @@ public class TagService {
      */
     @Transactional(readOnly = true)
     public List<Tags> getTags() {
-        return tagsMapper.select(c -> c.orderBy(id));
+        return tagRepository.findAllOrderById();
     }
 
     /**
@@ -79,22 +67,18 @@ public class TagService {
     @Transactional(readOnly = true)
     public List<Tags> getMediaTags(Long mediaId) {
         // メディアIDと紐づいたタグIDの一覧を取得する
-        List<Long> mediaTagIds = mediaTagsMapper.select(
-                // "WHERE media_id = #{mediaId}"
-                c -> c.where(MediaTagsDynamicSqlSupport.mediaId, isEqualTo(mediaId))
-            ).stream()
-            // MediaTagsエンティティからタグIDだけ抜き取りリスト化
+        List<Long> tagIds = tagRepository.findMediaTagsByMediaId(mediaId)
+            .stream()
             .map(MediaTags::getTagId)
             .toList();
 
         // タグが空の場合は空リストを渡す
-        if (mediaTagIds.isEmpty()) {
+        if (tagIds.isEmpty()) {
             return Collections.emptyList();
         }
 
-        return tagsMapper.select(c -> c.where(id, isIn(mediaTagIds)));
+        return tagRepository.findByIds(tagIds);
     }
-
 
     /**
      * メディアに紐づくタグを一括更新する<br>
@@ -106,10 +90,7 @@ public class TagService {
     @Transactional
     public List<Tags> syncMediaTags(Long mediaId, List<Long> tagIds) {
         // メディアIDと紐づいたタグIDの一覧を取得する
-        List<Long> currentTagIds = mediaTagsMapper.select(
-                // "WHERE media_id = #{mediaId}"
-                c -> c.where(MediaTagsDynamicSqlSupport.mediaId, isEqualTo(mediaId))
-            ).stream()
+        List<Long> currentTagIds = tagRepository.findMediaTagsByMediaId(mediaId).stream()
             // MediaTagsエンティティからタグIDだけ抜き取りリスト化
             .map(MediaTags::getTagId)
             .toList();
@@ -121,11 +102,7 @@ public class TagService {
 
         // 上記のIDのタグを一括で削除する
         if (!toDeleteTagIds.isEmpty()) {
-            mediaTagsMapper.delete(c ->
-                // DELETE FROM media_tags WHERE media_id = #{mediaId} AND tag_id IN (?, ?, ...)
-                c.where(MediaTagsDynamicSqlSupport.mediaId, isEqualTo(mediaId))
-                    .and(MediaTagsDynamicSqlSupport.tagId, isIn(toDeleteTagIds))
-            );
+            tagRepository.deleteMediaTagsByMediaIdAndTagIds(mediaId, toDeleteTagIds);
         }
 
         // 既存MediaTagにはなく新規追加タグにはあるタグIDを抽出
@@ -142,7 +119,7 @@ public class TagService {
 
         // 上記を一括登録する
         if (!toInsertTags.isEmpty()) {
-            mediaTagsMapper.insertMultiple(toInsertTags);
+            tagRepository.saveMediaTags(toInsertTags);
         }
 
         // 更新後のmedia_tagsからtagIdを取り出す
@@ -157,22 +134,17 @@ public class TagService {
         }
 
         // tagIdでTagsを取得して返す
-        return tagsMapper.select(
-            // "WHERE id IN (?, ?, ...)"
-            c -> c.where(TagsDynamicSqlSupport.id, isIn(updatedTagIds))
-        );
+        return tagRepository.findByIds(updatedTagIds);
     }
 
     /**
-     * タグIDごとのメディア数を返す<br>
-     * 自動生成コードでは全件取得してから計算し高負荷となるためカスタムマッパーを使用してDB側で集計
-     * 返り値をMapに格納して返す
+     * タグIDごとのメディア数ををMapに格納して返す
      *
      * @return タグID → メディア数のマップ
      */
     @Transactional(readOnly = true)
     public Map<Long, Long> getMediaCountByTagId() {
-        return mediaTagsCustomMapper.selectMediaCountByTagId()
+        return tagRepository.selectMediaCountByTagId()
             .stream()
             .collect(Collectors.toMap(
                 TagMediaCount::getTagId,
@@ -188,7 +160,7 @@ public class TagService {
      */
     @Transactional(readOnly = true)
     public Tags getTagById(Long id) {
-        return tagsMapper.selectByPrimaryKey(id)
+        return tagRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("タグが見つかりません id=" + id));
     }
 
@@ -206,7 +178,7 @@ public class TagService {
 
         // 新しい名前をセットして更新する
         tag.setName(name);
-        tagsMapper.updateByPrimaryKeySelective(tag);
+        tagRepository.update(tag);
     }
 
     /**
@@ -216,8 +188,8 @@ public class TagService {
      */
     @Transactional
     public void deleteTag(Long tagId) {
-        mediaTagsMapper.delete(c -> c.where(MediaTagsDynamicSqlSupport.tagId, isEqualTo(tagId)));
-        tagsMapper.delete(c -> c.where(id, isEqualTo(tagId)));
+        tagRepository.deleteMediaTagsByTagId(tagId);
+        tagRepository.delete(tagId);
     }
 
     /**
@@ -227,40 +199,6 @@ public class TagService {
      * @return タグIDのリストに一致するタグの件数
      */
     public Long count(List<Long> tagIds) {
-        return tagsMapper.count(c -> c.where(TagsDynamicSqlSupport.id, isIn(tagIds)));
-    }
-
-    /**
-     * 複数メディアのタグを一括で入替更新する
-     *
-     * @param mediaIds 対象のメディアIDリスト
-     * @param tagIds   新しく設定するタグIDリスト
-     */
-    public void syncMediaBatchTags(List<Long> mediaIds, List<Long> tagIds) {
-        // 対象メディアに紐づく既存タグを一括削除
-        mediaTagsMapper.delete(c -> c.where(MediaTagsDynamicSqlSupport.mediaId, isIn(mediaIds)));
-
-        // 新しいタグの指定がなければ上記削除のみ実行し終了
-        if (tagIds == null || tagIds.isEmpty()) {
-            return;
-        }
-
-        // 登録用のエンティティを作成しメディアの数 × タグの数だけループしてMediaTagsエンティティを作成しリスト化する
-        List<MediaTags> insertList = new ArrayList<>();
-
-        for (Long mediaId : mediaIds) {
-            for (Long tagId : tagIds) {
-                MediaTags mediaTag = new MediaTags();
-                mediaTag.setMediaId(mediaId);
-                mediaTag.setTagId(tagId);
-                mediaTag.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
-                insertList.add(mediaTag);
-            }
-        }
-
-        // 一括登録する
-        if (!insertList.isEmpty()) {
-            mediaTagsMapper.insertMultiple(insertList);
-        }
+        return tagRepository.countByTagIds(tagIds);
     }
 }

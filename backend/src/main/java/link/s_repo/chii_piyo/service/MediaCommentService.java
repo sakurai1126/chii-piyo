@@ -1,22 +1,18 @@
 package link.s_repo.chii_piyo.service;
 
-
 import link.s_repo.chii_piyo.exception.ResourceAccessDeniedException;
 import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.MediaComments;
-import link.s_repo.chii_piyo.repository.gen.*;
+import link.s_repo.chii_piyo.repository.MediaCommentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 /**
  * コメント管理サービス<br>
@@ -26,19 +22,18 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 @Service
 @RequiredArgsConstructor
 public class MediaCommentService {
-    private final MediaCommentsMapper mediaCommentsMapper;
+    private final MediaCommentRepository mediaCommentRepository;
 
     /**
      * コメントをIDで1件取得する<br>
      *
      * @param commentId 対象コメントのID
-     * @return メディアID
+     * @return メディアコメントエンティティ
      */
     @Transactional
     public MediaComments getMediaComment(Long commentId) {
-        return mediaCommentsMapper.selectOne(c -> c
-            .where(MediaCommentsDynamicSqlSupport.id, isEqualTo(commentId))
-        ).orElseThrow(() -> new ResourceNotFoundException("コメントが見つかりません mediaId=" + commentId));
+        return mediaCommentRepository.findById(commentId).orElseThrow(() ->
+            new ResourceNotFoundException("コメントが見つかりません commentId=" + commentId));
     }
 
     /**
@@ -57,11 +52,9 @@ public class MediaCommentService {
         mediaComments.setMediaId(mediaId);
         mediaComments.setUserId(userId);
         mediaComments.setContent(content);
-        mediaComments.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
-        mediaComments.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
 
         // コメントをDBに保存
-        mediaCommentsMapper.insert(mediaComments);
+        mediaCommentRepository.save(mediaComments);
         return mediaComments;
     }
 
@@ -79,9 +72,7 @@ public class MediaCommentService {
         }
 
         // 指定されたメディアIDに紐づくコメントを一括で取得
-        List<MediaComments> mediaComments = mediaCommentsMapper.select(
-            c -> c.where(MediaCommentsDynamicSqlSupport.mediaId, isIn(mediaIds))
-        );
+        List<MediaComments> mediaComments = mediaCommentRepository.findByMediaIds(mediaIds);
 
         // 取得したコメントリストをmediaIdごとにグルーピングし、コメント数をカウントしてマップに変換して返す
         return mediaComments.stream()
@@ -99,9 +90,7 @@ public class MediaCommentService {
      */
     @Transactional(readOnly = true)
     public List<MediaComments> getMediaComments(Long mediaId) {
-        return mediaCommentsMapper.select(
-            c -> c.where(MediaCommentsDynamicSqlSupport.mediaId, isEqualTo(mediaId))
-        );
+        return mediaCommentRepository.findByMediaId(mediaId);
     }
 
     /**
@@ -118,7 +107,6 @@ public class MediaCommentService {
         }
 
         // 削除処理
-        mediaCommentsMapper.deleteByPrimaryKey(comment.getId());
+        mediaCommentRepository.delete(comment.getId());
     }
-
 }

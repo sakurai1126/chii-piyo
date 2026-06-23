@@ -1,5 +1,6 @@
 package link.s_repo.chii_piyo.controller;
 
+import link.s_repo.chii_piyo.component.S3StorageManager;
 import link.s_repo.chii_piyo.controller.converter.MediaConverter;
 import link.s_repo.chii_piyo.controller.converter.TrashItemConverter;
 import link.s_repo.chii_piyo.controller.converter.TrashItemListConverter;
@@ -10,7 +11,6 @@ import link.s_repo.chii_piyo.model.gen.TrashItemResponseDto;
 import link.s_repo.chii_piyo.model.gen.TrashItems;
 import link.s_repo.chii_piyo.model.gen.TrashRestoreRequestDto;
 import link.s_repo.chii_piyo.service.MediaService;
-import link.s_repo.chii_piyo.service.S3Service;
 import link.s_repo.chii_piyo.service.TrashService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +33,7 @@ public class TrashController implements TrashManagementApi {
     private final TrashService trashService;
     private final MediaService mediaService;
     private final MediaConverter mediaConverter;
-    private final S3Service s3Service;
+    private final S3StorageManager s3StorageManager;
 
     /**
      * DELETE /trash/{id}<br>
@@ -117,7 +117,7 @@ public class TrashController implements TrashManagementApi {
             trashItemAndMedia.stream().map(c -> {
                 // サムネイル生成処理
                 URI thumbnailPresignedUrl = c.media().getThumbnailS3Key() != null
-                    ? s3Service.generateDownloadPresignedUrl(c.media().getThumbnailS3Key(),
+                    ? s3StorageManager.generateDownloadPresignedUrl(c.media().getThumbnailS3Key(),
                     c.media().getOriginalFilename())
                     : null;
                 // サムネイルとメタデータのみのレスポンスDTOを作成

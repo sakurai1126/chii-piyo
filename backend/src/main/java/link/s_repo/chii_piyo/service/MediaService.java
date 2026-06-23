@@ -1,16 +1,22 @@
 package link.s_repo.chii_piyo.service;
 
 import link.s_repo.chii_piyo.common.S3KeyGenerator;
+import link.s_repo.chii_piyo.component.S3StorageManager;
+import link.s_repo.chii_piyo.component.ThumbnailGenerator;
 import link.s_repo.chii_piyo.exception.ResourceAccessDeniedException;
 import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
+import link.s_repo.chii_piyo.model.MediaSearchCriteria;
 import link.s_repo.chii_piyo.model.gen.Media;
 import link.s_repo.chii_piyo.model.gen.MediaBatchUpdateRequestDto;
+import link.s_repo.chii_piyo.model.gen.MediaTags;
 import link.s_repo.chii_piyo.model.gen.MediaUpdateRequestDto;
 import link.s_repo.chii_piyo.model.gen.TrashItems;
-import link.s_repo.chii_piyo.repository.gen.*;
+import link.s_repo.chii_piyo.repository.AlbumRepository;
+import link.s_repo.chii_piyo.repository.MediaRepository;
+import link.s_repo.chii_piyo.repository.SharingGroupRepository;
+import link.s_repo.chii_piyo.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,9 +31,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static link.s_repo.chii_piyo.repository.gen.MediaDynamicSqlSupport.id;
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
-
 /**
  * メディア管理サービス<br>
  * 写真・動画のメタデータ登録およびS3との連携を担う
@@ -36,14 +39,13 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 @Service
 @RequiredArgsConstructor
 public class MediaService {
-
-    private final MediaMapper mediaMapper;
-    private final S3Service s3Service;
-    private final ThumbnailService thumbnailService;
+    private final MediaRepository mediaRepository;
+    private final S3StorageManager s3StorageManager;
+    private final ThumbnailGenerator thumbnailGenerator;
     private final S3KeyGenerator s3KeyGenerator;
-    private final SharingGroupService sharingGroupService;
-    private final AlbumService albumService;
-    private final TagService tagService;
+    private final SharingGroupRepository sharingGroupRepository;
+    private final AlbumRepository albumRepository;
+    private final TagRepository tagRepository;
 
     /**
      * メディアをID指定で1件取得する
@@ -53,13 +55,8 @@ public class MediaService {
      */
     @Transactional(readOnly = true)
     public Media getMedia(Long id) {
-        return mediaMapper.selectOne(c -> c
-            .where(MediaDynamicSqlSupport.id, isEqualTo(id))
-            .and(MediaDynamicSqlSupport.id, isNotIn(
-                select(TrashItemsDynamicSqlSupport.mediaId)
-                    .from(TrashItemsDynamicSqlSupport.trashItems)
-            ))
-        ).orElseThrow(() -> new ResourceNotFoundException("メディアが見つかりません mediaId=" + id));
+        return mediaRepository.findById(id).orElseThrow(
+            () -> new ResourceNotFoundException("メディアが見つかりません " + "mediaId=" + id));
     }
 
     /**
@@ -70,176 +67,31 @@ public class MediaService {
      */
     @Transactional(readOnly = true)
     public List<Media> getMediabyIds(List<Long> ids) {
-        return mediaMapper.select(c -> c
-            .where(MediaDynamicSqlSupport.id, isIn(ids))
-            .and(MediaDynamicSqlSupport.id, isNotIn(
-                select(TrashItemsDynamicSqlSupport.mediaId)
-                    .from(TrashItemsDynamicSqlSupport.trashItems)
-            ))
-        );
+        return mediaRepository.findByIds(ids);
     }
 
     /**
      * メディア総件数を取得する
      *
-     * @param mediaType      メディア種別 (PHOTO / VIDEO)
-     * @param albumId        アルバムID
-     * @param excludeAlbumId 除外するアルバムID
-     * @param tagId          タグIDのリスト
-     * @param sharingGroupId 共有グループID
-     * @param startDate      日時指定開始日
-     * @param endDate        日時指定終了日
-     * @param isFavorite     お気に入りのみかどうかのフラグ
-     * @param currentUserId  現在のユーザーID (isFavoriteがtrueの場合に使用)
+     * @param mediaSearchCriteria 検索条件
      * @return 総件数の数値
      */
     @Transactional(readOnly = true)
-    public Long countMedia(
-        String mediaType,
-        Long albumId,
-        Long excludeAlbumId,
-        List<Long> tagId,
-        Long sharingGroupId,
-        LocalDate startDate,
-        LocalDate endDate,
-        Boolean isFavorite,
-        Long currentUserId) {
+    public Long countMedia(MediaSearchCriteria mediaSearchCriteria) {
 
-        return mediaMapper.count(c -> {
-            // 絞り込み条件設定を構築
-            c.where(buildMediaFilterConditions(mediaType, albumId, excludeAlbumId, tagId,
-                sharingGroupId, isFavorite, currentUserId, startDate, endDate));
-
-            return c;
-        });
+        return mediaRepository.countMedia(mediaSearchCriteria);
     }
 
     /**
      * メディアの一覧を取得する
      *
-     * @param offset         取得位置
-     * @param limit          最大件数
-     * @param mediaType      メディア種別 (PHOTO / VIDEO)
-     * @param albumId        アルバムID
-     * @param excludeAlbumId 除外するアルバムID
-     * @param tagId          タグIDのリスト
-     * @param sharingGroupId 共有グループID
-     * @param startDate      日時指定開始日
-     * @param endDate        日時指定終了日
-     * @param isFavorite     お気に入りのみかどうかのフラグ
-     * @param currentUserId  現在のユーザーID (isFavoriteがtrueの場合に使用)
+     * @param mediaSearchCriteria 検索条件
      * @return メディアのリスト
      */
-    public List<Media> getMediaList(
-        Integer offset,
-        Integer limit,
-        String mediaType,
-        Long albumId,
-        Long excludeAlbumId,
-        List<Long> tagId,
-        Long sharingGroupId,
-        LocalDate startDate,
-        LocalDate endDate,
-        Boolean isFavorite,
-        Long currentUserId) {
-        // ページネーション込みで一覧取得
-        return mediaMapper.select(c -> {
-                // 絞り込み条件設定を構築
-                c.where(buildMediaFilterConditions(mediaType, albumId, excludeAlbumId, tagId,
-                    sharingGroupId, isFavorite, currentUserId, startDate, endDate));
-
-                c.orderBy(MediaDynamicSqlSupport.createdAt.descending());
-                return c.limit(limit).offset(offset);
-            }
-        );
+    public List<Media> getMediaList(MediaSearchCriteria mediaSearchCriteria) {
+        // 一覧取得
+        return mediaRepository.findBySearchCriteria(mediaSearchCriteria);
     }
-
-    private List<AndOrCriteriaGroup> buildMediaFilterConditions(
-        String mediaType,
-        Long albumId,
-        Long excludeAlbumId,
-        List<Long> tagId,
-        Long sharingGroupId,
-        Boolean isFavorite,
-        Long currentUserId,
-        LocalDate startDate,
-        LocalDate endDate) {
-
-        // 絞り込み条件構築用のリストを用意し各条件が存在する時は追加していく
-        List<AndOrCriteriaGroup> conditions = new ArrayList<>();
-        if (albumId != null) {
-            conditions.add(and(MediaDynamicSqlSupport.albumId, isEqualTo(albumId)));
-        }
-
-        if (excludeAlbumId != null) {
-            // 指定したアルバムIDと一致しないまたはアルバムIDがNULLのメディア
-            conditions.add(and(MediaDynamicSqlSupport.albumId, isNotEqualTo(excludeAlbumId),
-                or(MediaDynamicSqlSupport.albumId, isNull())));
-        }
-
-        if ("PHOTO".equals(mediaType) || "VIDEO".equals(mediaType)) {
-            conditions.add(and(MediaDynamicSqlSupport.mediaType, isEqualTo(mediaType)));
-        }
-
-        if (sharingGroupId != null) {
-            // 0指定の場合は指定されていない(全員公開)のみを取得する
-            if (sharingGroupId == 0) {
-                conditions.add(and(MediaDynamicSqlSupport.sharingGroupId, isNull()));
-            } else {
-                conditions.add(and(MediaDynamicSqlSupport.sharingGroupId, isEqualTo(sharingGroupId)));
-            }
-        }
-
-        if (tagId != null && !tagId.isEmpty()) {
-            // タグIDで絞り込むため、MediaTagsテーブルとサブクエリで結合して条件を追加
-            // タグIDの一致するMediaTagsレコードをサブクエリで取得しMediaIdを抽出
-            // 上記のMediaIdとMediaテーブルのidで絞り込む
-            conditions.add(and(MediaDynamicSqlSupport.id,
-                isIn(select(MediaTagsDynamicSqlSupport.mediaId)
-                    .from(MediaTagsDynamicSqlSupport.mediaTags)
-                    .where(MediaTagsDynamicSqlSupport.tagId, isIn(tagId))
-                ))
-            );
-        }
-
-        if (startDate != null) {
-            // createdAt >= startDate で検索
-            // atStartOfDayでLocalDateTimeに変換、toOffsetDateTimeでOffsetDateTimeに変換して検索
-            conditions.add(and(MediaDynamicSqlSupport.createdAt,
-                isGreaterThanOrEqualTo(startDate.atStartOfDay(ZoneOffset.UTC).toOffsetDateTime())));
-        }
-
-        if (endDate != null) {
-            // createdAt < endDate で検索
-            // plusDays(1)で翌日にして対象日末までを検索
-            conditions.add(and(MediaDynamicSqlSupport.createdAt,
-                isLessThan(endDate.plusDays(1).atStartOfDay(ZoneOffset.UTC).toOffsetDateTime())));
-        }
-
-        // isFavoriteがtrueの場合、サブクエリで現在のユーザーがお気に入りに入れているメディアをカウントする
-        if (Boolean.TRUE.equals(isFavorite) && currentUserId != null) {
-            conditions.add(
-                // 自分（=currentUserId）が登録したfavoritesレコードのmedia_idのリストを取得し
-                // メイン検索対象の media.id がそのリストの中に含まれているかを判定
-                and(MediaDynamicSqlSupport.id, isIn(
-                    select(FavoritesDynamicSqlSupport.mediaId)
-                        .from(FavoritesDynamicSqlSupport.favorites)
-                        .where(FavoritesDynamicSqlSupport.userId, isEqualTo(currentUserId))
-                ))
-            );
-        }
-
-        // ゴミ箱のテーブル内に存在しないもののみで限定する
-        conditions.add(
-            and(MediaDynamicSqlSupport.id, isNotIn(
-                select(TrashItemsDynamicSqlSupport.mediaId)
-                    .from(TrashItemsDynamicSqlSupport.trashItems)
-            ))
-        );
-
-        return conditions;
-    }
-
 
     /**
      * メディアレコードを作成し、署名付きアップロードURLを返却する<br>
@@ -291,11 +143,11 @@ public class MediaService {
         media.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         media.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
 
-        // DBに保存 (insertSelectiveでnullカラムをスキップ)
-        mediaMapper.insertSelective(media);
+        // DBに保存
+        mediaRepository.save(media);
 
         // 署名付きアップロードURLを発行
-        URI presignedUrl = s3Service.generateUploadPresignedUrl(s3Key, contentType);
+        URI presignedUrl = s3StorageManager.generateUploadPresignedUrl(s3Key, contentType);
 
         return new CreateMediaResult(media, presignedUrl);
     }
@@ -315,8 +167,7 @@ public class MediaService {
     public Media updateUploadStatus(Long mediaId, Long userId, String uploadStatus) {
         // 対象メディアを取得
         // 生成に必須の処理のためゴミ箱フィルターはなし
-        Media media = mediaMapper.selectOne(
-                c -> c.where(id, isEqualTo(mediaId)))
+        Media media = mediaRepository.findUnscopedById(mediaId)
             .orElseThrow(() -> new ResourceNotFoundException("メディアが見つかりません mediaId=" + mediaId));
 
         // アップロード者本人かを確認
@@ -329,11 +180,11 @@ public class MediaService {
         media.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
 
         // updateByPrimaryKeySelectiveでnullカラムをスキップして更新
-        mediaMapper.updateByPrimaryKeySelective(media);
+        mediaRepository.update(media);
 
         // COMPLETEDに変わったところからサムネイル生成を非同期で起動
         if ("COMPLETED".equals(uploadStatus)) {
-            thumbnailService.generateThumbnailAsync(
+            thumbnailGenerator.generateThumbnailAsync(
                 mediaId,
                 media.getMediaType(),
                 media.getS3Key(),
@@ -354,34 +205,13 @@ public class MediaService {
      */
     public List<GetMediaNavigationResult> getMediaNavigation(Long mediaId) {
         // 対象の前のメディアをID降順で2件取得
-        List<Media> previousMediaList = mediaMapper.select(c -> c
-            // IDが小さいものが前のメディアになるため、ID < 対象IDで絞り込む
-            .where(MediaDynamicSqlSupport.id, isLessThan(mediaId))
-            // ゴミ箱フィルター
-            .and(MediaDynamicSqlSupport.id, isNotIn(
-                select(TrashItemsDynamicSqlSupport.mediaId)
-                    .from(TrashItemsDynamicSqlSupport.trashItems)
-            ))
-            // ID降順で対象に近いものから順番に2件取得する
-            .orderBy(MediaDynamicSqlSupport.id.descending())
-            .limit(2)
-        );
+        List<Media> previousMediaList = mediaRepository.findPreviousMedia(mediaId);
+
         // 表示順を昇順に揃え直す
         Collections.reverse(previousMediaList);
 
         // 以降のメディアをID昇順で2件取得
-        List<Media> nextMediaList = mediaMapper.select(c -> c
-            // IDが大きいものが後のメディアになるため、ID > 対象IDで絞り込む
-            .where(MediaDynamicSqlSupport.id, isGreaterThan(mediaId))
-            // ゴミ箱フィルター
-            .and(MediaDynamicSqlSupport.id, isNotIn(
-                select(TrashItemsDynamicSqlSupport.mediaId)
-                    .from(TrashItemsDynamicSqlSupport.trashItems)
-            ))
-            // ID昇順で対象から順番に取得する
-            .orderBy(MediaDynamicSqlSupport.id)
-            .limit(2)
-        );
+        List<Media> nextMediaList = mediaRepository.findNextMedia(mediaId);
 
         // buildNavigationResultsで前方メディアと現在以降のメディアを結合し、ナビゲーション位置を付与して返却する
         return buildNavigationResults(previousMediaList, nextMediaList);
@@ -395,9 +225,7 @@ public class MediaService {
      * @return ナビゲーション位置を付与したメディアリスト
      */
     private List<GetMediaNavigationResult> buildNavigationResults(
-        List<Media> previousMediaList,
-        List<Media> nextMediaList
-    ) {
+        List<Media> previousMediaList, List<Media> nextMediaList) {
         List<GetMediaNavigationResult> results = new ArrayList<>();
         // 前のメディアリストは昇順で2件まで入っているため、サイズとインデックスに応じてナビゲーション位置を付与する
         for (int i = 0; i < previousMediaList.size(); i++) {
@@ -432,7 +260,8 @@ public class MediaService {
             Long newId = updateData.getSharingGroupId().get();
             // nullではない場合存在するかチェックするため取得処理を挟む（存在しないIDの場合例外になる）
             if (newId != null) {
-                sharingGroupService.getSharingGroupById(newId);
+                sharingGroupRepository.findById(newId)
+                    .orElseThrow(() -> new ResourceNotFoundException("共有グループが見つかりません id=" + newId));
             }
 
             media.setSharingGroupId(newId);
@@ -442,30 +271,25 @@ public class MediaService {
             Long newId = updateData.getAlbumId().get();
             // nullではない場合存在するかチェックするため取得処理を挟む（存在しないIDの場合例外になる）
             if (newId != null) {
-                albumService.getAlbumById(newId);
+                albumRepository.findById(newId).orElseThrow(() ->
+                    new ResourceNotFoundException("アルバムが見つかりません " + "id=" + newId));
             }
             media.setAlbumId(newId);
         }
 
-        mediaMapper.updateByPrimaryKey(media);
+        mediaRepository.updateAll(media);
     }
 
     /**
-     * メディア情報(タグ/共有範囲/アルバム)を一括更新する
+     * メディア情報(タグ/共有範囲)を一括更新する
      *
      * @param mediaBatchUpdateData 更新用のデータ
      */
     @Transactional
     public void updateMediaBatch(MediaBatchUpdateRequestDto mediaBatchUpdateData) {
         // 対象メディアを取得する
-        List<Media> mediaList = mediaMapper.select(
-            c -> c.where(id, isIn(mediaBatchUpdateData.getMediaIds()))
-                // ゴミ箱フィルター
-                .and(MediaDynamicSqlSupport.id, isNotIn(
-                    select(TrashItemsDynamicSqlSupport.mediaId)
-                        .from(TrashItemsDynamicSqlSupport.trashItems)
-                ))
-        );
+        List<Media> mediaList = mediaRepository.findByIds(mediaBatchUpdateData.getMediaIds());
+
         if (mediaBatchUpdateData.getMediaIds().size() != mediaList.size()) {
             throw new ResourceNotFoundException("メディアが見つかりません mediaId=" + mediaBatchUpdateData.getMediaIds());
         }
@@ -474,7 +298,8 @@ public class MediaService {
         if (mediaBatchUpdateData.getSharingGroupId().isPresent()) {
             Long newSharingGroupId = mediaBatchUpdateData.getSharingGroupId().get();
             if (newSharingGroupId != null) {
-                sharingGroupService.getSharingGroupById(newSharingGroupId);
+                sharingGroupRepository.findById(newSharingGroupId)
+                    .orElseThrow(() -> new ResourceNotFoundException("共有グループが見つかりません id=" + newSharingGroupId));
             }
         }
 
@@ -483,38 +308,45 @@ public class MediaService {
             List<Long> tagIds = mediaBatchUpdateData.getTagIds().get();
             if (tagIds != null && !tagIds.isEmpty()) {
                 // 該当タグの件数をカウント
-                Long count = tagService.count(tagIds);
+                Long count = tagRepository.countByTagIds(tagIds);
                 if (count != tagIds.size()) {
                     throw new ResourceNotFoundException("存在しないタグが含まれています");
                 }
             }
 
+            // 複数メディアのタグを一括で入替更新する
             if (tagIds != null) {
-                tagService.syncMediaBatchTags(mediaBatchUpdateData.getMediaIds(), tagIds);
+                List<Long> mediaIds = mediaBatchUpdateData.getMediaIds();
+                // 対象メディアに紐づく既存タグを一括削除
+                tagRepository.deleteMediaTagsByMediaIds(mediaIds);
+
+                // 新しいタグが指定されている場合のみ登録処理を行う
+                if (!tagIds.isEmpty()) {
+                    // 登録用のエンティティを作成しメディアの数 × タグの数だけループしてMediaTagsエンティティを作成しリスト化する
+                    List<MediaTags> insertList = new ArrayList<>();
+
+                    for (Long mediaId : mediaIds) {
+                        for (Long tagId : tagIds) {
+                            MediaTags mediaTag = new MediaTags();
+                            mediaTag.setMediaId(mediaId);
+                            mediaTag.setTagId(tagId);
+                            mediaTag.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
+                            insertList.add(mediaTag);
+                        }
+                    }
+
+                    // 一括登録する
+                    if (!insertList.isEmpty()) {
+                        tagRepository.saveMediaTags(insertList);
+                    }
+                }
             }
         }
 
         // 共有範囲グループがある場合のみ
         if (mediaBatchUpdateData.getSharingGroupId().isPresent()) {
             // メディアの更新を行う
-            mediaMapper.update(updateBuilder -> {
-                // 共有グループの送信があれば SET 句に追加
-                if (mediaBatchUpdateData.getSharingGroupId().isPresent()) {
-                    Long newSharingGroupId = mediaBatchUpdateData.getSharingGroupId().get();
-                    if (newSharingGroupId == null) {
-                        updateBuilder = updateBuilder.set(MediaDynamicSqlSupport.sharingGroupId).equalToNull();
-                    } else {
-                        // sharing_group_idカラムをnewSharingGroupIdの値に更新する
-                        updateBuilder = updateBuilder
-                            .set(MediaDynamicSqlSupport.sharingGroupId)
-                            .equalTo(newSharingGroupId);
-                    }
-                }
-
-                // 指定した複数のメディアを対象に更新
-                return updateBuilder.where(MediaDynamicSqlSupport.id,
-                    isIn(mediaBatchUpdateData.getMediaIds()));
-            });
+            mediaRepository.updateSharingGroupBatch(mediaBatchUpdateData);
         }
     }
 
@@ -534,7 +366,7 @@ public class MediaService {
         List<Long> mediaIds = trashItems.stream().map(TrashItems::getMediaId).toList();
 
         // 抽出したメディアIDに一致するメディアを取得
-        List<Media> mediaList = mediaMapper.select(c -> c.where(id, isIn(mediaIds)));
+        List<Media> mediaList = mediaRepository.findUnscopedByIds(mediaIds);
 
         // 取り出せるようにIDをキーにマップ化
         Map<Long, Media> mediaMapList = mediaList.stream()

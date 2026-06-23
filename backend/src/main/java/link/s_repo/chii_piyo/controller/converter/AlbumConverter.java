@@ -1,13 +1,8 @@
 package link.s_repo.chii_piyo.controller.converter;
-
 import link.s_repo.chii_piyo.model.gen.AlbumResponseDto;
 import link.s_repo.chii_piyo.model.gen.Albums;
-import link.s_repo.chii_piyo.service.AlbumService;
+import link.s_repo.chii_piyo.service.AlbumService.MediaDataResult;
 import org.springframework.stereotype.Component;
-
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * APIレスポンスの組み立てを担当するコンバータークラス<br>
@@ -23,7 +18,7 @@ public class AlbumConverter {
      * @return AlbumResponseDto
      */
     public AlbumResponseDto toAlbumResponseDto(
-        Albums album, AlbumService.MediaDataResult mediaData) {
+        Albums album, MediaDataResult mediaData) {
         return new AlbumResponseDto(
             album.getId(), // ID
             album.getTitle(), // アルバムのタイトル

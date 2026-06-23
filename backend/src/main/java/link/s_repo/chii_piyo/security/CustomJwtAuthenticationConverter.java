@@ -1,7 +1,7 @@
 package link.s_repo.chii_piyo.security;
 
+import link.s_repo.chii_piyo.component.UserSyncComponent;
 import link.s_repo.chii_piyo.model.gen.Users;
-import link.s_repo.chii_piyo.service.UserSyncService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
@@ -24,7 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomJwtAuthenticationConverter implements Converter<Jwt, AbstractAuthenticationToken> {
 
-    private final UserSyncService userSyncService;
+    private final UserSyncComponent userSyncComponent;
 
     @Override
     public AbstractAuthenticationToken convert(Jwt jwt) {
@@ -41,7 +41,7 @@ public class CustomJwtAuthenticationConverter implements Converter<Jwt, Abstract
         }
 
         // DBからユーザー情報を取得（存在しなければ作成）してロールを判定
-        Users user = userSyncService.findOrCreateByCognitoUserId(cognitoUserId, email);
+        Users user = userSyncComponent.findOrCreateByCognitoUserId(cognitoUserId, email);
 
         // 権限情報を持つオブジェクトを作成する
         Collection<GrantedAuthority> authorities = List.of(

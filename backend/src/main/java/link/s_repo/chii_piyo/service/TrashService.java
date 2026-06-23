@@ -1,27 +1,29 @@
 package link.s_repo.chii_piyo.service;
 
+import link.s_repo.chii_piyo.component.S3StorageManager;
 import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.Media;
 import link.s_repo.chii_piyo.model.gen.TrashItems;
-import link.s_repo.chii_piyo.repository.gen.*;
+import link.s_repo.chii_piyo.repository.FavoriteRepository;
+import link.s_repo.chii_piyo.repository.MediaCommentRepository;
+import link.s_repo.chii_piyo.repository.MediaRepository;
+import link.s_repo.chii_piyo.repository.TagRepository;
+import link.s_repo.chii_piyo.repository.TrashRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.mybatis.dynamic.sql.dsl.CountDSLCompleter;
-import org.mybatis.dynamic.sql.dsl.SelectDSLCompleter;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
-
-import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
-import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
-import static org.mybatis.dynamic.sql.SqlBuilder.isLessThanOrEqualTo;
 
 /**
  * ゴミ箱管理サービス<br>
@@ -31,12 +33,12 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isLessThanOrEqualTo;
 @Service
 @RequiredArgsConstructor
 public class TrashService {
-    private final TrashItemsMapper trashItemsMapper;
-    private final MediaMapper mediaMapper;
-    private final S3Service s3Service;
-    private final MediaCommentsMapper mediaCommentsMapper;
-    private final FavoritesMapper favoritesMapper;
-    private final MediaTagsMapper mediaTagsMapper;
+    private final TrashRepository trashRepository;
+    private final MediaRepository mediaRepository;
+    private final S3StorageManager s3StorageManager;
+    private final MediaCommentRepository mediaCommentRepository;
+    private final FavoriteRepository favoriteRepository;
+    private final TagRepository tagRepository;
 
     /**
      * IDを受け取りゴミ箱データを作成する
@@ -54,7 +56,7 @@ public class TrashService {
         );
         trashItem.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
 
-        trashItemsMapper.insertSelective(trashItem);
+        trashRepository.save(trashItem);
     }
 
     /**
@@ -76,7 +78,7 @@ public class TrashService {
             trashItem.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
             return trashItem;
         }).toList();
-        trashItemsMapper.insertMultiple(trashItems);
+        trashRepository.saveAll(trashItems);
     }
 
     /**
@@ -87,11 +89,7 @@ public class TrashService {
      * @return ゴミ箱内のアイテム一覧
      */
     public List<TrashItems> getTrashItems(Integer offset, Integer limit) {
-        return trashItemsMapper.select(c -> c
-            .orderBy(TrashItemsDynamicSqlSupport.expiresAt)
-            .limit(limit)
-            .offset(offset)
-        );
+        return trashRepository.findAll(offset, limit);
     }
 
     /**
@@ -100,7 +98,7 @@ public class TrashService {
      * @return ゴミ箱内のアイテム総件数
      */
     public Long getTotalCount() {
-        return trashItemsMapper.count(CountDSLCompleter.allRows());
+        return trashRepository.count();
     }
 
     /**
@@ -109,13 +107,11 @@ public class TrashService {
      * @return 日数の数値
      */
     public Long getEarliestDeadline() {
-        // expiresAt順で1件取得
-        Optional<TrashItems> earliestItem = trashItemsMapper.selectOne(
-            c -> c.orderBy(TrashItemsDynamicSqlSupport.expiresAt).limit(1)
-        );
+        // 最も古いアイテムを取得
+        Optional<TrashItems> oldestItem = trashRepository.findOldest();
 
-        if (earliestItem.isPresent()) {
-            TrashItems item = earliestItem.get();
+        if (oldestItem.isPresent()) {
+            TrashItems item = oldestItem.get();
             // 今日の日付の取得
             LocalDate today = LocalDate.now(ZoneId.of("Asia/Tokyo"));
 
@@ -133,14 +129,14 @@ public class TrashService {
      * 指定されたIDのゴミ箱データを削除する
      */
     public void restoreTrashItem(Long id) {
-        trashItemsMapper.delete(c -> c.where(TrashItemsDynamicSqlSupport.id, isEqualTo(id)));
+        trashRepository.delete(id);
     }
 
     /**
      * 指定された複数IDのゴミ箱データを削除する
      */
     public void restoreTrashItems(List<Long> ids) {
-        trashItemsMapper.delete(c -> c.where(TrashItemsDynamicSqlSupport.id, isIn(ids)));
+        trashRepository.delete(ids);
     }
 
     /**
@@ -151,33 +147,33 @@ public class TrashService {
     @Transactional
     public void permanentlyDelete(Long id) {
         // ゴミ箱データを取得しメディアIDを抽出
-        TrashItems trashItem = trashItemsMapper.selectByPrimaryKey(id).
+        TrashItems trashItem = trashRepository.findById(id).
             orElseThrow(() -> new ResourceNotFoundException("データが見つかりません id=" + id));
         Long mediaId = trashItem.getMediaId();
 
         // Mediaテーブルから削除対象のレコードを取得
-        Media media = mediaMapper.selectByPrimaryKey(mediaId).
+        Media media = mediaRepository.findUnscopedById(mediaId).
             orElseThrow(() -> new ResourceNotFoundException("メディアが見つかりません id=" + mediaId));
 
         // 関連するコメントを削除する
-        mediaCommentsMapper.delete(c -> c.where(MediaCommentsDynamicSqlSupport.mediaId, isEqualTo(mediaId)));
+        mediaCommentRepository.deleteByMediaId(mediaId);
 
         // 関連するお気に入りを削除する
-        favoritesMapper.delete(c -> c.where(FavoritesDynamicSqlSupport.mediaId, isEqualTo(mediaId)));
+        favoriteRepository.deleteByMediaId(mediaId);
 
         // 関連するタグデータを削除する
-        mediaTagsMapper.delete(c -> c.where(MediaTagsDynamicSqlSupport.mediaId, isEqualTo(mediaId)));
+        tagRepository.deleteMediaTagsByMediaId(mediaId);
 
         // ゴミ箱データを削除
-        trashItemsMapper.deleteByPrimaryKey(id);
+        trashRepository.delete(id);
 
         // メディアデータを削除
-        mediaMapper.deleteByPrimaryKey(mediaId);
+        mediaRepository.deleteById(mediaId);
 
         // S3上のオリジナルファイルとサムネイルを削除
         List<String> s3Keys = Stream.of(media.getS3Key(), media.getThumbnailS3Key()).filter(StringUtils::hasText).toList();
         if (!s3Keys.isEmpty()) {
-            s3Service.deleteObjects(s3Keys);
+            s3StorageManager.deleteObjects(s3Keys);
         }
     }
 
@@ -187,7 +183,7 @@ public class TrashService {
     @Transactional
     public void multiplePermanentlyDelete(List<Long> trashItemIds) {
         // 指定されたIDでゴミ箱内データを取得
-        List<TrashItems> trashItems = trashItemsMapper.select(c -> c.where(TrashItemsDynamicSqlSupport.id, isIn(trashItemIds)));
+        List<TrashItems> trashItems = trashRepository.findByIds(trashItemIds);
         if (trashItems.isEmpty()) {
             throw new ResourceNotFoundException("データが見つかりません id=" + trashItemIds);
         }
@@ -202,7 +198,7 @@ public class TrashService {
     @Transactional
     public void allDelete() {
         // ゴミ箱内データを全件取得
-        List<TrashItems> trashItems = trashItemsMapper.select(SelectDSLCompleter.allRows());
+        List<TrashItems> trashItems = trashRepository.findAll();
 
         // 削除処理
         multipleDelete(trashItems);
@@ -218,8 +214,7 @@ public class TrashService {
         List<Long> mediaIds = trashItems.stream().map(TrashItems::getMediaId).toList();
 
         // Mediaテーブルから削除対象のレコードを取得
-        List<Media> mediaList = mediaMapper.select(
-            c -> c.where(MediaDynamicSqlSupport.id, isIn(mediaIds)));
+        List<Media> mediaList = mediaRepository.findUnscopedByIds(mediaIds);
 
         // S3キーとサムネイルS3キーを取り出しリスト化
         List<String> s3Keys = mediaList.stream()
@@ -228,54 +223,23 @@ public class TrashService {
             .toList();
 
         // 関連するコメントを削除する
-        mediaCommentsMapper.delete(
-            c -> c.where(MediaCommentsDynamicSqlSupport.mediaId, isIn(mediaIds)));
+        mediaCommentRepository.deleteByMediaIds(mediaIds);
 
         // 関連するお気に入りを削除する
-        favoritesMapper.delete(
-            c -> c.where(FavoritesDynamicSqlSupport.mediaId, isIn(mediaIds)));
+        favoriteRepository.deleteByMediaIds(mediaIds);
 
         // 関連するタグデータを削除する
-        mediaTagsMapper.delete(
-            c -> c.where(MediaTagsDynamicSqlSupport.mediaId, isIn(mediaIds)));
+        tagRepository.deleteMediaTagsByMediaIds(mediaIds);
 
         // ゴミ箱データを削除
-        trashItemsMapper.delete(c -> c.where(TrashItemsDynamicSqlSupport.id, isIn(ids)));
+        trashRepository.delete(ids);
 
         // メディアデータを削除
-        mediaMapper.delete(c -> c.where(MediaDynamicSqlSupport.id, isIn(mediaIds)));
+        mediaRepository.deleteByIds(mediaIds);
 
         // S3上のデータの一括削除
         if (!s3Keys.isEmpty()) {
-            s3Service.deleteObjects(s3Keys);
-        }
-    }
-
-    /**
-     * ゴミ箱の定期クリーンアップ処理<br>
-     * 毎日午前4時に実行し、期限切れのゴミ箱データを完全削除する
-     */
-    @Scheduled(cron = "0 0 4 * * *", zone = "Asia/Tokyo")
-    public void cleanupExpiredTrashItems() {
-        log.info("ゴミ箱データの自動削除バッチを開始します。");
-
-        // 削除予定日時（expiresAt）が現在時刻以前のアイテムを取得
-        OffsetDateTime now = OffsetDateTime.now(ZoneId.of("Asia/Tokyo"));
-        List<TrashItems> expiredItems = trashItemsMapper.select(c ->
-            c.where(TrashItemsDynamicSqlSupport.expiresAt, isLessThanOrEqualTo(now))
-        );
-
-        if (expiredItems.isEmpty()) {
-            log.info("削除対象のゴミ箱データはありませんでした。");
-            return;
-        }
-
-        // 削除処理
-        try {
-            multipleDelete(expiredItems);
-            log.info("{} 件のゴミ箱データを完全に削除しました。", expiredItems.size());
-        } catch (Exception e) {
-            log.error("ゴミ箱データの自動削除中にエラーが発生しました。", e);
+            s3StorageManager.deleteObjects(s3Keys);
         }
     }
 }

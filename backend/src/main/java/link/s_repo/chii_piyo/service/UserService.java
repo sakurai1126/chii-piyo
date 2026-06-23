@@ -1,11 +1,11 @@
 package link.s_repo.chii_piyo.service;
 
-
 import link.s_repo.chii_piyo.common.S3KeyGenerator;
+import link.s_repo.chii_piyo.component.S3StorageManager;
+import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.UserUpdateRequestDto;
 import link.s_repo.chii_piyo.model.gen.Users;
-import link.s_repo.chii_piyo.repository.gen.UsersDynamicSqlSupport;
-import link.s_repo.chii_piyo.repository.gen.UsersMapper;
+import link.s_repo.chii_piyo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,8 +14,6 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
-import static link.s_repo.chii_piyo.repository.gen.UsersDynamicSqlSupport.id;
-import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
 
 /**
  * ユーザー管理サービス<br>
@@ -25,9 +23,9 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private final UsersMapper usersMapper;
+    private final UserRepository userRepository;
     private final S3KeyGenerator s3KeyGenerator;
-    private final S3Service s3Service;
+    private final S3StorageManager s3StorageManager;
 
     /**
      * ユーザーをIDで１件絞り込み
@@ -36,8 +34,8 @@ public class UserService {
      * @return ユーザー情報
      */
     public Users getUserById(long id) {
-        return usersMapper.selectByPrimaryKey(id)
-            .orElseThrow(() -> new IllegalStateException("ユーザーが見つかりません"));
+        return userRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("ユーザーが見つかりません"));
     }
 
     /**
@@ -51,7 +49,7 @@ public class UserService {
             return Collections.emptyList();
         }
 
-        return usersMapper.select(c -> c.where(UsersDynamicSqlSupport.id, isIn(ids)));
+        return userRepository.findByIds(ids);
     }
 
     /**
@@ -91,7 +89,7 @@ public class UserService {
             // 更新日時をUTCでセット
             user.setUpdatedAt(java.time.OffsetDateTime.now(java.time.ZoneOffset.UTC));
             // Selectiveメソッドを使って、null以外の項目のみUPDATE実行
-            usersMapper.updateByPrimaryKeySelective(user);
+            userRepository.update(user);
         }
         return user;
     }
@@ -106,7 +104,7 @@ public class UserService {
     public URI generateIconDownloadPresignedUrl(Users user) {
         String s3Key = user.getUserIconKey();
         if (s3Key == null || s3Key.isEmpty()) return null;
-        return s3Service.generateDownloadPresignedUrl(s3Key, null);
+        return s3StorageManager.generateDownloadPresignedUrl(s3Key, null);
     }
 
     /**
@@ -121,7 +119,7 @@ public class UserService {
         String s3Key = s3KeyGenerator.buildS3Key("profile", filename);
 
         // 署名付きアップロードURLを発行
-        URI presignedUrl = s3Service.generateUploadPresignedUrl(s3Key, contentType);
+        URI presignedUrl = s3StorageManager.generateUploadPresignedUrl(s3Key, contentType);
 
         return new CreateIconS3KeyResult(s3Key, presignedUrl);
     }
@@ -133,7 +131,7 @@ public class UserService {
      */
     public List<UsersAndIconResult> getUsersAndIcon() {
         // ユーザー情報を一覧取得
-        List<Users> users = usersMapper.select(c -> c.orderBy(id));
+        List<Users> users = userRepository.findAll();
 
         // 取得下ユーザー情報から署名付きURLを取得して返却
         return users.stream().map(user -> {

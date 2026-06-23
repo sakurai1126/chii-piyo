@@ -1,10 +1,12 @@
 package link.s_repo.chii_piyo.service;
 
+import link.s_repo.chii_piyo.component.S3StorageManager;
 import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.Albums;
 import link.s_repo.chii_piyo.model.gen.Media;
 
-import link.s_repo.chii_piyo.repository.gen.*;
+import link.s_repo.chii_piyo.repository.AlbumRepository;
+import link.s_repo.chii_piyo.repository.MediaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,11 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-
-import static link.s_repo.chii_piyo.repository.gen.AlbumsDynamicSqlSupport.id;
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 /**
  * アルバム管理サービス<br>
@@ -27,9 +30,9 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 @Service
 @RequiredArgsConstructor
 public class AlbumService {
-    private final AlbumsMapper albumsMapper;
-    private final MediaMapper mediaMapper;
-    private final S3Service s3Service;
+    private final MediaRepository mediaRepository;
+    private final S3StorageManager s3StorageManager;
+    private final AlbumRepository albumRepository;
 
     /**
      * アルバムを新規作成する<br>
@@ -39,27 +42,25 @@ public class AlbumService {
      */
     @Transactional
     public Albums createAlbum(String title) {
-        Albums albums = new Albums();
+        Albums album = new Albums();
 
         // アルバムエンティティに値をセット
-        albums.setTitle(title);
-        albums.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
-        albums.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
+        album.setTitle(title);
 
         // アルバムをDBに保存
-        albumsMapper.insert(albums);
-        return albums;
+        albumRepository.save(album);
+        return album;
     }
 
     /**
      * アルバム一覧を取得する<br>
      * 全件をID昇順で返す
      *
-     * @return アルバムエンティティの一覧
+     * @return アルバムエンティティのリスト
      */
     @Transactional(readOnly = true)
     public List<Albums> getAlbums() {
-        return albumsMapper.select(c -> c.orderBy(id));
+        return albumRepository.findAll();
     }
 
     /**
@@ -70,8 +71,8 @@ public class AlbumService {
      */
     @Transactional(readOnly = true)
     public Albums getAlbumById(Long id) {
-        return albumsMapper.selectByPrimaryKey(id)
-            .orElseThrow(() -> new ResourceNotFoundException("アルバムが見つかりません id=" + id));
+        return albumRepository.findById(id).orElseThrow(() ->
+            new ResourceNotFoundException("アルバムが見つかりません " + "id=" + id));
     }
 
     /**
@@ -87,13 +88,7 @@ public class AlbumService {
         if (albumIds.isEmpty()) return Collections.emptyMap();
 
         // メディアの中からalbum_idカラムと受け取ったアルバムIDのリストに含まれるものを全件取得
-        List<Media> mediaList = mediaMapper.select(
-            c -> c.where(MediaDynamicSqlSupport.albumId, isIn(albumIds))
-                .and(MediaDynamicSqlSupport.id, isNotIn(
-                    select(TrashItemsDynamicSqlSupport.mediaId)
-                        .from(TrashItemsDynamicSqlSupport.trashItems)
-                ))
-        );
+        List<Media> mediaList = mediaRepository.findByAlbumIds(albumIds);
 
         // アルバムIDをキー、画像数と動画数を値とするマップを作成
         Map<Long, MediaDataResult> result = new HashMap<>();
@@ -125,7 +120,7 @@ public class AlbumService {
             if (current.urls().size() < 3) {
                 // カバーURLのリストを更新
                 URI thumbnailPresignedUrl = media.getThumbnailS3Key() != null
-                    ? s3Service.generateDownloadPresignedUrl(media.getThumbnailS3Key(), media.getOriginalFilename())
+                    ? s3StorageManager.generateDownloadPresignedUrl(media.getThumbnailS3Key(), media.getOriginalFilename())
                     : null;
 
                 if (thumbnailPresignedUrl != null) {
@@ -155,10 +150,9 @@ public class AlbumService {
         getAlbumById(albumId);
 
         // アルバムに紐づくメディアのalbum_idをnullに更新
-        mediaMapper.update(c -> c.set(MediaDynamicSqlSupport.albumId).equalToNull()
-            .where(MediaDynamicSqlSupport.albumId, isEqualTo(albumId)));
+        mediaRepository.clearAlbumId(albumId);
 
-        albumsMapper.deleteByPrimaryKey(albumId);
+        albumRepository.deleteById(albumId);
     }
 
     /**
@@ -175,7 +169,7 @@ public class AlbumService {
         // タイトルを更新してDBに保存
         album.setTitle(title);
         album.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
-        albumsMapper.updateByPrimaryKeySelective(album);
+        albumRepository.update(album);
     }
 
     /**
@@ -193,26 +187,14 @@ public class AlbumService {
         getAlbumById(albumId);
 
         // mediaIdsのメディアの存在チェック
-        List<Media> mediaList = mediaMapper.select(c ->
-            c.where(MediaDynamicSqlSupport.id, isIn(mediaIds))
-                .and(MediaDynamicSqlSupport.id, isNotIn(
-                    select(TrashItemsDynamicSqlSupport.mediaId)
-                        .from(TrashItemsDynamicSqlSupport.trashItems)
-                )));
+        List<Media> mediaList = mediaRepository.findByIds(mediaIds);
 
         if (mediaList.size() != mediaIds.stream().distinct().toList().size()) {
             throw new ResourceNotFoundException("メディアが見つかりません mediaId=" + mediaIds);
         }
 
         // 対象メディアを一括更新する
-        mediaMapper.update(
-            c -> c.set(MediaDynamicSqlSupport.albumId).equalTo(albumId)
-                .where(MediaDynamicSqlSupport.id, isIn(mediaIds))
-                .and(MediaDynamicSqlSupport.id, isNotIn(
-                    select(TrashItemsDynamicSqlSupport.mediaId)
-                        .from(TrashItemsDynamicSqlSupport.trashItems)
-                ))
-        );
+        mediaRepository.updateAlbumIdByMediaIds(mediaIds, albumId);
     }
 
     /**
@@ -230,13 +212,7 @@ public class AlbumService {
         getAlbumById(albumId);
 
         // mediaIdsのメディアの存在チェック
-        List<Media> mediaList = mediaMapper.select(
-            c -> c.where(MediaDynamicSqlSupport.id, isIn(mediaIds))
-                .and(MediaDynamicSqlSupport.id, isNotIn(
-                    select(TrashItemsDynamicSqlSupport.mediaId)
-                        .from(TrashItemsDynamicSqlSupport.trashItems)
-                ))
-        );
+        List<Media> mediaList = mediaRepository.findByIds(mediaIds);
 
         if (mediaList.size() != mediaIds.stream().distinct().toList().size()) {
             throw new ResourceNotFoundException("メディアが見つかりません mediaId=" + mediaIds);
@@ -249,14 +225,8 @@ public class AlbumService {
             throw new IllegalArgumentException("指定されたアルバムに属していないメディアが含まれています");
         }
 
-        // 対象メディアを一括削除する
-        mediaMapper.update(c -> c.set(MediaDynamicSqlSupport.albumId).equalToNull()
-            .where(MediaDynamicSqlSupport.id, isIn(mediaIds))
-            .and(MediaDynamicSqlSupport.id, isNotIn(
-                select(TrashItemsDynamicSqlSupport.mediaId)
-                    .from(TrashItemsDynamicSqlSupport.trashItems)
-            ))
-        );
+        // 対象メディアのアルバムIDを一括削除する
+        mediaRepository.clearAlbumIdByMediaIds(mediaIds);
     }
 
     public record MediaDataResult(int photoCount, int videoCount, List<String> urls) {

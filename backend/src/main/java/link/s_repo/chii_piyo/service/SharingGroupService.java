@@ -1,10 +1,13 @@
 package link.s_repo.chii_piyo.service;
 
+import link.s_repo.chii_piyo.component.S3StorageManager;
 import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
-import link.s_repo.chii_piyo.model.gen.*;
-import link.s_repo.chii_piyo.repository.gen.SharingGroupMembersDynamicSqlSupport;
-import link.s_repo.chii_piyo.repository.gen.SharingGroupMembersMapper;
-import link.s_repo.chii_piyo.repository.gen.SharingGroupsMapper;
+import link.s_repo.chii_piyo.model.gen.SharingGroupMembers;
+import link.s_repo.chii_piyo.model.gen.SharingGroups;
+import link.s_repo.chii_piyo.model.gen.Users;
+import link.s_repo.chii_piyo.repository.MediaRepository;
+import link.s_repo.chii_piyo.repository.SharingGroupRepository;
+import link.s_repo.chii_piyo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,11 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static link.s_repo.chii_piyo.repository.gen.SharingGroupsDynamicSqlSupport.id;
-import static link.s_repo.chii_piyo.repository.gen.SharingGroupMembersDynamicSqlSupport.sharingGroupId;
-import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
-import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
-
 /**
  * 共有グループ管理サービス<br>
  * 共有グループの取得・作成およびメディアとの共有グループ紐付け、メンバーの管理を担う
@@ -32,9 +30,10 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 @Service
 @RequiredArgsConstructor
 public class SharingGroupService {
-    private final SharingGroupsMapper sharingGroupsMapper;
-    private final SharingGroupMembersMapper sharingGroupMembersMapper;
-    private final UserService userService;
+    private final MediaRepository mediaRepository;
+    private final SharingGroupRepository sharingGroupRepository;
+    private final UserRepository userRepository;
+    private final S3StorageManager s3StorageManager;
 
     /**
      * 共有グループ一覧を取得する<br>
@@ -44,7 +43,7 @@ public class SharingGroupService {
      */
     @Transactional(readOnly = true)
     public List<SharingGroups> getSharingGroups() {
-        return sharingGroupsMapper.select(c -> c.orderBy(id));
+        return sharingGroupRepository.findAllOrderById();
     }
 
     /**
@@ -55,7 +54,7 @@ public class SharingGroupService {
      */
     @Transactional(readOnly = true)
     public SharingGroups getSharingGroupById(Long id) {
-        return sharingGroupsMapper.selectByPrimaryKey(id)
+        return sharingGroupRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("共有グループが見つかりません id=" + id));
     }
 
@@ -71,7 +70,7 @@ public class SharingGroupService {
 
         // 受け取った値をセットしてデータを登録
         sharingGroups.setName(name);
-        sharingGroupsMapper.insertSelective(sharingGroups);
+        sharingGroupRepository.save(sharingGroups);
 
         // 採番されたIDを取得
         Long id = sharingGroups.getId();
@@ -89,7 +88,7 @@ public class SharingGroupService {
                 .toList();
 
             // DBに一括登録
-            sharingGroupMembersMapper.insertMultiple(members);
+            sharingGroupRepository.membersSave(members);
         }
     }
 
@@ -107,9 +106,7 @@ public class SharingGroupService {
         }
 
         // 受け取ったgroupIdsが含まれる共有グループ所属メンバーを取得して返却
-        return sharingGroupMembersMapper.select(
-            c -> c.where(SharingGroupMembersDynamicSqlSupport.sharingGroupId, isIn(groupIds))
-        );
+        return sharingGroupRepository.findMembersByGroupIds(groupIds);
     }
 
     /**
@@ -124,7 +121,7 @@ public class SharingGroupService {
         Long id, List<Long> newUserIds) {
 
         // 対象グループの既存メンバーを一度すべて削除
-        sharingGroupMembersMapper.delete(c -> c.where(sharingGroupId, isEqualTo(id)));
+        sharingGroupRepository.deleteMembersByGroupId(id);
 
         // 保存用のエンティティを作成
         if (newUserIds != null && !newUserIds.isEmpty()) {
@@ -139,7 +136,7 @@ public class SharingGroupService {
                 .toList();
 
             // DBに一括登録
-            sharingGroupMembersMapper.insertMultiple(newMembers);
+            sharingGroupRepository.membersSave(newMembers);
         }
 
         // 更新後のメンバーリストを再取得して返却
@@ -163,7 +160,8 @@ public class SharingGroupService {
             .toList();
 
         // 所属メンバーに紐づいたユーザーを取得
-        List<Users> users = userService.getUsersById(userIds);
+        List<Users> users = userIds.isEmpty() ? Collections.emptyList() : userRepository.findByIds(userIds);
+
 
         // ユーザーIDをキーにしたMapに変換してIDで取得できるようにする
         Map<Long, Users> usersMap = users.stream()
@@ -171,9 +169,12 @@ public class SharingGroupService {
 
         // ユーザーごとのアイコンダウンロードURLを取得し同様にユーザーIDをキーにしたMapに変換
         Map<Long, URI> iconUrlsMap = new HashMap<>();
-        users.forEach(user ->
-            iconUrlsMap.put(user.getId(), userService.generateIconDownloadPresignedUrl(user))
-        );
+        users.forEach(user -> {
+            String s3Key = user.getUserIconKey();
+            URI uri = (s3Key == null || s3Key.isEmpty()) ? null :
+                s3StorageManager.generateDownloadPresignedUrl(s3Key, null);
+            iconUrlsMap.put(user.getId(), uri);
+        });
 
         // グループIDごとにメンバーをまとめる
         Map<Long, List<SharingGroupMembers>> membersByGroupIdMap = members.stream()
@@ -192,11 +193,14 @@ public class SharingGroupService {
         // 存在チェック
         getSharingGroupById(id);
 
+        // メディアの共有グループ選択を削除する
+        mediaRepository.clearSharingGroupId(id);
+
         // 所属メンバーの削除
-        sharingGroupMembersMapper.delete(c -> c.where(sharingGroupId, isEqualTo(id)));
+        sharingGroupRepository.deleteMembersByGroupId(id);
 
         // グループ本体の削除
-        sharingGroupsMapper.deleteByPrimaryKey(id);
+        sharingGroupRepository.delete(id);
     }
 
     /**
@@ -208,7 +212,7 @@ public class SharingGroupService {
      */
     public SharingGroups updateSharingGroup(SharingGroups sharingGroups, String name) {
         sharingGroups.setName(name);
-        sharingGroupsMapper.updateByPrimaryKeySelective(sharingGroups);
+        sharingGroupRepository.update(sharingGroups);
 
         return sharingGroups;
     }
@@ -221,9 +225,7 @@ public class SharingGroupService {
      */
     public List<Long> getUserSharingScopes(Long userId) {
         // ユーザーIDが一致するメンバー情報をDBから取得
-        List<SharingGroupMembers> members = sharingGroupMembersMapper.select(c ->
-            c.where(SharingGroupMembersDynamicSqlSupport.userId, isEqualTo(userId))
-        );
+        List<SharingGroupMembers> members = sharingGroupRepository.findMembersByUserId(userId);
 
         // 取得したエンティティのリストから 共有グループID だけを抽出して返す
         return members.stream()
@@ -245,9 +247,8 @@ public class SharingGroupService {
         }
 
         // 受け取ったユーザーIDリストに該当する共有メンバーを一括取得
-        List<SharingGroupMembers> members = sharingGroupMembersMapper.select(c ->
-            c.where(SharingGroupMembersDynamicSqlSupport.userId, isIn(userIds))
-        );
+        List<SharingGroupMembers> members = sharingGroupRepository.findMembersByUserIds(userIds);
+
 
         // ユーザーIDと共有メンバー情報をMap型にグルーピングして返却
         return members.stream()
