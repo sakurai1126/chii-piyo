@@ -6,6 +6,7 @@ import link.s_repo.chii_piyo.model.gen.SharingGroups;
 import link.s_repo.chii_piyo.model.gen.Users;
 import link.s_repo.chii_piyo.repository.MediaRepository;
 import link.s_repo.chii_piyo.repository.SharingGroupRepository;
+import link.s_repo.chii_piyo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,8 @@ import java.util.stream.Collectors;
 public class SharingGroupService {
     private final MediaRepository mediaRepository;
     private final SharingGroupRepository sharingGroupRepository;
-    private final UserService userService;
+    private final UserRepository userRepository;
+    private final S3Service s3Service;
 
     /**
      * 共有グループ一覧を取得する<br>
@@ -157,7 +159,8 @@ public class SharingGroupService {
             .toList();
 
         // 所属メンバーに紐づいたユーザーを取得
-        List<Users> users = userService.getUsersById(userIds);
+        List<Users> users = userIds.isEmpty() ? Collections.emptyList() : userRepository.findByIds(userIds);
+
 
         // ユーザーIDをキーにしたMapに変換してIDで取得できるようにする
         Map<Long, Users> usersMap = users.stream()
@@ -165,9 +168,12 @@ public class SharingGroupService {
 
         // ユーザーごとのアイコンダウンロードURLを取得し同様にユーザーIDをキーにしたMapに変換
         Map<Long, URI> iconUrlsMap = new HashMap<>();
-        users.forEach(user ->
-            iconUrlsMap.put(user.getId(), userService.generateIconDownloadPresignedUrl(user))
-        );
+        users.forEach(user -> {
+            String s3Key = user.getUserIconKey();
+            URI uri = (s3Key == null || s3Key.isEmpty()) ? null :
+                s3Service.generateDownloadPresignedUrl(s3Key, null);
+            iconUrlsMap.put(user.getId(), uri);
+        });
 
         // グループIDごとにメンバーをまとめる
         Map<Long, List<SharingGroupMembers>> membersByGroupIdMap = members.stream()

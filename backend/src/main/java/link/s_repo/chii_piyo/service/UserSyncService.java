@@ -1,6 +1,6 @@
 package link.s_repo.chii_piyo.service;
 
-import link.s_repo.chii_piyo.repository.gen.UsersMapper;
+import link.s_repo.chii_piyo.repository.UserRepository;
 import link.s_repo.chii_piyo.model.gen.Users;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,8 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
-import static link.s_repo.chii_piyo.repository.gen.UsersDynamicSqlSupport.cognitoUserId;
-import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
 /**
  * ユーザー同期処理サービス<br>
@@ -21,29 +19,26 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 @Service
 @RequiredArgsConstructor
 public class UserSyncService {
-
-    private final UsersMapper usersMapper;
+    private final UserRepository userRepository;
 
     /**
      * CognitoのユーザーIDでユーザーを検索し、存在しない場合は作成する
      *
-     * @param cognitoUserIdValue CognitoユーザーID
-     * @param email メールアドレス
+     * @param cognitoUserId CognitoユーザーID
+     * @param email         メールアドレス
      * @return ユーザー情報
      */
     @Transactional
-    public Users findOrCreateByCognitoUserId(String cognitoUserIdValue, String email) {
-        return usersMapper.selectOne(
-            // cognito_user_idカラムから引数で受け取ったcognitoUserIdValueと一致するユーザーを検索
-            c -> c.where(cognitoUserId, isEqualTo(cognitoUserIdValue))
-        ).orElseGet(() -> createUser(cognitoUserIdValue, email));
+    public Users findOrCreateByCognitoUserId(String cognitoUserId, String email) {
+        return userRepository.findByCognitoUserId(cognitoUserId)
+            .orElseGet(() -> createUser(cognitoUserId, email));
     }
 
     /**
      * 新しいユーザーを作成してDBに保存しユーザー情報を返却する
      *
      * @param cognitoUserIdValue Cognitoから渡されたユーザーID
-     * @param email メールアドレス
+     * @param email              メールアドレス
      * @return ユーザー情報
      */
     private Users createUser(String cognitoUserIdValue, String email) {
@@ -62,7 +57,7 @@ public class UserSyncService {
         user.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
 
         // DBに保存
-        usersMapper.insertSelective(user);
+        userRepository.save(user);
         return user;
     }
 }
