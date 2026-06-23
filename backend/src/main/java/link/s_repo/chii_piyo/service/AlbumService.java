@@ -1,5 +1,6 @@
 package link.s_repo.chii_piyo.service;
 
+import link.s_repo.chii_piyo.component.S3StorageManager;
 import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.Albums;
 import link.s_repo.chii_piyo.model.gen.Media;
@@ -30,7 +31,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AlbumService {
     private final MediaRepository mediaRepository;
-    private final S3Service s3Service;
+    private final S3StorageManager s3StorageManager;
     private final AlbumRepository albumRepository;
 
     /**
@@ -119,7 +120,7 @@ public class AlbumService {
             if (current.urls().size() < 3) {
                 // カバーURLのリストを更新
                 URI thumbnailPresignedUrl = media.getThumbnailS3Key() != null
-                    ? s3Service.generateDownloadPresignedUrl(media.getThumbnailS3Key(), media.getOriginalFilename())
+                    ? s3StorageManager.generateDownloadPresignedUrl(media.getThumbnailS3Key(), media.getOriginalFilename())
                     : null;
 
                 if (thumbnailPresignedUrl != null) {

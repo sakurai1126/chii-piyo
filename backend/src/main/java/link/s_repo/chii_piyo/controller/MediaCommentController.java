@@ -1,9 +1,7 @@
 package link.s_repo.chii_piyo.controller;
 
-
 import link.s_repo.chii_piyo.controller.converter.MediaCommentConverter;
 import link.s_repo.chii_piyo.controller.gen.MediaCommentManagementApi;
-
 import link.s_repo.chii_piyo.model.gen.MediaCommentRequestDto;
 import link.s_repo.chii_piyo.model.gen.MediaCommentResponseDto;
 import link.s_repo.chii_piyo.model.gen.MediaComments;
@@ -16,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;

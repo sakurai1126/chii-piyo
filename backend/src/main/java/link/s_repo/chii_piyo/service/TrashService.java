@@ -1,5 +1,6 @@
 package link.s_repo.chii_piyo.service;
 
+import link.s_repo.chii_piyo.component.S3StorageManager;
 import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.Media;
 import link.s_repo.chii_piyo.model.gen.TrashItems;
@@ -10,7 +11,6 @@ import link.s_repo.chii_piyo.repository.TagRepository;
 import link.s_repo.chii_piyo.repository.TrashRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -33,10 +33,9 @@ import java.util.stream.Stream;
 @Service
 @RequiredArgsConstructor
 public class TrashService {
-
     private final TrashRepository trashRepository;
     private final MediaRepository mediaRepository;
-    private final S3Service s3Service;
+    private final S3StorageManager s3StorageManager;
     private final MediaCommentRepository mediaCommentRepository;
     private final FavoriteRepository favoriteRepository;
     private final TagRepository tagRepository;
@@ -174,7 +173,7 @@ public class TrashService {
         // S3上のオリジナルファイルとサムネイルを削除
         List<String> s3Keys = Stream.of(media.getS3Key(), media.getThumbnailS3Key()).filter(StringUtils::hasText).toList();
         if (!s3Keys.isEmpty()) {
-            s3Service.deleteObjects(s3Keys);
+            s3StorageManager.deleteObjects(s3Keys);
         }
     }
 
@@ -240,33 +239,7 @@ public class TrashService {
 
         // S3上のデータの一括削除
         if (!s3Keys.isEmpty()) {
-            s3Service.deleteObjects(s3Keys);
-        }
-    }
-
-    /**
-     * ゴミ箱の定期クリーンアップ処理<br>
-     * 毎日午前4時に実行し、期限切れのゴミ箱データを完全削除する
-     */
-    @Scheduled(cron = "0 0 4 * * *", zone = "Asia/Tokyo")
-    public void cleanupExpiredTrashItems() {
-        log.info("ゴミ箱データの自動削除バッチを開始します。");
-
-        // 削除予定日時（expiresAt）が現在時刻以前のアイテムを取得
-        OffsetDateTime now = OffsetDateTime.now(ZoneId.of("Asia/Tokyo"));
-        List<TrashItems> expiredItems = trashRepository.findExpiredItems(now);
-
-        if (expiredItems.isEmpty()) {
-            log.info("削除対象のゴミ箱データはありませんでした。");
-            return;
-        }
-
-        // 削除処理
-        try {
-            multipleDelete(expiredItems);
-            log.info("{} 件のゴミ箱データを完全に削除しました。", expiredItems.size());
-        } catch (Exception e) {
-            log.error("ゴミ箱データの自動削除中にエラーが発生しました。", e);
+            s3StorageManager.deleteObjects(s3Keys);
         }
     }
 }

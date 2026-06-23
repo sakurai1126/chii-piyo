@@ -1,6 +1,5 @@
 package link.s_repo.chii_piyo.controller;
 
-
 import link.s_repo.chii_piyo.controller.converter.TagConverter;
 
 import link.s_repo.chii_piyo.controller.gen.TagManagementApi;
@@ -28,7 +27,6 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 public class TagController implements TagManagementApi {
-
     private final TagService tagService;
     private final TagConverter tagConverter;
     private final MediaService mediaService;

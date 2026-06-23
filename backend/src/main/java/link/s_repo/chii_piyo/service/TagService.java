@@ -27,7 +27,6 @@ import java.util.stream.Stream;
 @Service
 @RequiredArgsConstructor
 public class TagService {
-
     private final TagRepository tagRepository;
 
     /**

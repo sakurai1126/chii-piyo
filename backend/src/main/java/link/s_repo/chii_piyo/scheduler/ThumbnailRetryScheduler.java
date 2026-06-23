@@ -1,14 +1,14 @@
-package link.s_repo.chii_piyo.service;
+package link.s_repo.chii_piyo.scheduler;
 
+import link.s_repo.chii_piyo.component.ThumbnailGenerator;
 import link.s_repo.chii_piyo.model.gen.Media;
 import link.s_repo.chii_piyo.repository.MediaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
-
 
 /**
  * サムネイル生成失敗を救済する定期実行サービス<br>
@@ -16,12 +16,12 @@ import java.util.List;
  * サムネイル生成を再実行する
  */
 @Slf4j
-@Service
+@Component
 @RequiredArgsConstructor
-public class ThumbnailRetryService {
+public class ThumbnailRetryScheduler {
 
     private final MediaRepository mediaRepository;
-    private final ThumbnailService thumbnailService;
+    private final ThumbnailGenerator thumbnailGenerator;
 
     /**
      * 未生成のサムネイルを定期的に再試行する<br>
@@ -39,7 +39,7 @@ public class ThumbnailRetryService {
         // 対象があればサムネイル生成を再実行する
         log.info("サムネ未生成メディアを再処理 count={}", targets.size());
         for (Media media : targets) {
-            thumbnailService.generateThumbnailAsync(
+            thumbnailGenerator.generateThumbnailAsync(
                 media.getId(),
                 media.getMediaType(),
                 media.getS3Key(),

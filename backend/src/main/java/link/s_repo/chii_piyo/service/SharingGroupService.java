@@ -1,5 +1,6 @@
 package link.s_repo.chii_piyo.service;
 
+import link.s_repo.chii_piyo.component.S3StorageManager;
 import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.SharingGroupMembers;
 import link.s_repo.chii_piyo.model.gen.SharingGroups;
@@ -32,7 +33,7 @@ public class SharingGroupService {
     private final MediaRepository mediaRepository;
     private final SharingGroupRepository sharingGroupRepository;
     private final UserRepository userRepository;
-    private final S3Service s3Service;
+    private final S3StorageManager s3StorageManager;
 
     /**
      * 共有グループ一覧を取得する<br>
@@ -171,7 +172,7 @@ public class SharingGroupService {
         users.forEach(user -> {
             String s3Key = user.getUserIconKey();
             URI uri = (s3Key == null || s3Key.isEmpty()) ? null :
-                s3Service.generateDownloadPresignedUrl(s3Key, null);
+                s3StorageManager.generateDownloadPresignedUrl(s3Key, null);
             iconUrlsMap.put(user.getId(), uri);
         });
 

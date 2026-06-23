@@ -1,13 +1,12 @@
-package link.s_repo.chii_piyo.service;
+package link.s_repo.chii_piyo.component;
 
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import software.amazon.awssdk.core.exception.SdkException;
 import software.amazon.awssdk.services.s3.model.Delete;
-import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.DeleteObjectsRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.ObjectIdentifier;
@@ -26,10 +25,9 @@ import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
+@Component
 @RequiredArgsConstructor
-public class S3Service {
-
+public class S3StorageManager {
     // 署名付きURL生成用オブジェクト
     private final S3Presigner s3Presigner;
     private final S3Client s3Client;

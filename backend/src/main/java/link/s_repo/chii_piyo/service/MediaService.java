@@ -1,6 +1,8 @@
 package link.s_repo.chii_piyo.service;
 
 import link.s_repo.chii_piyo.common.S3KeyGenerator;
+import link.s_repo.chii_piyo.component.S3StorageManager;
+import link.s_repo.chii_piyo.component.ThumbnailGenerator;
 import link.s_repo.chii_piyo.exception.ResourceAccessDeniedException;
 import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.MediaSearchCriteria;
@@ -37,10 +39,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class MediaService {
-
     private final MediaRepository mediaRepository;
-    private final S3Service s3Service;
-    private final ThumbnailService thumbnailService;
+    private final S3StorageManager s3StorageManager;
+    private final ThumbnailGenerator thumbnailGenerator;
     private final S3KeyGenerator s3KeyGenerator;
     private final SharingGroupRepository sharingGroupRepository;
     private final AlbumRepository albumRepository;
@@ -146,7 +147,7 @@ public class MediaService {
         mediaRepository.save(media);
 
         // 署名付きアップロードURLを発行
-        URI presignedUrl = s3Service.generateUploadPresignedUrl(s3Key, contentType);
+        URI presignedUrl = s3StorageManager.generateUploadPresignedUrl(s3Key, contentType);
 
         return new CreateMediaResult(media, presignedUrl);
     }
@@ -183,7 +184,7 @@ public class MediaService {
 
         // COMPLETEDに変わったところからサムネイル生成を非同期で起動
         if ("COMPLETED".equals(uploadStatus)) {
-            thumbnailService.generateThumbnailAsync(
+            thumbnailGenerator.generateThumbnailAsync(
                 mediaId,
                 media.getMediaType(),
                 media.getS3Key(),

@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-
 /**
  * お気に入り管理コントローラー<br>
  * OpenAPI Generator生成のMediaApiインターフェースを実装し、メタデータ登録とアップロード状態更新のAPIエンドポイントを提供する

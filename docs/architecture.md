@@ -61,7 +61,9 @@ graph TB
 ├── Controller Layer     : REST APIエンドポイント
 │   └── Converter        : EntityとDTO間の変換
 ├── Service Layer        : ビジネスロジック、トランザクション管理
+├── Component Layer      : サービス間で共有される処理コンポーネント
 ├── Repository Layer     : データアクセス、MyBatisマッパー呼び出し
+├── Scheduler Layer      : スケジューラーによる定期実行
 ├── Model Layer          : エンティティ
 ├── Security Layer       : 認証フィルター、JWT検証
 ├── Exception Layer      : ドメイン固有の例外定義

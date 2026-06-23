@@ -1,17 +1,27 @@
 package link.s_repo.chii_piyo.controller;
 
-import link.s_repo.chii_piyo.controller.converter.*;
+import link.s_repo.chii_piyo.component.S3StorageManager;
+
+import link.s_repo.chii_piyo.controller.converter.MediaConverter;
+import link.s_repo.chii_piyo.controller.converter.MediaListConverter;
+import link.s_repo.chii_piyo.controller.converter.MediaNavigationConverter;
+import link.s_repo.chii_piyo.controller.converter.MediaUploadConverter;
+import link.s_repo.chii_piyo.controller.converter.TagConverter;
 import link.s_repo.chii_piyo.controller.gen.MediaManagementApi;
 import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.MediaSearchCriteria;
 import link.s_repo.chii_piyo.model.gen.*;
 import link.s_repo.chii_piyo.security.CurrentUserProvider;
-import link.s_repo.chii_piyo.service.*;
+import link.s_repo.chii_piyo.service.FavoriteService;
+import link.s_repo.chii_piyo.service.MediaCommentService;
+import link.s_repo.chii_piyo.service.MediaService;
+import link.s_repo.chii_piyo.service.TagService;
+import link.s_repo.chii_piyo.service.TrashService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.time.LocalDate;
@@ -28,13 +38,12 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 public class MediaController implements MediaManagementApi {
-
     private final MediaService mediaService;
     private final MediaConverter mediaConverter;
     private final MediaListConverter mediaListConverter;
     private final CurrentUserProvider currentUserProvider;
     private final MediaCommentService mediaCommentService;
-    private final S3Service s3Service;
+    private final S3StorageManager s3StorageManager;
     private final TagService tagService;
     private final TagConverter tagConverter;
     private final MediaNavigationConverter mediaNavigationConverter;
@@ -193,7 +202,7 @@ public class MediaController implements MediaManagementApi {
         List<MediaResponseDto> responseMediaList = mediaList.stream()
             .map(media -> {
                 URI thumbnailPresignedUrl = media.getThumbnailS3Key() != null
-                    ? s3Service.generateDownloadPresignedUrl(media.getThumbnailS3Key(),
+                    ? s3StorageManager.generateDownloadPresignedUrl(media.getThumbnailS3Key(),
                     media.getOriginalFilename())
                     : null;
 
@@ -237,7 +246,7 @@ public class MediaController implements MediaManagementApi {
         // サービス層でIDに基づくメディアを取得する
         Media media = mediaService.getMedia(id);
 
-        URI presignedUrl = s3Service.generateDownloadPresignedUrl(media.getS3Key(), media.getOriginalFilename());
+        URI presignedUrl = s3StorageManager.generateDownloadPresignedUrl(media.getS3Key(), media.getOriginalFilename());
 
         // メディアに紐づくタグを取得してDTOに変換する
         List<TagResponseDto> tags = tagService.getMediaTags(id)
@@ -256,7 +265,7 @@ public class MediaController implements MediaManagementApi {
         for (MediaService.GetMediaNavigationResult nav : mediaNavigation) {
             // ナビゲーション対象のメディアのサムネイル画像の署名付きURLを生成する
             URI navMediaPresignedUrl = nav.media().getThumbnailS3Key() != null
-                ? s3Service.generateDownloadPresignedUrl(
+                ? s3StorageManager.generateDownloadPresignedUrl(
                 nav.media().getThumbnailS3Key(), nav.media().getOriginalFilename())
                 : null;
 
@@ -276,7 +285,7 @@ public class MediaController implements MediaManagementApi {
         }
 
         URI thumbnailPresignedUrl = media.getThumbnailS3Key() != null
-            ? s3Service.generateDownloadPresignedUrl(media.getThumbnailS3Key(), media.getOriginalFilename())
+            ? s3StorageManager.generateDownloadPresignedUrl(media.getThumbnailS3Key(), media.getOriginalFilename())
             : null;
 
         // 認証情報から現在のユーザーIDを取得

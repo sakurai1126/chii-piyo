@@ -1,6 +1,7 @@
 package link.s_repo.chii_piyo.service;
 
 import link.s_repo.chii_piyo.common.S3KeyGenerator;
+import link.s_repo.chii_piyo.component.S3StorageManager;
 import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.UserUpdateRequestDto;
 import link.s_repo.chii_piyo.model.gen.Users;
@@ -24,7 +25,7 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final S3KeyGenerator s3KeyGenerator;
-    private final S3Service s3Service;
+    private final S3StorageManager s3StorageManager;
 
     /**
      * ユーザーをIDで１件絞り込み
@@ -103,7 +104,7 @@ public class UserService {
     public URI generateIconDownloadPresignedUrl(Users user) {
         String s3Key = user.getUserIconKey();
         if (s3Key == null || s3Key.isEmpty()) return null;
-        return s3Service.generateDownloadPresignedUrl(s3Key, null);
+        return s3StorageManager.generateDownloadPresignedUrl(s3Key, null);
     }
 
     /**
@@ -118,7 +119,7 @@ public class UserService {
         String s3Key = s3KeyGenerator.buildS3Key("profile", filename);
 
         // 署名付きアップロードURLを発行
-        URI presignedUrl = s3Service.generateUploadPresignedUrl(s3Key, contentType);
+        URI presignedUrl = s3StorageManager.generateUploadPresignedUrl(s3Key, contentType);
 
         return new CreateIconS3KeyResult(s3Key, presignedUrl);
     }

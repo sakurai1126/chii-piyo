@@ -1,4 +1,4 @@
-package link.s_repo.chii_piyo.service;
+package link.s_repo.chii_piyo.component;
 
 import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.Media;
@@ -9,7 +9,7 @@ import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.geometry.Positions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,15 +23,14 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
- * サムネイル生成を非同期で実行するサービス<br>
+ * サムネイル生成を非同期で実行するコンポーネント<br>
  * MediaService.updateUploadStatus から呼ばれ、リクエストとは別スレッドで動作する
  */
 @Slf4j
-@Service
+@Component
 @RequiredArgsConstructor
-public class ThumbnailService {
-
-    private final S3Service s3Service;
+public class ThumbnailGenerator {
+    private final S3StorageManager s3StorageManager;
     private final MediaRepository mediaRepository;
 
     @Value("${thumbnail.max-edge-pixels}")
@@ -88,7 +87,7 @@ public class ThumbnailService {
             byte[] thumbnail;
 
             // S3からInputStreamを取得し、mediaTypeに応じて画像または動画のサムネイルを生成する
-            try (InputStream source = s3Service.downloadAsStream(s3Key)) {
+            try (InputStream source = s3StorageManager.downloadAsStream(s3Key)) {
                 thumbnail = switch (mediaType) {
                     case "PHOTO" -> generateFromImage(source);
                     case "VIDEO" -> generateFromVideo(source);
@@ -99,7 +98,7 @@ public class ThumbnailService {
 
             // サムネイルをS3にアップロードし、MediaレコードのサムネイルS3キーのカラムを更新する
             String thumbnailS3Key = buildThumbnailS3Key(originalFilename);
-            s3Service.uploadThumbnail(thumbnailS3Key, thumbnail);
+            s3StorageManager.uploadThumbnail(thumbnailS3Key, thumbnail);
             Media media = mediaRepository.findUnscopedById(mediaId).orElseThrow(
                 () -> new ResourceNotFoundException("メディアが見つかりません mediaId=" + mediaId)
             );
