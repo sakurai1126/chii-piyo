@@ -1,10 +1,10 @@
-package link.s_repo.chii_piyo.service;
+package link.s_repo.chii_piyo.component;
 
 import link.s_repo.chii_piyo.repository.UserRepository;
 import link.s_repo.chii_piyo.model.gen.Users;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
@@ -12,13 +12,13 @@ import java.time.ZoneOffset;
 
 
 /**
- * ユーザー同期処理サービス<br>
+ * ユーザー同期処理コンポーネント<br>
  * Cognito認証成功後、DBにユーザーが存在しない場合は自動作成する
  */
 @Slf4j
-@Service
+@Component
 @RequiredArgsConstructor
-public class UserSyncService {
+public class UserSyncComponent {
     private final UserRepository userRepository;
 
     /**
