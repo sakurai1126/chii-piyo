@@ -45,3 +45,27 @@ export const calculateRemainingDays = (expiresAt: string | Date): number => {
   const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
   return Math.max(0, diffDays);
 };
+
+/**
+ * 現在の日時を返す
+ * @returns
+ * - currentDate YYYY-MM-DD形式の現在日時
+ * - currentTime HH:MM形式の現在時刻
+ */
+export const getCurrentDateTime = () => {
+  // 現在の日時を取得
+  const now = new Date();
+
+  // YYYY-MM-DD形式に変換
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  const currentDate = `${year}-${month}-${day}`;
+
+  // HH:MM形式に変換
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  const currentTime = `${hours}:${minutes}`;
+
+  return { currentDate, currentTime };
+};
