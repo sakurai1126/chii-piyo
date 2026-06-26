@@ -41,12 +41,8 @@ put:
           $ref: "../../components/schemas/care-records.yml#/CareRecordRequestDto"
     required: true
   responses:
-    "200":
-      description: 更新された育児記録
-      content:
-        application/json;charset=UTF-8:
-          schema:
-            $ref: "../../components/schemas/care-records.yml#/CareRecordResponseDto"
+    "204":
+      description: 記録更新に成功
     "400":
       $ref: "../../components/responses.yml#/BadRequest"
     "401":

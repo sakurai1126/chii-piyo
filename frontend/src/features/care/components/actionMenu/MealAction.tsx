@@ -2,12 +2,53 @@
 
 import Image from "next/image";
 
+import { toast } from "@/components/ui/Toast";
+
+import { createCareRecordAction } from "../../actions/createCareRecordAction";
 import mealIcon from "../../assets/meal.svg";
 import { useCareRecord } from "../../hooks/useCareRecord";
 import { CareActionModal } from "../ui/CareActionModal";
 
 export const MealAction = () => {
-  const { isOpen, setIsOpen, date, setDate, time, setTime, openModal } = useCareRecord();
+  const {
+    isOpen,
+    setIsOpen,
+    isPending,
+    startTransition,
+    note,
+    setNote,
+    date,
+    setDate,
+    time,
+    setTime,
+    openModal,
+  } = useCareRecord();
+
+  // 登録処理
+  const saveAction = () => {
+    const recordTime = new Date(date + " " + time);
+
+    if (!(recordTime instanceof Date) || isNaN(recordTime.getTime())) {
+      toast.error("無効な日時です");
+      return;
+    }
+
+    startTransition(async () => {
+      const result = await createCareRecordAction({
+        recordType: "MEAL",
+        recordedAt: recordTime,
+        mealDetail: { note },
+      });
+
+      if (result.success) {
+        setIsOpen(false);
+        setNote("");
+        toast.success("食事を記録しました");
+      } else {
+        toast.error(result.error);
+      }
+    });
+  };
 
   return (
     <div className="max-md:w-[calc(50%-8px)]">
@@ -20,12 +61,16 @@ export const MealAction = () => {
         time={time}
         setTime={setTime}
         onCancel={() => setIsOpen(false)}
-        saveAction={() => {}}
+        note={note}
+        setNote={setNote}
+        saveAction={saveAction}
+        isPending={isPending}
       />
 
       <button
         className="border-meal-border group w-full cursor-pointer rounded-lg border bg-white/50 p-5 backdrop-blur-[7.5px] transition-all max-md:rounded-4xl max-md:p-4"
         onClick={openModal}
+        disabled={isPending}
       >
         <Image
           src={mealIcon}

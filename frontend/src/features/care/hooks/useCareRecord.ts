@@ -1,12 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 
 import { getCurrentDateTime } from "@/utils/date";
 
 export const useCareRecord = () => {
   // モーダル表示フラグ
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  // 二重送信制御
+  const [isPending, startTransition] = useTransition();
+
+  // メモ管理
+  const [note, setNote] = useState<string>("");
 
   // 現在日時を取得
   const { currentDate, currentTime } = getCurrentDateTime();
@@ -22,5 +28,17 @@ export const useCareRecord = () => {
     setIsOpen(true);
   };
 
-  return { isOpen, setIsOpen, date, setDate, time, setTime, openModal };
+  return {
+    isOpen,
+    setIsOpen,
+    isPending,
+    startTransition,
+    note,
+    setNote,
+    date,
+    setDate,
+    time,
+    setTime,
+    openModal,
+  };
 };

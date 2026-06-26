@@ -1031,11 +1031,7 @@ paths:
         required: true
       responses:
         '201':
-          description: 作成された育児記録
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/CareRecordResponseDto'
+          description: 記録登録に成功
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -1089,12 +1085,8 @@ paths:
               $ref: '#/components/schemas/CareRecordRequestDto'
         required: true
       responses:
-        '200':
-          description: 更新された育児記録
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/CareRecordResponseDto'
+        '204':
+          description: 記録更新に成功
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -1172,11 +1164,7 @@ paths:
         required: true
       responses:
         '201':
-          description: 作成された身長・体重記録
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/GrowthRecordResponseDto'
+          description: 身長・体重記録の登録に成功
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -1230,12 +1218,8 @@ paths:
               $ref: '#/components/schemas/GrowthRecordRequestDto'
         required: true
       responses:
-        '200':
-          description: 更新された身長・体重記録
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/GrowthRecordResponseDto'
+        '204':
+          description: 身長・体重記録の更新に成功
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -2604,9 +2588,7 @@ components:
         - note
       properties:
         note:
-          type:
-            - string
-            - 'null'
+          type: string
           description: 食事内容・メモ
           example: おかゆと野菜ペースト
     MilkDetailDto:
@@ -2623,9 +2605,7 @@ components:
           description: 量（ml）
           example: 200
         note:
-          type:
-            - string
-            - 'null'
+          type: string
           description: メモ・備考
           example: よく飲んだ
     DiaperDetailDto:
@@ -2643,9 +2623,7 @@ components:
             - DIRTY
           example: WET
         note:
-          type:
-            - string
-            - 'null'
+          type: string
           description: メモ・備考
     HealthDetailDto:
       type: object
@@ -2662,9 +2640,7 @@ components:
           description: 体温
           example: 36.5
         note:
-          type:
-            - string
-            - 'null'
+          type: string
           description: メモ・備考
           example: 元気
     CareRecordResponseDto:
@@ -2675,10 +2651,6 @@ components:
         - recordedBy
         - recordType
         - recordedAt
-        - mealDetail
-        - milkDetail
-        - diaperDetail
-        - healthDetail
         - createdAt
         - updatedAt
       properties:
@@ -2754,10 +2726,6 @@ components:
       required:
         - recordType
         - recordedAt
-        - mealDetail
-        - milkDetail
-        - diaperDetail
-        - healthDetail
       properties:
         recordType:
           type: string
@@ -2795,8 +2763,6 @@ components:
       required:
         - id
         - measurementDate
-        - height
-        - weight
         - note
         - createdAt
         - updatedAt
@@ -2826,9 +2792,7 @@ components:
           description: 体重（kg）
           example: 9.5
         note:
-          type:
-            - string
-            - 'null'
+          type: string
           description: メモ
         createdAt:
           type: string
@@ -2845,8 +2809,6 @@ components:
       description: 身長・体重記録作成・更新リクエスト
       required:
         - measurementDate
-        - height
-        - weight
         - note
       properties:
         measurementDate:
@@ -2869,9 +2831,7 @@ components:
           description: 体重（kg）
           example: 9.5
         note:
-          type:
-            - string
-            - 'null'
+          type: string
           description: メモ
     FirstRecordResponseDto:
       type: object

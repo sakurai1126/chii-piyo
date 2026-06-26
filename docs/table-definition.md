@@ -263,8 +263,8 @@
 | --- | --- | --- | --- | --- | --- |
 | id | BIGSERIAL | NO | AUTO | PK | 主キー |
 | measurement_date | DATE | NO | - | | 測定日 |
-| height | DECIMAL(5,1) | NO | - | | 身長（cm） |
-| weight | DECIMAL(5,2) | NO | - | | 体重（kg） |
+| height | DECIMAL(5,1) | YES | - | | 身長（cm） |
+| weight | DECIMAL(5,2) | YES | - | | 体重（kg） |
 | note | TEXT | YES | NULL | | メモ |
 | created_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 作成日時 |
 | updated_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 更新日時 |

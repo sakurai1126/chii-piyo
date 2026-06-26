@@ -30,7 +30,7 @@ export interface MilkDetailDto {
    * @type {string}
    * @memberof MilkDetailDto
    */
-  note: string | null;
+  note: string;
 }
 
 /**

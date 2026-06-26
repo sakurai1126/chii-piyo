@@ -1,13 +1,65 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 
+import { toast } from "@/components/ui/Toast";
+
+import { createGrowthRecordAction } from "../../actions/createGrowthRecordAction";
 import growthIcon from "../../assets/growth.svg";
 import { useCareRecord } from "../../hooks/useCareRecord";
 import { CareActionModal } from "../ui/CareActionModal";
 
 export const GrowthAction = () => {
-  const { isOpen, setIsOpen, date, setDate, time, setTime, openModal } = useCareRecord();
+  const {
+    isOpen,
+    setIsOpen,
+    isPending,
+    startTransition,
+    note,
+    setNote,
+    date,
+    setDate,
+    time,
+    setTime,
+    openModal,
+  } = useCareRecord();
+
+  const [height, setHeight] = useState<number | undefined>(undefined);
+  const [weight, setWeight] = useState<number | undefined>(undefined);
+  // 登録処理
+  const saveAction = () => {
+    const recordTime = new Date(date + " " + time);
+
+    if (!(recordTime instanceof Date) || isNaN(recordTime.getTime())) {
+      toast.error("無効な日時です");
+      return;
+    }
+
+    if (!height && !weight) {
+      toast.error("身長または体重のいずれかは必ず入力してください");
+      return;
+    }
+
+    startTransition(async () => {
+      const result = await createGrowthRecordAction({
+        measurementDate: recordTime,
+        height: height || undefined,
+        weight: weight || undefined,
+        note,
+      });
+
+      if (result.success) {
+        setIsOpen(false);
+        setWeight(undefined);
+        setHeight(undefined);
+        setNote("");
+        toast.success("身長/体重を記録しました");
+      } else {
+        toast.error(result.error);
+      }
+    });
+  };
 
   return (
     <div className="max-md:w-full">
@@ -20,17 +72,25 @@ export const GrowthAction = () => {
         time={time}
         setTime={setTime}
         onCancel={() => setIsOpen(false)}
-        saveAction={() => {}}
+        note={note}
+        setNote={setNote}
+        saveAction={saveAction}
+        isPending={isPending}
       >
         <div className="my-4 flex gap-6 max-md:justify-center max-md:gap-3">
           <div className="flex items-end gap-2">
             <span className="max-md:text-sm">身長</span>
             <input
               type="number"
-              min={34}
-              max={42}
+              min={0}
+              max={200}
               step={0.1}
               className="border-line-gray h-10 rounded-sm border bg-white pl-2 text-2xl font-medium max-md:pr-1 max-md:text-xl"
+              disabled={isPending}
+              onChange={(e) =>
+                setHeight(e.target.value === "" ? undefined : Number(e.target.value))
+              }
+              value={height ?? ""}
             />
             <span className="max-md:text-sm">cm</span>
           </div>
@@ -38,10 +98,15 @@ export const GrowthAction = () => {
             <span className="max-md:text-sm">体重</span>
             <input
               type="number"
-              min={34}
-              max={42}
+              min={0}
+              max={200}
               step={0.1}
               className="border-line-gray h-10 rounded-sm border bg-white pl-2 text-2xl font-medium max-md:pr-1 max-md:text-xl"
+              disabled={isPending}
+              onChange={(e) =>
+                setWeight(e.target.value === "" ? undefined : Number(e.target.value))
+              }
+              value={weight ?? ""}
             />
             <span className="max-md:text-sm">kg</span>
           </div>
@@ -51,6 +116,7 @@ export const GrowthAction = () => {
       <button
         className="border-growth-border group w-full cursor-pointer rounded-lg border bg-white/50 p-5 backdrop-blur-[7.5px] transition-all max-md:flex max-md:items-center max-md:justify-center max-md:gap-3 max-md:rounded-4xl max-md:p-4"
         onClick={openModal}
+        disabled={isPending}
       >
         <Image
           src={growthIcon}

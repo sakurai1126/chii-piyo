@@ -122,13 +122,11 @@ export class CareRecordManagementApi extends runtime.BaseAPI {
   async createCareRecordRaw(
     requestParameters: CreateCareRecordRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<CareRecordResponseDto>> {
+  ): Promise<runtime.ApiResponse<void>> {
     const requestOptions = await this.createCareRecordRequestOpts(requestParameters);
     const response = await this.request(requestOptions, initOverrides);
 
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      CareRecordResponseDtoFromJSON(jsonValue),
-    );
+    return new runtime.VoidApiResponse(response);
   }
 
   /**
@@ -137,9 +135,8 @@ export class CareRecordManagementApi extends runtime.BaseAPI {
   async createCareRecord(
     requestParameters: CreateCareRecordRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<CareRecordResponseDto> {
-    const response = await this.createCareRecordRaw(requestParameters, initOverrides);
-    return await response.value();
+  ): Promise<void> {
+    await this.createCareRecordRaw(requestParameters, initOverrides);
   }
 
   /**
@@ -433,13 +430,11 @@ export class CareRecordManagementApi extends runtime.BaseAPI {
   async updateCareRecordRaw(
     requestParameters: UpdateCareRecordRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<CareRecordResponseDto>> {
+  ): Promise<runtime.ApiResponse<void>> {
     const requestOptions = await this.updateCareRecordRequestOpts(requestParameters);
     const response = await this.request(requestOptions, initOverrides);
 
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      CareRecordResponseDtoFromJSON(jsonValue),
-    );
+    return new runtime.VoidApiResponse(response);
   }
 
   /**
@@ -448,9 +443,8 @@ export class CareRecordManagementApi extends runtime.BaseAPI {
   async updateCareRecord(
     requestParameters: UpdateCareRecordRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<CareRecordResponseDto> {
-    const response = await this.updateCareRecordRaw(requestParameters, initOverrides);
-    return await response.value();
+  ): Promise<void> {
+    await this.updateCareRecordRaw(requestParameters, initOverrides);
   }
 }
 

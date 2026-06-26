@@ -116,13 +116,11 @@ export class GrowthRecordManagementApi extends runtime.BaseAPI {
   async createGrowthRecordRaw(
     requestParameters: CreateGrowthRecordRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<GrowthRecordResponseDto>> {
+  ): Promise<runtime.ApiResponse<void>> {
     const requestOptions = await this.createGrowthRecordRequestOpts(requestParameters);
     const response = await this.request(requestOptions, initOverrides);
 
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      GrowthRecordResponseDtoFromJSON(jsonValue),
-    );
+    return new runtime.VoidApiResponse(response);
   }
 
   /**
@@ -131,9 +129,8 @@ export class GrowthRecordManagementApi extends runtime.BaseAPI {
   async createGrowthRecord(
     requestParameters: CreateGrowthRecordRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<GrowthRecordResponseDto> {
-    const response = await this.createGrowthRecordRaw(requestParameters, initOverrides);
-    return await response.value();
+  ): Promise<void> {
+    await this.createGrowthRecordRaw(requestParameters, initOverrides);
   }
 
   /**
@@ -423,13 +420,11 @@ export class GrowthRecordManagementApi extends runtime.BaseAPI {
   async updateGrowthRecordRaw(
     requestParameters: UpdateGrowthRecordRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<GrowthRecordResponseDto>> {
+  ): Promise<runtime.ApiResponse<void>> {
     const requestOptions = await this.updateGrowthRecordRequestOpts(requestParameters);
     const response = await this.request(requestOptions, initOverrides);
 
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      GrowthRecordResponseDtoFromJSON(jsonValue),
-    );
+    return new runtime.VoidApiResponse(response);
   }
 
   /**
@@ -438,8 +433,7 @@ export class GrowthRecordManagementApi extends runtime.BaseAPI {
   async updateGrowthRecord(
     requestParameters: UpdateGrowthRecordRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<GrowthRecordResponseDto> {
-    const response = await this.updateGrowthRecordRaw(requestParameters, initOverrides);
-    return await response.value();
+  ): Promise<void> {
+    await this.updateGrowthRecordRaw(requestParameters, initOverrides);
   }
 }

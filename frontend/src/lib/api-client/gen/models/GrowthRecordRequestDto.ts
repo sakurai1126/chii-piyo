@@ -30,19 +30,19 @@ export interface GrowthRecordRequestDto {
    * @type {number}
    * @memberof GrowthRecordRequestDto
    */
-  height: number | null;
+  height?: number | null;
   /**
    * 体重（kg）
    * @type {number}
    * @memberof GrowthRecordRequestDto
    */
-  weight: number | null;
+  weight?: number | null;
   /**
    * メモ
    * @type {string}
    * @memberof GrowthRecordRequestDto
    */
-  note: string | null;
+  note: string;
 }
 
 /**
@@ -50,8 +50,6 @@ export interface GrowthRecordRequestDto {
  */
 export function instanceOfGrowthRecordRequestDto(value: object): value is GrowthRecordRequestDto {
   if (!("measurementDate" in value) || value["measurementDate"] === undefined) return false;
-  if (!("height" in value) || value["height"] === undefined) return false;
-  if (!("weight" in value) || value["weight"] === undefined) return false;
   if (!("note" in value) || value["note"] === undefined) return false;
   return true;
 }
@@ -69,8 +67,8 @@ export function GrowthRecordRequestDtoFromJSONTyped(
   }
   return {
     measurementDate: new Date(json["measurementDate"]),
-    height: json["height"],
-    weight: json["weight"],
+    height: json["height"] == null ? undefined : json["height"],
+    weight: json["weight"] == null ? undefined : json["weight"],
     note: json["note"],
   };
 }

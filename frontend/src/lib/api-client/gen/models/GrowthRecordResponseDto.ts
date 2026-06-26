@@ -36,19 +36,19 @@ export interface GrowthRecordResponseDto {
    * @type {number}
    * @memberof GrowthRecordResponseDto
    */
-  height: number | null;
+  height?: number | null;
   /**
    * 体重（kg）
    * @type {number}
    * @memberof GrowthRecordResponseDto
    */
-  weight: number | null;
+  weight?: number | null;
   /**
    * メモ
    * @type {string}
    * @memberof GrowthRecordResponseDto
    */
-  note: string | null;
+  note: string;
   /**
    * 作成日時
    * @type {Date}
@@ -69,8 +69,6 @@ export interface GrowthRecordResponseDto {
 export function instanceOfGrowthRecordResponseDto(value: object): value is GrowthRecordResponseDto {
   if (!("id" in value) || value["id"] === undefined) return false;
   if (!("measurementDate" in value) || value["measurementDate"] === undefined) return false;
-  if (!("height" in value) || value["height"] === undefined) return false;
-  if (!("weight" in value) || value["weight"] === undefined) return false;
   if (!("note" in value) || value["note"] === undefined) return false;
   if (!("createdAt" in value) || value["createdAt"] === undefined) return false;
   if (!("updatedAt" in value) || value["updatedAt"] === undefined) return false;
@@ -91,8 +89,8 @@ export function GrowthRecordResponseDtoFromJSONTyped(
   return {
     id: json["id"],
     measurementDate: new Date(json["measurementDate"]),
-    height: json["height"],
-    weight: json["weight"],
+    height: json["height"] == null ? undefined : json["height"],
+    weight: json["weight"] == null ? undefined : json["weight"],
     note: json["note"],
     createdAt: new Date(json["createdAt"]),
     updatedAt: new Date(json["updatedAt"]),

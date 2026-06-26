@@ -207,8 +207,8 @@ CREATE TABLE growth_records
 (
     id               BIGSERIAL PRIMARY KEY,
     measurement_date DATE          NOT NULL,
-    height           DECIMAL(5, 1) NOT NULL,
-    weight           DECIMAL(5, 2) NOT NULL,
+    height           DECIMAL(5, 1),
+    weight           DECIMAL(5, 2),
     note             TEXT,
     created_at       TIMESTAMPTZ   NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at       TIMESTAMPTZ   NOT NULL DEFAULT CURRENT_TIMESTAMP

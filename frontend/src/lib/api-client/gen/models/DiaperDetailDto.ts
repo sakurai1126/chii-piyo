@@ -30,7 +30,7 @@ export interface DiaperDetailDto {
    * @type {string}
    * @memberof DiaperDetailDto
    */
-  note: string | null;
+  note: string;
 }
 
 /**

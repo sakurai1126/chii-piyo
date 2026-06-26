@@ -41,12 +41,8 @@ put:
           $ref: "../../components/schemas/growth-records.yml#/GrowthRecordRequestDto"
     required: true
   responses:
-    "200":
-      description: 更新された身長・体重記録
-      content:
-        application/json;charset=UTF-8:
-          schema:
-            $ref: "../../components/schemas/growth-records.yml#/GrowthRecordResponseDto"
+    "204":
+      description: 身長・体重記録の更新に成功
     "400":
       $ref: "../../components/responses.yml#/BadRequest"
     "401":
