@@ -1,8 +1,10 @@
 package link.s_repo.chii_piyo.controller;
 
+import link.s_repo.chii_piyo.controller.converter.GrowthRecordConverter;
 import link.s_repo.chii_piyo.controller.gen.GrowthRecordManagementApi;
 import link.s_repo.chii_piyo.model.gen.GrowthRecordRequestDto;
 import link.s_repo.chii_piyo.model.gen.GrowthRecordResponseDto;
+import link.s_repo.chii_piyo.model.gen.GrowthRecords;
 import link.s_repo.chii_piyo.service.GrowthRecordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GrowthRecordController implements GrowthRecordManagementApi {
     private final GrowthRecordService growthRecordService;
+    private final GrowthRecordConverter growthRecordConverter;
 
     /**
      * POST /growth-records<br>
@@ -43,6 +46,43 @@ public class GrowthRecordController implements GrowthRecordManagementApi {
     }
 
     /**
+     * GET /growth-records : 身長・体重記録一覧を取得
+     *
+     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param startDate      検索開始日
+     * @param endDate        検索終了日
+     * @return 身長・体重記録一覧
+     */
+    @Override
+    public ResponseEntity<List<GrowthRecordResponseDto>> getGrowthRecords(
+        String xRequestedWith, LocalDate startDate, LocalDate endDate) {
+        // サービス層からデータを取得
+        List<GrowthRecords> records = growthRecordService.getGrowthRecords(startDate, endDate);
+
+        // コンバーターでレスポンス形式に変換
+        List<GrowthRecordResponseDto> response = records.stream()
+            .map(growthRecordConverter::toGrowthRecordResponseDto)
+            .toList();
+
+        // レスポンスを返却
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * PUT /growth-records/{id} : 身長・体重記録を更新
+     *
+     * @param xRequestedWith   X-Requested-With ヘッダ (CSRF防御用)
+     * @param id               リソースの一意な識別子
+     * @param growthRecordData 更新する身長・体重記録情報
+     * @return 更新された身長・体重記録
+     */
+    @Override
+    public ResponseEntity<Void> updateGrowthRecord(
+        String xRequestedWith, Long id, GrowthRecordRequestDto growthRecordData) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    /**
      * DELETE /growth-records/{id} : 身長・体重記録を削除
      *
      * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
@@ -51,35 +91,6 @@ public class GrowthRecordController implements GrowthRecordManagementApi {
      */
     @Override
     public ResponseEntity<Void> deleteGrowthRecord(String xRequestedWith, Long id) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-    }
-
-    /**
-     * GET /growth-records : 身長・体重記録一覧を取得
-     *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
-     * @param startDate      検索開始日 (optional)
-     * @param endDate        検索終了日 (optional)
-     * @return 身長・体重記録一覧 (status code 200)
-     */
-    @Override
-    public ResponseEntity<List<GrowthRecordResponseDto>> getGrowthRecords(
-        String xRequestedWith, LocalDate startDate, LocalDate endDate) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-    }
-
-
-    /**
-     * PUT /growth-records/{id} : 身長・体重記録を更新
-     *
-     * @param xRequestedWith   X-Requested-With ヘッダ (CSRF防御用)
-     * @param id               リソースの一意な識別子
-     * @param growthRecordData 更新する身長・体重記録情報
-     * @return 更新された身長・体重記録 (status code 200)
-     */
-    @Override
-    public ResponseEntity<Void> updateGrowthRecord(
-        String xRequestedWith, Long id, GrowthRecordRequestDto growthRecordData) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 }

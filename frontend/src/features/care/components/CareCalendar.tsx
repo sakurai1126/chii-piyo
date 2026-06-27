@@ -2,19 +2,22 @@
 
 import Image from "next/image";
 
-import { CareRecordListResponseDto } from "@/lib/api-client/gen";
+import { CareRecordListResponseDto, GrowthRecordResponseDto } from "@/lib/api-client/gen";
 
 import diaperIcon from "../assets/diaper.svg";
+import growthIcon from "../assets/growth.svg";
 import healthIcon from "../assets/health.svg";
 import mealIcon from "../assets/meal.svg";
 import milkIcon from "../assets/milk.svg";
+import piyoIcon from "../assets/piyo.svg";
 import plusIcon from "../assets/plus.svg";
 import { useCalendar } from "../hooks/useCalendar";
 
 type Props = {
   initialCareRecords: CareRecordListResponseDto;
+  initialGrowthRecords: GrowthRecordResponseDto[];
 };
-export const CareCalendar = ({ initialCareRecords }: Props) => {
+export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props) => {
   const {
     weeklyText,
     today,
@@ -25,7 +28,8 @@ export const CareCalendar = ({ initialCareRecords }: Props) => {
     changeWeek,
     changeDays,
     careRecords,
-  } = useCalendar(initialCareRecords);
+    growthRecords,
+  } = useCalendar({ initialCareRecords, initialGrowthRecords });
 
   const iconMap = {
     MEAL: mealIcon,
@@ -96,11 +100,42 @@ export const CareCalendar = ({ initialCareRecords }: Props) => {
           </div>
         </div>
 
+        <div className="flex h-10">
+          <div className="bg-calender-head/50 grid h-10 w-10 shrink-0 place-content-center">
+            <Image src={piyoIcon} alt="" className="" width={15} height={15} />
+          </div>
+          <div className="grid w-full grid-cols-7 max-md:grid-cols-1">
+            {Array.from({ length: 7 }, (_, dayIndex) => (
+              <div
+                className={`border-brown-dark/50 flex h-10 items-center gap-1 overflow-scroll border-l px-2 ${dayIndex !== currentDay.getDay() ? "max-md:hidden" : ""}`}
+                key={dayIndex}
+              >
+                {growthRecords
+                  ?.filter((item) => {
+                    // 記録日時をDate型に変換し対象日時と比較
+                    const recordDate = new Date(item.measurementDate);
+                    const targetDate = weeklyDates[dayIndex];
+                    return (
+                      recordDate.getFullYear() === targetDate.getFullYear() &&
+                      recordDate.getMonth() === targetDate.getMonth() &&
+                      recordDate.getDate() === targetDate.getDate()
+                    );
+                  })
+                  .map((item) => (
+                    <button
+                      key={item.id}
+                      className="border-accent-pink cursor-pointer rounded-full border"
+                    >
+                      <Image src={growthIcon} alt="" width={30} height={30} />
+                    </button>
+                  ))}
+              </div>
+            ))}
+          </div>
+        </div>
+
         {Array.from({ length: 24 }, (_, timeIndex) => (
-          <div
-            key={timeIndex}
-            className={`flex h-10 ${timeIndex !== 0 ? "border-line-gray border-t border-dashed" : ""}`}
-          >
+          <div key={timeIndex} className="border-line-gray flex h-10 border-t border-dashed">
             <p className="grid h-10 w-10 shrink-0 place-content-center text-sm">{timeIndex}</p>
             <div className="grid w-full grid-cols-7 max-md:grid-cols-1">
               {Array.from({ length: 7 }, (_, dayIndex) => (

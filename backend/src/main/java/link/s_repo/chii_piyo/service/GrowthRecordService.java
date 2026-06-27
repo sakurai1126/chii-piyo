@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -44,5 +46,16 @@ public class GrowthRecordService {
         record.setNote(growthRecordData.getNote());
 
         growthRecordRepository.save(record);
+    }
+
+    /**
+     * 成長記録一覧を取得する
+     *
+     * @param startDate 検索開始日
+     * @param endDate   検索終了日
+     * @return 身長・体重記録エンティティ一覧
+     */
+    public List<GrowthRecords> getGrowthRecords(LocalDate startDate, LocalDate endDate) {
+        return growthRecordRepository.findRecordsByDate(startDate, endDate);
     }
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -27,6 +28,9 @@ export const GrowthAction = () => {
 
   const [height, setHeight] = useState<number | undefined>(undefined);
   const [weight, setWeight] = useState<number | undefined>(undefined);
+  // 一覧画面のtanstack queryのキャッシュ破棄用フック
+  const queryClient = useQueryClient();
+
   // 登録処理
   const saveAction = () => {
     const recordTime = new Date(date + " " + time);
@@ -50,6 +54,7 @@ export const GrowthAction = () => {
       });
 
       if (result.success) {
+        queryClient.invalidateQueries({ queryKey: ["growthRecords"] });
         setIsOpen(false);
         setWeight(undefined);
         setHeight(undefined);

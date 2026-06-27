@@ -2,11 +2,17 @@
 
 import { useState } from "react";
 
-import { CareRecordListResponseDto } from "@/lib/api-client/gen";
+import { CareRecordListResponseDto, GrowthRecordResponseDto } from "@/lib/api-client/gen";
 
 import { useGetCareRecords } from "./useGetCareRecords";
+import { useGetGrowthRecords } from "./useGetGrowthRecords";
 
-export const useCalendar = (initialRecords: CareRecordListResponseDto) => {
+type Params = {
+  initialCareRecords: CareRecordListResponseDto;
+  initialGrowthRecords: GrowthRecordResponseDto[];
+};
+
+export const useCalendar = ({ initialCareRecords, initialGrowthRecords }: Params) => {
   const weeklyText = ["日", "月", "火", "水", "木", "金", "土"];
 
   // 週の始まり（日曜日）を計算する
@@ -43,7 +49,15 @@ export const useCalendar = (initialRecords: CareRecordListResponseDto) => {
     startDate: startDay,
     endDate: endDay,
     // 表示が現在の週の場合はサーバーで取得した初期値を使用する
-    initialData: isTodayWeek ? initialRecords : undefined,
+    initialData: isTodayWeek ? initialCareRecords : undefined,
+  });
+
+  // 成長記録を取得
+  const { data: growthRecords } = useGetGrowthRecords({
+    startDate: startDay,
+    endDate: endDay,
+    // 表示が現在の週の場合はサーバーで取得した初期値を使用する
+    initialData: isTodayWeek ? initialGrowthRecords : undefined,
   });
 
   // 週変更処理
@@ -115,5 +129,6 @@ export const useCalendar = (initialRecords: CareRecordListResponseDto) => {
     changeWeek,
     changeDays,
     careRecords,
+    growthRecords,
   };
 };
