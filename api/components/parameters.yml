@@ -130,19 +130,6 @@ EndDate:
     type: string
     format: date
 
-RecordTypeFilter:
-  name: recordType
-  in: query
-  description: 育児記録種別で絞り込み
-  required: false
-  schema:
-    type: string
-    enum:
-      - MEAL
-      - MILK
-      - DIAPER
-      - HEALTH
-
 FavoriteFilter:
   name: isFavorite
   in: query

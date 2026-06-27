@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 育児記録管理サービス<br>
@@ -159,5 +162,68 @@ public class CareRecordService {
         careRecord.setRecordedBy(userId);
         careRecordRepository.save(careRecord);
         return careRecord.getId();
+    }
+
+    /**
+     * 育児記録一覧を取得する
+     *
+     * @param startDate 検索開始日
+     * @param endDate   検索終了日
+     * @return 記録の一覧データ
+     */
+    public List<CareRecords> getCareRecords(LocalDate startDate, LocalDate endDate) {
+        return careRecordRepository.findRecordsByDate(startDate, endDate);
+    }
+
+    /**
+     * 育児記録テーブルIDに紐づく食事記録を取得する
+     *
+     * @param recordIds 育児記録テーブルID
+     * @return 食事記録エンティティリスト
+     */
+    public List<MealDetails> getMealRecords(List<Long> recordIds) {
+        if (recordIds == null || recordIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return careRecordRepository.findMealRecordsByIds(recordIds);
+    }
+
+    /**
+     * 育児記録テーブルIDに紐づくミルク記録を取得する
+     *
+     * @param recordIds 育児記録テーブルID
+     * @return ミルク記録エンティティリスト
+     */
+    public List<MilkDetails> getMilkRecords(List<Long> recordIds) {
+        if (recordIds == null || recordIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return careRecordRepository.findMilkRecordsByIds(recordIds);
+    }
+
+    /**
+     * 育児記録テーブルIDに紐づく排泄記録を取得する
+     *
+     * @param recordIds 育児記録テーブルID
+     * @return 排泄記録エンティティリスト
+     */
+    public List<DiaperDetails> getDiaperRecords(List<Long> recordIds) {
+        if (recordIds == null || recordIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return careRecordRepository.findDiaperRecordsByIds(recordIds);
+    }
+
+    /**
+     * 育児記録テーブルIDに紐づく体調記録を取得する
+     *
+     * @param recordIds 育児記録テーブルID
+     * @return 体調記録エンティティリスト
+     */
+    public List<HealthDetails> getHealthRecords(List<Long> recordIds) {
+        if (recordIds == null || recordIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return careRecordRepository.findHealthRecordsByIds(recordIds);
     }
 }

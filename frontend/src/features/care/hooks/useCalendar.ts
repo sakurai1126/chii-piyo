@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 
-export const useCalendar = () => {
+import { CareRecordListResponseDto } from "@/lib/api-client/gen";
+
+import { useGetCareRecords } from "./useGetCareRecords";
+
+export const useCalendar = (initialRecords: CareRecordListResponseDto) => {
   const weeklyText = ["日", "月", "火", "水", "木", "金", "土"];
 
   // 週の始まり（日曜日）を計算する
@@ -30,6 +34,17 @@ export const useCalendar = () => {
       return date;
     }),
   );
+
+  // 表示の終了日
+  const endDay = new Date(startDay.getFullYear(), startDay.getMonth(), startDay.getDate() + 7);
+
+  // 育児記録を取得
+  const { data: careRecords } = useGetCareRecords({
+    startDate: startDay,
+    endDate: endDay,
+    // 表示が現在の週の場合はサーバーで取得した初期値を使用する
+    initialData: isTodayWeek ? initialRecords : undefined,
+  });
 
   // 週変更処理
   const changeWeek = (changeDay: number, specificDay?: Date) => {
@@ -99,5 +114,6 @@ export const useCalendar = () => {
     weeklyDates,
     changeWeek,
     changeDays,
+    careRecords,
   };
 };

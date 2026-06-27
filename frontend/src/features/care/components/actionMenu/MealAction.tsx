@@ -1,5 +1,6 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 
 import { toast } from "@/components/ui/Toast";
@@ -24,6 +25,9 @@ export const MealAction = () => {
     openModal,
   } = useCareRecord();
 
+  // 一覧画面のtanstack queryのキャッシュ破棄用フック
+  const queryClient = useQueryClient();
+
   // 登録処理
   const saveAction = () => {
     const recordTime = new Date(date + " " + time);
@@ -33,6 +37,7 @@ export const MealAction = () => {
       return;
     }
 
+    // 登録処理
     startTransition(async () => {
       const result = await createCareRecordAction({
         recordType: "MEAL",
@@ -41,6 +46,7 @@ export const MealAction = () => {
       });
 
       if (result.success) {
+        queryClient.invalidateQueries({ queryKey: ["careRecords"] });
         setIsOpen(false);
         setNote("");
         toast.success("食事を記録しました");

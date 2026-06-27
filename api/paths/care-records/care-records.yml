@@ -5,7 +5,6 @@ get:
   operationId: getCareRecords
   parameters:
     - $ref: "../../components/parameters.yml#/XRequestedWith"
-    - $ref: "../../components/parameters.yml#/RecordTypeFilter"
     - $ref: "../../components/parameters.yml#/StartDate"
     - $ref: "../../components/parameters.yml#/EndDate"
   responses:

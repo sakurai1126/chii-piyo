@@ -66,17 +66,11 @@ CareRecordListResponseDto:
   description: 育児記録一覧レスポンス
   required:
     - items
-    - totalCount
   properties:
     items:
       type: array
       items:
         $ref: "#/CareRecordResponseDto"
-    totalCount:
-      type: integer
-      format: int64
-      description: 総件数
-      example: 50
 
 CareRecordRequestDto:
   type: object

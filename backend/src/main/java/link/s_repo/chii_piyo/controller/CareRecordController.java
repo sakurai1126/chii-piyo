@@ -1,9 +1,14 @@
 package link.s_repo.chii_piyo.controller;
 
+import link.s_repo.chii_piyo.controller.converter.CareRecordListConverter;
 import link.s_repo.chii_piyo.controller.gen.CareRecordManagementApi;
 import link.s_repo.chii_piyo.model.gen.CareRecordListResponseDto;
 import link.s_repo.chii_piyo.model.gen.CareRecordRequestDto;
-import link.s_repo.chii_piyo.model.gen.CareRecordResponseDto;
+import link.s_repo.chii_piyo.model.gen.CareRecords;
+import link.s_repo.chii_piyo.model.gen.DiaperDetails;
+import link.s_repo.chii_piyo.model.gen.HealthDetails;
+import link.s_repo.chii_piyo.model.gen.MealDetails;
+import link.s_repo.chii_piyo.model.gen.MilkDetails;
 import link.s_repo.chii_piyo.security.CurrentUserProvider;
 import link.s_repo.chii_piyo.service.CareRecordService;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * 育児記録管理コントローラー<br>
@@ -25,6 +31,7 @@ public class CareRecordController implements CareRecordManagementApi {
 
     private final CareRecordService careRecordService;
     private final CurrentUserProvider currentUserProvider;
+    private final CareRecordListConverter careRecordListConverter;
 
     /**
      * POST /care-records<br>
@@ -48,48 +55,43 @@ public class CareRecordController implements CareRecordManagementApi {
     }
 
     /**
-     * DELETE /care-records/{id}<br>
-     * 育児記録を削除
-     *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
-     * @param id             リソースの一意な識別子
-     * @return 204ステータス
-     */
-    @Override
-    public ResponseEntity<Void> deleteCareRecord(String xRequestedWith, Long id) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-    }
-
-
-    /**
-     * GET /care-records/{id}<br>
-     * 育児記録をID指定で1件取得
-     *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
-     * @param id             リソースの一意な識別子
-     * @return 育児記録情報
-     */
-    @Override
-    public ResponseEntity<CareRecordResponseDto> getCareRecord(String xRequestedWith, Long id) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-    }
-
-    /**
      * GET /care-records<br>
      * 育児記録一覧を取得
      *
      * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
-     * @param recordType     育児記録種別で絞り込み (optional)
-     * @param startDate      検索開始日 (optional)
-     * @param endDate        検索終了日 (optional)
+     * @param startDate      検索開始日
+     * @param endDate        検索終了日
      * @return 育児記録一覧
      */
     @Override
     public ResponseEntity<CareRecordListResponseDto> getCareRecords(
-        String xRequestedWith, String recordType, LocalDate startDate, LocalDate endDate) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-    }
+        String xRequestedWith, LocalDate startDate, LocalDate endDate) {
 
+        // サービス層からデータを取得
+        List<CareRecords> careRecords = careRecordService.getCareRecords(startDate, endDate);
+
+        // 育児記録(親テーブル)のIDを抽出
+        List<Long> recordIds = careRecords.stream().map(CareRecords::getId).toList();
+
+        // 食事記録取得
+        List<MealDetails> mealRecords = careRecordService.getMealRecords(recordIds);
+
+        // ミルク記録取得
+        List<MilkDetails> milkRecords = careRecordService.getMilkRecords(recordIds);
+
+        // 排泄記録取得
+        List<DiaperDetails> diaperRecords = careRecordService.getDiaperRecords(recordIds);
+
+        // 体調記録取得
+        List<HealthDetails> healthRecords = careRecordService.getHealthRecords(recordIds);
+
+        // コンバーターでレスポンス形式に変換
+        CareRecordListResponseDto response = careRecordListConverter.toCareRecordListResponseDto(
+            careRecords, mealRecords, milkRecords, diaperRecords, healthRecords);
+
+        // レスポンスを返却
+        return ResponseEntity.ok(response);
+    }
 
     /**
      * PUT /care-records/{id}<br>
@@ -102,6 +104,19 @@ public class CareRecordController implements CareRecordManagementApi {
     @Override
     public ResponseEntity<Void> updateCareRecord(
         String xRequestedWith, Long id, CareRecordRequestDto careRecordData) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    /**
+     * DELETE /care-records/{id}<br>
+     * 育児記録を削除
+     *
+     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param id             リソースの一意な識別子
+     * @return 204ステータス
+     */
+    @Override
+    public ResponseEntity<Void> deleteCareRecord(String xRequestedWith, Long id) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 }

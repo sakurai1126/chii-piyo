@@ -1,11 +1,20 @@
 "use client";
+
 import Image from "next/image";
 
+import { CareRecordListResponseDto } from "@/lib/api-client/gen";
+
+import diaperIcon from "../assets/diaper.svg";
+import healthIcon from "../assets/health.svg";
 import mealIcon from "../assets/meal.svg";
+import milkIcon from "../assets/milk.svg";
 import plusIcon from "../assets/plus.svg";
 import { useCalendar } from "../hooks/useCalendar";
 
-export const CareCalendar = () => {
+type Props = {
+  initialCareRecords: CareRecordListResponseDto;
+};
+export const CareCalendar = ({ initialCareRecords }: Props) => {
   const {
     weeklyText,
     today,
@@ -15,7 +24,15 @@ export const CareCalendar = () => {
     weeklyDates,
     changeWeek,
     changeDays,
-  } = useCalendar();
+    careRecords,
+  } = useCalendar(initialCareRecords);
+
+  const iconMap = {
+    MEAL: mealIcon,
+    MILK: milkIcon,
+    DIAPER: diaperIcon,
+    HEALTH: healthIcon,
+  };
 
   return (
     <>
@@ -91,9 +108,26 @@ export const CareCalendar = () => {
                   className={`border-brown-dark/50 flex h-10 items-center gap-1 overflow-scroll border-l px-2 ${dayIndex !== currentDay.getDay() ? "max-md:hidden" : ""}`}
                   key={dayIndex}
                 >
-                  <button className="border-accent-pink cursor-pointer rounded-full border">
-                    <Image src={mealIcon} alt="" width={30} height={30} />
-                  </button>
+                  {careRecords?.items
+                    .filter((item) => {
+                      // 記録日時をDate型に変換し対象日時と比較
+                      const recordDate = new Date(item.recordedAt);
+                      const targetDate = weeklyDates[dayIndex];
+                      return (
+                        recordDate.getFullYear() === targetDate.getFullYear() &&
+                        recordDate.getMonth() === targetDate.getMonth() &&
+                        recordDate.getDate() === targetDate.getDate() &&
+                        recordDate.getHours() === timeIndex
+                      );
+                    })
+                    .map((item) => (
+                      <button
+                        key={item.id}
+                        className="border-accent-pink cursor-pointer rounded-full border"
+                      >
+                        <Image src={iconMap[item.recordType]} alt="" width={30} height={30} />
+                      </button>
+                    ))}
                 </div>
               ))}
             </div>

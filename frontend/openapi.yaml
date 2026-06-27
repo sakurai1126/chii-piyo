@@ -994,7 +994,6 @@ paths:
       operationId: getCareRecords
       parameters:
         - $ref: '#/components/parameters/XRequestedWith'
-        - $ref: '#/components/parameters/RecordTypeFilter'
         - $ref: '#/components/parameters/StartDate'
         - $ref: '#/components/parameters/EndDate'
       responses:
@@ -1043,31 +1042,6 @@ paths:
         default:
           $ref: '#/components/responses/DefaultErrors'
   /care-records/{id}:
-    get:
-      tags:
-        - careRecordManagement
-      summary: 育児記録をID指定で1件取得
-      operationId: getCareRecord
-      parameters:
-        - $ref: '#/components/parameters/XRequestedWith'
-        - $ref: '#/components/parameters/ResourceId'
-      responses:
-        '200':
-          description: 育児記録情報
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/CareRecordResponseDto'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-        default:
-          $ref: '#/components/responses/DefaultErrors'
     put:
       tags:
         - careRecordManagement
@@ -1176,31 +1150,6 @@ paths:
         default:
           $ref: '#/components/responses/DefaultErrors'
   /growth-records/{id}:
-    get:
-      tags:
-        - growthRecordManagement
-      summary: 身長・体重記録をID指定で1件取得
-      operationId: getGrowthRecord
-      parameters:
-        - $ref: '#/components/parameters/XRequestedWith'
-        - $ref: '#/components/parameters/ResourceId'
-      responses:
-        '200':
-          description: 身長・体重記録情報
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/GrowthRecordResponseDto'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-        default:
-          $ref: '#/components/responses/DefaultErrors'
     put:
       tags:
         - growthRecordManagement
@@ -1783,18 +1732,6 @@ components:
       schema:
         type: integer
         format: int64
-    RecordTypeFilter:
-      name: recordType
-      in: query
-      description: 育児記録種別で絞り込み
-      required: false
-      schema:
-        type: string
-        enum:
-          - MEAL
-          - MILK
-          - DIAPER
-          - HEALTH
     TrashItemIds:
       name: trashItemIds
       in: query
@@ -2709,17 +2646,11 @@ components:
       description: 育児記録一覧レスポンス
       required:
         - items
-        - totalCount
       properties:
         items:
           type: array
           items:
             $ref: '#/components/schemas/CareRecordResponseDto'
-        totalCount:
-          type: integer
-          format: int64
-          description: 総件数
-          example: 50
     CareRecordRequestDto:
       type: object
       description: 育児記録作成・更新リクエスト

@@ -1,5 +1,6 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -28,6 +29,9 @@ export const MilkAction = () => {
   } = useCareRecord();
   const [amountMl, setAmountMl] = useState<number>(200);
   const amountMlsSelect = [100, 140, 160, 200];
+
+  // 一覧画面のtanstack queryのキャッシュ破棄用フック
+  const queryClient = useQueryClient();
 
   // マイナスボタンを押したときの処理
   const milkMinus = () => {
@@ -64,6 +68,7 @@ export const MilkAction = () => {
       });
 
       if (result.success) {
+        queryClient.invalidateQueries({ queryKey: ["careRecords"] });
         setIsOpen(false);
         setNote("");
         toast.success("ミルクを記録しました");

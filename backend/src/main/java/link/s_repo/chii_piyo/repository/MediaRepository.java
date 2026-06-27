@@ -146,7 +146,7 @@ public class MediaRepository {
     /**
      * メディアデータをIDリスト指定で複数件削除する
      *
-     * @param id 対象のメディアID
+     * @param ids 対象のメディアID
      */
     public void deleteByIds(List<Long> ids) {
         mediaMapper.delete(c -> c.where(MediaDynamicSqlSupport.id, isIn(ids)));

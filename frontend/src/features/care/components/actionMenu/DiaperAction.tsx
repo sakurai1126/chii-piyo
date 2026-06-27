@@ -1,5 +1,6 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -26,6 +27,8 @@ export const DiaperAction = () => {
     openModal,
   } = useCareRecord();
   const [diaperType, setDiaperType] = useState<DiaperDetailDtoDiaperTypeEnum>("WET");
+  // 一覧画面のtanstack queryのキャッシュ破棄用フック
+  const queryClient = useQueryClient();
 
   // 登録処理
   const saveAction = () => {
@@ -44,6 +47,7 @@ export const DiaperAction = () => {
       });
 
       if (result.success) {
+        queryClient.invalidateQueries({ queryKey: ["careRecords"] });
         setIsOpen(false);
         setNote("");
         toast.success("排泄を記録しました");

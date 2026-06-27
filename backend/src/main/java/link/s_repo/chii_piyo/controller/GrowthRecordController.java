@@ -55,18 +55,6 @@ public class GrowthRecordController implements GrowthRecordManagementApi {
     }
 
     /**
-     * GET /growth-records/{id} : 身長・体重記録をID指定で1件取得
-     *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
-     * @param id             リソースの一意な識別子
-     * @return 身長・体重記録情報 (status code 200)
-     */
-    @Override
-    public ResponseEntity<GrowthRecordResponseDto> getGrowthRecord(String xRequestedWith, Long id) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-    }
-
-    /**
      * GET /growth-records : 身長・体重記録一覧を取得
      *
      * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)

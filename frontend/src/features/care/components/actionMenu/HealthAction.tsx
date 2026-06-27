@@ -1,5 +1,6 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -25,6 +26,10 @@ export const HealthAction = () => {
     openModal,
   } = useCareRecord();
   const [temperature, setTemperature] = useState<number>(36.5);
+
+  // 一覧画面のtanstack queryのキャッシュ破棄用フック
+  const queryClient = useQueryClient();
+
   // 登録処理
   const saveAction = () => {
     const recordTime = new Date(date + " " + time);
@@ -47,6 +52,7 @@ export const HealthAction = () => {
       });
 
       if (result.success) {
+        queryClient.invalidateQueries({ queryKey: ["careRecords"] });
         setIsOpen(false);
         setNote("");
         toast.success("体調を記録しました");
