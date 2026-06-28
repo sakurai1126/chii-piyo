@@ -18,6 +18,7 @@ export type ActionResult = { success: true } | { success: false; error: string }
 
 // クライアントから受け取る入力型
 type Input = {
+  id: number;
   recordType: CareRecordRequestDtoRecordTypeEnum;
   recordedAt: Date;
   mealDetail?: MealDetailDto;
@@ -26,14 +27,15 @@ type Input = {
   healthDetail?: HealthDetailDto;
 };
 
-export const createCareRecordAction = async (input: Input): Promise<ActionResult> => {
+export const updateCareRecordAction = async (input: Input): Promise<ActionResult> => {
   try {
     // 認証トークンを含むAPIクライアントの設定を生成し、CareRecordManagementApiのインスタンスを作成
     const configuration = await createAuthorizedConfig();
     const apiClient = new CareRecordManagementApi(configuration);
 
-    await apiClient.createCareRecord({
+    await apiClient.updateCareRecord({
       xRequestedWith: "XMLHttpRequest",
+      id: input.id,
       careRecordData: {
         recordType: input.recordType,
         recordedAt: input.recordedAt,
@@ -49,10 +51,10 @@ export const createCareRecordAction = async (input: Input): Promise<ActionResult
 
     return { success: true };
   } catch (error) {
-    console.error("createCareRecordAction失敗", error);
+    console.error("updateCareRecordAction失敗", error);
     if (error instanceof Error && error.message === "UNAUTHORIZED") {
       return { success: false, error: "認証が必要です" };
     }
-    return { success: false, error: "記録に失敗しました" };
+    return { success: false, error: "更新に失敗しました" };
   }
 };

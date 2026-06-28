@@ -24,7 +24,7 @@ export interface MilkDetailDto {
    * @type {number}
    * @memberof MilkDetailDto
    */
-  amountMl: number | null;
+  amountMl: number;
   /**
    * メモ・備考
    * @type {string}

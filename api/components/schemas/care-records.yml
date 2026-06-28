@@ -129,7 +129,7 @@ MilkDetailDto:
     - note
   properties:
     amountMl:
-      type: ["integer", "null"]
+      type: integer
       description: 量（ml）
       example: 200
     note:

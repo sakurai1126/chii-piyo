@@ -328,7 +328,7 @@ export class CareRecordManagementApi extends runtime.BaseAPI {
 
     return {
       path: urlPath,
-      method: "PUT",
+      method: "PATCH",
       headers: headerParameters,
       query: queryParameters,
       body: CareRecordRequestDtoToJSON(requestParameters["careRecordData"]),

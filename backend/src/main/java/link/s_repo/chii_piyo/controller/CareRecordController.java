@@ -104,7 +104,11 @@ public class CareRecordController implements CareRecordManagementApi {
     @Override
     public ResponseEntity<Void> updateCareRecord(
         String xRequestedWith, Long id, CareRecordRequestDto careRecordData) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        // サービス層で更新処理
+        careRecordService.updateCareRecord(id, careRecordData);
+
+        // 204ステータスを返却
+        return ResponseEntity.noContent().build();
     }
 
     /**
@@ -117,6 +121,11 @@ public class CareRecordController implements CareRecordManagementApi {
      */
     @Override
     public ResponseEntity<Void> deleteCareRecord(String xRequestedWith, Long id) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        // サービス層で削除する
+        careRecordService.deleteCareRecord(id);
+
+        // 204ステータスを返却
+        return ResponseEntity.noContent().build();
+
     }
 }

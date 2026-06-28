@@ -1,10 +1,6 @@
 package link.s_repo.chii_piyo.repository;
 
-import link.s_repo.chii_piyo.model.gen.CareRecords;
-import link.s_repo.chii_piyo.model.gen.DiaperDetails;
-import link.s_repo.chii_piyo.model.gen.HealthDetails;
-import link.s_repo.chii_piyo.model.gen.MealDetails;
-import link.s_repo.chii_piyo.model.gen.MilkDetails;
+import link.s_repo.chii_piyo.model.gen.*;
 import link.s_repo.chii_piyo.repository.gen.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -12,7 +8,9 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Optional;
 
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.isGreaterThanOrEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
 import static org.mybatis.dynamic.sql.SqlBuilder.isLessThan;
@@ -25,6 +23,16 @@ public class CareRecordRepository {
     private final MilkDetailsMapper milkDetailsMapper;
     private final DiaperDetailsMapper diaperDetailsMapper;
     private final HealthDetailsMapper healthDetailsMapper;
+
+    /**
+     * 育児記録をID指定で1件取得する
+     *
+     * @param id 対象育児記録のID
+     * @return 育児記録データ
+     */
+    public Optional<CareRecords> findById(Long id) {
+        return careRecordsMapper.selectByPrimaryKey(id);
+    }
 
     /**
      * 育児記録をDBに保存する
@@ -94,6 +102,50 @@ public class CareRecordRepository {
     }
 
     /**
+     * 育児記録テーブルIDに紐づく食事記録を一件取得する
+     *
+     * @param recordId 育児記録テーブルID
+     * @return 食事記録エンティティリスト
+     */
+    public Optional<MealDetails> findMealRecordsById(Long recordId) {
+        return mealDetailsMapper.selectOne(c ->
+            c.where(MealDetailsDynamicSqlSupport.careRecordId, isEqualTo(recordId)));
+    }
+
+    /**
+     * 育児記録テーブルIDに紐づくミルク記録を一件取得する
+     *
+     * @param recordId 育児記録テーブルID
+     * @return ミルク記録エンティティリスト
+     */
+    public Optional<MilkDetails> findMilkRecordsById(Long recordId) {
+        return milkDetailsMapper.selectOne(c ->
+            c.where(MilkDetailsDynamicSqlSupport.careRecordId, isEqualTo(recordId)));
+    }
+
+    /**
+     * 育児記録テーブルIDに紐づく排泄記録を一件取得する
+     *
+     * @param recordId 育児記録テーブルID
+     * @return 排泄記録エンティティリスト
+     */
+    public Optional<DiaperDetails> findDiaperRecordsById(Long recordId) {
+        return diaperDetailsMapper.selectOne(c ->
+            c.where(DiaperDetailsDynamicSqlSupport.careRecordId, isEqualTo(recordId)));
+    }
+
+    /**
+     * 育児記録テーブルIDに紐づく体調記録を一件取得する
+     *
+     * @param recordId 育児記録テーブルID
+     * @return 体調記録エンティティリスト
+     */
+    public Optional<HealthDetails> findHealthRecordsById(Long recordId) {
+        return healthDetailsMapper.selectOne(c ->
+            c.where(HealthDetailsDynamicSqlSupport.careRecordId, isEqualTo(recordId)));
+    }
+
+    /**
      * 育児記録テーブルIDに紐づく食事記録を取得する
      *
      * @param recordIds 育児記録テーブルID
@@ -139,5 +191,99 @@ public class CareRecordRepository {
         return healthDetailsMapper.select(c -> c.where(
             HealthDetailsDynamicSqlSupport.careRecordId, isIn(recordIds)
         ));
+    }
+
+    /**
+     * 親テーブルID指定で記録を削除する
+     *
+     * @param id 削除対象の親テーブルID
+     */
+    public void deleteMealByRecordId(Long id) {
+        mealDetailsMapper.delete(c ->
+            c.where(MealDetailsDynamicSqlSupport.careRecordId, isEqualTo(id)));
+    }
+
+    /**
+     * 親テーブルID指定で記録を削除する
+     *
+     * @param id 削除対象の親テーブルID
+     */
+    public void deleteMilkByRecordId(Long id) {
+        milkDetailsMapper.delete(c ->
+            c.where(MilkDetailsDynamicSqlSupport.careRecordId, isEqualTo(id)));
+    }
+
+    /**
+     * 親テーブルID指定で記録を削除する
+     *
+     * @param id 削除対象の親テーブルID
+     */
+    public void deleteDiaperByRecordId(Long id) {
+        diaperDetailsMapper.delete(c ->
+            c.where(DiaperDetailsDynamicSqlSupport.careRecordId, isEqualTo(id)));
+    }
+
+    /**
+     * 親テーブルID指定で記録を削除する
+     *
+     * @param id 削除対象の親テーブルID
+     */
+    public void deleteHealthByRecordId(Long id) {
+        healthDetailsMapper.delete(c ->
+            c.where(HealthDetailsDynamicSqlSupport.careRecordId, isEqualTo(id)));
+    }
+
+    /**
+     * ID指定で記録を削除する
+     *
+     * @param id 削除対象のID
+     */
+    public void deleteCareRecordById(Long id) {
+        careRecordsMapper.deleteByPrimaryKey(id);
+    }
+
+    /**
+     * 親テーブルID指定で食事記録を更新する
+     *
+     * @param mealDetail 更新用データ
+     */
+    public void updateMealDetail(MealDetails mealDetail) {
+        mealDetailsMapper.updateByPrimaryKeySelective(mealDetail);
+    }
+
+    /**
+     * 親テーブルID指定でミルク記録を更新する
+     *
+     * @param milkDetail 更新用データ
+     */
+    public void updateMilkDetail(MilkDetails milkDetail) {
+        milkDetailsMapper.updateByPrimaryKeySelective(milkDetail);
+    }
+
+    /**
+     * 親テーブルID指定で排泄記録を更新する
+     *
+     * @param diaperDetail 更新用データ
+     */
+    public void updateDiaperDetail(DiaperDetails diaperDetail) {
+        diaperDetailsMapper.updateByPrimaryKeySelective(diaperDetail);
+    }
+
+    /**
+     * 親テーブルID指定で体調記録を更新する
+     *
+     * @param healthDetail 更新用データ
+     */
+    public void updateHealthDetail(HealthDetails healthDetail) {
+        healthDetailsMapper.updateByPrimaryKeySelective(healthDetail);
+    }
+
+    /**
+     * ID指定で記録を更新する
+     *
+     * @param careRecord 更新用データ
+     */
+    public void updateCareRecord(CareRecords careRecord) {
+        careRecordsMapper.updateByPrimaryKeySelective(careRecord);
     }
 }

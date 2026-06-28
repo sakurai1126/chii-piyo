@@ -31,6 +31,37 @@ export const formatJapaneseDateNonTime = (date: Date): string => {
 };
 
 /**
+ * Date型の情報をフォーマットした文字列で返す
+ *
+ * @param date Date型の日付情報
+ * @returns "YYYY-MM-DD"形式の文字列
+ */
+export const formatJapaneseDateBasic = (date: Date): string => {
+  if (Number.isNaN(date.getTime())) return "";
+
+  // inputに渡すことも想定し0埋めの2桁形式で返却
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+/**
+ * Date型の情報をフォーマットした文字列で返す（時刻のみ）
+ *
+ * @param date Date型の日付情報
+ * @returns "HH:MM"形式の文字列
+ */
+export const formatJapaneseDateTimeOnly = (date: Date): string => {
+  if (Number.isNaN(date.getTime())) return "";
+
+  // inputに渡すことも想定し0埋めの2桁形式で返却
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  return `${hours}:${minutes}`;
+};
+
+/**
  * 指定された日付までの残り日数を計算する
  * @param expiresAt 削除予定日時
  * @returns 残り日数

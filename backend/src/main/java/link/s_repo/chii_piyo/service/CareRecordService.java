@@ -1,5 +1,6 @@
 package link.s_repo.chii_piyo.service;
 
+import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.*;
 import link.s_repo.chii_piyo.repository.CareRecordRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.List;
 
@@ -101,10 +104,8 @@ public class CareRecordService {
         MilkDetails milkDetail = new MilkDetails();
         // 親テーブルIDをセット
         milkDetail.setCareRecordId(recordId);
-        // ミルク記録がある場合セット
-        if (request.getAmountMl().isPresent()) {
-            milkDetail.setAmountMl(request.getAmountMl().get());
-        }
+        // ミルク記録をセット
+        milkDetail.setAmountMl(request.getAmountMl());
         // メモ記録をセット
         milkDetail.setNote(request.getNote());
         careRecordRepository.saveMilk(milkDetail);
@@ -171,6 +172,7 @@ public class CareRecordService {
      * @param endDate   検索終了日
      * @return 記録の一覧データ
      */
+    @Transactional(readOnly = true)
     public List<CareRecords> getCareRecords(LocalDate startDate, LocalDate endDate) {
         return careRecordRepository.findRecordsByDate(startDate, endDate);
     }
@@ -181,6 +183,7 @@ public class CareRecordService {
      * @param recordIds 育児記録テーブルID
      * @return 食事記録エンティティリスト
      */
+    @Transactional(readOnly = true)
     public List<MealDetails> getMealRecords(List<Long> recordIds) {
         if (recordIds == null || recordIds.isEmpty()) {
             return Collections.emptyList();
@@ -194,6 +197,7 @@ public class CareRecordService {
      * @param recordIds 育児記録テーブルID
      * @return ミルク記録エンティティリスト
      */
+    @Transactional(readOnly = true)
     public List<MilkDetails> getMilkRecords(List<Long> recordIds) {
         if (recordIds == null || recordIds.isEmpty()) {
             return Collections.emptyList();
@@ -207,6 +211,7 @@ public class CareRecordService {
      * @param recordIds 育児記録テーブルID
      * @return 排泄記録エンティティリスト
      */
+    @Transactional(readOnly = true)
     public List<DiaperDetails> getDiaperRecords(List<Long> recordIds) {
         if (recordIds == null || recordIds.isEmpty()) {
             return Collections.emptyList();
@@ -220,10 +225,198 @@ public class CareRecordService {
      * @param recordIds 育児記録テーブルID
      * @return 体調記録エンティティリスト
      */
+    @Transactional(readOnly = true)
     public List<HealthDetails> getHealthRecords(List<Long> recordIds) {
         if (recordIds == null || recordIds.isEmpty()) {
             return Collections.emptyList();
         }
         return careRecordRepository.findHealthRecordsByIds(recordIds);
+    }
+
+    /**
+     * ID指定で育児記録データを一件取得する
+     *
+     * @param id 対象のリソースID
+     * @return 育児記録エンティティ
+     */
+    private CareRecords getCareRecord(Long id) {
+        return careRecordRepository.findById(id).orElseThrow(() ->
+            new ResourceNotFoundException("育児記録が見つかりません " + "id=" + id));
+    }
+
+    /**
+     * ID指定で食事記録を一件取得する
+     *
+     * @param id 対象の親テーブルID
+     * @return 育児記録エンティティ
+     */
+    private MealDetails getMealDetail(Long id) {
+        return careRecordRepository.findMealRecordsById(id).orElseThrow(() ->
+            new ResourceNotFoundException("紐づく食事記録が見つかりません id=" + id));
+    }
+
+    /**
+     * ID指定でミルク記録を一件取得する
+     *
+     * @param id 対象の親テーブルID
+     * @return 育児記録エンティティ
+     */
+    private MilkDetails getMilkDetail(Long id) {
+        return careRecordRepository.findMilkRecordsById(id).orElseThrow(() ->
+            new ResourceNotFoundException("紐づくミルク記録が見つかりません id=" + id));
+    }
+
+    /**
+     * ID指定で排泄記録を一件取得する
+     *
+     * @param id 対象の親テーブルID
+     * @return 育児記録エンティティ
+     */
+    private DiaperDetails getDiaperDetail(Long id) {
+        return careRecordRepository.findDiaperRecordsById(id).orElseThrow(() ->
+            new ResourceNotFoundException("紐づく排泄記録が見つかりません id=" + id));
+    }
+
+    /**
+     * ID指定で体調記録を一件取得する
+     *
+     * @param id 対象の親テーブルID
+     * @return 育児記録エンティティ
+     */
+    private HealthDetails getHealthDetail(Long id) {
+        return careRecordRepository.findHealthRecordsById(id).orElseThrow(() ->
+            new ResourceNotFoundException("紐づく体調記録が見つかりません id=" + id));
+    }
+
+    /**
+     * 育児記録を更新する
+     *
+     * @param id         育児記録ID
+     * @param updateData 更新データ
+     */
+    @Transactional
+    public void updateCareRecord(Long id, CareRecordRequestDto updateData) {
+        // 更新前に存在チェックしつつ親テーブルを取得
+        CareRecords careRecord = getCareRecord(id);
+
+        // 記録種別を取得
+        String recordType = careRecord.getRecordType();
+
+        // 種別ごとに詳細データを取得しつつ更新を行う
+        switch (recordType) {
+            case "MEAL":
+                // 食事記録を取得
+                MealDetails mealDetail = getMealDetail(id);
+                // updateDataから更新データを取得し存在する場合更新
+                JsonNullable<MealDetailDto> updateMealDetail = updateData.getMealDetail();
+                if (updateMealDetail != null && updateMealDetail.isPresent()) {
+                    // メモを更新
+                    mealDetail.setNote(updateMealDetail.get().getNote());
+                    // リポジトリ層でDBに更新を保存
+                    careRecordRepository.updateMealDetail(mealDetail);
+                }
+                break;
+            case "MILK":
+                // ミルク記録を取得
+                MilkDetails milkDetail = getMilkDetail(id);
+                // updateDataから更新データを取得し存在する場合更新
+                JsonNullable<MilkDetailDto> updateMilkDetail = updateData.getMilkDetail();
+                if (updateMilkDetail != null && updateMilkDetail.isPresent()) {
+                    // メモを更新
+                    milkDetail.setNote(updateMilkDetail.get().getNote());
+                    // ミルク量を更新
+                    milkDetail.setAmountMl(updateMilkDetail.get().getAmountMl());
+                    // リポジトリ層でDBに更新を保存
+                    careRecordRepository.updateMilkDetail(milkDetail);
+                }
+                break;
+            case "DIAPER":
+                // 排泄記録を取得
+                DiaperDetails diaperDetail = getDiaperDetail(id);
+                // updateDataから更新データを取得し存在する場合更新
+                JsonNullable<DiaperDetailDto> updateDiaperDetail = updateData.getDiaperDetail();
+                if (updateDiaperDetail != null && updateDiaperDetail.isPresent()) {
+                    // メモを更新
+                    diaperDetail.setNote(updateDiaperDetail.get().getNote());
+                    // 種別を更新
+                    diaperDetail.setDiaperType(updateDiaperDetail.get().getDiaperType().name());
+                    // リポジトリ層でDBに更新を保存
+                    careRecordRepository.updateDiaperDetail(diaperDetail);
+                }
+                break;
+            case "HEALTH":
+                // 体調記録を取得
+                HealthDetails healthDetail = getHealthDetail(id);
+                // updateDataから更新データを取得し存在する場合更新
+                JsonNullable<HealthDetailDto> updateHealthDetail = updateData.getHealthDetail();
+                if (updateHealthDetail != null && updateHealthDetail.isPresent()) {
+                    // メモを更新
+                    healthDetail.setNote(updateHealthDetail.get().getNote());
+                    // 体温を更新
+                    Double temp = updateHealthDetail.get().getTemperature().orElse(null);
+                    healthDetail.setTemperature(temp != null ? BigDecimal.valueOf(temp) : null);
+                    // リポジトリ層でDBに更新を保存
+                    careRecordRepository.updateHealthDetail(healthDetail);
+                }
+                break;
+            default:
+                // 4つのうちどれにも該当しない場合
+                throw new IllegalArgumentException("不正な記録種別のため削除できません type=" + careRecord.getRecordType());
+        }
+
+        // 更新可能な箇所を書き換え
+        careRecord.setRecordedAt(updateData.getRecordedAt());
+        careRecord.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
+
+        // CareRecordsを更新
+        careRecordRepository.updateCareRecord(careRecord);
+    }
+
+    /**
+     * 育児記録を削除する
+     *
+     * @param id 育児記録ID
+     */
+    @Transactional
+    public void deleteCareRecord(Long id) {
+        // 削除前に存在チェックしつつ親テーブルを取得
+        CareRecords careRecord = getCareRecord(id);
+
+        // 記録種別を取得
+        String recordType = careRecord.getRecordType();
+
+        // 種別ごとに詳細データを確認しつつ削除を行う
+        switch (recordType) {
+            case "MEAL":
+                // 削除前に存在チェックし該当がない場合は例外を投げる
+                getMealDetail(id);
+                // リポジトリ層でDBから削除
+                careRecordRepository.deleteMealByRecordId(id);
+                break;
+            case "MILK":
+                // 削除前に存在チェックし該当がない場合は例外を投げる
+                getMilkDetail(id);
+                // リポジトリ層でDBから削除
+                careRecordRepository.deleteMilkByRecordId(id);
+                break;
+            case "DIAPER":
+                // 削除前に存在チェックし該当がない場合は例外を投げる
+                getDiaperDetail(id);
+                // リポジトリ層でDBから削除
+                careRecordRepository.deleteDiaperByRecordId(id);
+                break;
+            case "HEALTH":
+                // 削除前に存在チェックし該当がない場合は例外を投げる
+                getHealthDetail(id);
+                // リポジトリ層でDBから削除
+                careRecordRepository.deleteHealthByRecordId(id);
+                break;
+            default:
+                // 4つのうちどれにも該当しない場合
+                throw new IllegalArgumentException("不正な記録種別のため削除できません type=" + careRecord.getRecordType());
+        }
+
+        // CareRecordsを削除
+        careRecordRepository.deleteCareRecordById(id);
     }
 }

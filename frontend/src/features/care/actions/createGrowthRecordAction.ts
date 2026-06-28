@@ -19,7 +19,7 @@ type Input = {
 
 export const createGrowthRecordAction = async (input: Input): Promise<ActionResult> => {
   try {
-    // 認証トークンを含むAPIクライアントの設定を生成し、AlbumManagementApiのインスタンスを作成
+    // 認証トークンを含むAPIクライアントの設定を生成し、GrowthRecordManagementApiのインスタンスを作成
     const configuration = await createAuthorizedConfig();
     const apiClient = new GrowthRecordManagementApi(configuration);
 

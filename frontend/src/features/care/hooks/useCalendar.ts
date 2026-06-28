@@ -1,8 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useState, useTransition } from "react";
 
-import { CareRecordListResponseDto, GrowthRecordResponseDto } from "@/lib/api-client/gen";
+import { toast } from "@/components/ui/Toast";
+import {
+  CareRecordListResponseDto,
+  CareRecordResponseDto,
+  GrowthRecordResponseDto,
+} from "@/lib/api-client/gen";
+
+import { deleteCareRecordAction } from "../actions/deleteCareRecordAction";
 
 import { useGetCareRecords } from "./useGetCareRecords";
 import { useGetGrowthRecords } from "./useGetGrowthRecords";
@@ -20,6 +28,9 @@ export const useCalendar = ({ initialCareRecords, initialGrowthRecords }: Params
     return new Date(day.getFullYear(), day.getMonth(), day.getDate() - day.getDay());
   };
 
+  // 非同期処理中のボタン状態管理
+  const [isPending, startTransition] = useTransition();
+
   // 今日の日付を取得
   const today = new Date();
 
@@ -31,6 +42,9 @@ export const useCalendar = ({ initialCareRecords, initialGrowthRecords }: Params
 
   // 現在を含む週かどうか
   const [isTodayWeek, setIsTodayWeek] = useState<boolean>(true);
+
+  // 一覧画面のtanstack queryのキャッシュ破棄用フック
+  const queryClient = useQueryClient();
 
   // 一週間分のオブジェクトを取得
   const [weeklyDates, setWeeklyDates] = useState<Date[]>(() =>
@@ -60,8 +74,50 @@ export const useCalendar = ({ initialCareRecords, initialGrowthRecords }: Params
     initialData: isTodayWeek ? initialGrowthRecords : undefined,
   });
 
+  const [pop, setPop] = useState<{
+    isPopOpen: boolean;
+    top: number;
+    left: number;
+    record: CareRecordResponseDto | null;
+    weekIndex: number;
+  }>({
+    isPopOpen: false,
+    top: 0,
+    left: 0,
+    record: null,
+    weekIndex: 0,
+  });
+
+  const itemsTapAction = (
+    item: CareRecordResponseDto,
+    event: React.MouseEvent<HTMLButtonElement>,
+    weekIndex: number,
+  ) => {
+    // 要素が持つ、親要素基準の相対位置を直接取得
+    const top = event.currentTarget.offsetTop;
+    const left = event.currentTarget.offsetLeft;
+    setPop({
+      isPopOpen: true,
+      top,
+      left,
+      record: item,
+      weekIndex,
+    });
+  };
+
+  const popCloseAction = () => {
+    setPop({
+      isPopOpen: false,
+      top: 0,
+      left: 0,
+      record: null,
+      weekIndex: 0,
+    });
+  };
+
   // 週変更処理
   const changeWeek = (changeDay: number, specificDay?: Date) => {
+    popCloseAction();
     // 受け取った引数分をずらした週の始まりを取得
     const newDateTemp = new Date(startDay);
     newDateTemp.setDate(newDateTemp.getDate() + changeDay);
@@ -95,6 +151,7 @@ export const useCalendar = ({ initialCareRecords, initialGrowthRecords }: Params
 
   // 日付変更処理
   const changeDays = (changeDay: number) => {
+    popCloseAction();
     // 受け取った引数で表示する日付を更新
     const newDate = new Date(currentDay);
     newDate.setDate(newDate.getDate() + changeDay);
@@ -119,6 +176,32 @@ export const useCalendar = ({ initialCareRecords, initialGrowthRecords }: Params
     }
   };
 
+  // 削除モーダル開閉フラグ
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState<boolean>(false);
+
+  // 削除処理
+  const deleteAction = () => {
+    if (!pop.record) {
+      toast.error("不正なアクセスです。");
+      return;
+    }
+
+    startTransition(async () => {
+      const result = await deleteCareRecordAction({
+        id: pop.record!.id,
+      });
+
+      if (result.success) {
+        queryClient.invalidateQueries({ queryKey: ["careRecords"] });
+        popCloseAction();
+        setIsDeleteConfirmOpen(false);
+        toast.success("記録の削除に成功しました");
+      } else {
+        toast.error(result.error);
+      }
+    });
+  };
+
   return {
     weeklyText,
     today,
@@ -130,5 +213,12 @@ export const useCalendar = ({ initialCareRecords, initialGrowthRecords }: Params
     changeDays,
     careRecords,
     growthRecords,
+    pop,
+    itemsTapAction,
+    popCloseAction,
+    isPending,
+    isDeleteConfirmOpen,
+    setIsDeleteConfirmOpen,
+    deleteAction,
   };
 };

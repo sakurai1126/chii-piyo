@@ -1042,7 +1042,7 @@ paths:
         default:
           $ref: '#/components/responses/DefaultErrors'
   /care-records/{id}:
-    put:
+    patch:
       tags:
         - careRecordManagement
       summary: 育児記録を更新
@@ -2536,9 +2536,7 @@ components:
         - note
       properties:
         amountMl:
-          type:
-            - integer
-            - 'null'
+          type: integer
           description: 量（ml）
           example: 200
         note:

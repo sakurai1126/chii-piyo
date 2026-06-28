@@ -223,7 +223,7 @@
 | --- | --- | --- | --- | --- | --- |
 | id | BIGSERIAL | NO | AUTO | PK | 主キー |
 | care_record_id | BIGINT | NO | - | FK, UK | 育児記録ID |
-| amount_ml | INTEGER | YES | NULL | | 量（ml） |
+| amount_ml | INTEGER | NO | NULL | | 量（ml） |
 | note | TEXT | YES | NULL | | メモ・備考 |
 | created_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 作成日時 |
 | updated_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 更新日時 |
