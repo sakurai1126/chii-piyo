@@ -5,8 +5,8 @@ get:
   operationId: getGrowthRecords
   parameters:
     - $ref: "../../components/parameters.yml#/XRequestedWith"
-    - $ref: "../../components/parameters.yml#/StartDate"
-    - $ref: "../../components/parameters.yml#/EndDate"
+    - $ref: "../../components/parameters.yml#/RequiredStartDate"
+    - $ref: "../../components/parameters.yml#/RequiredEndDate"
   responses:
     "200":
       description: 身長・体重記録一覧

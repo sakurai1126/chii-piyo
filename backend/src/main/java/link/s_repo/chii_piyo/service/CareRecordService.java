@@ -361,7 +361,7 @@ public class CareRecordService {
                 break;
             default:
                 // 4つのうちどれにも該当しない場合
-                throw new IllegalArgumentException("不正な記録種別のため削除できません type=" + careRecord.getRecordType());
+                throw new IllegalArgumentException("不正な記録種別のため更新できません type=" + careRecord.getRecordType());
         }
 
         // 更新可能な箇所を書き換え

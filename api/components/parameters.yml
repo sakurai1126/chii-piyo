@@ -130,6 +130,24 @@ EndDate:
     type: string
     format: date
 
+RequiredStartDate:
+  name: startDate
+  in: query
+  description: 検索開始日（必須）
+  required: true
+  schema:
+    type: string
+    format: date
+
+RequiredEndDate:
+  name: endDate
+  in: query
+  description: 検索終了日（必須）
+  required: true
+  schema:
+        type: string
+        format: date
+
 FavoriteFilter:
   name: isFavorite
   in: query

@@ -2,7 +2,6 @@ package link.s_repo.chii_piyo.controller.converter;
 
 import link.s_repo.chii_piyo.model.gen.GrowthRecordResponseDto;
 import link.s_repo.chii_piyo.model.gen.GrowthRecords;
-
 import org.springframework.stereotype.Component;
 
 /**

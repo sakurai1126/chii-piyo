@@ -57,7 +57,7 @@ export const useCalendar = ({ initialCareRecords, initialGrowthRecords }: Params
   );
 
   // 表示の終了日
-  const endDay = new Date(startDay.getFullYear(), startDay.getMonth(), startDay.getDate() + 7);
+  const endDay = new Date(startDay.getFullYear(), startDay.getMonth(), startDay.getDate() + 6);
 
   // 育児記録を取得
   const { data: careRecords } = useGetCareRecords({

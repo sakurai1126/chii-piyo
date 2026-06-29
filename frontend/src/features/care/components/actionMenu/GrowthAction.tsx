@@ -45,6 +45,16 @@ export const GrowthAction = () => {
       return;
     }
 
+    if ((height && height <= 0) || (height && height > 200)) {
+      toast.error("身長を正しく入力してください");
+      return;
+    }
+
+    if ((weight && weight <= 0) || (weight && weight > 200)) {
+      toast.error("体重を正しく入力してください");
+      return;
+    }
+
     startTransition(async () => {
       const result = await createGrowthRecordAction({
         measurementDate: recordTime,

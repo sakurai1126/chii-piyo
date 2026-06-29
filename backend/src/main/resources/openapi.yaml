@@ -994,8 +994,8 @@ paths:
       operationId: getCareRecords
       parameters:
         - $ref: '#/components/parameters/XRequestedWith'
-        - $ref: '#/components/parameters/StartDate'
-        - $ref: '#/components/parameters/EndDate'
+        - $ref: '#/components/parameters/RequiredStartDate'
+        - $ref: '#/components/parameters/RequiredEndDate'
       responses:
         '200':
           description: 育児記録一覧
@@ -1102,8 +1102,8 @@ paths:
       operationId: getGrowthRecords
       parameters:
         - $ref: '#/components/parameters/XRequestedWith'
-        - $ref: '#/components/parameters/StartDate'
-        - $ref: '#/components/parameters/EndDate'
+        - $ref: '#/components/parameters/RequiredStartDate'
+        - $ref: '#/components/parameters/RequiredEndDate'
       responses:
         '200':
           description: 身長・体重記録一覧
@@ -1732,6 +1732,22 @@ components:
       schema:
         type: integer
         format: int64
+    RequiredStartDate:
+      name: startDate
+      in: query
+      description: 検索開始日（必須）
+      required: true
+      schema:
+        type: string
+        format: date
+    RequiredEndDate:
+      name: endDate
+      in: query
+      description: 検索終了日（必須）
+      required: true
+      schema:
+        type: string
+        format: date
     TrashItemIds:
       name: trashItemIds
       in: query

@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { GrowthRecordResponseDto } from "@/lib/api-client/gen";
+import { formatJapaneseDateBasic } from "@/utils/date";
 
 type Params = {
   startDate: Date;
@@ -16,9 +17,9 @@ export const useGetGrowthRecords = ({ startDate, endDate, initialData }: Params)
     initialData, // 初期データ（今週の場合のみサーバーで取得）
     staleTime: initialData ? 1000 * 60 : 0, // 初期データが渡されている場合、1分間自動通信を防止
     queryFn: async () => {
-      const res = await fetch(
-        `/api/growth-records?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`,
-      );
+      const startStr = formatJapaneseDateBasic(startDate);
+      const endStr = formatJapaneseDateBasic(endDate);
+      const res = await fetch(`/api/growth-records?startDate=${startStr}&endDate=${endStr}`);
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
         throw new Error(body.error ?? "成長記録の取得に失敗しました");

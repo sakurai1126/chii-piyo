@@ -41,8 +41,8 @@ export interface DeleteCareRecordRequest {
 
 export interface GetCareRecordsRequest {
   xRequestedWith: string;
-  startDate?: Date;
-  endDate?: Date;
+  startDate: Date;
+  endDate: Date;
 }
 
 export interface UpdateCareRecordRequest {
@@ -209,6 +209,20 @@ export class CareRecordManagementApi extends runtime.BaseAPI {
       throw new runtime.RequiredError(
         "xRequestedWith",
         'Required parameter "xRequestedWith" was null or undefined when calling getCareRecords().',
+      );
+    }
+
+    if (requestParameters["startDate"] == null) {
+      throw new runtime.RequiredError(
+        "startDate",
+        'Required parameter "startDate" was null or undefined when calling getCareRecords().',
+      );
+    }
+
+    if (requestParameters["endDate"] == null) {
+      throw new runtime.RequiredError(
+        "endDate",
+        'Required parameter "endDate" was null or undefined when calling getCareRecords().',
       );
     }
 

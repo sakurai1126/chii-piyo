@@ -13,7 +13,7 @@ export default async function CarePage() {
     today.getMonth(),
     today.getDate() - today.getDay(),
   );
-  const endDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + 7);
+  const endDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + 6);
 
   // 初期データを取得
   const careRecords = await getCareRecords({ startDate, endDate });
