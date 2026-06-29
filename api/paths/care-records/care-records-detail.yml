@@ -1,30 +1,4 @@
-get:
-  tags:
-    - careRecordManagement
-  summary: 育児記録をID指定で1件取得
-  operationId: getCareRecord
-  parameters:
-    - $ref: "../../components/parameters.yml#/XRequestedWith"
-    - $ref: "../../components/parameters.yml#/ResourceId"
-  responses:
-    "200":
-      description: 育児記録情報
-      content:
-        application/json;charset=UTF-8:
-          schema:
-            $ref: "../../components/schemas/care-records.yml#/CareRecordResponseDto"
-    "401":
-      $ref: "../../components/responses.yml#/Unauthorized"
-    "403":
-      $ref: "../../components/responses.yml#/Forbidden"
-    "404":
-      $ref: "../../components/responses.yml#/NotFound"
-    "500":
-      $ref: "../../components/responses.yml#/InternalServerError"
-    default:
-      $ref: "../../components/responses.yml#/DefaultErrors"
-
-put:
+patch:
   tags:
     - careRecordManagement
   summary: 育児記録を更新
@@ -41,12 +15,8 @@ put:
           $ref: "../../components/schemas/care-records.yml#/CareRecordRequestDto"
     required: true
   responses:
-    "200":
-      description: 更新された育児記録
-      content:
-        application/json;charset=UTF-8:
-          schema:
-            $ref: "../../components/schemas/care-records.yml#/CareRecordResponseDto"
+    "204":
+      description: 記録更新に成功
     "400":
       $ref: "../../components/responses.yml#/BadRequest"
     "401":

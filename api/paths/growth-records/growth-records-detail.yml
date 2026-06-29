@@ -1,29 +1,3 @@
-get:
-  tags:
-    - growthRecordManagement
-  summary: 身長・体重記録をID指定で1件取得
-  operationId: getGrowthRecord
-  parameters:
-    - $ref: "../../components/parameters.yml#/XRequestedWith"
-    - $ref: "../../components/parameters.yml#/ResourceId"
-  responses:
-    "200":
-      description: 身長・体重記録情報
-      content:
-        application/json;charset=UTF-8:
-          schema:
-            $ref: "../../components/schemas/growth-records.yml#/GrowthRecordResponseDto"
-    "401":
-      $ref: "../../components/responses.yml#/Unauthorized"
-    "403":
-      $ref: "../../components/responses.yml#/Forbidden"
-    "404":
-      $ref: "../../components/responses.yml#/NotFound"
-    "500":
-      $ref: "../../components/responses.yml#/InternalServerError"
-    default:
-      $ref: "../../components/responses.yml#/DefaultErrors"
-
 put:
   tags:
     - growthRecordManagement
@@ -41,12 +15,8 @@ put:
           $ref: "../../components/schemas/growth-records.yml#/GrowthRecordRequestDto"
     required: true
   responses:
-    "200":
-      description: 更新された身長・体重記録
-      content:
-        application/json;charset=UTF-8:
-          schema:
-            $ref: "../../components/schemas/growth-records.yml#/GrowthRecordResponseDto"
+    "204":
+      description: 身長・体重記録の更新に成功
     "400":
       $ref: "../../components/responses.yml#/BadRequest"
     "401":

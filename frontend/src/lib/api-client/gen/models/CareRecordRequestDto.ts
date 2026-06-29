@@ -65,25 +65,25 @@ export interface CareRecordRequestDto {
    * @type {MealDetailDto}
    * @memberof CareRecordRequestDto
    */
-  mealDetail: MealDetailDto | null;
+  mealDetail?: MealDetailDto | null;
   /**
    *
    * @type {MilkDetailDto}
    * @memberof CareRecordRequestDto
    */
-  milkDetail: MilkDetailDto | null;
+  milkDetail?: MilkDetailDto | null;
   /**
    *
    * @type {DiaperDetailDto}
    * @memberof CareRecordRequestDto
    */
-  diaperDetail: DiaperDetailDto | null;
+  diaperDetail?: DiaperDetailDto | null;
   /**
    *
    * @type {HealthDetailDto}
    * @memberof CareRecordRequestDto
    */
-  healthDetail: HealthDetailDto | null;
+  healthDetail?: HealthDetailDto | null;
 }
 
 /**
@@ -104,10 +104,6 @@ export type CareRecordRequestDtoRecordTypeEnum =
 export function instanceOfCareRecordRequestDto(value: object): value is CareRecordRequestDto {
   if (!("recordType" in value) || value["recordType"] === undefined) return false;
   if (!("recordedAt" in value) || value["recordedAt"] === undefined) return false;
-  if (!("mealDetail" in value) || value["mealDetail"] === undefined) return false;
-  if (!("milkDetail" in value) || value["milkDetail"] === undefined) return false;
-  if (!("diaperDetail" in value) || value["diaperDetail"] === undefined) return false;
-  if (!("healthDetail" in value) || value["healthDetail"] === undefined) return false;
   return true;
 }
 
@@ -125,10 +121,12 @@ export function CareRecordRequestDtoFromJSONTyped(
   return {
     recordType: json["recordType"],
     recordedAt: new Date(json["recordedAt"]),
-    mealDetail: MealDetailDtoFromJSON(json["mealDetail"]),
-    milkDetail: MilkDetailDtoFromJSON(json["milkDetail"]),
-    diaperDetail: DiaperDetailDtoFromJSON(json["diaperDetail"]),
-    healthDetail: HealthDetailDtoFromJSON(json["healthDetail"]),
+    mealDetail: json["mealDetail"] == null ? undefined : MealDetailDtoFromJSON(json["mealDetail"]),
+    milkDetail: json["milkDetail"] == null ? undefined : MilkDetailDtoFromJSON(json["milkDetail"]),
+    diaperDetail:
+      json["diaperDetail"] == null ? undefined : DiaperDetailDtoFromJSON(json["diaperDetail"]),
+    healthDetail:
+      json["healthDetail"] == null ? undefined : HealthDetailDtoFromJSON(json["healthDetail"]),
   };
 }
 

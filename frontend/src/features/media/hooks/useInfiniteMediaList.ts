@@ -3,6 +3,7 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { GetMediaListMediaKindEnum, MediaListResponseDto } from "@/lib/api-client/gen";
+import { fetchApi } from "@/utils/fetcher";
 
 // 1ページあたりの取得件数
 const LIMIT = 12;
@@ -70,15 +71,11 @@ export const useInfiniteMediaList = ({ params = {}, initialData }: Props) => {
         if (params.endDate) sp.set("endDate", params.endDate.toISOString().slice(0, 10));
         if (params.isFavorite) sp.set("isFavorite", String(true));
 
-        // APIエンドポイントにクエリパラメータを付与してリクエストを送る
-        const res = await fetch(`/api/media?${sp.toString()}`);
-        if (!res.ok) {
-          const body = await res.json().catch(() => ({}));
-          throw new Error(body.error ?? "メディアの取得に失敗しました");
-        }
-
-        // レスポンスをMediaListResponseDto型として固定
-        return res.json() as Promise<MediaListResponseDto>;
+        // 共通化した fetchApi関数 を利用してAPIを呼び出す
+        return fetchApi<MediaListResponseDto>(
+          `/api/media?${sp.toString()}`,
+          "メディアの取得に失敗しました",
+        );
       },
 
       // initialPageParam = 初期開始位置

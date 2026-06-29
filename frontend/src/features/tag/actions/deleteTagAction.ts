@@ -4,13 +4,12 @@ import { revalidatePath } from "next/cache";
 
 import { TagManagementApi } from "@/lib/api-client/gen";
 import { createAuthorizedConfig } from "@/lib/api-client/server";
+import { handleActionError, ActionResult } from "@/utils/action";
 
 // クライアントから受け取る入力型
 type Input = {
   tagId: number;
 };
-
-type ActionResult = { success: true } | { success: false; error: string };
 
 export const deleteTagAction = async (input: Input): Promise<ActionResult> => {
   try {
@@ -28,10 +27,6 @@ export const deleteTagAction = async (input: Input): Promise<ActionResult> => {
 
     return { success: true };
   } catch (error) {
-    console.error("deleteTagAction失敗", error);
-    if (error instanceof Error && error.message === "UNAUTHORIZED") {
-      return { success: false, error: "認証が必要です" };
-    }
-    return { success: false, error: "タグの削除に失敗しました" };
+    return handleActionError(error, "タグの削除に失敗しました");
   }
 };

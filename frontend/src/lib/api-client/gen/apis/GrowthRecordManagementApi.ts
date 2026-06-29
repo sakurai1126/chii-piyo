@@ -39,15 +39,10 @@ export interface DeleteGrowthRecordRequest {
   id: number;
 }
 
-export interface GetGrowthRecordRequest {
-  xRequestedWith: string;
-  id: number;
-}
-
 export interface GetGrowthRecordsRequest {
   xRequestedWith: string;
-  startDate?: Date;
-  endDate?: Date;
+  startDate: Date;
+  endDate: Date;
 }
 
 export interface UpdateGrowthRecordRequest {
@@ -116,13 +111,11 @@ export class GrowthRecordManagementApi extends runtime.BaseAPI {
   async createGrowthRecordRaw(
     requestParameters: CreateGrowthRecordRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<GrowthRecordResponseDto>> {
+  ): Promise<runtime.ApiResponse<void>> {
     const requestOptions = await this.createGrowthRecordRequestOpts(requestParameters);
     const response = await this.request(requestOptions, initOverrides);
 
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      GrowthRecordResponseDtoFromJSON(jsonValue),
-    );
+    return new runtime.VoidApiResponse(response);
   }
 
   /**
@@ -131,9 +124,8 @@ export class GrowthRecordManagementApi extends runtime.BaseAPI {
   async createGrowthRecord(
     requestParameters: CreateGrowthRecordRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<GrowthRecordResponseDto> {
-    const response = await this.createGrowthRecordRaw(requestParameters, initOverrides);
-    return await response.value();
+  ): Promise<void> {
+    await this.createGrowthRecordRaw(requestParameters, initOverrides);
   }
 
   /**
@@ -208,80 +200,6 @@ export class GrowthRecordManagementApi extends runtime.BaseAPI {
   }
 
   /**
-   * Creates request options for getGrowthRecord without sending the request
-   */
-  async getGrowthRecordRequestOpts(
-    requestParameters: GetGrowthRecordRequest,
-  ): Promise<runtime.RequestOpts> {
-    if (requestParameters["xRequestedWith"] == null) {
-      throw new runtime.RequiredError(
-        "xRequestedWith",
-        'Required parameter "xRequestedWith" was null or undefined when calling getGrowthRecord().',
-      );
-    }
-
-    if (requestParameters["id"] == null) {
-      throw new runtime.RequiredError(
-        "id",
-        'Required parameter "id" was null or undefined when calling getGrowthRecord().',
-      );
-    }
-
-    const queryParameters: any = {};
-
-    const headerParameters: runtime.HTTPHeaders = {};
-
-    if (requestParameters["xRequestedWith"] != null) {
-      headerParameters["X-Requested-With"] = String(requestParameters["xRequestedWith"]);
-    }
-
-    if (this.configuration && this.configuration.accessToken) {
-      const token = this.configuration.accessToken;
-      const tokenString = await token("BearerAuth", []);
-
-      if (tokenString) {
-        headerParameters["Authorization"] = `Bearer ${tokenString}`;
-      }
-    }
-
-    let urlPath = `/growth-records/{id}`;
-    urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-    return {
-      path: urlPath,
-      method: "GET",
-      headers: headerParameters,
-      query: queryParameters,
-    };
-  }
-
-  /**
-   * 身長・体重記録をID指定で1件取得
-   */
-  async getGrowthRecordRaw(
-    requestParameters: GetGrowthRecordRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<GrowthRecordResponseDto>> {
-    const requestOptions = await this.getGrowthRecordRequestOpts(requestParameters);
-    const response = await this.request(requestOptions, initOverrides);
-
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      GrowthRecordResponseDtoFromJSON(jsonValue),
-    );
-  }
-
-  /**
-   * 身長・体重記録をID指定で1件取得
-   */
-  async getGrowthRecord(
-    requestParameters: GetGrowthRecordRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<GrowthRecordResponseDto> {
-    const response = await this.getGrowthRecordRaw(requestParameters, initOverrides);
-    return await response.value();
-  }
-
-  /**
    * Creates request options for getGrowthRecords without sending the request
    */
   async getGrowthRecordsRequestOpts(
@@ -291,6 +209,20 @@ export class GrowthRecordManagementApi extends runtime.BaseAPI {
       throw new runtime.RequiredError(
         "xRequestedWith",
         'Required parameter "xRequestedWith" was null or undefined when calling getGrowthRecords().',
+      );
+    }
+
+    if (requestParameters["startDate"] == null) {
+      throw new runtime.RequiredError(
+        "startDate",
+        'Required parameter "startDate" was null or undefined when calling getGrowthRecords().',
+      );
+    }
+
+    if (requestParameters["endDate"] == null) {
+      throw new runtime.RequiredError(
+        "endDate",
+        'Required parameter "endDate" was null or undefined when calling getGrowthRecords().',
       );
     }
 
@@ -423,13 +355,11 @@ export class GrowthRecordManagementApi extends runtime.BaseAPI {
   async updateGrowthRecordRaw(
     requestParameters: UpdateGrowthRecordRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<GrowthRecordResponseDto>> {
+  ): Promise<runtime.ApiResponse<void>> {
     const requestOptions = await this.updateGrowthRecordRequestOpts(requestParameters);
     const response = await this.request(requestOptions, initOverrides);
 
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      GrowthRecordResponseDtoFromJSON(jsonValue),
-    );
+    return new runtime.VoidApiResponse(response);
   }
 
   /**
@@ -438,8 +368,7 @@ export class GrowthRecordManagementApi extends runtime.BaseAPI {
   async updateGrowthRecord(
     requestParameters: UpdateGrowthRecordRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<GrowthRecordResponseDto> {
-    const response = await this.updateGrowthRecordRaw(requestParameters, initOverrides);
-    return await response.value();
+  ): Promise<void> {
+    await this.updateGrowthRecordRaw(requestParameters, initOverrides);
   }
 }

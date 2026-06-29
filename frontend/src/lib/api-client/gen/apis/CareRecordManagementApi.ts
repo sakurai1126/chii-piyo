@@ -24,11 +24,6 @@ import {
   CareRecordRequestDtoToJSON,
 } from "../models/CareRecordRequestDto";
 import {
-  type CareRecordResponseDto,
-  CareRecordResponseDtoFromJSON,
-  CareRecordResponseDtoToJSON,
-} from "../models/CareRecordResponseDto";
-import {
   type ErrorResponseDto,
   ErrorResponseDtoFromJSON,
   ErrorResponseDtoToJSON,
@@ -44,16 +39,10 @@ export interface DeleteCareRecordRequest {
   id: number;
 }
 
-export interface GetCareRecordRequest {
-  xRequestedWith: string;
-  id: number;
-}
-
 export interface GetCareRecordsRequest {
   xRequestedWith: string;
-  recordType?: GetCareRecordsRecordTypeEnum;
-  startDate?: Date;
-  endDate?: Date;
+  startDate: Date;
+  endDate: Date;
 }
 
 export interface UpdateCareRecordRequest {
@@ -122,13 +111,11 @@ export class CareRecordManagementApi extends runtime.BaseAPI {
   async createCareRecordRaw(
     requestParameters: CreateCareRecordRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<CareRecordResponseDto>> {
+  ): Promise<runtime.ApiResponse<void>> {
     const requestOptions = await this.createCareRecordRequestOpts(requestParameters);
     const response = await this.request(requestOptions, initOverrides);
 
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      CareRecordResponseDtoFromJSON(jsonValue),
-    );
+    return new runtime.VoidApiResponse(response);
   }
 
   /**
@@ -137,9 +124,8 @@ export class CareRecordManagementApi extends runtime.BaseAPI {
   async createCareRecord(
     requestParameters: CreateCareRecordRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<CareRecordResponseDto> {
-    const response = await this.createCareRecordRaw(requestParameters, initOverrides);
-    return await response.value();
+  ): Promise<void> {
+    await this.createCareRecordRaw(requestParameters, initOverrides);
   }
 
   /**
@@ -214,80 +200,6 @@ export class CareRecordManagementApi extends runtime.BaseAPI {
   }
 
   /**
-   * Creates request options for getCareRecord without sending the request
-   */
-  async getCareRecordRequestOpts(
-    requestParameters: GetCareRecordRequest,
-  ): Promise<runtime.RequestOpts> {
-    if (requestParameters["xRequestedWith"] == null) {
-      throw new runtime.RequiredError(
-        "xRequestedWith",
-        'Required parameter "xRequestedWith" was null or undefined when calling getCareRecord().',
-      );
-    }
-
-    if (requestParameters["id"] == null) {
-      throw new runtime.RequiredError(
-        "id",
-        'Required parameter "id" was null or undefined when calling getCareRecord().',
-      );
-    }
-
-    const queryParameters: any = {};
-
-    const headerParameters: runtime.HTTPHeaders = {};
-
-    if (requestParameters["xRequestedWith"] != null) {
-      headerParameters["X-Requested-With"] = String(requestParameters["xRequestedWith"]);
-    }
-
-    if (this.configuration && this.configuration.accessToken) {
-      const token = this.configuration.accessToken;
-      const tokenString = await token("BearerAuth", []);
-
-      if (tokenString) {
-        headerParameters["Authorization"] = `Bearer ${tokenString}`;
-      }
-    }
-
-    let urlPath = `/care-records/{id}`;
-    urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-    return {
-      path: urlPath,
-      method: "GET",
-      headers: headerParameters,
-      query: queryParameters,
-    };
-  }
-
-  /**
-   * 育児記録をID指定で1件取得
-   */
-  async getCareRecordRaw(
-    requestParameters: GetCareRecordRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<CareRecordResponseDto>> {
-    const requestOptions = await this.getCareRecordRequestOpts(requestParameters);
-    const response = await this.request(requestOptions, initOverrides);
-
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      CareRecordResponseDtoFromJSON(jsonValue),
-    );
-  }
-
-  /**
-   * 育児記録をID指定で1件取得
-   */
-  async getCareRecord(
-    requestParameters: GetCareRecordRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<CareRecordResponseDto> {
-    const response = await this.getCareRecordRaw(requestParameters, initOverrides);
-    return await response.value();
-  }
-
-  /**
    * Creates request options for getCareRecords without sending the request
    */
   async getCareRecordsRequestOpts(
@@ -300,11 +212,21 @@ export class CareRecordManagementApi extends runtime.BaseAPI {
       );
     }
 
-    const queryParameters: any = {};
-
-    if (requestParameters["recordType"] != null) {
-      queryParameters["recordType"] = requestParameters["recordType"];
+    if (requestParameters["startDate"] == null) {
+      throw new runtime.RequiredError(
+        "startDate",
+        'Required parameter "startDate" was null or undefined when calling getCareRecords().',
+      );
     }
+
+    if (requestParameters["endDate"] == null) {
+      throw new runtime.RequiredError(
+        "endDate",
+        'Required parameter "endDate" was null or undefined when calling getCareRecords().',
+      );
+    }
+
+    const queryParameters: any = {};
 
     if (requestParameters["startDate"] != null) {
       queryParameters["startDate"] = (requestParameters["startDate"] as any)
@@ -420,7 +342,7 @@ export class CareRecordManagementApi extends runtime.BaseAPI {
 
     return {
       path: urlPath,
-      method: "PUT",
+      method: "PATCH",
       headers: headerParameters,
       query: queryParameters,
       body: CareRecordRequestDtoToJSON(requestParameters["careRecordData"]),
@@ -433,13 +355,11 @@ export class CareRecordManagementApi extends runtime.BaseAPI {
   async updateCareRecordRaw(
     requestParameters: UpdateCareRecordRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<CareRecordResponseDto>> {
+  ): Promise<runtime.ApiResponse<void>> {
     const requestOptions = await this.updateCareRecordRequestOpts(requestParameters);
     const response = await this.request(requestOptions, initOverrides);
 
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      CareRecordResponseDtoFromJSON(jsonValue),
-    );
+    return new runtime.VoidApiResponse(response);
   }
 
   /**
@@ -448,20 +368,7 @@ export class CareRecordManagementApi extends runtime.BaseAPI {
   async updateCareRecord(
     requestParameters: UpdateCareRecordRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<CareRecordResponseDto> {
-    const response = await this.updateCareRecordRaw(requestParameters, initOverrides);
-    return await response.value();
+  ): Promise<void> {
+    await this.updateCareRecordRaw(requestParameters, initOverrides);
   }
 }
-
-/**
- * @export
- */
-export const GetCareRecordsRecordTypeEnum = {
-  Meal: "MEAL",
-  Milk: "MILK",
-  Diaper: "DIAPER",
-  Health: "HEALTH",
-} as const;
-export type GetCareRecordsRecordTypeEnum =
-  (typeof GetCareRecordsRecordTypeEnum)[keyof typeof GetCareRecordsRecordTypeEnum];

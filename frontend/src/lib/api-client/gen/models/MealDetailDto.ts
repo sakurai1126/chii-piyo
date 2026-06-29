@@ -24,7 +24,7 @@ export interface MealDetailDto {
    * @type {string}
    * @memberof MealDetailDto
    */
-  note: string | null;
+  note: string;
 }
 
 /**

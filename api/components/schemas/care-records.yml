@@ -7,10 +7,6 @@ CareRecordResponseDto:
     - recordedBy
     - recordType
     - recordedAt
-    - mealDetail
-    - milkDetail
-    - diaperDetail
-    - healthDetail
     - createdAt
     - updatedAt
   properties:
@@ -70,17 +66,11 @@ CareRecordListResponseDto:
   description: 育児記録一覧レスポンス
   required:
     - items
-    - totalCount
   properties:
     items:
       type: array
       items:
         $ref: "#/CareRecordResponseDto"
-    totalCount:
-      type: integer
-      format: int64
-      description: 総件数
-      example: 50
 
 CareRecordRequestDto:
   type: object
@@ -88,10 +78,6 @@ CareRecordRequestDto:
   required:
     - recordType
     - recordedAt
-    - mealDetail
-    - milkDetail
-    - diaperDetail
-    - healthDetail
   properties:
     recordType:
       type: string
@@ -131,7 +117,7 @@ MealDetailDto:
     - note
   properties:
     note:
-      type: ["string", "null"]
+      type: "string"
       description: 食事内容・メモ
       example: "おかゆと野菜ペースト"
 
@@ -143,11 +129,11 @@ MilkDetailDto:
     - note
   properties:
     amountMl:
-      type: ["integer", "null"]
+      type: integer
       description: 量（ml）
       example: 200
     note:
-      type: ["string", "null"]
+      type: "string"
       description: メモ・備考
       example: "よく飲んだ"
 
@@ -166,7 +152,7 @@ DiaperDetailDto:
         - DIRTY
       example: "WET"
     note:
-      type: ["string", "null"]
+      type: "string"
       description: メモ・備考
 
 HealthDetailDto:
@@ -182,6 +168,6 @@ HealthDetailDto:
       description: 体温
       example: 36.5
     note:
-      type: ["string", "null"]
+      type: "string"
       description: メモ・備考
       example: "元気"

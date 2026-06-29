@@ -30,7 +30,7 @@ export interface HealthDetailDto {
    * @type {string}
    * @memberof HealthDetailDto
    */
-  note: string | null;
+  note: string;
 }
 
 /**

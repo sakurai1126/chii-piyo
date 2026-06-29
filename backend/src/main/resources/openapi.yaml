@@ -994,9 +994,8 @@ paths:
       operationId: getCareRecords
       parameters:
         - $ref: '#/components/parameters/XRequestedWith'
-        - $ref: '#/components/parameters/RecordTypeFilter'
-        - $ref: '#/components/parameters/StartDate'
-        - $ref: '#/components/parameters/EndDate'
+        - $ref: '#/components/parameters/RequiredStartDate'
+        - $ref: '#/components/parameters/RequiredEndDate'
       responses:
         '200':
           description: 育児記録一覧
@@ -1031,11 +1030,7 @@ paths:
         required: true
       responses:
         '201':
-          description: 作成された育児記録
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/CareRecordResponseDto'
+          description: 記録登録に成功
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -1047,32 +1042,7 @@ paths:
         default:
           $ref: '#/components/responses/DefaultErrors'
   /care-records/{id}:
-    get:
-      tags:
-        - careRecordManagement
-      summary: 育児記録をID指定で1件取得
-      operationId: getCareRecord
-      parameters:
-        - $ref: '#/components/parameters/XRequestedWith'
-        - $ref: '#/components/parameters/ResourceId'
-      responses:
-        '200':
-          description: 育児記録情報
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/CareRecordResponseDto'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-        default:
-          $ref: '#/components/responses/DefaultErrors'
-    put:
+    patch:
       tags:
         - careRecordManagement
       summary: 育児記録を更新
@@ -1089,12 +1059,8 @@ paths:
               $ref: '#/components/schemas/CareRecordRequestDto'
         required: true
       responses:
-        '200':
-          description: 更新された育児記録
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/CareRecordResponseDto'
+        '204':
+          description: 記録更新に成功
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -1136,8 +1102,8 @@ paths:
       operationId: getGrowthRecords
       parameters:
         - $ref: '#/components/parameters/XRequestedWith'
-        - $ref: '#/components/parameters/StartDate'
-        - $ref: '#/components/parameters/EndDate'
+        - $ref: '#/components/parameters/RequiredStartDate'
+        - $ref: '#/components/parameters/RequiredEndDate'
       responses:
         '200':
           description: 身長・体重記録一覧
@@ -1172,11 +1138,7 @@ paths:
         required: true
       responses:
         '201':
-          description: 作成された身長・体重記録
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/GrowthRecordResponseDto'
+          description: 身長・体重記録の登録に成功
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -1188,31 +1150,6 @@ paths:
         default:
           $ref: '#/components/responses/DefaultErrors'
   /growth-records/{id}:
-    get:
-      tags:
-        - growthRecordManagement
-      summary: 身長・体重記録をID指定で1件取得
-      operationId: getGrowthRecord
-      parameters:
-        - $ref: '#/components/parameters/XRequestedWith'
-        - $ref: '#/components/parameters/ResourceId'
-      responses:
-        '200':
-          description: 身長・体重記録情報
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/GrowthRecordResponseDto'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-        default:
-          $ref: '#/components/responses/DefaultErrors'
     put:
       tags:
         - growthRecordManagement
@@ -1230,12 +1167,8 @@ paths:
               $ref: '#/components/schemas/GrowthRecordRequestDto'
         required: true
       responses:
-        '200':
-          description: 更新された身長・体重記録
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/GrowthRecordResponseDto'
+        '204':
+          description: 身長・体重記録の更新に成功
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -1799,18 +1732,22 @@ components:
       schema:
         type: integer
         format: int64
-    RecordTypeFilter:
-      name: recordType
+    RequiredStartDate:
+      name: startDate
       in: query
-      description: 育児記録種別で絞り込み
-      required: false
+      description: 検索開始日（必須）
+      required: true
       schema:
         type: string
-        enum:
-          - MEAL
-          - MILK
-          - DIAPER
-          - HEALTH
+        format: date
+    RequiredEndDate:
+      name: endDate
+      in: query
+      description: 検索終了日（必須）
+      required: true
+      schema:
+        type: string
+        format: date
     TrashItemIds:
       name: trashItemIds
       in: query
@@ -2604,9 +2541,7 @@ components:
         - note
       properties:
         note:
-          type:
-            - string
-            - 'null'
+          type: string
           description: 食事内容・メモ
           example: おかゆと野菜ペースト
     MilkDetailDto:
@@ -2617,15 +2552,11 @@ components:
         - note
       properties:
         amountMl:
-          type:
-            - integer
-            - 'null'
+          type: integer
           description: 量（ml）
           example: 200
         note:
-          type:
-            - string
-            - 'null'
+          type: string
           description: メモ・備考
           example: よく飲んだ
     DiaperDetailDto:
@@ -2643,9 +2574,7 @@ components:
             - DIRTY
           example: WET
         note:
-          type:
-            - string
-            - 'null'
+          type: string
           description: メモ・備考
     HealthDetailDto:
       type: object
@@ -2662,9 +2591,7 @@ components:
           description: 体温
           example: 36.5
         note:
-          type:
-            - string
-            - 'null'
+          type: string
           description: メモ・備考
           example: 元気
     CareRecordResponseDto:
@@ -2675,10 +2602,6 @@ components:
         - recordedBy
         - recordType
         - recordedAt
-        - mealDetail
-        - milkDetail
-        - diaperDetail
-        - healthDetail
         - createdAt
         - updatedAt
       properties:
@@ -2737,27 +2660,17 @@ components:
       description: 育児記録一覧レスポンス
       required:
         - items
-        - totalCount
       properties:
         items:
           type: array
           items:
             $ref: '#/components/schemas/CareRecordResponseDto'
-        totalCount:
-          type: integer
-          format: int64
-          description: 総件数
-          example: 50
     CareRecordRequestDto:
       type: object
       description: 育児記録作成・更新リクエスト
       required:
         - recordType
         - recordedAt
-        - mealDetail
-        - milkDetail
-        - diaperDetail
-        - healthDetail
       properties:
         recordType:
           type: string
@@ -2795,8 +2708,6 @@ components:
       required:
         - id
         - measurementDate
-        - height
-        - weight
         - note
         - createdAt
         - updatedAt
@@ -2812,23 +2723,17 @@ components:
           description: 測定日
           example: '2026-01-01'
         height:
-          type:
-            - number
-            - 'null'
+          type: number
           format: double
           description: 身長（cm）
           example: 75.5
         weight:
-          type:
-            - number
-            - 'null'
+          type: number
           format: double
           description: 体重（kg）
           example: 9.5
         note:
-          type:
-            - string
-            - 'null'
+          type: string
           description: メモ
         createdAt:
           type: string
@@ -2845,8 +2750,6 @@ components:
       description: 身長・体重記録作成・更新リクエスト
       required:
         - measurementDate
-        - height
-        - weight
         - note
       properties:
         measurementDate:
@@ -2869,9 +2772,7 @@ components:
           description: 体重（kg）
           example: 9.5
         note:
-          type:
-            - string
-            - 'null'
+          type: string
           description: メモ
     FirstRecordResponseDto:
       type: object

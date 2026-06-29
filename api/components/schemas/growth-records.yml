@@ -5,8 +5,6 @@ GrowthRecordResponseDto:
   required:
     - id
     - measurementDate
-    - height
-    - weight
     - note
     - createdAt
     - updatedAt
@@ -22,17 +20,17 @@ GrowthRecordResponseDto:
       description: 測定日
       example: "2026-01-01"
     height:
-      type: ["number", "null"]
+      type: number
       format: double
       description: 身長（cm）
       example: 75.5
     weight:
-      type: ["number", "null"]
+      type: number
       format: double
       description: 体重（kg）
       example: 9.50
     note:
-      type: ["string", "null"]
+      type: "string"
       description: メモ
     createdAt:
       type: string
@@ -50,8 +48,6 @@ GrowthRecordRequestDto:
   description: 身長・体重記録作成・更新リクエスト
   required:
     - measurementDate
-    - height
-    - weight
     - note
   properties:
     measurementDate:
@@ -70,5 +66,5 @@ GrowthRecordRequestDto:
       description: 体重（kg）
       example: 9.50
     note:
-      type: ["string", "null"]
+      type: string
       description: メモ

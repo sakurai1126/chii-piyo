@@ -4,12 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { MediaTagsUpdateRequestDto, TagManagementApi, TagResponseDto } from "@/lib/api-client/gen";
 import { createAuthorizedConfig } from "@/lib/api-client/server";
-
-// クライアントに返す結果型
-// 例外をクライアントに直接出さず、成功/失敗を判別可能な形にする
-export type ActionResult =
-  | { success: true; data: TagResponseDto[] }
-  | { success: false; error: string };
+import { handleActionError, ActionResult } from "@/utils/action";
 
 // クライアントから受け取る入力型
 type Input = {
@@ -17,7 +12,9 @@ type Input = {
   tagIds: number[];
 };
 
-export const updateMediaTagsAction = async (input: Input): Promise<ActionResult> => {
+export const updateMediaTagsAction = async (
+  input: Input,
+): Promise<ActionResult<TagResponseDto[]>> => {
   try {
     // 認証トークンを含むAPIクライアントの設定を生成し、TagManagementApiのインスタンスを作成
     const configuration = await createAuthorizedConfig();
@@ -38,10 +35,6 @@ export const updateMediaTagsAction = async (input: Input): Promise<ActionResult>
 
     return { success: true, data: response };
   } catch (error) {
-    console.error("updateMediaTagsAction失敗", error);
-    if (error instanceof Error && error.message === "UNAUTHORIZED") {
-      return { success: false, error: "認証が必要です" };
-    }
-    return { success: false, error: "タグ登録に失敗しました" };
+    return handleActionError(error, "タグ登録に失敗しました");
   }
 };

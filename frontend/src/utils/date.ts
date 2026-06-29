@@ -31,6 +31,37 @@ export const formatJapaneseDateNonTime = (date: Date): string => {
 };
 
 /**
+ * Date型の情報をフォーマットした文字列で返す
+ *
+ * @param date Date型の日付情報
+ * @returns "YYYY-MM-DD"形式の文字列
+ */
+export const formatJapaneseDateBasic = (date: Date): string => {
+  if (Number.isNaN(date.getTime())) return "";
+
+  // inputに渡すことも想定し0埋めの2桁形式で返却
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+/**
+ * Date型の情報をフォーマットした文字列で返す（時刻のみ）
+ *
+ * @param date Date型の日付情報
+ * @returns "HH:MM"形式の文字列
+ */
+export const formatJapaneseDateTimeOnly = (date: Date): string => {
+  if (Number.isNaN(date.getTime())) return "";
+
+  // inputに渡すことも想定し0埋めの2桁形式で返却
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  return `${hours}:${minutes}`;
+};
+
+/**
  * 指定された日付までの残り日数を計算する
  * @param expiresAt 削除予定日時
  * @returns 残り日数
@@ -44,4 +75,28 @@ export const calculateRemainingDays = (expiresAt: string | Date): number => {
   const diffTime = expireDate.getTime() - today.getTime();
   const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
   return Math.max(0, diffDays);
+};
+
+/**
+ * 現在の日時を返す
+ * @returns
+ * - currentDate YYYY-MM-DD形式の現在日時
+ * - currentTime HH:MM形式の現在時刻
+ */
+export const getCurrentDateTime = () => {
+  // 現在の日時を取得
+  const now = new Date();
+
+  // YYYY-MM-DD形式に変換
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  const currentDate = `${year}-${month}-${day}`;
+
+  // HH:MM形式に変換
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  const currentTime = `${hours}:${minutes}`;
+
+  return { currentDate, currentTime };
 };

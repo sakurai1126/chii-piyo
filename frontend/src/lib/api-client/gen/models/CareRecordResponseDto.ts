@@ -77,25 +77,25 @@ export interface CareRecordResponseDto {
    * @type {MealDetailDto}
    * @memberof CareRecordResponseDto
    */
-  mealDetail: MealDetailDto | null;
+  mealDetail?: MealDetailDto | null;
   /**
    *
    * @type {MilkDetailDto}
    * @memberof CareRecordResponseDto
    */
-  milkDetail: MilkDetailDto | null;
+  milkDetail?: MilkDetailDto | null;
   /**
    *
    * @type {DiaperDetailDto}
    * @memberof CareRecordResponseDto
    */
-  diaperDetail: DiaperDetailDto | null;
+  diaperDetail?: DiaperDetailDto | null;
   /**
    *
    * @type {HealthDetailDto}
    * @memberof CareRecordResponseDto
    */
-  healthDetail: HealthDetailDto | null;
+  healthDetail?: HealthDetailDto | null;
   /**
    * 作成日時
    * @type {Date}
@@ -130,10 +130,6 @@ export function instanceOfCareRecordResponseDto(value: object): value is CareRec
   if (!("recordedBy" in value) || value["recordedBy"] === undefined) return false;
   if (!("recordType" in value) || value["recordType"] === undefined) return false;
   if (!("recordedAt" in value) || value["recordedAt"] === undefined) return false;
-  if (!("mealDetail" in value) || value["mealDetail"] === undefined) return false;
-  if (!("milkDetail" in value) || value["milkDetail"] === undefined) return false;
-  if (!("diaperDetail" in value) || value["diaperDetail"] === undefined) return false;
-  if (!("healthDetail" in value) || value["healthDetail"] === undefined) return false;
   if (!("createdAt" in value) || value["createdAt"] === undefined) return false;
   if (!("updatedAt" in value) || value["updatedAt"] === undefined) return false;
   return true;
@@ -155,10 +151,12 @@ export function CareRecordResponseDtoFromJSONTyped(
     recordedBy: json["recordedBy"],
     recordType: json["recordType"],
     recordedAt: new Date(json["recordedAt"]),
-    mealDetail: MealDetailDtoFromJSON(json["mealDetail"]),
-    milkDetail: MilkDetailDtoFromJSON(json["milkDetail"]),
-    diaperDetail: DiaperDetailDtoFromJSON(json["diaperDetail"]),
-    healthDetail: HealthDetailDtoFromJSON(json["healthDetail"]),
+    mealDetail: json["mealDetail"] == null ? undefined : MealDetailDtoFromJSON(json["mealDetail"]),
+    milkDetail: json["milkDetail"] == null ? undefined : MilkDetailDtoFromJSON(json["milkDetail"]),
+    diaperDetail:
+      json["diaperDetail"] == null ? undefined : DiaperDetailDtoFromJSON(json["diaperDetail"]),
+    healthDetail:
+      json["healthDetail"] == null ? undefined : HealthDetailDtoFromJSON(json["healthDetail"]),
     createdAt: new Date(json["createdAt"]),
     updatedAt: new Date(json["updatedAt"]),
   };

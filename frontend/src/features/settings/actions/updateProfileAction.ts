@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { UserManagementApi, UserResponseDto } from "@/lib/api-client/gen";
 import { createAuthorizedConfig } from "@/lib/api-client/server";
+import { handleActionError, ActionResult } from "@/utils/action";
 
 // クライアントから受け取る入力型
 type Input = {
@@ -12,8 +13,6 @@ type Input = {
   isDarkMode?: boolean;
   isEasyMode?: boolean;
 };
-
-type ActionResult = { success: true; user: UserResponseDto } | { success: false; error: string };
 
 /**
  * ユーザー情報のデータを更新するサーバーアクション
@@ -25,7 +24,7 @@ type ActionResult = { success: true; user: UserResponseDto } | { success: false;
  * 成功時：成功フラグ
  * 失敗時：失敗フラグ + エラーメッセージ
  */
-export const updateProfileAction = async (input: Input): Promise<ActionResult> => {
+export const updateProfileAction = async (input: Input): Promise<ActionResult<UserResponseDto>> => {
   try {
     // 認証トークンを含むAPIクライアントの設定を生成し、UserManagementApiのインスタンスを作成
     const configuration = await createAuthorizedConfig();
@@ -44,12 +43,8 @@ export const updateProfileAction = async (input: Input): Promise<ActionResult> =
     // キャッシュを破棄し、サーバーコンポーネントを再レンダリング
     revalidatePath("/", "layout");
 
-    return { success: true, user: response };
+    return { success: true, data: response };
   } catch (error) {
-    console.error("updateProfileAction失敗", error);
-    if (error instanceof Error && error.message === "UNAUTHORIZED") {
-      return { success: false, error: "認証が必要です" };
-    }
-    return { success: false, error: "プロフィール更新に失敗しました" };
+    return handleActionError(error, "アルバム作成に失敗しました");
   }
 };

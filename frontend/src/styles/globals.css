@@ -48,6 +48,20 @@
 
   --color-remove: #cd193d;
   --color-remove-back: #ffeee1;
+
+  /* 育児記録 */
+  --color-meal-border: #db9c26;
+  --color-meal-text: #e88427;
+  --color-milk-border: #d1cb32;
+  --color-milk-text: #bb6c01;
+  --color-diaper-border: #26b5db;
+  --color-diaper-text: #026f8c;
+  --color-health-border: #4adb26;
+  --color-health-text: #538c02;
+  --color-growth-border: #db5926;
+  --color-growth-text: #f64646;
+
+  --color-calender-head: #fffc9f;
 }
 
 html {

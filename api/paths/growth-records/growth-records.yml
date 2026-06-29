@@ -5,8 +5,8 @@ get:
   operationId: getGrowthRecords
   parameters:
     - $ref: "../../components/parameters.yml#/XRequestedWith"
-    - $ref: "../../components/parameters.yml#/StartDate"
-    - $ref: "../../components/parameters.yml#/EndDate"
+    - $ref: "../../components/parameters.yml#/RequiredStartDate"
+    - $ref: "../../components/parameters.yml#/RequiredEndDate"
   responses:
     "200":
       description: 身長・体重記録一覧
@@ -42,11 +42,7 @@ post:
     required: true
   responses:
     "201":
-      description: 作成された身長・体重記録
-      content:
-        application/json;charset=UTF-8:
-          schema:
-            $ref: "../../components/schemas/growth-records.yml#/GrowthRecordResponseDto"
+      description: 身長・体重記録の登録に成功
     "400":
       $ref: "../../components/responses.yml#/BadRequest"
     "401":

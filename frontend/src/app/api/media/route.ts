@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { getMediaList } from "@/features/media/server";
 import { GetMediaListMediaKindEnum } from "@/lib/api-client/gen";
+import { handleApiError } from "@/utils/api";
 
 export const GET = async (request: NextRequest) => {
   const params = request.nextUrl.searchParams;
@@ -31,10 +32,6 @@ export const GET = async (request: NextRequest) => {
     });
     return NextResponse.json(data);
   } catch (error) {
-    if (error instanceof Error && error.message === "UNAUTHORIZED") {
-      return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
-    }
-    console.error("GET /api/media失敗", error);
-    return NextResponse.json({ error: "メディアの取得に失敗しました" }, { status: 500 });
+    return handleApiError(error, "メディアの取得に失敗しました");
   }
 };

@@ -33,12 +33,6 @@ export interface CareRecordListResponseDto {
    * @memberof CareRecordListResponseDto
    */
   items: Array<CareRecordResponseDto>;
-  /**
-   * 総件数
-   * @type {number}
-   * @memberof CareRecordListResponseDto
-   */
-  totalCount: number;
 }
 
 /**
@@ -48,7 +42,6 @@ export function instanceOfCareRecordListResponseDto(
   value: object,
 ): value is CareRecordListResponseDto {
   if (!("items" in value) || value["items"] === undefined) return false;
-  if (!("totalCount" in value) || value["totalCount"] === undefined) return false;
   return true;
 }
 
@@ -65,7 +58,6 @@ export function CareRecordListResponseDtoFromJSONTyped(
   }
   return {
     items: (json["items"] as Array<any>).map(CareRecordResponseDtoFromJSON),
-    totalCount: json["totalCount"],
   };
 }
 
@@ -83,6 +75,5 @@ export function CareRecordListResponseDtoToJSONTyped(
 
   return {
     items: (value["items"] as Array<any>).map(CareRecordResponseDtoToJSON),
-    totalCount: value["totalCount"],
   };
 }
