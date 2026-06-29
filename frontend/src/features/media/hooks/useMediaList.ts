@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { GetMediaListMediaKindEnum, MediaListResponseDto } from "@/lib/api-client/gen";
+import { fetchApi } from "@/utils/fetcher";
 
 export type UseMediaListParams = {
   offset?: number;
@@ -31,12 +32,11 @@ export const useMediaList = (params: UseMediaListParams = {}) => {
       if (params.startDate) sp.set("startDate", params.startDate.toISOString().slice(0, 10));
       if (params.endDate) sp.set("endDate", params.endDate.toISOString().slice(0, 10));
 
-      const res = await fetch(`/api/media?${sp.toString()}`);
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body.error ?? "メディアの取得に失敗しました");
-      }
-      return res.json() as Promise<MediaListResponseDto>;
+      // 共通化した fetchApi関数 を利用してAPIを呼び出す
+      return fetchApi<MediaListResponseDto>(
+        `/api/media?${sp.toString()}`,
+        "メディアの取得に失敗しました",
+      );
     },
   });
 };

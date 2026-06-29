@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { CareRecordListResponseDto } from "@/lib/api-client/gen";
 import { formatJapaneseDateBasic } from "@/utils/date";
+import { fetchApi } from "@/utils/fetcher";
 
 type Params = {
   startDate: Date;
@@ -19,12 +20,12 @@ export const useGetCareRecords = ({ startDate, endDate, initialData }: Params) =
     queryFn: async () => {
       const startStr = formatJapaneseDateBasic(startDate);
       const endStr = formatJapaneseDateBasic(endDate);
-      const res = await fetch(`/api/care-records?startDate=${startStr}&endDate=${endStr}`);
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body.error ?? "育児記録の取得に失敗しました");
-      }
-      return res.json() as Promise<CareRecordListResponseDto>;
+
+      // 共通化した fetchApi関数 を利用してAPIを呼び出す
+      return fetchApi<CareRecordListResponseDto>(
+        `/api/care-records?startDate=${startStr}&endDate=${endStr}`,
+        "育児記録の取得に失敗しました",
+      );
     },
   });
 };
