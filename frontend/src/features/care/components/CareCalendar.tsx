@@ -148,6 +148,14 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
                     <button
                       key={item.id}
                       className="border-accent-pink cursor-pointer rounded-full border"
+                      onClick={(e) =>
+                        itemsTapAction({
+                          item: null,
+                          growthItem: item,
+                          event: e,
+                          weekIndex: dayIndex,
+                        })
+                      }
                     >
                       <Image src={growthIcon} alt="" width={30} height={30} />
                     </button>
@@ -183,7 +191,14 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
                       <button
                         key={item.id}
                         className="border-accent-pink cursor-pointer rounded-full border"
-                        onClick={(e) => itemsTapAction(item, e, dayIndex)}
+                        onClick={(e) =>
+                          itemsTapAction({
+                            item,
+                            growthItem: null,
+                            event: e,
+                            weekIndex: dayIndex,
+                          })
+                        }
                       >
                         <Image src={iconMap[item.recordType]} alt="" width={30} height={30} />
                       </button>

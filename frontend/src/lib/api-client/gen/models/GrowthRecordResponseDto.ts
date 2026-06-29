@@ -36,13 +36,13 @@ export interface GrowthRecordResponseDto {
    * @type {number}
    * @memberof GrowthRecordResponseDto
    */
-  height?: number | null;
+  height?: number;
   /**
    * 体重（kg）
    * @type {number}
    * @memberof GrowthRecordResponseDto
    */
-  weight?: number | null;
+  weight?: number;
   /**
    * メモ
    * @type {string}

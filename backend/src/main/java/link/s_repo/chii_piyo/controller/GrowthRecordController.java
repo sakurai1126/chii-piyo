@@ -79,7 +79,11 @@ public class GrowthRecordController implements GrowthRecordManagementApi {
     @Override
     public ResponseEntity<Void> updateGrowthRecord(
         String xRequestedWith, Long id, GrowthRecordRequestDto growthRecordData) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        // サービス層で更新する
+        growthRecordService.updateGrowthRecord(id, growthRecordData);
+
+        // 204ステータスを返却
+        return ResponseEntity.noContent().build();
     }
 
     /**
@@ -91,6 +95,10 @@ public class GrowthRecordController implements GrowthRecordManagementApi {
      */
     @Override
     public ResponseEntity<Void> deleteGrowthRecord(String xRequestedWith, Long id) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        // サービス層で削除する
+        growthRecordService.deleteGrowthRecord(id);
+
+        // 204ステータスを返却
+        return ResponseEntity.noContent().build();
     }
 }

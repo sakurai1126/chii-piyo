@@ -1,7 +1,7 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 
 import { toast } from "@/components/ui/Toast";
 import {
@@ -11,6 +11,7 @@ import {
 } from "@/lib/api-client/gen";
 
 import { deleteCareRecordAction } from "../actions/deleteCareRecordAction";
+import { deleteGrowthRecordAction } from "../actions/deleteGrowthRecordAction";
 
 import { useGetCareRecords } from "./useGetCareRecords";
 import { useGetGrowthRecords } from "./useGetGrowthRecords";
@@ -79,20 +80,38 @@ export const useCalendar = ({ initialCareRecords, initialGrowthRecords }: Params
     top: number;
     left: number;
     record: CareRecordResponseDto | null;
+    growthRecord: GrowthRecordResponseDto | null;
     weekIndex: number;
   }>({
     isPopOpen: false,
     top: 0,
     left: 0,
     record: null,
+    growthRecord: null,
     weekIndex: 0,
   });
 
-  const itemsTapAction = (
-    item: CareRecordResponseDto,
-    event: React.MouseEvent<HTMLButtonElement>,
-    weekIndex: number,
-  ) => {
+  // 直前に開いていたポップアップのデータを保持する
+  // 要素外クリックで閉じる処理によって削除時のボタンクリックにも影響してしまうためバックアップを管理
+  const deleteTargetRef = useRef(pop);
+  useEffect(() => {
+    // pop にデータがセットされた時だけ更新
+    if (pop.record || pop.growthRecord) {
+      deleteTargetRef.current = pop;
+    }
+  }, [pop]);
+
+  const itemsTapAction = ({
+    item,
+    growthItem,
+    event,
+    weekIndex,
+  }: {
+    item: CareRecordResponseDto | null;
+    growthItem: GrowthRecordResponseDto | null;
+    event: React.MouseEvent<HTMLButtonElement>;
+    weekIndex: number;
+  }) => {
     // 要素が持つ、親要素基準の相対位置を直接取得
     const top = event.currentTarget.offsetTop;
     const left = event.currentTarget.offsetLeft;
@@ -101,6 +120,7 @@ export const useCalendar = ({ initialCareRecords, initialGrowthRecords }: Params
       top,
       left,
       record: item,
+      growthRecord: growthItem,
       weekIndex,
     });
   };
@@ -111,6 +131,7 @@ export const useCalendar = ({ initialCareRecords, initialGrowthRecords }: Params
       top: 0,
       left: 0,
       record: null,
+      growthRecord: null,
       weekIndex: 0,
     });
   };
@@ -181,23 +202,44 @@ export const useCalendar = ({ initialCareRecords, initialGrowthRecords }: Params
 
   // 削除処理
   const deleteAction = () => {
-    if (!pop.record) {
+    // 直前の mousedown で pop がリセットされている場合はバックアップを使用する
+    const targetRecord = pop.record || deleteTargetRef.current.record;
+    const targetGrowth = pop.growthRecord || deleteTargetRef.current.growthRecord;
+
+    if (!targetRecord && !targetGrowth) {
       toast.error("不正なアクセスです。");
       return;
     }
 
     startTransition(async () => {
-      const result = await deleteCareRecordAction({
-        id: pop.record!.id,
-      });
+      if (targetRecord) {
+        const result = await deleteCareRecordAction({
+          id: targetRecord.id,
+        });
 
-      if (result.success) {
-        queryClient.invalidateQueries({ queryKey: ["careRecords"] });
-        popCloseAction();
-        setIsDeleteConfirmOpen(false);
-        toast.success("記録の削除に成功しました");
-      } else {
-        toast.error(result.error);
+        if (result.success) {
+          queryClient.invalidateQueries({ queryKey: ["careRecords"] });
+          popCloseAction();
+          setIsDeleteConfirmOpen(false);
+          toast.success("育児記録の削除に成功しました");
+        } else {
+          toast.error(result.error);
+        }
+      }
+
+      if (targetGrowth) {
+        const result = await deleteGrowthRecordAction({
+          id: targetGrowth.id,
+        });
+
+        if (result.success) {
+          queryClient.invalidateQueries({ queryKey: ["growthRecords"] });
+          popCloseAction();
+          setIsDeleteConfirmOpen(false);
+          toast.success("成長記録の削除に成功しました");
+        } else {
+          toast.error(result.error);
+        }
       }
     });
   };

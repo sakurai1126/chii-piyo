@@ -3,9 +3,10 @@
 import Image from "next/image";
 import { Dispatch, SetStateAction } from "react";
 
-import { CareRecordResponseDto } from "@/lib/api-client/gen";
+import { CareRecordResponseDto, GrowthRecordResponseDto } from "@/lib/api-client/gen";
 import { formatJapaneseDateTimeOnly } from "@/utils/date";
 
+import growthIcon from "../../assets/growth.svg";
 import arrow from "../../assets/popArrow.svg";
 import { useCalendarPop } from "../../hooks/useCalendarPop";
 
@@ -15,6 +16,7 @@ type Props = {
     top: number;
     left: number;
     record: CareRecordResponseDto | null;
+    growthRecord: GrowthRecordResponseDto | null;
     weekIndex: number;
   };
   popCloseAction: () => void;
@@ -31,7 +33,8 @@ export const CalenderPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
     setUpdateData,
     popRef,
     editModeOpen,
-    saveAction,
+    saveCareRecordAction,
+    saveGrowthRecordAction,
   } = useCalendarPop({
     state,
     popCloseAction,
@@ -51,7 +54,7 @@ export const CalenderPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
 
   return (
     <>
-      {state.isPopOpen && state.record && (
+      {state.isPopOpen && (state.record || state.growthRecord) && (
         <div
           className="absolute z-50 -translate-y-[calc(100%+15px)] max-md:static max-md:translate-y-0"
           ref={popRef}
@@ -77,15 +80,16 @@ export const CalenderPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
                 {/* アイコンと種別 */}
                 <div className="shrink-0 text-center">
                   <Image
-                    src={dataMap[state.record.recordType].icon}
+                    src={state.record ? dataMap[state.record.recordType].icon : growthIcon}
                     alt=""
+                    className="mx-auto"
                     width={55}
                     height={55}
                   />
                   <p
-                    className={`mt-2 text-[13px] font-medium ${dataMap[state.record.recordType].color}`}
+                    className={`mt-2 text-[13px] font-medium ${state.record ? dataMap[state.record.recordType].color : "text-growth-text"}`}
                   >
-                    {dataMap[state.record.recordType].label}
+                    {state.record ? dataMap[state.record.recordType].label : "身長・体重"}
                   </p>
                 </div>
                 <div className="flex w-full flex-col justify-between">
@@ -93,38 +97,59 @@ export const CalenderPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
                     {/* 表示モード時 */}
                     {!isEditMode && (
                       <>
-                        <div className="flex gap-3">
-                          {/* 日時 */}
-                          <p className="text-sm font-medium">
-                            {formatJapaneseDateTimeOnly(new Date(state.record.recordedAt))}
-                          </p>
-                          {/* ミルク量表示 */}
-                          {state.record.milkDetail && (
-                            <p className="text-sm font-medium">
-                              {state.record.milkDetail.amountMl}ml
+                        {state.record && (
+                          <>
+                            <div className="flex gap-3">
+                              {/* 日時 */}
+                              <p className="text-sm font-medium">
+                                {formatJapaneseDateTimeOnly(new Date(state.record.recordedAt))}
+                              </p>
+                              {/* ミルク量表示 */}
+                              {state.record.milkDetail && (
+                                <p className="text-sm font-medium">
+                                  {state.record.milkDetail.amountMl}ml
+                                </p>
+                              )}
+                              {/* 排泄タイプ表示 */}
+                              {state.record.diaperDetail && (
+                                <p className="text-sm font-medium">
+                                  {state.record.diaperDetail.diaperType === "WET" ? "おしっこ" : ""}
+                                  {state.record.diaperDetail.diaperType === "DIRTY" ? "うんち" : ""}
+                                </p>
+                              )}
+                              {/* 体温表示 */}
+                              {state.record.healthDetail && (
+                                <p className="text-sm font-medium">
+                                  {state.record.healthDetail.temperature}℃
+                                </p>
+                              )}
+                            </div>
+                            {/* メモ表示 */}
+                            <p className="mt-2 text-[13px]">
+                              {state.record.mealDetail?.note ||
+                                state.record.milkDetail?.note ||
+                                state.record.diaperDetail?.note ||
+                                state.record.healthDetail?.note}
                             </p>
-                          )}
-                          {/* 排泄タイプ表示 */}
-                          {state.record.diaperDetail && (
-                            <p className="text-sm font-medium">
-                              {state.record.diaperDetail.diaperType === "WET" ? "おしっこ" : ""}
-                              {state.record.diaperDetail.diaperType === "DIRTY" ? "うんち" : ""}
-                            </p>
-                          )}
-                          {/* 体温表示 */}
-                          {state.record.healthDetail && (
-                            <p className="text-sm font-medium">
-                              {state.record.healthDetail.temperature}℃
-                            </p>
-                          )}
-                        </div>
-                        {/* メモ表示 */}
-                        <p className="mt-2 text-[13px]">
-                          {state.record.mealDetail?.note ||
-                            state.record.milkDetail?.note ||
-                            state.record.diaperDetail?.note ||
-                            state.record.healthDetail?.note}
-                        </p>
+                          </>
+                        )}
+                        {state.growthRecord && (
+                          <>
+                            {/* 身長と体重表示 */}
+                            {state.growthRecord.height && (
+                              <p className="text-sm font-medium">
+                                身長: {state.growthRecord.height}cm
+                              </p>
+                            )}
+                            {state.growthRecord.weight && (
+                              <p className="text-sm font-medium">
+                                体重: {state.growthRecord.weight}kg
+                              </p>
+                            )}
+                            {/* メモ表示 */}
+                            <p className="mt-2 text-[13px]">{state.growthRecord.note}</p>
+                          </>
+                        )}
                       </>
                     )}
                     {/* 編集モード時 */}
@@ -144,98 +169,152 @@ export const CalenderPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
                             }}
                             disabled={isPending}
                           />
-                          <input
-                            type="time"
-                            className="text-xs outline-none"
-                            value={updateData.time}
-                            onChange={(e) => {
-                              setUpdateData((prev) => ({
-                                ...prev,
-                                time: e.target.value,
-                              }));
-                            }}
-                            disabled={isPending}
-                          />
-                        </div>
-                        {/* ミルク量編集 */}
-                        {state.record.milkDetail && (
-                          <>
+                          {/* 身長・体重のときは時間を編集しない */}
+                          {!state.growthRecord && (
                             <input
-                              type="number"
-                              value={Number(updateData.amountMl)}
-                              min={10}
-                              max={400}
-                              step={10}
-                              className="border-line-gray rounded-sm border bg-white px-1 text-sm font-medium outline-0"
+                              type="time"
+                              className="text-xs outline-none"
+                              value={updateData.time}
                               onChange={(e) => {
                                 setUpdateData((prev) => ({
                                   ...prev,
-                                  amountMl: Number(e.target.value),
+                                  time: e.target.value,
                                 }));
                               }}
+                              disabled={isPending}
                             />
-                            <span className="ml-2 text-sm">ml</span>
+                          )}
+                        </div>
+                        {state.record && (
+                          <>
+                            {/* ミルク量編集 */}
+                            {state.record.milkDetail && (
+                              <>
+                                <input
+                                  type="number"
+                                  value={Number(updateData.amountMl)}
+                                  min={10}
+                                  max={400}
+                                  step={10}
+                                  className="border-line-gray rounded-sm border bg-white px-1 text-sm font-medium outline-0"
+                                  onChange={(e) => {
+                                    setUpdateData((prev) => ({
+                                      ...prev,
+                                      amountMl: Number(e.target.value),
+                                    }));
+                                  }}
+                                />
+                                <span className="ml-2 text-sm">ml</span>
+                              </>
+                            )}
+                            {/* 排泄タイプ編集 */}
+                            {state.record.diaperDetail && (
+                              <div className="flex gap-2">
+                                <label
+                                  htmlFor={`diaper-wet-${uid}`}
+                                  className="accent-accent-pink flex items-center gap-1 text-xs font-medium"
+                                >
+                                  <input
+                                    type="radio"
+                                    name={`diaper-${uid}`}
+                                    id={`diaper-wet-${uid}`}
+                                    checked={updateData.diaperType === "WET"}
+                                    onChange={() => {
+                                      setUpdateData((prev) => ({
+                                        ...prev,
+                                        diaperType: "WET",
+                                      }));
+                                    }}
+                                  />
+                                  おしっこ
+                                </label>
+                                <label
+                                  htmlFor={`diaper-dirty-${uid}`}
+                                  className="accent-accent-pink flex items-center gap-1 text-xs font-medium"
+                                >
+                                  <input
+                                    type="radio"
+                                    name={`diaper-${uid}`}
+                                    id={`diaper-dirty-${uid}`}
+                                    checked={updateData.diaperType === "DIRTY"}
+                                    onChange={() => {
+                                      setUpdateData((prev) => ({
+                                        ...prev,
+                                        diaperType: "DIRTY",
+                                      }));
+                                    }}
+                                  />
+                                  うんち
+                                </label>
+                              </div>
+                            )}
+                            {/* 体温編集 */}
+                            {state.record.healthDetail && (
+                              <>
+                                <input
+                                  type="number"
+                                  value={Number(updateData.temperature)}
+                                  min={34}
+                                  max={42}
+                                  step={0.1}
+                                  className="border-line-gray rounded-sm border bg-white px-1 text-sm font-medium outline-0"
+                                  onChange={(e) => {
+                                    setUpdateData((prev) => ({
+                                      ...prev,
+                                      temperature: Number(e.target.value),
+                                    }));
+                                  }}
+                                />
+                                <span className="ml-2 text-sm">℃</span>
+                              </>
+                            )}
                           </>
                         )}
-                        {/* 排泄タイプ編集 */}
-                        {state.record.diaperDetail && (
-                          <div className="flex gap-2">
-                            <label
-                              htmlFor={`diaper-wet-${uid}`}
-                              className="accent-accent-pink flex items-center gap-1 text-xs font-medium"
-                            >
-                              <input
-                                type="radio"
-                                name={`diaper-${uid}`}
-                                id={`diaper-wet-${uid}`}
-                                checked={updateData.diaperType === "WET"}
-                                onChange={() => {
-                                  setUpdateData((prev) => ({
-                                    ...prev,
-                                    diaperType: "WET",
-                                  }));
-                                }}
-                              />
-                              おしっこ
-                            </label>
-                            <label
-                              htmlFor={`diaper-dirty-${uid}`}
-                              className="accent-accent-pink flex items-center gap-1 text-xs font-medium"
-                            >
-                              <input
-                                type="radio"
-                                name={`diaper-${uid}`}
-                                id={`diaper-dirty-${uid}`}
-                                checked={updateData.diaperType === "DIRTY"}
-                                onChange={() => {
-                                  setUpdateData((prev) => ({
-                                    ...prev,
-                                    diaperType: "DIRTY",
-                                  }));
-                                }}
-                              />
-                              うんち
-                            </label>
-                          </div>
-                        )}
-                        {/* 体温編集 */}
-                        {state.record.healthDetail && (
+
+                        {/* 成長記録編集 */}
+                        {state.growthRecord && (
                           <>
-                            <input
-                              type="number"
-                              value={Number(updateData.temperature)}
-                              min={34}
-                              max={42}
-                              step={0.1}
-                              className="border-line-gray rounded-sm border bg-white px-1 text-sm font-medium outline-0"
-                              onChange={(e) => {
-                                setUpdateData((prev) => ({
-                                  ...prev,
-                                  temperature: Number(e.target.value),
-                                }));
-                              }}
-                            />
-                            <span className="ml-2 text-sm">℃</span>
+                            <div className="flex gap-1">
+                              <p className="text-sm font-medium">身長: </p>
+                              <input
+                                type="number"
+                                min={0}
+                                max={200}
+                                step={0.1}
+                                className="border-line-gray w-20 rounded-sm border bg-white px-1.5 text-sm font-medium outline-none"
+                                value={updateData.height ?? ""}
+                                onChange={(e) => {
+                                  setUpdateData((prev) => ({
+                                    ...prev,
+                                    height:
+                                      e.target.value === "" ? undefined : Number(e.target.value),
+                                  }));
+                                }}
+                                disabled={isPending}
+                              />
+                              <p className="text-sm font-medium">cm</p>
+                            </div>
+
+                            <div className="mt-1 flex gap-1">
+                              <p className="text-sm font-medium">体重: </p>
+                              <input
+                                type="number"
+                                min={0}
+                                max={200}
+                                step={0.1}
+                                className="border-line-gray w-20 rounded-sm border bg-white px-1.5 text-sm font-medium outline-none"
+                                value={updateData.weight ?? ""}
+                                onChange={(e) => {
+                                  setUpdateData((prev) => ({
+                                    ...prev,
+                                    weight:
+                                      e.target.value === "" ? undefined : Number(e.target.value),
+                                  }));
+                                }}
+                                disabled={isPending}
+                              />
+                              <p className="text-sm font-medium">kg</p>
+                            </div>
                           </>
                         )}
                         {/* メモ編集 */}
@@ -284,13 +363,24 @@ export const CalenderPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
                         >
                           戻る
                         </button>
-                        <button
-                          className="text-success cursor-pointer text-xs underline transition-all hover:opacity-70"
-                          onClick={saveAction}
-                          disabled={isPending}
-                        >
-                          更新
-                        </button>
+                        {state.record && (
+                          <button
+                            className="text-success cursor-pointer text-xs underline transition-all hover:opacity-70"
+                            onClick={saveCareRecordAction}
+                            disabled={isPending}
+                          >
+                            更新
+                          </button>
+                        )}
+                        {state.growthRecord && (
+                          <button
+                            className="text-success cursor-pointer text-xs underline transition-all hover:opacity-70"
+                            onClick={saveGrowthRecordAction}
+                            disabled={isPending}
+                          >
+                            更新
+                          </button>
+                        )}
                       </>
                     )}
                   </div>

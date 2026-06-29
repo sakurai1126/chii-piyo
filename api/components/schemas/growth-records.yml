@@ -20,12 +20,12 @@ GrowthRecordResponseDto:
       description: 測定日
       example: "2026-01-01"
     height:
-      type: ["number", "null"]
+      type: number
       format: double
       description: 身長（cm）
       example: 75.5
     weight:
-      type: ["number", "null"]
+      type: number
       format: double
       description: 体重（kg）
       example: 9.50

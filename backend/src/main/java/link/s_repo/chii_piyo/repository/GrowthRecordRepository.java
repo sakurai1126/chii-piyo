@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.isGreaterThanOrEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.isLessThan;
@@ -44,5 +45,33 @@ public class GrowthRecordRepository {
                 isLessThan(endDate.plusDays(1))
             )
         );
+    }
+
+    /**
+     * IDに紐づく成長記録を一件取得する
+     *
+     * @param id 対象のID
+     * @return 成長記録エンティティ
+     */
+    public Optional<GrowthRecords> findById(Long id) {
+        return growthRecordsMapper.selectByPrimaryKey(id);
+    }
+
+    /**
+     * ID指定で成長記録を削除する
+     *
+     * @param id 削除対象のID
+     */
+    public void delete(Long id) {
+        growthRecordsMapper.deleteByPrimaryKey(id);
+    }
+
+    /**
+     * ID指定で記録を更新する
+     *
+     * @param growthRecord 更新用データ
+     */
+    public void updateGrowthRecord(GrowthRecords growthRecord) {
+        growthRecordsMapper.updateByPrimaryKey(growthRecord);
     }
 }

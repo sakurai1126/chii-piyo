@@ -126,6 +126,5 @@ public class CareRecordController implements CareRecordManagementApi {
 
         // 204ステータスを返却
         return ResponseEntity.noContent().build();
-
     }
 }

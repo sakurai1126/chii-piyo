@@ -2,7 +2,7 @@ package link.s_repo.chii_piyo.controller.converter;
 
 import link.s_repo.chii_piyo.model.gen.GrowthRecordResponseDto;
 import link.s_repo.chii_piyo.model.gen.GrowthRecords;
-import org.openapitools.jackson.nullable.JsonNullable;
+
 import org.springframework.stereotype.Component;
 
 /**
@@ -28,8 +28,8 @@ public class GrowthRecordConverter {
 
         Double heightDouble = growthRecord.getHeight() != null ? growthRecord.getHeight().doubleValue() : null;
         Double weightDouble = growthRecord.getWeight() != null ? growthRecord.getWeight().doubleValue() : null;
-        dto.setHeight(JsonNullable.of(heightDouble));
-        dto.setWeight(JsonNullable.of(weightDouble));
+        dto.setHeight(heightDouble);
+        dto.setWeight(weightDouble);
 
         return dto;
     }

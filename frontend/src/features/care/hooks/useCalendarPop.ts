@@ -4,10 +4,11 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useId, useRef, useState, useTransition } from "react";
 
 import { toast } from "@/components/ui/Toast";
-import { CareRecordResponseDto } from "@/lib/api-client/gen";
+import { CareRecordResponseDto, GrowthRecordResponseDto } from "@/lib/api-client/gen";
 import { formatJapaneseDateBasic, formatJapaneseDateTimeOnly } from "@/utils/date";
 
 import { updateCareRecordAction } from "../actions/updateCareRecordAction";
+import { updateGrowthRecordAction } from "../actions/updateGrowthRecordAction";
 import diaperIcon from "../assets/diaper.svg";
 import healthIcon from "../assets/health.svg";
 import mealIcon from "../assets/meal.svg";
@@ -19,6 +20,7 @@ type Props = {
     top: number;
     left: number;
     record: CareRecordResponseDto | null;
+    growthRecord: GrowthRecordResponseDto | null;
   };
   popCloseAction: () => void;
 };
@@ -68,6 +70,8 @@ export const useCalendarPop = ({ state, popCloseAction }: Props) => {
     amountMl: number | undefined;
     diaperType: string | undefined;
     temperature: number | null | undefined;
+    height: number | undefined;
+    weight: number | undefined;
   }>({
     date: "",
     time: "",
@@ -75,6 +79,8 @@ export const useCalendarPop = ({ state, popCloseAction }: Props) => {
     amountMl: undefined,
     diaperType: undefined,
     temperature: undefined,
+    height: undefined,
+    weight: undefined,
   });
 
   const popRef = useRef<HTMLDivElement>(null);
@@ -94,8 +100,25 @@ export const useCalendarPop = ({ state, popCloseAction }: Props) => {
         amountMl: state.record.milkDetail?.amountMl,
         diaperType: state.record.diaperDetail?.diaperType,
         temperature: state.record.healthDetail?.temperature,
+        height: undefined,
+        weight: undefined,
       });
     }
+
+    if (state.growthRecord) {
+      const recordDate = new Date(state.growthRecord.measurementDate);
+      setUpdateData({
+        date: formatJapaneseDateBasic(recordDate),
+        time: "00:00",
+        note: state.growthRecord.note || "",
+        amountMl: undefined,
+        diaperType: undefined,
+        temperature: undefined,
+        height: state.growthRecord.height,
+        weight: state.growthRecord.weight,
+      });
+    }
+
     setIsEditMode(true);
   };
 
@@ -114,7 +137,7 @@ export const useCalendarPop = ({ state, popCloseAction }: Props) => {
     };
   }, [popCloseAction]);
 
-  const saveAction = () => {
+  const saveCareRecordAction = () => {
     if (!state.record) {
       toast.error("エラーが発生しました。");
       return;
@@ -216,7 +239,47 @@ export const useCalendarPop = ({ state, popCloseAction }: Props) => {
       if (result.success) {
         queryClient.invalidateQueries({ queryKey: ["careRecords"] });
         popCloseAction();
-        toast.success("記録を更新しました");
+        toast.success("育児記録を更新しました");
+      } else {
+        toast.error(result.error);
+      }
+    });
+  };
+
+  const saveGrowthRecordAction = () => {
+    if (!state.growthRecord) {
+      toast.error("エラーが発生しました");
+      return;
+    }
+    const growthRecord = state.growthRecord;
+
+    if (!updateData.height && !updateData.weight) {
+      toast.error("身長または体重を入力してください");
+      return;
+    }
+
+    if (updateData.height && (updateData.height <= 0 || updateData.height > 200)) {
+      toast.error("身長を正しく入力してください");
+      return;
+    }
+
+    if (updateData.weight && (updateData.weight <= 0 || updateData.weight > 200)) {
+      toast.error("体重を正しく入力してください");
+      return;
+    }
+
+    startTransition(async () => {
+      const result = await updateGrowthRecordAction({
+        id: growthRecord.id,
+        measurementDate: new Date(updateData.date),
+        height: updateData.height,
+        weight: updateData.weight,
+        note: updateData.note,
+      });
+      if (result.success) {
+        queryClient.invalidateQueries({ queryKey: ["growthRecords"] });
+        popCloseAction();
+        toast.success("成長記録を更新しました");
       } else {
         toast.error(result.error);
       }
@@ -233,6 +296,7 @@ export const useCalendarPop = ({ state, popCloseAction }: Props) => {
     setUpdateData,
     popRef,
     editModeOpen,
-    saveAction,
+    saveCareRecordAction,
+    saveGrowthRecordAction,
   };
 };
