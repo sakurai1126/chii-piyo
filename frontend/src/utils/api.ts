@@ -20,7 +20,7 @@ export const validateDateRangeParams = (request: NextRequest) => {
   const startDate = new Date(startDateParam);
   const endDate = new Date(endDateParam);
 
-  if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+  if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) {
     return {
       errorResponse: NextResponse.json(
         { error: "startDate または endDate の形式が不正です" },

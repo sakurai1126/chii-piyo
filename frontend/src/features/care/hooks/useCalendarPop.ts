@@ -145,45 +145,9 @@ export const useCalendarPop = ({ state, popCloseAction }: Props) => {
 
     const record = state.record;
 
-    if (record.recordType === "MILK") {
-      if (!updateData.amountMl) {
-        toast.error("ミルク量を入力してください。");
-        return;
-      }
-
-      if (updateData.amountMl > 400) {
-        toast.error("ミルク量を400ml以内で入力してください。");
-        return;
-      }
-
-      if (updateData.amountMl < 10) {
-        toast.error("ミルク量を10ml以上で入力してください。");
-        return;
-      }
-    }
-
-    if (record.recordType === "DIAPER") {
-      if (!updateData.diaperType) {
-        toast.error("排泄タイプを入力してください。");
-        return;
-      }
-
-      if (updateData.diaperType !== "DIRTY" && updateData.diaperType !== "WET") {
-        toast.error("排泄タイプが不正です。");
-        return;
-      }
-    }
-
-    if (record.recordType === "HEALTH") {
-      if (!updateData.temperature) {
-        toast.error("体温を入力してください。");
-        return;
-      }
-
-      if (updateData.temperature < 34 || updateData.temperature > 42) {
-        toast.error("体温を正しく入力してください");
-        return;
-      }
+    // 入力値バリデーション
+    if (!validateCareRecordUpdate(record)) {
+      return;
     }
 
     startTransition(async () => {
@@ -244,6 +208,48 @@ export const useCalendarPop = ({ state, popCloseAction }: Props) => {
         toast.error(result.error);
       }
     });
+  };
+
+  // 入力チェックバリデーション
+  const validateCareRecordUpdate = (record: CareRecordResponseDto): boolean => {
+    if (record.recordType === "MILK") {
+      if (!updateData.amountMl) {
+        toast.error("ミルク量を入力してください。");
+        return false;
+      }
+      if (updateData.amountMl > 400) {
+        toast.error("ミルク量を400ml以内で入力してください。");
+        return false;
+      }
+      if (updateData.amountMl < 10) {
+        toast.error("ミルク量を10ml以上で入力してください。");
+        return false;
+      }
+    }
+
+    if (record.recordType === "DIAPER") {
+      if (!updateData.diaperType) {
+        toast.error("排泄タイプを入力してください。");
+        return false;
+      }
+      if (updateData.diaperType !== "DIRTY" && updateData.diaperType !== "WET") {
+        toast.error("排泄タイプが不正です。");
+        return false;
+      }
+    }
+
+    if (record.recordType === "HEALTH") {
+      if (!updateData.temperature) {
+        toast.error("体温を入力してください。");
+        return false;
+      }
+      if (updateData.temperature < 34 || updateData.temperature > 42) {
+        toast.error("体温を正しく入力してください");
+        return false;
+      }
+    }
+
+    return true;
   };
 
   const saveGrowthRecordAction = () => {

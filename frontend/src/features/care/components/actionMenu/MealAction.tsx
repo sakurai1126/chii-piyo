@@ -32,7 +32,7 @@ export const MealAction = () => {
   const saveAction = () => {
     const recordTime = new Date(date + " " + time);
 
-    if (!(recordTime instanceof Date) || isNaN(recordTime.getTime())) {
+    if (!(recordTime instanceof Date) || Number.isNaN(recordTime.getTime())) {
       toast.error("無効な日時です");
       return;
     }

@@ -125,6 +125,29 @@ export const useCalendar = ({ initialCareRecords, initialGrowthRecords }: Params
     });
   };
 
+  // 身長・体重用のクリック
+  const growthItemTapAction =
+    (item: GrowthRecordResponseDto, dayIndex: number) =>
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      itemsTapAction({
+        item: null,
+        growthItem: item,
+        event: e,
+        weekIndex: dayIndex,
+      });
+    };
+
+  // 育児記録用のクリック関数
+  const careItemTapAction =
+    (item: CareRecordResponseDto, dayIndex: number) => (e: React.MouseEvent<HTMLButtonElement>) => {
+      itemsTapAction({
+        item,
+        growthItem: null,
+        event: e,
+        weekIndex: dayIndex,
+      });
+    };
+
   const popCloseAction = () => {
     setPop({
       isPopOpen: false,
@@ -256,11 +279,12 @@ export const useCalendar = ({ initialCareRecords, initialGrowthRecords }: Params
     careRecords,
     growthRecords,
     pop,
-    itemsTapAction,
     popCloseAction,
     isPending,
     isDeleteConfirmOpen,
     setIsDeleteConfirmOpen,
     deleteAction,
+    growthItemTapAction,
+    careItemTapAction,
   };
 };

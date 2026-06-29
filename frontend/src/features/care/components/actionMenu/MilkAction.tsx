@@ -55,7 +55,7 @@ export const MilkAction = () => {
   const saveAction = () => {
     const recordTime = new Date(date + " " + time);
 
-    if (!(recordTime instanceof Date) || isNaN(recordTime.getTime())) {
+    if (!(recordTime instanceof Date) || Number.isNaN(recordTime.getTime())) {
       toast.error("無効な日時です");
       return;
     }
@@ -115,12 +115,12 @@ export const MilkAction = () => {
           </button>
         </div>
         <div className="my-5 flex gap-3 max-md:gap-2">
-          {amountMlsSelect.map((value, index) => (
+          {amountMlsSelect.map((value) => (
             <button
               className="bg-accent-orange/10 border-brown-dark text-brown-dark h-8 w-20 cursor-pointer rounded-sm border font-medium transition-all hover:opacity-70 max-md:text-sm"
               onClick={() => setAmountMl(value)}
               disabled={isPending}
-              key={index}
+              key={value}
             >
               {value}
             </button>

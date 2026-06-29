@@ -33,12 +33,13 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
     careRecords,
     growthRecords,
     pop,
-    itemsTapAction,
     popCloseAction,
     isPending,
     isDeleteConfirmOpen,
     setIsDeleteConfirmOpen,
     deleteAction,
+    growthItemTapAction,
+    careItemTapAction,
   } = useCalendar({ initialCareRecords, initialGrowthRecords });
 
   const iconMap = {
@@ -89,8 +90,8 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
           <div className="grid w-full grid-cols-7 max-md:grid-cols-1">
             {Array.from({ length: 7 }, (_, index) => (
               <div
-                className={`border-brown-dark/50 flex h-10 items-center justify-between border-l px-5 max-lg:justify-center max-lg:px-0 max-md:justify-between max-md:px-5 ${index !== currentDay.getDay() ? "max-md:hidden" : ""} ${isTodayWeek && index === today.getDay() ? "md:bg-brown-middle md:font-medium md:text-white" : ""}`}
-                key={index}
+                className={`border-brown-dark/50 flex h-10 items-center justify-between border-l px-5 max-lg:justify-center max-lg:px-0 max-md:justify-between max-md:px-5 ${index === currentDay.getDay() ? "" : "max-md:hidden"} ${isTodayWeek && index === today.getDay() ? "md:bg-brown-middle md:font-medium md:text-white" : ""}`}
+                key={weeklyDates[index].toISOString()}
               >
                 {/* 前日へ移動(モバイルのみ) */}
                 <button
@@ -130,8 +131,8 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
           <div className="grid w-full grid-cols-7 max-md:grid-cols-1">
             {Array.from({ length: 7 }, (_, dayIndex) => (
               <div
-                className={`border-brown-dark/50 flex h-10 items-center gap-1 overflow-scroll border-l px-2 ${dayIndex !== currentDay.getDay() ? "max-md:hidden" : ""}`}
-                key={dayIndex}
+                className={`border-brown-dark/50 flex h-10 items-center gap-1 overflow-scroll border-l px-2 ${dayIndex === currentDay.getDay() ? "" : "max-md:hidden"}`}
+                key={weeklyDates[dayIndex].toISOString()}
               >
                 {growthRecords
                   ?.filter((item) => {
@@ -148,14 +149,7 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
                     <button
                       key={item.id}
                       className="border-accent-pink cursor-pointer rounded-full border"
-                      onClick={(e) =>
-                        itemsTapAction({
-                          item: null,
-                          growthItem: item,
-                          event: e,
-                          weekIndex: dayIndex,
-                        })
-                      }
+                      onClick={growthItemTapAction(item, dayIndex)}
                     >
                       <Image src={growthIcon} alt="" width={30} height={30} />
                     </button>
@@ -167,13 +161,16 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
 
         {/* 育児記録アイコン表示行（24時間） */}
         {Array.from({ length: 24 }, (_, timeIndex) => (
-          <div key={timeIndex} className="border-line-gray flex h-10 border-t border-dashed">
+          <div
+            key={`hour-${timeIndex}`}
+            className="border-line-gray flex h-10 border-t border-dashed"
+          >
             <p className="grid h-10 w-10 shrink-0 place-content-center text-sm">{timeIndex}</p>
             <div className="grid w-full grid-cols-7 max-md:grid-cols-1">
               {Array.from({ length: 7 }, (_, dayIndex) => (
                 <div
-                  className={`border-brown-dark/50 flex h-10 items-center gap-1 overflow-scroll border-l px-2 ${dayIndex !== currentDay.getDay() ? "max-md:hidden" : ""}`}
-                  key={dayIndex}
+                  className={`border-brown-dark/50 flex h-10 items-center gap-1 overflow-scroll border-l px-2 ${dayIndex === currentDay.getDay() ? "" : "max-md:hidden"}`}
+                  key={weeklyDates[dayIndex].toISOString()}
                 >
                   {careRecords?.items
                     .filter((item) => {
@@ -191,14 +188,7 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
                       <button
                         key={item.id}
                         className="border-accent-pink cursor-pointer rounded-full border"
-                        onClick={(e) =>
-                          itemsTapAction({
-                            item,
-                            growthItem: null,
-                            event: e,
-                            weekIndex: dayIndex,
-                          })
-                        }
+                        onClick={careItemTapAction(item, dayIndex)}
                       >
                         <Image src={iconMap[item.recordType]} alt="" width={30} height={30} />
                       </button>

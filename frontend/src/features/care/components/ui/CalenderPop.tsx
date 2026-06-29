@@ -226,7 +226,7 @@ export const CalenderPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
                                       }));
                                     }}
                                   />
-                                  おしっこ
+                                  <span>おしっこ</span>
                                 </label>
                                 <label
                                   htmlFor={`diaper-dirty-${uid}`}
@@ -244,7 +244,7 @@ export const CalenderPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
                                       }));
                                     }}
                                   />
-                                  うんち
+                                  <span>うんち</span>
                                 </label>
                               </div>
                             )}
