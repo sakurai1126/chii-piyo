@@ -11,10 +11,7 @@ import {
   MilkDetailDto,
 } from "@/lib/api-client/gen";
 import { createAuthorizedConfig } from "@/lib/api-client/server";
-
-// クライアントに返す結果型
-// 例外をクライアントに直接出さず、成功/失敗を判別可能な形にする
-export type ActionResult = { success: true } | { success: false; error: string };
+import { handleActionError, ActionResult } from "@/utils/action";
 
 // クライアントから受け取る入力型
 type Input = {
@@ -49,10 +46,6 @@ export const createCareRecordAction = async (input: Input): Promise<ActionResult
 
     return { success: true };
   } catch (error) {
-    console.error("createCareRecordAction失敗", error);
-    if (error instanceof Error && error.message === "UNAUTHORIZED") {
-      return { success: false, error: "認証が必要です" };
-    }
-    return { success: false, error: "記録に失敗しました" };
+    return handleActionError(error, "記録に失敗しました");
   }
 };

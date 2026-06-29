@@ -4,13 +4,12 @@ import { revalidatePath } from "next/cache";
 
 import { CareRecordManagementApi } from "@/lib/api-client/gen";
 import { createAuthorizedConfig } from "@/lib/api-client/server";
+import { handleActionError, ActionResult } from "@/utils/action";
 
 // クライアントから受け取る入力型
 type Input = {
   id: number;
 };
-
-type ActionResult = { success: true } | { success: false; error: string };
 
 export const deleteCareRecordAction = async (input: Input): Promise<ActionResult> => {
   try {
@@ -28,10 +27,6 @@ export const deleteCareRecordAction = async (input: Input): Promise<ActionResult
 
     return { success: true };
   } catch (error) {
-    console.error("deleteCareRecordAction失敗", error);
-    if (error instanceof Error && error.message === "UNAUTHORIZED") {
-      return { success: false, error: "認証が必要です" };
-    }
-    return { success: false, error: "記録の削除に失敗しました" };
+    return handleActionError(error, "記録の削除に失敗しました");
   }
 };

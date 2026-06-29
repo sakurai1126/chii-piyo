@@ -9,12 +9,11 @@ import {
   MediaUploadRequestDtoMediaTypeEnum,
 } from "@/lib/api-client/gen";
 import { createAuthorizedConfig } from "@/lib/api-client/server";
+import { handleActionError, ActionResult } from "@/utils/action";
 
-// クライアントに返す結果型
-// 例外をクライアントに直接出さず、成功/失敗を判別可能な形にする
-export type ActionResult =
-  | { success: true; data: MediaUploadResponseDto; warnings?: string[] }
-  | { success: false; error: string };
+type ResponseData = MediaUploadResponseDto & {
+  warnings?: string[];
+};
 
 // クライアントから受け取る入力型
 type Input = {
@@ -41,7 +40,7 @@ type Input = {
  * 成功時：メディアID + 署名付きURL
  * 失敗時：エラーメッセージ
  */
-export const createMediaAction = async (input: Input): Promise<ActionResult> => {
+export const createMediaAction = async (input: Input): Promise<ActionResult<ResponseData>> => {
   try {
     // 認証トークンを含むAPIクライアントの設定を生成し、MediaManagementApiのインスタンスを作成
     const configuration = await createAuthorizedConfig();
@@ -99,12 +98,14 @@ export const createMediaAction = async (input: Input): Promise<ActionResult> => 
       }
     }
 
-    return { success: true, data: response, warnings: warnings.length > 0 ? warnings : undefined };
+    return {
+      success: true,
+      data: {
+        ...response,
+        warnings: warnings.length > 0 ? warnings : undefined,
+      },
+    };
   } catch (error) {
-    console.error("createMediaAction失敗", error);
-    if (error instanceof Error && error.message === "UNAUTHORIZED") {
-      return { success: false, error: "認証が必要です" };
-    }
-    return { success: false, error: "メディア登録に失敗しました" };
+    return handleActionError(error, "メディア登録に失敗しました");
   }
 };

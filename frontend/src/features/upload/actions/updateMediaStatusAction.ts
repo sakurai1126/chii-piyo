@@ -5,13 +5,12 @@ import {
   MediaUploadStatusRequestDtoUploadStatusEnum,
 } from "@/lib/api-client/gen";
 import { createAuthorizedConfig } from "@/lib/api-client/server";
+import { handleActionError, ActionResult } from "@/utils/action";
 
 type Input = {
   mediaId: number;
   uploadStatus: "COMPLETED" | "FAILED" | "PROCESSING";
 };
-
-type ActionResult = { success: true } | { success: false; error: string };
 
 /**
  * メディアのアップロード状態を更新するサーバーアクション
@@ -57,10 +56,6 @@ export const updateMediaStatusAction = async (input: Input): Promise<ActionResul
 
     return { success: true };
   } catch (error) {
-    console.error("updateMediaStatusAction失敗", error);
-    if (error instanceof Error && error.message === "UNAUTHORIZED") {
-      return { success: false, error: "認証が必要です" };
-    }
-    return { success: false, error: "ステータス更新に失敗しました" };
+    return handleActionError(error, "ステータス更新に失敗しました");
   }
 };

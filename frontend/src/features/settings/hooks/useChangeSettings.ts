@@ -91,13 +91,13 @@ export const useChangeSettings = ({ currentUser }: Props) => {
       }
 
       // S3に直接アップロード
-      const { presignedUrl, s3key } = result;
+      const { presignedUrl, s3key } = result.data;
       await uploadToS3({ presignedUrl, file });
 
       // メタデータの更新
       const updatedUser = await updateProfileAction({ s3key });
       if (updatedUser.success) {
-        setUser(updatedUser.user);
+        setUser(updatedUser.data);
         cancelIconEdit();
         toast.success("プロフィール画像のアップロードに成功しました");
       } else {
@@ -123,7 +123,7 @@ export const useChangeSettings = ({ currentUser }: Props) => {
     try {
       const updatedUser = await updateProfileAction({ displayName: newName });
       if (updatedUser.success) {
-        setUser(updatedUser.user);
+        setUser(updatedUser.data);
         setNewName("");
         setIsNameChangeMode(false);
         toast.success("表示名を変更しました");
@@ -145,8 +145,8 @@ export const useChangeSettings = ({ currentUser }: Props) => {
     try {
       const updatedUser = await updateProfileAction({ isDarkMode: !isDarkMode });
       if (updatedUser.success) {
-        setUser(updatedUser.user);
-        setIsDarkMode(updatedUser.user.isDarkMode);
+        setUser(updatedUser.data);
+        setIsDarkMode(updatedUser.data.isDarkMode);
         toast.success(`ダークモード表示を${isDarkMode ? "OFF" : "ON"}にしました`);
       } else {
         toast.error("ダークモード表示の変更に失敗しました");
@@ -166,8 +166,8 @@ export const useChangeSettings = ({ currentUser }: Props) => {
     try {
       const updatedUser = await updateProfileAction({ isEasyMode: !isEasyMode });
       if (updatedUser.success) {
-        setUser(updatedUser.user);
-        setIsEasyMode(updatedUser.user.isEasyMode);
+        setUser(updatedUser.data);
+        setIsEasyMode(updatedUser.data.isEasyMode);
         toast.success(`簡易閲覧モードを${isEasyMode ? "OFF" : "ON"}にしました`);
       } else {
         toast.error("簡易閲覧モードの変更に失敗しました");

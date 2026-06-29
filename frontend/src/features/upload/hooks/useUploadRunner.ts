@@ -103,8 +103,11 @@ export const useUploadRunner = ({ onItemUpdate, onAllComplete }: UseUploadParams
         }
 
         // コメント・タグ登録の部分的な失敗はwarningとして記録
-        if (createResult.warnings?.length) {
-          console.warn(`[${item.file.name}] メタデータの一部登録に失敗:`, createResult.warnings);
+        if (createResult.data.warnings?.length) {
+          console.warn(
+            `[${item.file.name}] メタデータの一部登録に失敗:`,
+            createResult.data.warnings,
+          );
           updateState({ errorMessage: "メタデータの一部登録に失敗しました" });
         }
 

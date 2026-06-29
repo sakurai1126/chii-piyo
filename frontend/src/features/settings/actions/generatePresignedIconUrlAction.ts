@@ -2,16 +2,17 @@
 
 import { UserManagementApi } from "@/lib/api-client/gen";
 import { createAuthorizedConfig } from "@/lib/api-client/server";
-
-type ActionResult =
-  | { success: true; presignedUrl: string; s3key: string }
-  | { success: false; error: string };
+import { ActionResult, handleActionError } from "@/utils/action";
 
 type Input = {
   filename: string;
   contentType: string;
 };
 
+type ResponseData = {
+  presignedUrl: string;
+  s3key: string;
+};
 /**
  * アイコンの情報を送信し署名付きアップロード用URLを受け取るサーバーアクション
  *
@@ -22,7 +23,9 @@ type Input = {
  * 成功時：成功フラグ + 署名付きURL + ユーザーアイコンのキー + S3キー
  * 失敗時：失敗フラグ + エラーメッセージ
  */
-export const generatePresignedIconUrlAction = async (input: Input): Promise<ActionResult> => {
+export const generatePresignedIconUrlAction = async (
+  input: Input,
+): Promise<ActionResult<ResponseData>> => {
   try {
     // 認証トークンを含むAPIクライアントの設定を生成し、UserManagementApiのインスタンスを作成
     const configuration = await createAuthorizedConfig();
@@ -38,14 +41,12 @@ export const generatePresignedIconUrlAction = async (input: Input): Promise<Acti
     });
     return {
       success: true,
-      presignedUrl: response.presignedUrl,
-      s3key: response.s3key,
+      data: {
+        presignedUrl: response.presignedUrl,
+        s3key: response.s3key,
+      },
     };
   } catch (error) {
-    console.error("generatePresignedIconUrlAction失敗", error);
-    if (error instanceof Error && error.message === "UNAUTHORIZED") {
-      return { success: false, error: "認証が必要です" };
-    }
-    return { success: false, error: "プロフィール更新に失敗しました" };
+    return handleActionError(error, "プロフィール更新に失敗しました");
   }
 };

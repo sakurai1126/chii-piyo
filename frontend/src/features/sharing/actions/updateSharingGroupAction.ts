@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { SharingGroupManagementApi, SharingGroupResponseDto } from "@/lib/api-client/gen";
 import { createAuthorizedConfig } from "@/lib/api-client/server";
+import { handleActionError, ActionResult } from "@/utils/action";
 
 // クライアントから受け取る入力型
 type Input = {
@@ -12,11 +13,9 @@ type Input = {
   userIds?: number[];
 };
 
-type ActionResult =
-  | { success: true; sharingGroup: SharingGroupResponseDto }
-  | { success: false; error: string };
-
-export const updateSharingGroupAction = async (input: Input): Promise<ActionResult> => {
+export const updateSharingGroupAction = async (
+  input: Input,
+): Promise<ActionResult<SharingGroupResponseDto>> => {
   try {
     // 認証トークンを含むAPIクライアントの設定を生成し、SharingGroupManagementApiのインスタンスを作成
     const configuration = await createAuthorizedConfig();
@@ -34,12 +33,8 @@ export const updateSharingGroupAction = async (input: Input): Promise<ActionResu
     // キャッシュを破棄し、サーバーコンポーネントを再レンダリング
     revalidatePath("/", "layout");
 
-    return { success: true, sharingGroup: response };
+    return { success: true, data: response };
   } catch (error) {
-    console.error("updateSharingGroupAction失敗", error);
-    if (error instanceof Error && error.message === "UNAUTHORIZED") {
-      return { success: false, error: "認証が必要です" };
-    }
-    return { success: false, error: "共有グループ更新に失敗しました" };
+    return handleActionError(error, "アルバム作成に失敗しました");
   }
 };
