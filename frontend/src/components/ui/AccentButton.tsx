@@ -60,4 +60,6 @@ export const AccentButton = ({ styleVariant = "primary", ...props }: Props) => {
       </a>
     );
   }
+
+  throw new Error("未対応のvariantです");
 };
