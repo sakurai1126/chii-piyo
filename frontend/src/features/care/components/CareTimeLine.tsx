@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 
 import Container from "@/components/layout/Container";
+import { AccentButton } from "@/components/ui/AccentButton";
 import { formatJapaneseDateBasic, formatJapaneseDateNonTime } from "@/utils/date";
 
 import { getCareRecords } from "../api/getCareRecords";
@@ -27,7 +28,7 @@ export const CareTimeLine = async ({ date }: Props) => {
 
   // 日付を取得
   const startDate = new Date(date);
-  const endDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + 1);
+  const endDate = new Date(date);
 
   // データを取得
   const careRecords = await getCareRecords({ startDate, endDate });
@@ -51,6 +52,9 @@ export const CareTimeLine = async ({ date }: Props) => {
           return <CareTimeLineItem key={item.id} index={index} careItem={item} />;
         })}
       </div>
+      <AccentButton variant="a" href={"/care"} styleVariant="cancel">
+        一覧に戻る
+      </AccentButton>
     </Container>
   );
 };
