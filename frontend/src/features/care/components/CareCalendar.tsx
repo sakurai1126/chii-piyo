@@ -205,8 +205,8 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
           </div>
         ))}
       </div>
-      {/* 削除確認モーダル */}
 
+      {/* 削除確認モーダル */}
       <ConfirmModal
         isOpen={isDeleteConfirmOpen}
         isPending={isPending}
