@@ -1,6 +1,7 @@
 package link.s_repo.chii_piyo.repository;
 
 import link.s_repo.chii_piyo.model.gen.GrowthRecords;
+import link.s_repo.chii_piyo.repository.gen.CareRecordsDynamicSqlSupport;
 import link.s_repo.chii_piyo.repository.gen.GrowthRecordsDynamicSqlSupport;
 import link.s_repo.chii_piyo.repository.gen.GrowthRecordsMapper;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +44,7 @@ public class GrowthRecordRepository {
                 // 記録日がendDateより前のものを絞り込み
                 GrowthRecordsDynamicSqlSupport.measurementDate,
                 isLessThan(endDate.plusDays(1))
-            )
+            ).orderBy(GrowthRecordsDynamicSqlSupport.createdAt)
         );
     }
 

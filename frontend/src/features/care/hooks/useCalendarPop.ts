@@ -13,6 +13,9 @@ import diaperIcon from "../assets/diaper.svg";
 import healthIcon from "../assets/health.svg";
 import mealIcon from "../assets/meal.svg";
 import milkIcon from "../assets/milk.svg";
+import { UpdateDataParams } from "../types";
+import { generateUpdateCareRecordActionParams } from "../utils/generateParams";
+import { validateCareRecordUpdate, validateGrowthRecordUpdate } from "../utils/validation";
 
 type Props = {
   state: {
@@ -27,26 +30,10 @@ type Props = {
 export const useCalendarPop = ({ state, popCloseAction }: Props) => {
   const uid = useId();
   const dataMap = {
-    MEAL: {
-      icon: mealIcon,
-      label: "食事",
-      color: "text-meal-text",
-    },
-    MILK: {
-      icon: milkIcon,
-      label: "ミルク",
-      color: "text-milk-text",
-    },
-    DIAPER: {
-      icon: diaperIcon,
-      label: "排泄",
-      color: "text-diaper-text",
-    },
-    HEALTH: {
-      icon: healthIcon,
-      label: "体調",
-      color: "text-health-text",
-    },
+    MEAL: { icon: mealIcon, label: "食事", color: "text-meal-text" },
+    MILK: { icon: milkIcon, label: "ミルク", color: "text-milk-text" },
+    DIAPER: { icon: diaperIcon, label: "排泄", color: "text-diaper-text" },
+    HEALTH: { icon: healthIcon, label: "体調", color: "text-health-text" },
   };
 
   // 編集モード管理
@@ -63,16 +50,7 @@ export const useCalendarPop = ({ state, popCloseAction }: Props) => {
     return () => setIsEditMode(false);
   }, [state.isPopOpen]);
 
-  const [updateData, setUpdateData] = useState<{
-    date: string;
-    time: string;
-    note: string;
-    amountMl: number | undefined;
-    diaperType: string | undefined;
-    temperature: number | null | undefined;
-    height: number | undefined;
-    weight: number | undefined;
-  }>({
+  const [updateData, setUpdateData] = useState<UpdateDataParams>({
     date: "",
     time: "",
     note: "",
@@ -146,60 +124,15 @@ export const useCalendarPop = ({ state, popCloseAction }: Props) => {
     const record = state.record;
 
     // 入力値バリデーション
-    if (!validateCareRecordUpdate(record)) {
-      return;
-    }
+    if (!validateCareRecordUpdate(record, updateData)) return;
 
     startTransition(async () => {
-      const result = await updateCareRecordAction({
-        id: record.id,
-        recordType: record.recordType,
-        recordedAt: new Date(`${updateData.date}T${updateData.time}`),
-        // 各種別ごとのデータ
-        mealDetail:
-          record.recordType === "MEAL"
-            ? {
-                // 元データ
-                ...record.mealDetail,
-                // メモ
-                note: updateData.note,
-              }
-            : undefined,
-        milkDetail:
-          record.recordType === "MILK"
-            ? {
-                // 元データ
-                ...record.milkDetail,
-                // ミルク量
-                amountMl: updateData.amountMl!,
-                // メモ
-                note: updateData.note,
-              }
-            : undefined,
-        diaperDetail:
-          record.recordType === "DIAPER"
-            ? {
-                // 元データ
-                ...record.diaperDetail,
-                // 排泄タイプ
-                diaperType: updateData.diaperType as "DIRTY" | "WET",
-                // メモ
-                note: updateData.note,
-              }
-            : undefined,
-        healthDetail:
-          record.recordType === "HEALTH"
-            ? {
-                // 元データ
-                ...record.healthDetail,
-                // 体温
-                temperature: updateData.temperature!,
-                // メモ
-                note: updateData.note,
-              }
-            : undefined,
-      });
+      const result = await updateCareRecordAction(
+        // 種別ごとに合わせたパラメータを作成
+        generateUpdateCareRecordActionParams(record, updateData),
+      );
 
+      // 更新処理
       if (result.success) {
         queryClient.invalidateQueries({ queryKey: ["careRecords"] });
         popCloseAction();
@@ -210,57 +143,6 @@ export const useCalendarPop = ({ state, popCloseAction }: Props) => {
     });
   };
 
-  // バリデーション関数
-  const validateCareRecordUpdate = (record: CareRecordResponseDto): boolean => {
-    if (record.recordType === "MILK") return validateMilkUpdate();
-    if (record.recordType === "DIAPER") return validateDiaperUpdate();
-    if (record.recordType === "HEALTH") return validateHealthUpdate();
-    return true;
-  };
-
-  // ミルク記録バリデーション
-  const validateMilkUpdate = (): boolean => {
-    if (!updateData.amountMl) {
-      toast.error("ミルク量を入力してください。");
-      return false;
-    }
-    if (updateData.amountMl > 400) {
-      toast.error("ミルク量を400ml以内で入力してください。");
-      return false;
-    }
-    if (updateData.amountMl < 10) {
-      toast.error("ミルク量を10ml以上で入力してください。");
-      return false;
-    }
-    return true;
-  };
-
-  // 排泄記録バリデーション
-  const validateDiaperUpdate = (): boolean => {
-    if (!updateData.diaperType) {
-      toast.error("排泄タイプを入力してください。");
-      return false;
-    }
-    if (updateData.diaperType !== "DIRTY" && updateData.diaperType !== "WET") {
-      toast.error("排泄タイプが不正です。");
-      return false;
-    }
-    return true;
-  };
-
-  // 体調記録バリデーション
-  const validateHealthUpdate = (): boolean => {
-    if (!updateData.temperature) {
-      toast.error("体温を入力してください。");
-      return false;
-    }
-    if (updateData.temperature < 34 || updateData.temperature > 42) {
-      toast.error("体温を正しく入力してください");
-      return false;
-    }
-    return true;
-  };
-
   const saveGrowthRecordAction = () => {
     if (!state.growthRecord) {
       toast.error("エラーが発生しました");
@@ -268,20 +150,7 @@ export const useCalendarPop = ({ state, popCloseAction }: Props) => {
     }
     const growthRecord = state.growthRecord;
 
-    if (!updateData.height && !updateData.weight) {
-      toast.error("身長または体重を入力してください");
-      return;
-    }
-
-    if (updateData.height && (updateData.height <= 0 || updateData.height > 200)) {
-      toast.error("身長を正しく入力してください");
-      return;
-    }
-
-    if (updateData.weight && (updateData.weight <= 0 || updateData.weight > 200)) {
-      toast.error("体重を正しく入力してください");
-      return;
-    }
+    if (!validateGrowthRecordUpdate(updateData)) return;
 
     startTransition(async () => {
       const result = await updateGrowthRecordAction({

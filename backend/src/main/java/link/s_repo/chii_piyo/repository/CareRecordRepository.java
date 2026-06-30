@@ -97,7 +97,7 @@ public class CareRecordRepository {
                 CareRecordsDynamicSqlSupport.recordedAt,
                 isLessThan(endDate.plusDays(1).atStartOfDay(
                     ZoneId.of("Asia/Tokyo")).toOffsetDateTime())
-            )
+            ).orderBy(CareRecordsDynamicSqlSupport.recordedAt)
         );
     }
 
