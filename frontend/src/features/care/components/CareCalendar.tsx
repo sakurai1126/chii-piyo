@@ -1,9 +1,11 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { CareRecordListResponseDto, GrowthRecordResponseDto } from "@/lib/api-client/gen";
+import { formatJapaneseDateBasic } from "@/utils/date";
 
 import diaperIcon from "../assets/diaper.svg";
 import growthIcon from "../assets/growth.svg";
@@ -14,7 +16,7 @@ import piyoIcon from "../assets/piyo.svg";
 import plusIcon from "../assets/plus.svg";
 import { useCalendar } from "../hooks/useCalendar";
 
-import { CalenderPop } from "./ui/CalenderPop";
+import { CalendarPop } from "./ui/CalendarPop";
 
 type Props = {
   initialCareRecords: CareRecordListResponseDto;
@@ -77,7 +79,7 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
       {/* カレンダー表示 */}
       <div className="border-brown-dark relative mt-4 w-full rounded-xl border-2 bg-white/50 backdrop-blur-[7.5px] max-md:h-auto">
         {pop.isPopOpen && (
-          <CalenderPop
+          <CalendarPop
             state={pop}
             popCloseAction={popCloseAction}
             setIsDeleteConfirmOpen={setIsDeleteConfirmOpen}
@@ -107,9 +109,13 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
                     {weeklyText[index]})
                   </p>
                   {/* タイムライン表示アイコン */}
-                  <button className="cursor-pointer transition-all hover:opacity-70">
+                  <Link
+                    href={`/care/${formatJapaneseDateBasic(weeklyDates[index])}`}
+                    scroll={false}
+                    className="cursor-pointer transition-all hover:opacity-70"
+                  >
                     <Image src={plusIcon} alt="" width={12} height={12} />
-                  </button>
+                  </Link>
                 </div>
                 {/* 翌日へ移動(モバイルのみ) */}
                 <button

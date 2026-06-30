@@ -1,7 +1,7 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 
 import { toast } from "@/components/ui/Toast";
 import {
@@ -32,8 +32,8 @@ export const useCalendar = ({ initialCareRecords, initialGrowthRecords }: Params
   // 非同期処理中のボタン状態管理
   const [isPending, startTransition] = useTransition();
 
-  // 今日の日付を取得
-  const today = new Date();
+  // 今日の日付を取得（レンダリングをまたいで同じ日付を返すようにメモ化）
+  const today = useMemo(() => new Date(), []);
 
   // 起点日を取得
   const [startDay, setStartDay] = useState<Date>(setStartDayFunc(today));

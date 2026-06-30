@@ -22,7 +22,7 @@ type Props = {
   popCloseAction: () => void;
   setIsDeleteConfirmOpen: Dispatch<SetStateAction<boolean>>;
 };
-export const CalenderPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: Props) => {
+export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: Props) => {
   const {
     uid,
     dataMap,
