@@ -39,12 +39,8 @@ put:
           $ref: "../../components/schemas/first-records.yml#/FirstRecordRequestDto"
     required: true
   responses:
-    "200":
-      description: 更新されたはじめて記録
-      content:
-        application/json;charset=UTF-8:
-          schema:
-            $ref: "../../components/schemas/first-records.yml#/FirstRecordResponseDto"
+    "204":
+      description: はじめて記録の更新に成功
     "400":
       $ref: "../../components/responses.yml#/BadRequest"
     "401":

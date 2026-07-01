@@ -114,13 +114,11 @@ export class FirstRecordManagementApi extends runtime.BaseAPI {
   async createFirstRecordRaw(
     requestParameters: CreateFirstRecordRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<FirstRecordResponseDto>> {
+  ): Promise<runtime.ApiResponse<void>> {
     const requestOptions = await this.createFirstRecordRequestOpts(requestParameters);
     const response = await this.request(requestOptions, initOverrides);
 
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      FirstRecordResponseDtoFromJSON(jsonValue),
-    );
+    return new runtime.VoidApiResponse(response);
   }
 
   /**
@@ -129,9 +127,8 @@ export class FirstRecordManagementApi extends runtime.BaseAPI {
   async createFirstRecord(
     requestParameters: CreateFirstRecordRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<FirstRecordResponseDto> {
-    const response = await this.createFirstRecordRaw(requestParameters, initOverrides);
-    return await response.value();
+  ): Promise<void> {
+    await this.createFirstRecordRaw(requestParameters, initOverrides);
   }
 
   /**
@@ -409,13 +406,11 @@ export class FirstRecordManagementApi extends runtime.BaseAPI {
   async updateFirstRecordRaw(
     requestParameters: UpdateFirstRecordRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<FirstRecordResponseDto>> {
+  ): Promise<runtime.ApiResponse<void>> {
     const requestOptions = await this.updateFirstRecordRequestOpts(requestParameters);
     const response = await this.request(requestOptions, initOverrides);
 
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      FirstRecordResponseDtoFromJSON(jsonValue),
-    );
+    return new runtime.VoidApiResponse(response);
   }
 
   /**
@@ -424,8 +419,7 @@ export class FirstRecordManagementApi extends runtime.BaseAPI {
   async updateFirstRecord(
     requestParameters: UpdateFirstRecordRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<FirstRecordResponseDto> {
-    const response = await this.updateFirstRecordRaw(requestParameters, initOverrides);
-    return await response.value();
+  ): Promise<void> {
+    await this.updateFirstRecordRaw(requestParameters, initOverrides);
   }
 }

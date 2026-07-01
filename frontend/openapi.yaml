@@ -1242,11 +1242,7 @@ paths:
         required: true
       responses:
         '201':
-          description: 作成されたはじめて記録
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/FirstRecordResponseDto'
+          description: はじめて記録の作成に成功
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -1298,12 +1294,8 @@ paths:
               $ref: '#/components/schemas/FirstRecordRequestDto'
         required: true
       responses:
-        '200':
-          description: 更新されたはじめて記録
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/FirstRecordResponseDto'
+        '204':
+          description: はじめて記録の更新に成功
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -2801,9 +2793,7 @@ components:
           description: 達成日
           example: '2026-03-15'
         comment:
-          type:
-            - string
-            - 'null'
+          type: string
           description: コメント
           example: 6ヶ月で初めてできた
         media:
@@ -2842,9 +2832,7 @@ components:
           description: 達成日
           example: '2026-03-15'
         comment:
-          type:
-            - string
-            - 'null'
+          type: string
           description: コメント
         mediaIds:
           type: array

@@ -23,6 +23,7 @@ export const AddMediaAlbum = ({ tags, sharingGroups, albumId }: Props) => {
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         albumId={albumId}
+        variant="album"
       />
 
       {/* 遷移ボタン */}

@@ -1,2 +1,2 @@
 export { FirstRecordItem } from "./components/FirstRecordItem";
-export { NewFirstRecords } from "./components/NewFirstRecords";
+export { NewRecords } from "./components/NewRecords";
