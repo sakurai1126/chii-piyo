@@ -125,6 +125,33 @@ public class FirstRecordService {
     }
 
     /**
+     * はじめて記録を削除する
+     *
+     * @param id はじめて記録ID
+     */
+    @Transactional
+    public void deleteFirstRecord(Long id) {
+        // 削除前に存在チェック(存在しない場合例外)
+        getFirstRecord(id);
+
+        // 対象データに紐づくメディアのデータを削除
+        firstRecordRepository.deleteMediaByRecordId(id);
+
+        // 対象データを削除
+        firstRecordRepository.deleteById(id);
+    }
+
+
+    /**
+     * はじめて記録をID指定で1件取得する
+     */
+    private FirstRecords getFirstRecord(Long id) {
+        return firstRecordRepository.findById(id).orElseThrow(() ->
+            new ResourceNotFoundException("はじめて記録が見つかりません " + "id=" + id));
+    }
+
+
+    /**
      * はじめて記録を返却する際の記録とメディアをまとめたレコード
      */
     public record FirstRecordWithMedia(

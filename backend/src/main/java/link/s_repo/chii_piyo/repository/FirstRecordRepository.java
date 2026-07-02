@@ -9,9 +9,11 @@ import link.s_repo.chii_piyo.repository.gen.FirstRecordsMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -55,5 +57,34 @@ public class FirstRecordRepository {
     public List<FirstRecordMedia> findMediaByRecordIds(List<Long> recordIds) {
         return firstRecordMediaMapper.select(
             c -> c.where(FirstRecordMediaDynamicSqlSupport.firstRecordId, isIn(recordIds)));
+    }
+
+    /**
+     * はじめて記録を取得する
+     *
+     * @param id 対象はじめて記録のID
+     * @return 記録情報
+     */
+    public Optional<FirstRecords> findById(Long id) {
+        return firstRecordsMapper.selectByPrimaryKey(id);
+    }
+
+    /**
+     * はじめて記録を削除する
+     *
+     * @param id 対象はじめて記録のID
+     */
+    public void deleteById(Long id) {
+        firstRecordsMapper.deleteByPrimaryKey(id);
+    }
+
+    /**
+     * はじめて記録のメディア情報を削除する
+     *
+     * @param recordId 対象はじめて記録のID
+     */
+    public void deleteMediaByRecordId(Long recordId) {
+        firstRecordMediaMapper.delete(
+            c -> c.where(FirstRecordMediaDynamicSqlSupport.firstRecordId, isEqualTo(recordId)));
     }
 }

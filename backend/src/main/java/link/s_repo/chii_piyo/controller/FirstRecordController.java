@@ -98,7 +98,11 @@ public class FirstRecordController implements FirstRecordManagementApi {
      */
     @Override
     public ResponseEntity<Void> deleteFirstRecord(String xRequestedWith, Long id) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        // サービス層で削除する
+        firstRecordService.deleteFirstRecord(id);
+
+        // 204ステータスを返却
+        return ResponseEntity.noContent().build();
     }
 
     /**

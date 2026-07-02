@@ -1,15 +1,43 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
+import { useState, useTransition } from "react";
 
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
+import { toast } from "@/components/ui/Toast";
 import { FirstRecordResponseDto } from "@/lib/api-client/gen";
 import { calculateDaysSinceBirth, formatJapaneseDateNonTime } from "@/utils/date";
+
+import { deleteFirstRecordAction } from "../actions/deleteFirstRecordAction";
 
 type Props = {
   item: FirstRecordResponseDto;
   index: number;
 };
 export const FirstRecordItem = ({ item, index }: Props) => {
+  // 誕生日指定
   const birthday = new Date("2025-08-06");
+
+  // 非同期処理中のボタン状態管理
+  const [isPending, startTransition] = useTransition();
+
+  // 削除確認モーダルの状態
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState<boolean>(false);
+
+  const deleteAction = () => {
+    startTransition(async () => {
+      const result = await deleteFirstRecordAction({
+        id: item.id,
+      });
+
+      if (result.success) {
+        setIsDeleteConfirmOpen(false);
+        toast.success("はじめて記録の削除に成功しました");
+      } else {
+        toast.error(result.error);
+      }
+    });
+  };
 
   return (
     <div className="relative flex items-center gap-10 py-2.5 max-md:gap-6 max-md:py-2">
@@ -49,11 +77,24 @@ export const FirstRecordItem = ({ item, index }: Props) => {
           <button className="cursor-pointer underline transition-all hover:opacity-70 max-md:text-xs">
             編集
           </button>
-          <button className="text-warning cursor-pointer underline transition-all hover:opacity-70 max-md:text-xs">
+          <button
+            className="text-warning cursor-pointer underline transition-all hover:opacity-70 max-md:text-xs"
+            onClick={() => setIsDeleteConfirmOpen(true)}
+          >
             削除
           </button>
         </div>
       </div>
+      {/* 削除確認モーダル */}
+      <ConfirmModal
+        isOpen={isDeleteConfirmOpen}
+        isPending={isPending}
+        action={deleteAction}
+        closeAction={() => setIsDeleteConfirmOpen(false)}
+        message="選択した記録を削除します。"
+        buttonType="remove"
+        buttonMessage="削除する"
+      />
     </div>
   );
 };
