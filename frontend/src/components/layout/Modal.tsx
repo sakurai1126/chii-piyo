@@ -1,12 +1,11 @@
 "use client";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
 import { RemoveScroll } from "react-remove-scroll";
 
 // 子コンポーネントから「閉じる」を呼ぶためのContext
 const ModalCloseContext = createContext<() => void>(() => {});
-export const useModalClose = () => useContext(ModalCloseContext);
 
 type Props = {
   children: React.ReactNode;

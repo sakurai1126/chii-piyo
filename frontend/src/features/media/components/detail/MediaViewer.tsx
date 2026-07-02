@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
-import { useModalClose } from "@/components/layout/Modal";
 import { FavoriteMediaDetail } from "@/features/favorite";
 import {
   MediaNavigationResponseDto,
@@ -25,7 +24,6 @@ type Props = {
 };
 
 export const MediaViewer = ({ media, isModal, users }: Props) => {
-  const handleClose = useModalClose();
   const [modeExpansion, setModeExpansion] = useState(false);
   return (
     <div className="w-125 shrink-0 max-xl:w-110 max-md:w-full">
@@ -184,18 +182,18 @@ export const MediaViewer = ({ media, isModal, users }: Props) => {
       </div>
       <div className="max-md:mt-5 max-md:flex max-md:items-center max-md:justify-between max-md:px-5">
         {isModal ? (
-          <button
-            onClick={handleClose}
-            className="border-line-gray mx-auto mt-10 grid h-10 w-35 place-content-center rounded-lg border bg-white max-md:m-0 max-md:h-9 max-md:w-30 max-md:text-xs"
+          <a
+            href={"/media"}
+            className="border-line-gray mx-auto mt-10 grid h-10 w-35 place-content-center rounded-lg border bg-white transition-all hover:bg-gray-100 max-md:m-0 max-md:h-9 max-md:w-30 max-md:text-xs"
           >
-            一覧に戻る
-          </button>
+            メディア一覧
+          </a>
         ) : (
           <Link
             href="/media"
-            className="border-line-gray mx-auto mt-10 grid h-10 w-35 place-content-center rounded-lg border bg-white max-md:m-0 max-md:h-9 max-md:w-30 max-md:text-xs"
+            className="border-line-gray mx-auto mt-10 grid h-10 w-35 place-content-center rounded-lg border bg-white transition-all hover:bg-gray-100 max-md:m-0 max-md:h-9 max-md:w-30 max-md:text-xs"
           >
-            一覧に戻る
+            メディア一覧
           </Link>
         )}
         <div className="md:hidden">

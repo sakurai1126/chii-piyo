@@ -1,15 +1,20 @@
 package link.s_repo.chii_piyo.controller;
 
+import link.s_repo.chii_piyo.component.S3StorageManager;
 import link.s_repo.chii_piyo.controller.converter.FirstRecordConverter;
+import link.s_repo.chii_piyo.controller.converter.MediaConverter;
 import link.s_repo.chii_piyo.controller.gen.FirstRecordManagementApi;
 import link.s_repo.chii_piyo.model.gen.FirstRecordRequestDto;
 import link.s_repo.chii_piyo.model.gen.FirstRecordResponseDto;
+import link.s_repo.chii_piyo.model.gen.MediaResponseDto;
 import link.s_repo.chii_piyo.service.FirstRecordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -22,9 +27,12 @@ import java.util.List;
 public class FirstRecordController implements FirstRecordManagementApi {
     private final FirstRecordService firstRecordService;
     private final FirstRecordConverter firstRecordConverter;
+    private final S3StorageManager s3StorageManager;
+    private final MediaConverter mediaConverter;
 
     /**
-     * POST /first-records : はじめて記録を登録
+     * POST /first-records<br>
+     * はじめて記録を登録
      *
      * @param xRequestedWith  X-Requested-With ヘッダ (CSRF防御用)
      * @param firstRecordData 登録するはじめて記録情報
@@ -41,7 +49,48 @@ public class FirstRecordController implements FirstRecordManagementApi {
     }
 
     /**
-     * DELETE /first-records/{id} : はじめて記録を削除
+     * GET /first-records<br>
+     * はじめて記録一覧を取得
+     *
+     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @return はじめて記録一覧
+     */
+    @Override
+    public ResponseEntity<List<FirstRecordResponseDto>> getFirstRecords(String xRequestedWith) {
+        // サービス層で記録一覧を全取得(記録一覧と関連メディアをまとめたレコードで取得)
+        List<FirstRecordService.FirstRecordWithMedia> recordsWithMedia = firstRecordService.getFirstRecords();
+
+        // FirstRecordResponseDtoを生成してリスト化
+        List<FirstRecordResponseDto> response = recordsWithMedia.stream()
+            .map(recordWithMedia -> {
+                // 記録毎のMediaResponseDtoのリストを作成
+                List<MediaResponseDto> mediaResponseList = recordWithMedia.mediaList().stream()
+                    .map(media -> {
+                        // URLを生成
+                        URI thumbnailPresignedUrl = media.getThumbnailS3Key() != null
+                            ? s3StorageManager.generateDownloadPresignedUrl(media.getThumbnailS3Key(), media.getOriginalFilename())
+                            : null;
+                        return mediaConverter.toMediaResponseDto(
+                            media, List.of(), null, thumbnailPresignedUrl,
+                            false, 0L, null, null, null, null, List.of()
+                        );
+                    })
+                    .toList();
+                // はじめて記録とメディアのレスポンスDTOリストを渡しコンバータで変換
+                return firstRecordConverter.toFirstRecordResponseDto(
+                    recordWithMedia.record(),
+                    mediaResponseList
+                );
+            })
+            .toList();
+
+        // レスポンスを返す
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * DELETE /first-records/{id}<br>
+     * はじめて記録を削除
      *
      * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
      * @param id             記録ID
@@ -53,30 +102,8 @@ public class FirstRecordController implements FirstRecordManagementApi {
     }
 
     /**
-     * GET /first-records/{id} : はじめて記録をID指定で1件取得
-     *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
-     * @param id             記録ID
-     * @return はじめて記録情報
-     */
-    @Override
-    public ResponseEntity<FirstRecordResponseDto> getFirstRecord(String xRequestedWith, Long id) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-    }
-
-    /**
-     * GET /first-records : はじめて記録一覧を取得
-     *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
-     * @return はじめて記録一覧
-     */
-    @Override
-    public ResponseEntity<List<FirstRecordResponseDto>> getFirstRecords(String xRequestedWith) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-    }
-
-    /**
-     * PUT /first-records/{id} : はじめて記録を更新
+     * PUT /first-records/{id}<br>
+     * はじめて記録を更新
      *
      * @param xRequestedWith  X-Requested-With ヘッダ (CSRF防御用)
      * @param id              記録ID

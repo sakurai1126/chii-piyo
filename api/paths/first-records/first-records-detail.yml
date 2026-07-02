@@ -1,27 +1,3 @@
-get:
-  tags:
-    - firstRecordManagement
-  summary: はじめて記録をID指定で1件取得
-  operationId: getFirstRecord
-  parameters:
-    - $ref: "../../components/parameters.yml#/XRequestedWith"
-    - $ref: "../../components/parameters.yml#/ResourceId"
-  responses:
-    "200":
-      description: はじめて記録情報
-      content:
-        application/json;charset=UTF-8:
-          schema:
-            $ref: "../../components/schemas/first-records.yml#/FirstRecordResponseDto"
-    "401":
-      $ref: "../../components/responses.yml#/Unauthorized"
-    "404":
-      $ref: "../../components/responses.yml#/NotFound"
-    "500":
-      $ref: "../../components/responses.yml#/InternalServerError"
-    default:
-      $ref: "../../components/responses.yml#/DefaultErrors"
-
 put:
   tags:
     - firstRecordManagement

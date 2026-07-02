@@ -1254,29 +1254,6 @@ paths:
         default:
           $ref: '#/components/responses/DefaultErrors'
   /first-records/{id}:
-    get:
-      tags:
-        - firstRecordManagement
-      summary: はじめて記録をID指定で1件取得
-      operationId: getFirstRecord
-      parameters:
-        - $ref: '#/components/parameters/XRequestedWith'
-        - $ref: '#/components/parameters/ResourceId'
-      responses:
-        '200':
-          description: はじめて記録情報
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/FirstRecordResponseDto'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-        default:
-          $ref: '#/components/responses/DefaultErrors'
     put:
       tags:
         - firstRecordManagement

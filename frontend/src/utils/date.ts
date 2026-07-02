@@ -4,7 +4,9 @@
  * @param date Date型の日付情報
  * @returns "YYYY年MM月DD日 HH:MM"形式の文字列
  */
-export const formatJapaneseDate = (date: Date): string => {
+export const formatJapaneseDate = (dateParam: string | Date): string => {
+  const date = typeof dateParam === "string" ? new Date(dateParam) : dateParam;
+
   // 不正な日付文字列の対策
   if (Number.isNaN(date.getTime())) return "";
 
@@ -22,7 +24,9 @@ export const formatJapaneseDate = (date: Date): string => {
  * @param date Date型の日付情報
  * @returns "YYYY年MM月DD日"形式の文字列
  */
-export const formatJapaneseDateNonTime = (date: Date): string => {
+export const formatJapaneseDateNonTime = (dateParam: string | Date): string => {
+  const date = typeof dateParam === "string" ? new Date(dateParam) : dateParam;
+
   if (Number.isNaN(date.getTime())) return "";
 
   return new Intl.DateTimeFormat("ja-JP", {
@@ -36,7 +40,9 @@ export const formatJapaneseDateNonTime = (date: Date): string => {
  * @param date Date型の日付情報
  * @returns "YYYY-MM-DD"形式の文字列
  */
-export const formatJapaneseDateBasic = (date: Date): string => {
+export const formatJapaneseDateBasic = (dateParam: string | Date): string => {
+  const date = typeof dateParam === "string" ? new Date(dateParam) : dateParam;
+
   if (Number.isNaN(date.getTime())) return "";
 
   // inputに渡すことも想定し0埋めの2桁形式で返却
@@ -52,7 +58,9 @@ export const formatJapaneseDateBasic = (date: Date): string => {
  * @param date Date型の日付情報
  * @returns "HH:MM"形式の文字列
  */
-export const formatJapaneseDateTimeOnly = (date: Date): string => {
+export const formatJapaneseDateTimeOnly = (dateParam: string | Date): string => {
+  const date = typeof dateParam === "string" ? new Date(dateParam) : dateParam;
+
   if (Number.isNaN(date.getTime())) return "";
 
   // inputに渡すことも想定し0埋めの2桁形式で返却
@@ -99,4 +107,64 @@ export const getCurrentDateTime = () => {
   const currentTime = `${hours}:${minutes}`;
 
   return { currentDate, currentTime };
+};
+
+/**
+ * 誕生日から指定した日付までの経過日数を計算する
+ * @param birthday 誕生日
+ * @param targetDate 対象となる日付
+ * @returns 経過日数
+ */
+export const calculateDaysSinceBirth = (
+  birthday: Date | string,
+  targetDate: Date | string,
+): string => {
+  // 誕生日をセット、時刻は不要なので0にリセット
+  const birth = new Date(birthday);
+  birth.setHours(0, 0, 0, 0);
+
+  // 指定日付をセット
+  const target = new Date(targetDate);
+  target.setHours(0, 0, 0, 0);
+
+  // 記録日が誕生日より前の場合は0日で返却
+  if (target.getTime() < birth.getTime()) {
+    return "0日";
+  }
+
+  // 年月日それぞれの差分を計算
+  let years = target.getFullYear() - birth.getFullYear();
+  let months = target.getMonth() - birth.getMonth();
+  let days = target.getDate() - birth.getDate();
+
+  // 日が0以下の場合日数の繰り下げ処理
+  if (days < 0) {
+    months--;
+    // 第3引数に0を指定し、前月の末日を取得して加算
+    const prevMonthLastDay = new Date(target.getFullYear(), target.getMonth(), 0).getDate();
+    days += prevMonthLastDay;
+  }
+
+  // 月が0以下の場合月数の繰り下げ処理
+  if (months < 0) {
+    years--;
+    months += 12;
+  }
+
+  // 文字列の組み立て
+  let result = "";
+
+  // 年がある場合年表示追加
+  if (years > 0) {
+    result += `${years}年`;
+  }
+
+  // 年または月がある場合月表示追加
+  if (years > 0 || months > 0) {
+    result += `${months}ヶ月`;
+  }
+
+  // 日表示を追加
+  result += `${days}日`;
+  return result;
 };
