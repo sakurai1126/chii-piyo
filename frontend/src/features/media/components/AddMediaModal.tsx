@@ -3,7 +3,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { AnimatePresence } from "motion/react";
 import Image from "next/image";
-import React, { useId, useState, useTransition } from "react";
+import React, { Dispatch, SetStateAction, useId, useState, useTransition } from "react";
 
 import { Modal } from "@/components/layout/Modal";
 import { Button } from "@/components/ui/Button";
@@ -13,6 +13,7 @@ import { addAlbumMediaAction } from "@/features/album/";
 import { DateRangeFilter } from "@/features/media/components/list/DateRangeFilter";
 import { MediaKindFilter } from "@/features/media/components/list/MediaKindFilter";
 import { useInfiniteMediaList } from "@/features/media/hooks/useInfiniteMediaList";
+import { SelectedMediaData } from "@/features/record/types";
 import { SharingGroupFilter } from "@/features/sharing";
 import { TagFilter } from "@/features/tag";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
@@ -24,18 +25,55 @@ import {
 
 import videoIcon from "../assets/video-icon.svg";
 
-type Props = {
+// 共通のProps
+type CommonProps = {
   tags: TagResponseDto[];
   sharingGroups: SharingGroupResponseDto[];
   isOpen: boolean;
   setIsOpen: (value: boolean) => void;
-  albumId?: number;
 };
 
-export const AddMediaModal = ({ tags, sharingGroups, isOpen, setIsOpen, albumId }: Props) => {
+// アルバム追加の時のパラメータ
+type AlbumProps = {
+  variant: "album";
+  albumId: number;
+  selectedMediaData?: never;
+  setSelectedMediaData?: never;
+};
+
+// はじめて/ことば記録の時のパラメータ
+type RecordProps = {
+  variant: "record";
+  albumId?: never;
+  selectedMediaData: SelectedMediaData[];
+  setSelectedMediaData: Dispatch<SetStateAction<SelectedMediaData[]>>;
+};
+
+// Propsとして結合しユニオン型として受けとる
+type Props = CommonProps & (AlbumProps | RecordProps);
+
+export const AddMediaModal = ({
+  tags,
+  sharingGroups,
+  isOpen,
+  setIsOpen,
+  albumId,
+  selectedMediaData: propSelectedMediaData,
+  setSelectedMediaData: propSetSelectedMediaData,
+  variant,
+}: Props) => {
   const uid = useId();
-  // 状態の定義
-  const [selectedMediaIds, setSelectedMediaIds] = useState<number[]>([]);
+  // アルバム用の状態管理
+  const [internalSelectedMediaData, setInternalSelectedMediaData] = useState<SelectedMediaData[]>(
+    [],
+  );
+
+  // アルバムかレコード化で状態管理を分岐
+  const selectedMediaData =
+    variant === "record" ? propSelectedMediaData : internalSelectedMediaData;
+  const setSelectedMediaData =
+    variant === "record" ? propSetSelectedMediaData : setInternalSelectedMediaData;
+
   const [isConfirmOpen, setIsConfirmOpen] = useState<boolean>(false);
   // 非同期処理中のボタン状態管理
   const [isPending, startTransition] = useTransition();
@@ -112,17 +150,19 @@ export const AddMediaModal = ({ tags, sharingGroups, isOpen, setIsOpen, albumId 
   };
 
   // メディアを選択する処理
-  const addSelectedMedia = (id: number) => {
-    setSelectedMediaIds((prev) => [...prev, id]);
+  const addSelectedMedia = (id: number, url: string) => {
+    // IDとURLをセットで保存
+    setSelectedMediaData((prev) => [...prev, { id, url }]);
   };
 
   // メディアの選択を解除する処理
   const removeSelectedMedia = (id: number) => {
-    setSelectedMediaIds((prev) => prev.filter((prevId) => prevId !== id));
+    setSelectedMediaData((prev) => prev.filter((prevItem) => prevItem.id !== id));
   };
 
+  // 確認モーダルの表示処理
   const confirmOpen = () => {
-    if (selectedMediaIds.length === 0) {
+    if (selectedMediaData.length === 0) {
       toast.error("メディアを選択してください");
       return;
     }
@@ -136,12 +176,12 @@ export const AddMediaModal = ({ tags, sharingGroups, isOpen, setIsOpen, albumId 
       startTransition(async () => {
         const result = await addAlbumMediaAction({
           albumId: albumId,
-          mediaIds: selectedMediaIds,
+          mediaIds: selectedMediaData.map((media) => media.id),
         });
 
         if (result.success) {
           queryClient.invalidateQueries({ queryKey: ["media"] });
-          setSelectedMediaIds([]);
+          setSelectedMediaData([]);
           setFilters(initialFilters);
           setIsConfirmOpen(false);
           setIsOpen(false);
@@ -156,7 +196,11 @@ export const AddMediaModal = ({ tags, sharingGroups, isOpen, setIsOpen, albumId 
 
   // モーダル閉じる際のリセット処理
   const modalClose = () => {
-    setSelectedMediaIds([]);
+    // はじめて/ことば記録の場合URL管理のステートをリセットしない
+    if (variant === "album") {
+      setSelectedMediaData([]);
+    }
+
     setIsOpen(false);
   };
 
@@ -169,7 +213,7 @@ export const AddMediaModal = ({ tags, sharingGroups, isOpen, setIsOpen, albumId 
               <div className="bg-white-back border-brown-dark relative mx-auto h-[85vh] w-[calc(100vw-40px)] max-w-250 overflow-y-scroll rounded-lg border p-10 max-md:min-h-0 max-md:p-5 max-md:pb-9">
                 <div className="flex items-center justify-between">
                   <p className="text-xl font-medium max-md:text-[16px]">
-                    アルバムにメディアを追加する
+                    {variant === "album" ? "アルバム" : "記録"}にメディアを追加する
                   </p>
                   <button
                     className="block w-fit cursor-pointer transition-all hover:opacity-70"
@@ -269,12 +313,18 @@ export const AddMediaModal = ({ tags, sharingGroups, isOpen, setIsOpen, albumId 
                   )}
 
                   <div className="ml-auto flex gap-4 max-md:mr-auto">
-                    <Button variant="cancel" onClick={modalClose} disabled={isPending}>
-                      閉じる
+                    <Button
+                      variant={variant === "album" ? "cancel" : "primary"}
+                      onClick={modalClose}
+                      disabled={isPending}
+                    >
+                      {variant === "album" ? "閉じる" : "完了"}
                     </Button>
-                    <Button onClick={confirmOpen} disabled={isPending}>
-                      追加する
-                    </Button>
+                    {variant === "album" && (
+                      <Button onClick={confirmOpen} disabled={isPending}>
+                        追加する
+                      </Button>
+                    )}
                   </div>
                 </div>
 
@@ -290,10 +340,13 @@ export const AddMediaModal = ({ tags, sharingGroups, isOpen, setIsOpen, albumId 
                           type="checkbox"
                           name={`${uid}-check`}
                           id={`${uid}-${item.id}`}
-                          checked={selectedMediaIds.includes(item.id)}
+                          checked={selectedMediaData.some((media) => media.id === item.id)}
                           onChange={(e) =>
                             e.target.checked
-                              ? addSelectedMedia(item.id)
+                              ? addSelectedMedia(
+                                  item.id,
+                                  item.thumbnailPresignedUrl ?? "/images/no-thumbnail.png",
+                                )
                               : removeSelectedMedia(item.id)
                           }
                           value={item.id}

@@ -36,7 +36,7 @@ export interface FirstRecordRequestDto {
    * @type {string}
    * @memberof FirstRecordRequestDto
    */
-  comment: string | null;
+  comment: string;
   /**
    * 紐付けるメディアIDの配列
    * @type {Array<number>}

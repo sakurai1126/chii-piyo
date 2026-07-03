@@ -38,11 +38,7 @@ post:
     required: true
   responses:
     "201":
-      description: 作成されたはじめて記録
-      content:
-        application/json;charset=UTF-8:
-          schema:
-            $ref: "../../components/schemas/first-records.yml#/FirstRecordResponseDto"
+      description: はじめて記録の作成に成功
     "400":
       $ref: "../../components/responses.yml#/BadRequest"
     "401":

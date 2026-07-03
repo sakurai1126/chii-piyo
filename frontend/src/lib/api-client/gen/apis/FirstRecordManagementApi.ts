@@ -39,11 +39,6 @@ export interface DeleteFirstRecordRequest {
   id: number;
 }
 
-export interface GetFirstRecordRequest {
-  xRequestedWith: string;
-  id: number;
-}
-
 export interface GetFirstRecordsRequest {
   xRequestedWith: string;
 }
@@ -114,13 +109,11 @@ export class FirstRecordManagementApi extends runtime.BaseAPI {
   async createFirstRecordRaw(
     requestParameters: CreateFirstRecordRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<FirstRecordResponseDto>> {
+  ): Promise<runtime.ApiResponse<void>> {
     const requestOptions = await this.createFirstRecordRequestOpts(requestParameters);
     const response = await this.request(requestOptions, initOverrides);
 
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      FirstRecordResponseDtoFromJSON(jsonValue),
-    );
+    return new runtime.VoidApiResponse(response);
   }
 
   /**
@@ -129,9 +122,8 @@ export class FirstRecordManagementApi extends runtime.BaseAPI {
   async createFirstRecord(
     requestParameters: CreateFirstRecordRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<FirstRecordResponseDto> {
-    const response = await this.createFirstRecordRaw(requestParameters, initOverrides);
-    return await response.value();
+  ): Promise<void> {
+    await this.createFirstRecordRaw(requestParameters, initOverrides);
   }
 
   /**
@@ -203,80 +195,6 @@ export class FirstRecordManagementApi extends runtime.BaseAPI {
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<void> {
     await this.deleteFirstRecordRaw(requestParameters, initOverrides);
-  }
-
-  /**
-   * Creates request options for getFirstRecord without sending the request
-   */
-  async getFirstRecordRequestOpts(
-    requestParameters: GetFirstRecordRequest,
-  ): Promise<runtime.RequestOpts> {
-    if (requestParameters["xRequestedWith"] == null) {
-      throw new runtime.RequiredError(
-        "xRequestedWith",
-        'Required parameter "xRequestedWith" was null or undefined when calling getFirstRecord().',
-      );
-    }
-
-    if (requestParameters["id"] == null) {
-      throw new runtime.RequiredError(
-        "id",
-        'Required parameter "id" was null or undefined when calling getFirstRecord().',
-      );
-    }
-
-    const queryParameters: any = {};
-
-    const headerParameters: runtime.HTTPHeaders = {};
-
-    if (requestParameters["xRequestedWith"] != null) {
-      headerParameters["X-Requested-With"] = String(requestParameters["xRequestedWith"]);
-    }
-
-    if (this.configuration && this.configuration.accessToken) {
-      const token = this.configuration.accessToken;
-      const tokenString = await token("BearerAuth", []);
-
-      if (tokenString) {
-        headerParameters["Authorization"] = `Bearer ${tokenString}`;
-      }
-    }
-
-    let urlPath = `/first-records/{id}`;
-    urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-    return {
-      path: urlPath,
-      method: "GET",
-      headers: headerParameters,
-      query: queryParameters,
-    };
-  }
-
-  /**
-   * はじめて記録をID指定で1件取得
-   */
-  async getFirstRecordRaw(
-    requestParameters: GetFirstRecordRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<FirstRecordResponseDto>> {
-    const requestOptions = await this.getFirstRecordRequestOpts(requestParameters);
-    const response = await this.request(requestOptions, initOverrides);
-
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      FirstRecordResponseDtoFromJSON(jsonValue),
-    );
-  }
-
-  /**
-   * はじめて記録をID指定で1件取得
-   */
-  async getFirstRecord(
-    requestParameters: GetFirstRecordRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<FirstRecordResponseDto> {
-    const response = await this.getFirstRecordRaw(requestParameters, initOverrides);
-    return await response.value();
   }
 
   /**
@@ -409,13 +327,11 @@ export class FirstRecordManagementApi extends runtime.BaseAPI {
   async updateFirstRecordRaw(
     requestParameters: UpdateFirstRecordRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<FirstRecordResponseDto>> {
+  ): Promise<runtime.ApiResponse<void>> {
     const requestOptions = await this.updateFirstRecordRequestOpts(requestParameters);
     const response = await this.request(requestOptions, initOverrides);
 
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      FirstRecordResponseDtoFromJSON(jsonValue),
-    );
+    return new runtime.VoidApiResponse(response);
   }
 
   /**
@@ -424,8 +340,7 @@ export class FirstRecordManagementApi extends runtime.BaseAPI {
   async updateFirstRecord(
     requestParameters: UpdateFirstRecordRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<FirstRecordResponseDto> {
-    const response = await this.updateFirstRecordRaw(requestParameters, initOverrides);
-    return await response.value();
+  ): Promise<void> {
+    await this.updateFirstRecordRaw(requestParameters, initOverrides);
   }
 }

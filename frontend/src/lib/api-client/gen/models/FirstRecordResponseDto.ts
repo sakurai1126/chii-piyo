@@ -50,7 +50,7 @@ export interface FirstRecordResponseDto {
    * @type {string}
    * @memberof FirstRecordResponseDto
    */
-  comment: string | null;
+  comment: string;
   /**
    * 紐付けされたメディア一覧
    * @type {Array<MediaResponseDto>}
