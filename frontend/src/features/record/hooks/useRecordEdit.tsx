@@ -61,6 +61,11 @@ export const useRecordEdit = ({ setIsMenuOpen, initialEditData, variant }: Props
     setIsSaveConfirmOpen(true);
   };
 
+  // メディア削除処理
+  const removeMedia = (targetId: number) => {
+    setSelectedMediaData((prev) => prev.filter((media) => media.id !== targetId));
+  };
+
   // 編集キャンセル処理
   const cancelEdit = () => {
     // 状態の初期化（入力メニュー/モーダル開閉/入力内容/メディア選択）
@@ -147,6 +152,7 @@ export const useRecordEdit = ({ setIsMenuOpen, initialEditData, variant }: Props
     data,
     setData,
     confirmOpen,
+    removeMedia,
     cancelEdit,
     saveAction,
   };

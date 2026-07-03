@@ -37,6 +37,7 @@ export const RecordEditMenu = ({
     data,
     setData,
     confirmOpen,
+    removeMedia,
     cancelEdit,
     saveAction,
   } = useRecordEdit({
@@ -98,9 +99,7 @@ export const RecordEditMenu = ({
               />
               <button
                 className="bg-warning absolute -top-0.5 -right-0.5 hidden h-4 w-4 cursor-pointer place-content-center rounded-2xl group-hover:grid"
-                onClick={() =>
-                  setSelectedMediaData((prev) => prev.filter((prevItem) => prevItem.id !== item.id))
-                }
+                onClick={() => removeMedia(item.id)}
               >
                 <Image src={closeIcon} alt="" width={8} height={8} />
               </button>
