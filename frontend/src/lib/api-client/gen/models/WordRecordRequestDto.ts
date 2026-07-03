@@ -36,7 +36,7 @@ export interface WordRecordRequestDto {
    * @type {string}
    * @memberof WordRecordRequestDto
    */
-  comment: string | null;
+  comment: string;
   /**
    * 紐付けるメディアIDの配列
    * @type {Array<number>}

@@ -1346,11 +1346,7 @@ paths:
         required: true
       responses:
         '201':
-          description: 作成されたことばの記録
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/WordRecordResponseDto'
+          description: ことばの記録の作成に成功
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -1362,29 +1358,6 @@ paths:
         default:
           $ref: '#/components/responses/DefaultErrors'
   /word-records/{id}:
-    get:
-      tags:
-        - wordRecordManagement
-      summary: ことばの記録をID指定で1件取得
-      operationId: getWordRecord
-      parameters:
-        - $ref: '#/components/parameters/XRequestedWith'
-        - $ref: '#/components/parameters/ResourceId'
-      responses:
-        '200':
-          description: ことばの記録情報
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/WordRecordResponseDto'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-        default:
-          $ref: '#/components/responses/DefaultErrors'
     put:
       tags:
         - wordRecordManagement
@@ -1402,12 +1375,8 @@ paths:
               $ref: '#/components/schemas/WordRecordRequestDto'
         required: true
       responses:
-        '200':
-          description: 更新されたことばの記録
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/WordRecordResponseDto'
+        '204':
+          description: ことばの記録の更新に成功
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -2847,9 +2816,7 @@ components:
           description: 記録日
           example: '2026-04-01'
         comment:
-          type:
-            - string
-            - 'null'
+          type: string
           description: コメント
           example: ごはんの時に言った
         media:
@@ -2888,9 +2855,7 @@ components:
           description: 記録日
           example: '2026-04-01'
         comment:
-          type:
-            - string
-            - 'null'
+          type: string
           description: コメント
         mediaIds:
           type: array

@@ -26,7 +26,7 @@ WordRecordResponseDto:
       description: 記録日
       example: "2026-04-01"
     comment:
-      type: ["string", "null"]
+      type: "string"
       description: コメント
       example: "ごはんの時に言った"
     media:
@@ -66,7 +66,7 @@ WordRecordRequestDto:
       description: 記録日
       example: "2026-04-01"
     comment:
-      type: ["string", "null"]
+      type: "string"
       description: コメント
     mediaIds:
       type: array

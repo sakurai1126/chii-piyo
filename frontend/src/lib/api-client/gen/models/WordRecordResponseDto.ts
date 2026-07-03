@@ -50,7 +50,7 @@ export interface WordRecordResponseDto {
    * @type {string}
    * @memberof WordRecordResponseDto
    */
-  comment: string | null;
+  comment: string;
   /**
    * 紐付けされたメディア一覧
    * @type {Array<MediaResponseDto>}

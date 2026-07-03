@@ -5,6 +5,7 @@ import { ActionResult } from "@/utils/action";
 import { formatJapaneseDateBasic } from "@/utils/date";
 
 import { createFirstRecordAction } from "../actions/createFirstRecordAction";
+import { createWordRecordAction } from "../actions/createWordRecordAction";
 import { updateFirstRecordAction } from "../actions/updateFirstRecordAction";
 import { FirstRecordData, SelectedMediaData } from "../types";
 
@@ -75,6 +76,18 @@ export const useRecordEdit = ({ setIsMenuOpen, initialEditData, variant }: Props
     setSelectedMediaData([]);
   };
 
+  // ことばの記録の新規作成処理
+  const saveNewWordRecord = async () => {
+    const result = await createWordRecordAction({
+      word: data.title,
+      recordedDate: new Date(data.achievedDate),
+      comment: data.comment,
+      mediaIds: selectedMediaData.map((media) => media.id),
+    });
+
+    afterSaveAction(result, "ことばの記録を作成しました");
+  };
+
   // はじめて記録の新規作成処理
   const saveNewFirstRecord = async () => {
     const result = await createFirstRecordAction({
@@ -132,6 +145,7 @@ export const useRecordEdit = ({ setIsMenuOpen, initialEditData, variant }: Props
           updateFirstRecord();
           break;
         case "newWordRecord":
+          saveNewWordRecord();
           break;
         case "editWordRecord":
           break;

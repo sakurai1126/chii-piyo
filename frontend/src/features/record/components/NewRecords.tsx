@@ -14,22 +14,24 @@ import { RecordEditMenu } from "./RecordEditMenu";
 type Props = {
   tags: TagResponseDto[];
   sharingGroups: SharingGroupResponseDto[];
+  variant: "first" | "word";
 };
 
-export const NewRecords = ({ tags, sharingGroups }: Props) => {
+export const NewRecords = ({ tags, sharingGroups, variant }: Props) => {
   // メニュー開閉フラグ
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   return (
-    <div className="border-brown-dark bg-white-back mt-12 rounded-lg border border-dashed max-md:mt-6">
+    <div className="border-brown-dark bg-white-back rounded-lg border border-dashed max-md:mt-6">
       {/* 開くボタン */}
       <AccordionContent isOpen={!isMenuOpen}>
         <button
-          className="hover:bg-white-back bg-green-back flex h-20 w-full cursor-pointer items-center justify-center gap-3 rounded-lg transition-all"
+          className={`hover:bg-white-back bg-green-back flex w-full cursor-pointer items-center justify-center gap-3 rounded-lg transition-all ${variant === "word" ? "h-30" : "h-20"}`}
           onClick={() => setIsMenuOpen(true)}
         >
           <p className="text-brown-light font-medium max-md:text-[13px]">
-            新しいはじめてを記録する
+            {variant === "first" && <>新しいはじめてを記録する</>}
+            {variant === "word" && <>新しいことばを記録する</>}
           </p>
           <Image src={plusIcon} alt="" width={14} height={14} />
         </button>
@@ -42,7 +44,7 @@ export const NewRecords = ({ tags, sharingGroups }: Props) => {
             tags={tags}
             sharingGroups={sharingGroups}
             setIsMenuOpen={setIsMenuOpen}
-            variant="newFirstRecord"
+            variant={variant === "first" ? "newFirstRecord" : "newWordRecord"}
           />
         </div>
         {/* 閉じるボタン */}

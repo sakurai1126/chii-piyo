@@ -17,8 +17,10 @@ export default async function FirstRecordsPage() {
     <Container className="mt-10 max-md:mt-5">
       <ChildCareNavigation currentPage="first" />
       <div className="mt-10">
-        <PageTitle text="はじめて一覧" />
-        <NewRecords tags={tags} sharingGroups={sharingGroups} />
+        <PageTitle text="はじめて記録" />
+        <div className="mt-12">
+          <NewRecords tags={tags} sharingGroups={sharingGroups} variant="first" />
+        </div>
         <div className="mt-10 max-md:mt-5">
           {firstRecords?.map((item, index) => (
             <FirstRecordItem
