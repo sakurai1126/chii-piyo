@@ -89,6 +89,25 @@ public class FirstRecordController implements FirstRecordManagementApi {
     }
 
     /**
+     * PUT /first-records/{id}<br>
+     * はじめて記録を更新
+     *
+     * @param xRequestedWith  X-Requested-With ヘッダ (CSRF防御用)
+     * @param id              記録ID
+     * @param firstRecordData 更新するはじめて記録情報
+     * @return 204ステータス
+     */
+    @Override
+    public ResponseEntity<Void> updateFirstRecord(
+        String xRequestedWith, Long id, FirstRecordRequestDto firstRecordData) {
+        // サービス層で更新する
+        firstRecordService.updateFirstRecord(id, firstRecordData);
+
+        // 204ステータスを返却
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
      * DELETE /first-records/{id}<br>
      * はじめて記録を削除
      *
@@ -105,18 +124,4 @@ public class FirstRecordController implements FirstRecordManagementApi {
         return ResponseEntity.noContent().build();
     }
 
-    /**
-     * PUT /first-records/{id}<br>
-     * はじめて記録を更新
-     *
-     * @param xRequestedWith  X-Requested-With ヘッダ (CSRF防御用)
-     * @param id              記録ID
-     * @param firstRecordData 更新するはじめて記録情報
-     * @return 204ステータス
-     */
-    @Override
-    public ResponseEntity<Void> updateFirstRecord(
-        String xRequestedWith, Long id, FirstRecordRequestDto firstRecordData) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-    }
 }

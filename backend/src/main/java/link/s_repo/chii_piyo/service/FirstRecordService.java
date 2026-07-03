@@ -46,37 +46,14 @@ public class FirstRecordService {
         // リポジトリ層で保存
         firstRecordRepository.save(firstRecord);
 
-        // パラメータのメディアIDを抽出
-        List<Long> mediaIds = insertData.getMediaIds().stream().distinct().toList();
-        if (mediaIds.isEmpty()) {
-            return;
-        }
-
-        // mediaIdsのメディアの存在チェック
-        List<Media> mediaList = mediaRepository.findByIds(mediaIds);
-
-        // 紐づくメディア情報のリストを作る
-        if (mediaList.size() != mediaIds.size()) {
-            throw new ResourceNotFoundException("メディアが見つかりません mediaId=" + mediaIds);
-        }
-
-        // エンティティをリスト化して作成
-        List<FirstRecordMedia> firstRecordMediaList = mediaIds.stream()
-            .map(mediaId -> {
-                FirstRecordMedia firstRecordMedia = new FirstRecordMedia();
-                firstRecordMedia.setFirstRecordId(firstRecord.getId());
-                firstRecordMedia.setMediaId(mediaId);
-                firstRecordMedia.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
-                return firstRecordMedia;
-            }).toList();
-
-        // メディア情報を一括で保存
-        firstRecordRepository.saveMedia(firstRecordMediaList);
+        // 画像の保存処理
+        saveMedia(firstRecord, insertData);
     }
 
     /**
      * はじめて記録を一覧取得する
      */
+    @Transactional(readOnly = true)
     public List<FirstRecordWithMedia> getFirstRecords() {
         // 記録を全件取得
         List<FirstRecords> records = firstRecordRepository.findAll();
@@ -125,6 +102,34 @@ public class FirstRecordService {
     }
 
     /**
+     * はじめて記録を更新する
+     *
+     * @param id         対象の記録ID
+     * @param updateData 更新データ
+     */
+    @Transactional
+    public void updateFirstRecord(Long id, FirstRecordRequestDto updateData) {
+        // 対象データを取得
+        FirstRecords firstRecord = getFirstRecord(id);
+
+        // 対象データに紐づくメディアのデータを一旦すべて削除
+        firstRecordRepository.deleteMediaByRecordId(id);
+
+        // 各種データセット
+        firstRecord.setTitle(updateData.getTitle());
+        firstRecord.setComment(updateData.getComment());
+        firstRecord.setAchievedDate(updateData.getAchievedDate());
+        firstRecord.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
+
+        // リポジトリ層で更新
+        firstRecordRepository.update(firstRecord);
+
+        // 画像の保存処理
+        saveMedia(firstRecord, updateData);
+    }
+
+
+    /**
      * はじめて記録を削除する
      *
      * @param id はじめて記録ID
@@ -150,6 +155,40 @@ public class FirstRecordService {
             new ResourceNotFoundException("はじめて記録が見つかりません " + "id=" + id));
     }
 
+    /**
+     * 記録に紐づくメディア情報の保存処理
+     *
+     * @param firstRecord 紐づくはじめて記録のエンティティ
+     * @param requestData 画像情報含むリクエストデータ
+     */
+    private void saveMedia(FirstRecords firstRecord, FirstRecordRequestDto requestData) {
+        // パラメータのメディアIDを抽出
+        List<Long> mediaIds = requestData.getMediaIds().stream().distinct().toList();
+        if (mediaIds.isEmpty()) {
+            return;
+        }
+
+        // mediaIdsのメディアの存在チェック
+        List<Media> mediaList = mediaRepository.findByIds(mediaIds);
+
+        // 紐づくメディア情報のリストを作る
+        if (mediaList.size() != mediaIds.size()) {
+            throw new ResourceNotFoundException("メディアが見つかりません mediaId=" + mediaIds);
+        }
+
+        // エンティティをリスト化して作成
+        List<FirstRecordMedia> firstRecordMediaList = mediaIds.stream()
+            .map(mediaId -> {
+                FirstRecordMedia firstRecordMedia = new FirstRecordMedia();
+                firstRecordMedia.setFirstRecordId(firstRecord.getId());
+                firstRecordMedia.setMediaId(mediaId);
+                firstRecordMedia.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
+                return firstRecordMedia;
+            }).toList();
+
+        // メディア情報を一括で保存
+        firstRecordRepository.saveMedia(firstRecordMediaList);
+    }
 
     /**
      * はじめて記録を返却する際の記録とメディアをまとめたレコード

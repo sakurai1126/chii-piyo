@@ -45,7 +45,7 @@ public class FirstRecordRepository {
      * @return 記録情報リスト
      */
     public List<FirstRecords> findAll() {
-        return firstRecordsMapper.select(c -> c.orderBy(FirstRecordsDynamicSqlSupport.achievedDate));
+        return firstRecordsMapper.select(c -> c.orderBy(FirstRecordsDynamicSqlSupport.achievedDate.descending()));
     }
 
     /**
@@ -70,6 +70,15 @@ public class FirstRecordRepository {
     }
 
     /**
+     * はじめて記録を更新する
+     *
+     * @param firstRecord はじめて記録エンティティ
+     */
+    public void update(FirstRecords firstRecord) {
+        firstRecordsMapper.updateByPrimaryKey(firstRecord);
+    }
+
+    /**
      * はじめて記録を削除する
      *
      * @param id 対象はじめて記録のID
@@ -87,4 +96,6 @@ public class FirstRecordRepository {
         firstRecordMediaMapper.delete(
             c -> c.where(FirstRecordMediaDynamicSqlSupport.firstRecordId, isEqualTo(recordId)));
     }
+
+
 }

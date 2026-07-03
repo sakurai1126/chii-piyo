@@ -21,7 +21,13 @@ export default async function FirstRecordsPage() {
         <NewRecords tags={tags} sharingGroups={sharingGroups} />
         <div className="mt-10 max-md:mt-5">
           {firstRecords?.map((item, index) => (
-            <FirstRecordItem key={item.id} item={item} index={index} />
+            <FirstRecordItem
+              tags={tags}
+              sharingGroups={sharingGroups}
+              key={item.id}
+              item={item}
+              index={index}
+            />
           ))}
         </div>
       </div>
