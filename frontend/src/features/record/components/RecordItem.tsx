@@ -9,6 +9,7 @@ import {
   FirstRecordResponseDto,
   SharingGroupResponseDto,
   TagResponseDto,
+  WordRecordResponseDto,
 } from "@/lib/api-client/gen";
 import {
   calculateDaysSinceBirth,
@@ -17,7 +18,8 @@ import {
 } from "@/utils/date";
 
 import { deleteFirstRecordAction } from "../actions/deleteFirstRecordAction";
-import { FirstRecordData } from "../types";
+import { deleteWordRecordAction } from "../actions/deleteWordRecordAction";
+import { RecordData } from "../types";
 
 import { RecordEditMenu } from "./RecordEditMenu";
 
@@ -25,19 +27,22 @@ import { RecordEditMenu } from "./RecordEditMenu";
 const birthday = new Date("2025-08-06");
 
 type Props = {
-  item: FirstRecordResponseDto;
   index: number;
   tags: TagResponseDto[];
   sharingGroups: SharingGroupResponseDto[];
-};
-export const FirstRecordItem = ({ item, index, tags, sharingGroups }: Props) => {
+} & (
+  | { variant: "first"; item: FirstRecordResponseDto }
+  | { variant: "word"; item: WordRecordResponseDto }
+);
+
+export const RecordItem = ({ item, index, tags, sharingGroups, variant }: Props) => {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
 
   // 編集時の初期値データ
-  const initialEditData: FirstRecordData = {
+  const initialEditData: RecordData = {
     id: item.id,
     title: item.title,
-    achievedDate: formatJapaneseDateBasic(new Date(item.achievedDate)),
+    recordedDate: formatJapaneseDateBasic(new Date(item.recordedDate)),
     comment: item.comment,
     media: item.media.map((media) => ({
       id: media.id,
@@ -47,20 +52,26 @@ export const FirstRecordItem = ({ item, index, tags, sharingGroups }: Props) => 
 
   return (
     <div className="relative flex items-center gap-10 py-2.5 max-md:gap-6 max-md:py-2">
-      <div className="bg-brown-dark h-[9px] w-[9px] shrink-0 rounded-full"></div>
-      <div
-        className={`bg-brown-dark absolute left-1 w-px ${index === 0 ? "top-[50%] h-[50%]" : "h-full"}`}
-      ></div>
+      {variant === "first" && (
+        <>
+          <div className="bg-brown-dark h-[9px] w-[9px] shrink-0 rounded-full"></div>
+          <div
+            className={`bg-brown-dark absolute left-1 w-px ${index === 0 ? "top-[50%] h-[50%]" : "h-full"}`}
+          ></div>
+        </>
+      )}
       <div className="bg-white-back border-brown-dark w-full rounded-lg border px-6 pt-6 pb-4 max-md:p-3">
         {/* 通常表示 */}
-        {!isEditMode && <FirstRecordItemDisplayMode item={item} setIsEditMode={setIsEditMode} />}
+        {!isEditMode && (
+          <RecordItemDisplayMode item={item} setIsEditMode={setIsEditMode} variant={variant} />
+        )}
         {isEditMode && (
           <RecordEditMenu
             tags={tags}
             sharingGroups={sharingGroups}
             setIsMenuOpen={setIsEditMode}
             initialEditData={initialEditData}
-            variant="editFirstRecord"
+            variant={variant === "first" ? "editFirstRecord" : "editWordRecord"}
           />
         )}
       </div>
@@ -71,12 +82,14 @@ export const FirstRecordItem = ({ item, index, tags, sharingGroups }: Props) => 
 /**
  * 記録の通常表示
  */
-const FirstRecordItemDisplayMode = ({
+const RecordItemDisplayMode = ({
   item,
+  variant,
   setIsEditMode,
 }: {
-  item: FirstRecordResponseDto;
   setIsEditMode: Dispatch<SetStateAction<boolean>>;
+  variant: "first" | "word";
+  item: FirstRecordResponseDto | WordRecordResponseDto;
 }) => {
   // 非同期処理中のボタン状態管理
   const [isPending, startTransition] = useTransition();
@@ -87,15 +100,26 @@ const FirstRecordItemDisplayMode = ({
   // 削除処理
   const deleteAction = () => {
     startTransition(async () => {
-      const result = await deleteFirstRecordAction({
-        id: item.id,
-      });
+      if (variant === "first") {
+        const result = await deleteFirstRecordAction({ id: item.id });
 
-      if (result.success) {
-        setIsDeleteConfirmOpen(false);
-        toast.success("はじめて記録の削除に成功しました");
-      } else {
-        toast.error(result.error);
+        if (result.success) {
+          setIsDeleteConfirmOpen(false);
+          toast.success("はじめて記録の削除に成功しました");
+        } else {
+          toast.error(result.error);
+        }
+      }
+
+      if (variant === "word") {
+        const result = await deleteWordRecordAction({ id: item.id });
+
+        if (result.success) {
+          setIsDeleteConfirmOpen(false);
+          toast.success("ことばの記録の削除に成功しました");
+        } else {
+          toast.error(result.error);
+        }
       }
     });
   };
@@ -106,8 +130,8 @@ const FirstRecordItemDisplayMode = ({
         <p className="text-2xl font-medium max-md:text-lg">{item.title}</p>
         <span className="bg-line-gray mr-3 ml-6 h-px w-6 max-md:hidden"></span>
         <p className="text-note-gray text-sm max-md:mt-1">
-          {formatJapaneseDateNonTime(item.achievedDate)}&emsp;
-          {calculateDaysSinceBirth(birthday, item.achievedDate)}目
+          {formatJapaneseDateNonTime(item.recordedDate)}&emsp;
+          {calculateDaysSinceBirth(birthday, item.recordedDate)}目
         </p>
       </div>
       <p className="mt-5 max-md:mt-3 max-md:text-sm">{item.comment}</p>

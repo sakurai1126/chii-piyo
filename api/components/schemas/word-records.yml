@@ -4,7 +4,7 @@ WordRecordResponseDto:
   description: ことばの記録情報
   required:
     - id
-    - word
+    - title
     - recordedDate
     - comment
     - media
@@ -16,7 +16,7 @@ WordRecordResponseDto:
       format: int64
       description: 記録ID
       example: 1
-    word:
+    title:
       type: string
       description: ことば
       example: "まんま"
@@ -49,12 +49,12 @@ WordRecordRequestDto:
   type: object
   description: ことばの記録作成・更新リクエスト
   required:
-    - word
+    - title
     - recordedDate
     - comment
     - mediaIds
   properties:
-    word:
+    title:
       type: string
       description: ことば
       minLength: 1

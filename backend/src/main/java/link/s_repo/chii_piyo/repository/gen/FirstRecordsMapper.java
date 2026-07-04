@@ -32,7 +32,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 @Mapper
 public interface FirstRecordsMapper extends CommonCountMapper, CommonDeleteMapper, CommonUpdateMapper {
-    BasicColumn[] selectList = BasicColumn.columnList(id, title, achievedDate, comment, createdAt, updatedAt);
+    BasicColumn[] selectList = BasicColumn.columnList(id, title, recordedDate, comment, createdAt, updatedAt);
 
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
     @Options(useGeneratedKeys=true, keyProperty="row.id", keyColumn="id")
@@ -46,7 +46,7 @@ public interface FirstRecordsMapper extends CommonCountMapper, CommonDeleteMappe
     @Results(id="FirstRecordsResult", value = {
         @Result(column="id", property="id", jdbcType=JdbcType.BIGINT, id=true),
         @Result(column="title", property="title", jdbcType=JdbcType.VARCHAR),
-        @Result(column="achieved_date", property="achievedDate", jdbcType=JdbcType.DATE),
+        @Result(column="recorded_date", property="recordedDate", jdbcType=JdbcType.DATE),
         @Result(column="comment", property="comment", jdbcType=JdbcType.VARCHAR),
         @Result(column="created_at", property="createdAt", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="updated_at", property="updatedAt", jdbcType=JdbcType.TIMESTAMP)
@@ -74,7 +74,7 @@ public interface FirstRecordsMapper extends CommonCountMapper, CommonDeleteMappe
     default int insert(FirstRecords row) {
         return MyBatis3Utils.insert(this::insert, row, firstRecords, c ->
             c.withMappedColumn(title)
-            .withMappedColumn(achievedDate)
+            .withMappedColumn(recordedDate)
             .withMappedColumn(comment)
             .withMappedColumn(createdAt)
             .withMappedColumn(updatedAt)
@@ -84,7 +84,7 @@ public interface FirstRecordsMapper extends CommonCountMapper, CommonDeleteMappe
     default int insertMultiple(Collection<FirstRecords> records) {
         return MyBatis3Utils.insertMultipleWithGeneratedKeys(this::insertMultiple, records, firstRecords, c ->
             c.withMappedColumn(title)
-            .withMappedColumn(achievedDate)
+            .withMappedColumn(recordedDate)
             .withMappedColumn(comment)
             .withMappedColumn(createdAt)
             .withMappedColumn(updatedAt)
@@ -94,7 +94,7 @@ public interface FirstRecordsMapper extends CommonCountMapper, CommonDeleteMappe
     default int insertSelective(FirstRecords row) {
         return MyBatis3Utils.insert(this::insert, row, firstRecords, c ->
             c.withMappedColumnWhenPresent(title, row::getTitle)
-            .withMappedColumnWhenPresent(achievedDate, row::getAchievedDate)
+            .withMappedColumnWhenPresent(recordedDate, row::getRecordedDate)
             .withMappedColumnWhenPresent(comment, row::getComment)
             .withMappedColumnWhenPresent(createdAt, row::getCreatedAt)
             .withMappedColumnWhenPresent(updatedAt, row::getUpdatedAt)
@@ -126,7 +126,7 @@ public interface FirstRecordsMapper extends CommonCountMapper, CommonDeleteMappe
     static UpdateDSL updateAllColumns(FirstRecords row, UpdateDSL dsl) {
         return dsl.set(id).equalTo(row::getId)
                 .set(title).equalTo(row::getTitle)
-                .set(achievedDate).equalTo(row::getAchievedDate)
+                .set(recordedDate).equalTo(row::getRecordedDate)
                 .set(comment).equalTo(row::getComment)
                 .set(createdAt).equalTo(row::getCreatedAt)
                 .set(updatedAt).equalTo(row::getUpdatedAt);
@@ -135,7 +135,7 @@ public interface FirstRecordsMapper extends CommonCountMapper, CommonDeleteMappe
     static UpdateDSL updateSelectiveColumns(FirstRecords row, UpdateDSL dsl) {
         return dsl.set(id).equalToWhenPresent(row::getId)
                 .set(title).equalToWhenPresent(row::getTitle)
-                .set(achievedDate).equalToWhenPresent(row::getAchievedDate)
+                .set(recordedDate).equalToWhenPresent(row::getRecordedDate)
                 .set(comment).equalToWhenPresent(row::getComment)
                 .set(createdAt).equalToWhenPresent(row::getCreatedAt)
                 .set(updatedAt).equalToWhenPresent(row::getUpdatedAt);
@@ -144,7 +144,7 @@ public interface FirstRecordsMapper extends CommonCountMapper, CommonDeleteMappe
     default int updateByPrimaryKey(FirstRecords row) {
         return update(c ->
             c.set(title).equalTo(row::getTitle)
-            .set(achievedDate).equalTo(row::getAchievedDate)
+            .set(recordedDate).equalTo(row::getRecordedDate)
             .set(comment).equalTo(row::getComment)
             .set(createdAt).equalTo(row::getCreatedAt)
             .set(updatedAt).equalTo(row::getUpdatedAt)
@@ -155,7 +155,7 @@ public interface FirstRecordsMapper extends CommonCountMapper, CommonDeleteMappe
     default int updateByPrimaryKeySelective(FirstRecords row) {
         return update(c ->
             c.set(title).equalToWhenPresent(row::getTitle)
-            .set(achievedDate).equalToWhenPresent(row::getAchievedDate)
+            .set(recordedDate).equalToWhenPresent(row::getRecordedDate)
             .set(comment).equalToWhenPresent(row::getComment)
             .set(createdAt).equalToWhenPresent(row::getCreatedAt)
             .set(updatedAt).equalToWhenPresent(row::getUpdatedAt)

@@ -41,7 +41,7 @@ public class FirstRecordService {
         // 各種データセット
         firstRecord.setTitle(insertData.getTitle());
         firstRecord.setComment(insertData.getComment());
-        firstRecord.setAchievedDate(insertData.getAchievedDate());
+        firstRecord.setRecordedDate(insertData.getRecordedDate());
 
         // リポジトリ層で保存
         firstRecordRepository.save(firstRecord);
@@ -118,7 +118,7 @@ public class FirstRecordService {
         // 各種データセット
         firstRecord.setTitle(updateData.getTitle());
         firstRecord.setComment(updateData.getComment());
-        firstRecord.setAchievedDate(updateData.getAchievedDate());
+        firstRecord.setRecordedDate(updateData.getRecordedDate());
         firstRecord.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
 
         // リポジトリ層で更新
@@ -127,7 +127,6 @@ public class FirstRecordService {
         // 画像の保存処理
         saveMedia(firstRecord, updateData);
     }
-
 
     /**
      * はじめて記録を削除する
@@ -145,7 +144,6 @@ public class FirstRecordService {
         // 対象データを削除
         firstRecordRepository.deleteById(id);
     }
-
 
     /**
      * はじめて記録をID指定で1件取得する

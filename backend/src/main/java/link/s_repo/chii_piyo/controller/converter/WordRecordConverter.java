@@ -1,20 +1,21 @@
 package link.s_repo.chii_piyo.controller.converter;
 
-import link.s_repo.chii_piyo.model.gen.FirstRecordResponseDto;
-import link.s_repo.chii_piyo.model.gen.FirstRecords;
 import link.s_repo.chii_piyo.model.gen.MediaResponseDto;
+import link.s_repo.chii_piyo.model.gen.WordRecordResponseDto;
+import link.s_repo.chii_piyo.model.gen.WordRecords;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 /**
  * APIレスポンスの組み立てを担当するコンバータークラス<br>
- * FirstRecordエンティティをFirstRecordResponseDtoに変換するロジックを提供する
+ * WordRecordエンティティをWordRecordResponseDtoに変換するロジックを提供する
  */
 @Component
-public class FirstRecordConverter {
-    public FirstRecordResponseDto toFirstRecordResponseDto(FirstRecords record, List<MediaResponseDto> mediaResponseList) {
-        return new FirstRecordResponseDto()
+public class WordRecordConverter {
+    public WordRecordResponseDto toWordRecordResponseDto(
+        WordRecords record, List<MediaResponseDto> mediaResponseList) {
+        return new WordRecordResponseDto()
             .id(record.getId())
             .title(record.getTitle())
             .recordedDate(record.getRecordedDate())

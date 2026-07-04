@@ -2718,7 +2718,7 @@ components:
       required:
         - id
         - title
-        - achievedDate
+        - recordedDate
         - comment
         - media
         - createdAt
@@ -2733,7 +2733,7 @@ components:
           type: string
           description: タイトル
           example: はじめての寝返り
-        achievedDate:
+        recordedDate:
           type: string
           format: date
           description: 達成日
@@ -2762,7 +2762,7 @@ components:
       description: はじめて記録作成・更新リクエスト
       required:
         - title
-        - achievedDate
+        - recordedDate
         - comment
         - mediaIds
       properties:
@@ -2772,7 +2772,7 @@ components:
           minLength: 1
           maxLength: 100
           example: はじめての寝返り
-        achievedDate:
+        recordedDate:
           type: string
           format: date
           description: 達成日
@@ -2794,7 +2794,7 @@ components:
       description: ことばの記録情報
       required:
         - id
-        - word
+        - title
         - recordedDate
         - comment
         - media
@@ -2806,7 +2806,7 @@ components:
           format: int64
           description: 記録ID
           example: 1
-        word:
+        title:
           type: string
           description: ことば
           example: まんま
@@ -2838,12 +2838,12 @@ components:
       type: object
       description: ことばの記録作成・更新リクエスト
       required:
-        - word
+        - title
         - recordedDate
         - comment
         - mediaIds
       properties:
-        word:
+        title:
           type: string
           description: ことば
           minLength: 1

@@ -221,19 +221,19 @@ CREATE TABLE first_records
 (
     id            BIGSERIAL PRIMARY KEY,
     title         VARCHAR(100) NOT NULL,
-    achieved_date DATE         NOT NULL,
+    recorded_date DATE         NOT NULL,
     comment       TEXT,
     created_at    TIMESTAMPTZ  NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at    TIMESTAMPTZ  NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_first_records_achieved_date ON first_records (achieved_date);
+CREATE INDEX idx_first_records_recorded_date ON first_records (recorded_date);
 
 -- ことば記録
 CREATE TABLE word_records
 (
     id            BIGSERIAL PRIMARY KEY,
-    word          VARCHAR(100) NOT NULL,
+    title         VARCHAR(100) NOT NULL,
     recorded_date DATE         NOT NULL,
     comment       TEXT,
     created_at    TIMESTAMPTZ  NOT NULL DEFAULT CURRENT_TIMESTAMP,

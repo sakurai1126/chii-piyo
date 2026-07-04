@@ -6,7 +6,7 @@ import java.time.OffsetDateTime;
 public class WordRecords {
     private Long id;
 
-    private String word;
+    private String title;
 
     private LocalDate recordedDate;
 
@@ -24,12 +24,12 @@ public class WordRecords {
         this.id = id;
     }
 
-    public String getWord() {
-        return word;
+    public String getTitle() {
+        return title;
     }
 
-    public void setWord(String word) {
-        this.word = word;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public LocalDate getRecordedDate() {

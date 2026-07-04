@@ -282,14 +282,14 @@
 | --- | --- | --- | --- | --- | --- |
 | id | BIGSERIAL | NO | AUTO | PK | 主キー |
 | title | VARCHAR(100) | NO | - | | タイトル |
-| achieved_date | DATE | NO | - | | 達成日 |
+| recorded_date | DATE | NO | - | | 達成日 |
 | comment | TEXT | YES | NULL | | コメント |
 | created_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 作成日時 |
 | updated_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 更新日時 |
 ##### インデックス/複合ユニーク制約
 | カラム | 種別 |
 | --- | --- |
-| achieved_date | INDEX |
+| recorded_date | INDEX |
 #### word_records
 ##### 概要
 **論理テーブル名** : ことばの記録
@@ -298,7 +298,7 @@
 | カラム名 | データ型 | NULL | デフォルト | キー | 説明 |
 | --- | --- | --- | --- | --- | --- |
 | id | BIGSERIAL | NO | AUTO | PK | 主キー |
-| word | VARCHAR(100) | NO | - | | ことば |
+| title | VARCHAR(100) | NO | - | | ことば |
 | recorded_date | DATE | NO | - | | 記録日 |
 | comment | TEXT | YES | NULL | | コメント |
 | created_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 作成日時 |

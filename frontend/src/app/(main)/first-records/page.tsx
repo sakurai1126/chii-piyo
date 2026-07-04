@@ -1,8 +1,8 @@
 import Container from "@/components/layout/Container";
 import { ChildCareNavigation } from "@/components/ui/ChildCareNavigation";
 import PageTitle from "@/components/ui/PageTitle";
-import { FirstRecordItem, NewRecords } from "@/features/record";
-import { getFirstRecords } from "@/features/record/actions/getFirstRecords";
+import { NewRecords, RecordItem } from "@/features/record";
+import { getFirstRecords } from "@/features/record/api/getFirstRecords";
 import { getSharingGroups } from "@/features/sharing/server";
 import { getTags } from "@/features/tag/server";
 
@@ -23,12 +23,13 @@ export default async function FirstRecordsPage() {
         </div>
         <div className="mt-10 max-md:mt-5">
           {firstRecords?.map((item, index) => (
-            <FirstRecordItem
+            <RecordItem
               tags={tags}
               sharingGroups={sharingGroups}
               key={item.id}
               item={item}
               index={index}
+              variant="first"
             />
           ))}
         </div>

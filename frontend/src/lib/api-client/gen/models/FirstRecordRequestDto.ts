@@ -30,7 +30,7 @@ export interface FirstRecordRequestDto {
    * @type {Date}
    * @memberof FirstRecordRequestDto
    */
-  achievedDate: Date;
+  recordedDate: Date;
   /**
    * コメント
    * @type {string}
@@ -50,7 +50,7 @@ export interface FirstRecordRequestDto {
  */
 export function instanceOfFirstRecordRequestDto(value: object): value is FirstRecordRequestDto {
   if (!("title" in value) || value["title"] === undefined) return false;
-  if (!("achievedDate" in value) || value["achievedDate"] === undefined) return false;
+  if (!("recordedDate" in value) || value["recordedDate"] === undefined) return false;
   if (!("comment" in value) || value["comment"] === undefined) return false;
   if (!("mediaIds" in value) || value["mediaIds"] === undefined) return false;
   return true;
@@ -69,7 +69,7 @@ export function FirstRecordRequestDtoFromJSONTyped(
   }
   return {
     title: json["title"],
-    achievedDate: new Date(json["achievedDate"]),
+    recordedDate: new Date(json["recordedDate"]),
     comment: json["comment"],
     mediaIds: json["mediaIds"],
   };
@@ -89,7 +89,7 @@ export function FirstRecordRequestDtoToJSONTyped(
 
   return {
     title: value["title"],
-    achievedDate: value["achievedDate"].toISOString().substring(0, 10),
+    recordedDate: value["recordedDate"].toISOString().substring(0, 10),
     comment: value["comment"],
     mediaIds: value["mediaIds"],
   };

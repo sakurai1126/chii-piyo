@@ -2,34 +2,24 @@
 
 import { revalidatePath } from "next/cache";
 
-import { WordRecordManagementApi, WordRecordRequestDto } from "@/lib/api-client/gen";
+import { WordRecordManagementApi } from "@/lib/api-client/gen";
 import { createAuthorizedConfig } from "@/lib/api-client/server";
 import { handleActionError, ActionResult } from "@/utils/action";
 
 // クライアントから受け取る入力型
 type Input = {
-  title: string;
-  recordedDate: Date;
-  comment: string;
-  mediaIds: number[];
+  id: number;
 };
 
-export const createWordRecordAction = async (input: Input): Promise<ActionResult> => {
+export const deleteWordRecordAction = async (input: Input): Promise<ActionResult> => {
   try {
     // 認証トークンを含むAPIクライアントの設定を生成し、WordRecordManagementApiのインスタンスを作成
     const configuration = await createAuthorizedConfig();
     const apiClient = new WordRecordManagementApi(configuration);
 
-    const requestDto: WordRecordRequestDto = {
-      title: input.title,
-      recordedDate: input.recordedDate,
-      comment: input.comment,
-      mediaIds: input.mediaIds,
-    };
-
-    await apiClient.createWordRecord({
+    await apiClient.deleteWordRecord({
       xRequestedWith: "XMLHttpRequest",
-      wordRecordData: requestDto,
+      id: input.id,
     });
 
     // キャッシュを破棄し、サーバーコンポーネントを再レンダリング
@@ -37,6 +27,6 @@ export const createWordRecordAction = async (input: Input): Promise<ActionResult
 
     return { success: true };
   } catch (error) {
-    return handleActionError(error, "ことばの記録の作成に失敗しました");
+    return handleActionError(error, "記録の削除に失敗しました");
   }
 };

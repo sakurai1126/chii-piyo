@@ -5,7 +5,7 @@ FirstRecordResponseDto:
   required:
     - id
     - title
-    - achievedDate
+    - recordedDate
     - comment
     - media
     - createdAt
@@ -20,7 +20,7 @@ FirstRecordResponseDto:
       type: string
       description: タイトル
       example: "はじめての寝返り"
-    achievedDate:
+    recordedDate:
       type: string
       format: date
       description: 達成日
@@ -50,7 +50,7 @@ FirstRecordRequestDto:
   description: はじめて記録作成・更新リクエスト
   required:
     - title
-    - achievedDate
+    - recordedDate
     - comment
     - mediaIds
   properties:
@@ -60,7 +60,7 @@ FirstRecordRequestDto:
       minLength: 1
       maxLength: 100
       example: "はじめての寝返り"
-    achievedDate:
+    recordedDate:
       type: string
       format: date
       description: 達成日

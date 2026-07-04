@@ -22,7 +22,7 @@ export const createFirstRecordAction = async (input: Input): Promise<ActionResul
 
     const requestDto: FirstRecordRequestDto = {
       title: input.title,
-      achievedDate: input.achievedDate,
+      recordedDate: input.achievedDate,
       comment: input.comment,
       mediaIds: input.mediaIds,
     };
