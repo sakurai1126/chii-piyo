@@ -3,10 +3,10 @@ export type SelectedMediaData = {
   url: string;
 };
 
-export type FirstRecordData = {
+export type RecordData = {
   id?: number;
   title: string;
-  achievedDate: string;
+  recordedDate: string;
   comment: string;
   media?: SelectedMediaData[];
 };

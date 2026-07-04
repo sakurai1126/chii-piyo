@@ -13,7 +13,7 @@ public final class FirstRecordsDynamicSqlSupport {
 
     public static final SqlColumn<String> title = firstRecords.title;
 
-    public static final SqlColumn<LocalDate> achievedDate = firstRecords.achievedDate;
+    public static final SqlColumn<LocalDate> recordedDate = firstRecords.recordedDate;
 
     public static final SqlColumn<String> comment = firstRecords.comment;
 
@@ -26,7 +26,7 @@ public final class FirstRecordsDynamicSqlSupport {
 
         public final SqlColumn<String> title = column("title", JDBCType.VARCHAR).withJavaProperty("title");
 
-        public final SqlColumn<LocalDate> achievedDate = column("achieved_date", JDBCType.DATE).withJavaProperty("achievedDate");
+        public final SqlColumn<LocalDate> recordedDate = column("recorded_date", JDBCType.DATE).withJavaProperty("recordedDate");
 
         public final SqlColumn<String> comment = column("\"comment\"", JDBCType.VARCHAR).withJavaProperty("comment");
 

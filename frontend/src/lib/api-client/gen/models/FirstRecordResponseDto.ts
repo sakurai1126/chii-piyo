@@ -44,7 +44,7 @@ export interface FirstRecordResponseDto {
    * @type {Date}
    * @memberof FirstRecordResponseDto
    */
-  achievedDate: Date;
+  recordedDate: Date;
   /**
    * コメント
    * @type {string}
@@ -77,7 +77,7 @@ export interface FirstRecordResponseDto {
 export function instanceOfFirstRecordResponseDto(value: object): value is FirstRecordResponseDto {
   if (!("id" in value) || value["id"] === undefined) return false;
   if (!("title" in value) || value["title"] === undefined) return false;
-  if (!("achievedDate" in value) || value["achievedDate"] === undefined) return false;
+  if (!("recordedDate" in value) || value["recordedDate"] === undefined) return false;
   if (!("comment" in value) || value["comment"] === undefined) return false;
   if (!("media" in value) || value["media"] === undefined) return false;
   if (!("createdAt" in value) || value["createdAt"] === undefined) return false;
@@ -99,7 +99,7 @@ export function FirstRecordResponseDtoFromJSONTyped(
   return {
     id: json["id"],
     title: json["title"],
-    achievedDate: new Date(json["achievedDate"]),
+    recordedDate: new Date(json["recordedDate"]),
     comment: json["comment"],
     media: (json["media"] as Array<any>).map(MediaResponseDtoFromJSON),
     createdAt: new Date(json["createdAt"]),
@@ -122,7 +122,7 @@ export function FirstRecordResponseDtoToJSONTyped(
   return {
     id: value["id"],
     title: value["title"],
-    achievedDate: value["achievedDate"].toISOString().substring(0, 10),
+    recordedDate: value["recordedDate"].toISOString().substring(0, 10),
     comment: value["comment"],
     media: (value["media"] as Array<any>).map(MediaResponseDtoToJSON),
     createdAt: value["createdAt"].toISOString(),

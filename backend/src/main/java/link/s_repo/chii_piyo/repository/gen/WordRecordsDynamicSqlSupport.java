@@ -11,7 +11,7 @@ public final class WordRecordsDynamicSqlSupport {
 
     public static final SqlColumn<Long> id = wordRecords.id;
 
-    public static final SqlColumn<String> word = wordRecords.word;
+    public static final SqlColumn<String> title = wordRecords.title;
 
     public static final SqlColumn<LocalDate> recordedDate = wordRecords.recordedDate;
 
@@ -24,7 +24,7 @@ public final class WordRecordsDynamicSqlSupport {
     public static final class WordRecords extends AliasableSqlTable<WordRecords> {
         public final SqlColumn<Long> id = column("id", JDBCType.BIGINT).withJavaProperty("id");
 
-        public final SqlColumn<String> word = column("word", JDBCType.VARCHAR).withJavaProperty("word");
+        public final SqlColumn<String> title = column("title", JDBCType.VARCHAR).withJavaProperty("title");
 
         public final SqlColumn<LocalDate> recordedDate = column("recorded_date", JDBCType.DATE).withJavaProperty("recordedDate");
 

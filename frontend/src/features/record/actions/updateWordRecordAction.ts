@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { FirstRecordManagementApi, FirstRecordRequestDto } from "@/lib/api-client/gen";
+import { WordRecordManagementApi, WordRecordRequestDto } from "@/lib/api-client/gen";
 import { createAuthorizedConfig } from "@/lib/api-client/server";
 import { handleActionError, ActionResult } from "@/utils/action";
 
@@ -15,30 +15,30 @@ type Input = {
   mediaIds: number[];
 };
 
-export const updateFirstRecordAction = async (input: Input): Promise<ActionResult> => {
+export const updateWordRecordAction = async (input: Input): Promise<ActionResult> => {
   try {
-    // 認証トークンを含むAPIクライアントの設定を生成し、FirstRecordManagementApiのインスタンスを作成
+    // 認証トークンを含むAPIクライアントの設定を生成し、WordRecordManagementApiのインスタンスを作成
     const configuration = await createAuthorizedConfig();
-    const apiClient = new FirstRecordManagementApi(configuration);
+    const apiClient = new WordRecordManagementApi(configuration);
 
-    const requestDto: FirstRecordRequestDto = {
+    const requestDto: WordRecordRequestDto = {
       title: input.title,
       recordedDate: input.recordedDate,
       comment: input.comment,
       mediaIds: input.mediaIds,
     };
 
-    await apiClient.updateFirstRecord({
+    await apiClient.updateWordRecord({
       xRequestedWith: "XMLHttpRequest",
       id: input.id,
-      firstRecordData: requestDto,
+      wordRecordData: requestDto,
     });
 
     // キャッシュを破棄し、サーバーコンポーネントを再レンダリング
-    revalidatePath("/first-records");
+    revalidatePath("/word-records");
 
     return { success: true };
   } catch (error) {
-    return handleActionError(error, "はじめて記録の更新に失敗しました");
+    return handleActionError(error, "ことばの記録の更新に失敗しました");
   }
 };

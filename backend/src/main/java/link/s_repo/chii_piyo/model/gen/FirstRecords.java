@@ -8,7 +8,7 @@ public class FirstRecords {
 
     private String title;
 
-    private LocalDate achievedDate;
+    private LocalDate recordedDate;
 
     private String comment;
 
@@ -32,12 +32,12 @@ public class FirstRecords {
         this.title = title;
     }
 
-    public LocalDate getAchievedDate() {
-        return achievedDate;
+    public LocalDate getRecordedDate() {
+        return recordedDate;
     }
 
-    public void setAchievedDate(LocalDate achievedDate) {
-        this.achievedDate = achievedDate;
+    public void setRecordedDate(LocalDate recordedDate) {
+        this.recordedDate = recordedDate;
     }
 
     public String getComment() {

@@ -38,7 +38,7 @@ export interface WordRecordResponseDto {
    * @type {string}
    * @memberof WordRecordResponseDto
    */
-  word: string;
+  title: string;
   /**
    * 記録日
    * @type {Date}
@@ -50,7 +50,7 @@ export interface WordRecordResponseDto {
    * @type {string}
    * @memberof WordRecordResponseDto
    */
-  comment: string | null;
+  comment: string;
   /**
    * 紐付けされたメディア一覧
    * @type {Array<MediaResponseDto>}
@@ -76,7 +76,7 @@ export interface WordRecordResponseDto {
  */
 export function instanceOfWordRecordResponseDto(value: object): value is WordRecordResponseDto {
   if (!("id" in value) || value["id"] === undefined) return false;
-  if (!("word" in value) || value["word"] === undefined) return false;
+  if (!("title" in value) || value["title"] === undefined) return false;
   if (!("recordedDate" in value) || value["recordedDate"] === undefined) return false;
   if (!("comment" in value) || value["comment"] === undefined) return false;
   if (!("media" in value) || value["media"] === undefined) return false;
@@ -98,7 +98,7 @@ export function WordRecordResponseDtoFromJSONTyped(
   }
   return {
     id: json["id"],
-    word: json["word"],
+    title: json["title"],
     recordedDate: new Date(json["recordedDate"]),
     comment: json["comment"],
     media: (json["media"] as Array<any>).map(MediaResponseDtoFromJSON),
@@ -121,7 +121,7 @@ export function WordRecordResponseDtoToJSONTyped(
 
   return {
     id: value["id"],
-    word: value["word"],
+    title: value["title"],
     recordedDate: value["recordedDate"].toISOString().substring(0, 10),
     comment: value["comment"],
     media: (value["media"] as Array<any>).map(MediaResponseDtoToJSON),

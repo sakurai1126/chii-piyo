@@ -14,7 +14,7 @@ export const ChildCareNavigation = ({ currentPage }: Props) => {
     <div className="bg-brown-back mx-auto w-fit rounded-lg p-2 max-md:py-1">
       <div className="flex gap-2 max-md:grid max-md:grid-cols-4">
         <Link
-          href="care"
+          href="/care"
           className={`grid h-12 w-40 place-content-center rounded-lg font-medium max-md:h-10 max-md:px-2 ${currentPage === "care" ? variantStyles["current"] : variantStyles["other"]} max-md:w-auto max-md:text-xs`}
         >
           記録
@@ -25,16 +25,17 @@ export const ChildCareNavigation = ({ currentPage }: Props) => {
           グラフ
         </button>
         <Link
-          href="first-records"
+          href="/first-records"
           className={`grid h-12 w-40 place-content-center rounded-lg font-medium max-md:h-10 max-md:px-2 ${currentPage === "first" ? variantStyles["current"] : variantStyles["other"]} max-md:w-auto max-md:text-xs`}
         >
           はじめて
         </Link>
-        <button
+        <Link
+          href="/word-records"
           className={`grid h-12 w-40 place-content-center rounded-lg font-medium max-md:h-10 max-md:px-2 ${currentPage === "word" ? variantStyles["current"] : variantStyles["other"]} max-md:w-auto max-md:text-xs`}
         >
           ことば
-        </button>
+        </Link>
       </div>
     </div>
   );

@@ -1,27 +1,3 @@
-get:
-  tags:
-    - wordRecordManagement
-  summary: ことばの記録をID指定で1件取得
-  operationId: getWordRecord
-  parameters:
-    - $ref: "../../components/parameters.yml#/XRequestedWith"
-    - $ref: "../../components/parameters.yml#/ResourceId"
-  responses:
-    "200":
-      description: ことばの記録情報
-      content:
-        application/json;charset=UTF-8:
-          schema:
-            $ref: "../../components/schemas/word-records.yml#/WordRecordResponseDto"
-    "401":
-      $ref: "../../components/responses.yml#/Unauthorized"
-    "404":
-      $ref: "../../components/responses.yml#/NotFound"
-    "500":
-      $ref: "../../components/responses.yml#/InternalServerError"
-    default:
-      $ref: "../../components/responses.yml#/DefaultErrors"
-
 put:
   tags:
     - wordRecordManagement
@@ -39,12 +15,8 @@ put:
           $ref: "../../components/schemas/word-records.yml#/WordRecordRequestDto"
     required: true
   responses:
-    "200":
-      description: 更新されたことばの記録
-      content:
-        application/json;charset=UTF-8:
-          schema:
-            $ref: "../../components/schemas/word-records.yml#/WordRecordResponseDto"
+    "204":
+      description: ことばの記録の更新に成功
     "400":
       $ref: "../../components/responses.yml#/BadRequest"
     "401":

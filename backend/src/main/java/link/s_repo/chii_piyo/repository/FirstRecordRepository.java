@@ -45,7 +45,7 @@ public class FirstRecordRepository {
      * @return 記録情報リスト
      */
     public List<FirstRecords> findAll() {
-        return firstRecordsMapper.select(c -> c.orderBy(FirstRecordsDynamicSqlSupport.achievedDate.descending()));
+        return firstRecordsMapper.select(c -> c.orderBy(FirstRecordsDynamicSqlSupport.recordedDate.descending()));
     }
 
     /**

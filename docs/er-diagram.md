@@ -184,7 +184,7 @@ erDiagram
     first_records {
         bigserial id PK
         varchar title
-        date achieved_date
+        date recorded_date
         text comment
         timestamptz created_at
         timestamptz updated_at
@@ -192,7 +192,7 @@ erDiagram
 
     word_records {
         bigserial id PK
-        varchar word
+        varchar title
         date recorded_date
         text comment
         timestamptz created_at

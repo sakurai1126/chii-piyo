@@ -24,7 +24,7 @@ export interface WordRecordRequestDto {
    * @type {string}
    * @memberof WordRecordRequestDto
    */
-  word: string;
+  title: string;
   /**
    * 記録日
    * @type {Date}
@@ -36,7 +36,7 @@ export interface WordRecordRequestDto {
    * @type {string}
    * @memberof WordRecordRequestDto
    */
-  comment: string | null;
+  comment: string;
   /**
    * 紐付けるメディアIDの配列
    * @type {Array<number>}
@@ -49,7 +49,7 @@ export interface WordRecordRequestDto {
  * Check if a given object implements the WordRecordRequestDto interface.
  */
 export function instanceOfWordRecordRequestDto(value: object): value is WordRecordRequestDto {
-  if (!("word" in value) || value["word"] === undefined) return false;
+  if (!("title" in value) || value["title"] === undefined) return false;
   if (!("recordedDate" in value) || value["recordedDate"] === undefined) return false;
   if (!("comment" in value) || value["comment"] === undefined) return false;
   if (!("mediaIds" in value) || value["mediaIds"] === undefined) return false;
@@ -68,7 +68,7 @@ export function WordRecordRequestDtoFromJSONTyped(
     return json;
   }
   return {
-    word: json["word"],
+    title: json["title"],
     recordedDate: new Date(json["recordedDate"]),
     comment: json["comment"],
     mediaIds: json["mediaIds"],
@@ -88,7 +88,7 @@ export function WordRecordRequestDtoToJSONTyped(
   }
 
   return {
-    word: value["word"],
+    title: value["title"],
     recordedDate: value["recordedDate"].toISOString().substring(0, 10),
     comment: value["comment"],
     mediaIds: value["mediaIds"],

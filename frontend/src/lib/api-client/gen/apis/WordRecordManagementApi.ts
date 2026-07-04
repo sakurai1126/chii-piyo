@@ -39,11 +39,6 @@ export interface DeleteWordRecordRequest {
   id: number;
 }
 
-export interface GetWordRecordRequest {
-  xRequestedWith: string;
-  id: number;
-}
-
 export interface GetWordRecordsRequest {
   xRequestedWith: string;
 }
@@ -114,13 +109,11 @@ export class WordRecordManagementApi extends runtime.BaseAPI {
   async createWordRecordRaw(
     requestParameters: CreateWordRecordRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<WordRecordResponseDto>> {
+  ): Promise<runtime.ApiResponse<void>> {
     const requestOptions = await this.createWordRecordRequestOpts(requestParameters);
     const response = await this.request(requestOptions, initOverrides);
 
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      WordRecordResponseDtoFromJSON(jsonValue),
-    );
+    return new runtime.VoidApiResponse(response);
   }
 
   /**
@@ -129,9 +122,8 @@ export class WordRecordManagementApi extends runtime.BaseAPI {
   async createWordRecord(
     requestParameters: CreateWordRecordRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<WordRecordResponseDto> {
-    const response = await this.createWordRecordRaw(requestParameters, initOverrides);
-    return await response.value();
+  ): Promise<void> {
+    await this.createWordRecordRaw(requestParameters, initOverrides);
   }
 
   /**
@@ -203,80 +195,6 @@ export class WordRecordManagementApi extends runtime.BaseAPI {
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<void> {
     await this.deleteWordRecordRaw(requestParameters, initOverrides);
-  }
-
-  /**
-   * Creates request options for getWordRecord without sending the request
-   */
-  async getWordRecordRequestOpts(
-    requestParameters: GetWordRecordRequest,
-  ): Promise<runtime.RequestOpts> {
-    if (requestParameters["xRequestedWith"] == null) {
-      throw new runtime.RequiredError(
-        "xRequestedWith",
-        'Required parameter "xRequestedWith" was null or undefined when calling getWordRecord().',
-      );
-    }
-
-    if (requestParameters["id"] == null) {
-      throw new runtime.RequiredError(
-        "id",
-        'Required parameter "id" was null or undefined when calling getWordRecord().',
-      );
-    }
-
-    const queryParameters: any = {};
-
-    const headerParameters: runtime.HTTPHeaders = {};
-
-    if (requestParameters["xRequestedWith"] != null) {
-      headerParameters["X-Requested-With"] = String(requestParameters["xRequestedWith"]);
-    }
-
-    if (this.configuration && this.configuration.accessToken) {
-      const token = this.configuration.accessToken;
-      const tokenString = await token("BearerAuth", []);
-
-      if (tokenString) {
-        headerParameters["Authorization"] = `Bearer ${tokenString}`;
-      }
-    }
-
-    let urlPath = `/word-records/{id}`;
-    urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-    return {
-      path: urlPath,
-      method: "GET",
-      headers: headerParameters,
-      query: queryParameters,
-    };
-  }
-
-  /**
-   * ことばの記録をID指定で1件取得
-   */
-  async getWordRecordRaw(
-    requestParameters: GetWordRecordRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<WordRecordResponseDto>> {
-    const requestOptions = await this.getWordRecordRequestOpts(requestParameters);
-    const response = await this.request(requestOptions, initOverrides);
-
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      WordRecordResponseDtoFromJSON(jsonValue),
-    );
-  }
-
-  /**
-   * ことばの記録をID指定で1件取得
-   */
-  async getWordRecord(
-    requestParameters: GetWordRecordRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<WordRecordResponseDto> {
-    const response = await this.getWordRecordRaw(requestParameters, initOverrides);
-    return await response.value();
   }
 
   /**
@@ -409,13 +327,11 @@ export class WordRecordManagementApi extends runtime.BaseAPI {
   async updateWordRecordRaw(
     requestParameters: UpdateWordRecordRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<WordRecordResponseDto>> {
+  ): Promise<runtime.ApiResponse<void>> {
     const requestOptions = await this.updateWordRecordRequestOpts(requestParameters);
     const response = await this.request(requestOptions, initOverrides);
 
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      WordRecordResponseDtoFromJSON(jsonValue),
-    );
+    return new runtime.VoidApiResponse(response);
   }
 
   /**
@@ -424,8 +340,7 @@ export class WordRecordManagementApi extends runtime.BaseAPI {
   async updateWordRecord(
     requestParameters: UpdateWordRecordRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<WordRecordResponseDto> {
-    const response = await this.updateWordRecordRaw(requestParameters, initOverrides);
-    return await response.value();
+  ): Promise<void> {
+    await this.updateWordRecordRaw(requestParameters, initOverrides);
   }
 }

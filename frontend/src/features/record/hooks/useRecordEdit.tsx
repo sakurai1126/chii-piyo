@@ -5,12 +5,14 @@ import { ActionResult } from "@/utils/action";
 import { formatJapaneseDateBasic } from "@/utils/date";
 
 import { createFirstRecordAction } from "../actions/createFirstRecordAction";
+import { createWordRecordAction } from "../actions/createWordRecordAction";
 import { updateFirstRecordAction } from "../actions/updateFirstRecordAction";
-import { FirstRecordData, SelectedMediaData } from "../types";
+import { updateWordRecordAction } from "../actions/updateWordRecordAction";
+import { RecordData, SelectedMediaData } from "../types";
 
 type Props = {
   setIsMenuOpen: Dispatch<SetStateAction<boolean>>;
-  initialEditData?: FirstRecordData;
+  initialEditData?: RecordData;
   variant: "newFirstRecord" | "editFirstRecord" | "newWordRecord" | "editWordRecord";
 };
 
@@ -38,12 +40,12 @@ export const useRecordEdit = ({ setIsMenuOpen, initialEditData, variant }: Props
   // 入力データ初期値
   const initialData = {
     title: initialEditData?.title ?? "",
-    achievedDate: initialEditData?.achievedDate ?? formatJapaneseDateBasic(new Date()),
+    recordedDate: initialEditData?.recordedDate ?? formatJapaneseDateBasic(new Date()),
     comment: initialEditData?.comment ?? "",
   };
 
   // 入力データ管理
-  const [data, setData] = useState<FirstRecordData>(initialData);
+  const [data, setData] = useState<RecordData>(initialData);
 
   // 確認画面の表示と表示前バリデーション
   const confirmOpen = () => {
@@ -52,7 +54,7 @@ export const useRecordEdit = ({ setIsMenuOpen, initialEditData, variant }: Props
       return;
     }
 
-    if (!data.achievedDate) {
+    if (!data.recordedDate) {
       toast.error("日時を入力してください");
       return;
     }
@@ -79,7 +81,7 @@ export const useRecordEdit = ({ setIsMenuOpen, initialEditData, variant }: Props
   const saveNewFirstRecord = async () => {
     const result = await createFirstRecordAction({
       title: data.title,
-      achievedDate: new Date(data.achievedDate),
+      achievedDate: new Date(data.recordedDate),
       comment: data.comment,
       mediaIds: selectedMediaData.map((media) => media.id),
     });
@@ -97,12 +99,42 @@ export const useRecordEdit = ({ setIsMenuOpen, initialEditData, variant }: Props
     const result = await updateFirstRecordAction({
       id: initialEditData.id,
       title: data.title,
-      achievedDate: new Date(data.achievedDate),
+      recordedDate: new Date(data.recordedDate),
       comment: data.comment,
       mediaIds: selectedMediaData.map((media) => media.id),
     });
 
     afterSaveAction(result, "はじめて記録を更新しました");
+  };
+
+  // ことばの記録の新規作成処理
+  const saveNewWordRecord = async () => {
+    const result = await createWordRecordAction({
+      title: data.title,
+      recordedDate: new Date(data.recordedDate),
+      comment: data.comment,
+      mediaIds: selectedMediaData.map((media) => media.id),
+    });
+
+    afterSaveAction(result, "ことばの記録を作成しました");
+  };
+
+  // ことばの記録の更新処理
+  const updateWordRecord = async () => {
+    if (!initialEditData?.id) {
+      toast.error("ことばの記録が見つかりませんでした");
+      return;
+    }
+
+    const result = await updateWordRecordAction({
+      id: initialEditData.id,
+      title: data.title,
+      recordedDate: new Date(data.recordedDate),
+      comment: data.comment,
+      mediaIds: selectedMediaData.map((media) => media.id),
+    });
+
+    afterSaveAction(result, "ことばの記録を更新しました");
   };
 
   // 保存後の後処理（UI更新/状態初期化/通知）
@@ -132,8 +164,10 @@ export const useRecordEdit = ({ setIsMenuOpen, initialEditData, variant }: Props
           updateFirstRecord();
           break;
         case "newWordRecord":
+          saveNewWordRecord();
           break;
         case "editWordRecord":
+          updateWordRecord();
           break;
         default:
           break;

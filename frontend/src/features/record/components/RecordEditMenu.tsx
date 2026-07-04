@@ -10,13 +10,13 @@ import { SharingGroupResponseDto, TagResponseDto } from "@/lib/api-client/gen";
 import closeIcon from "../assets/close.svg";
 import mediaIcon from "../assets/media.svg";
 import { useRecordEdit } from "../hooks/useRecordEdit";
-import { FirstRecordData } from "../types";
+import { RecordData } from "../types";
 
 type Props = {
   tags: TagResponseDto[];
   sharingGroups: SharingGroupResponseDto[];
   setIsMenuOpen: Dispatch<SetStateAction<boolean>>;
-  initialEditData?: FirstRecordData;
+  initialEditData?: RecordData;
   variant: "newFirstRecord" | "editFirstRecord" | "newWordRecord" | "editWordRecord";
 };
 export const RecordEditMenu = ({
@@ -50,7 +50,10 @@ export const RecordEditMenu = ({
       {/* 記録タイトルと日付入力 */}
       <div className="flex gap-7 max-md:flex-col max-md:gap-4">
         <div className="grid gap-2">
-          <p className="max-md:text-[13px]">記録内容</p>
+          <p className="max-md:text-[13px]">
+            {(variant === "newWordRecord" || variant === "editWordRecord") && <>おぼえたことば</>}
+            {(variant === "newFirstRecord" || variant === "editFirstRecord") && <>記録内容</>}
+          </p>
           <input
             type="text"
             className="focus:outline-brown-light border-line-gray h-12 w-100 rounded-sm border bg-white px-2 max-md:h-9 max-md:w-full max-md:max-w-100 max-md:text-[13px]"
@@ -63,8 +66,8 @@ export const RecordEditMenu = ({
           <input
             type="date"
             className="focus:outline-brown-light border-line-gray h-12 w-40 rounded-sm border bg-white px-2 max-md:h-9 max-md:text-[13px]"
-            value={data.achievedDate}
-            onChange={(e) => setData({ ...data, achievedDate: e.target.value })}
+            value={data.recordedDate}
+            onChange={(e) => setData({ ...data, recordedDate: e.target.value })}
           />
         </div>
       </div>
