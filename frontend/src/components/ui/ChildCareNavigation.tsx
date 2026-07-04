@@ -19,11 +19,12 @@ export const ChildCareNavigation = ({ currentPage }: Props) => {
         >
           記録
         </Link>
-        <button
+        <Link
+          href="/analysis"
           className={`grid h-12 w-40 place-content-center rounded-lg font-medium max-md:h-10 max-md:px-2 ${currentPage === "graph" ? variantStyles["current"] : variantStyles["other"]} max-md:w-auto max-md:text-xs`}
         >
           グラフ
-        </button>
+        </Link>
         <Link
           href="/first-records"
           className={`grid h-12 w-40 place-content-center rounded-lg font-medium max-md:h-10 max-md:px-2 ${currentPage === "first" ? variantStyles["current"] : variantStyles["other"]} max-md:w-auto max-md:text-xs`}
