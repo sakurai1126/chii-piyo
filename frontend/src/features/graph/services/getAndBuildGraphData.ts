@@ -54,11 +54,11 @@ export const getAndBuildGraphData = async () => {
     });
 
     // 月に複数件ある場合の対処のため登録日時順にソート
-    const sortedHeightRecords = heightRecordsInMonth.sort((a, b) => {
+    heightRecordsInMonth.sort((a, b) => {
       return b.measurementDate.getTime() - a.measurementDate.getTime();
     });
 
-    const sortedWeightRecords = weightRecordsInMonth.sort((a, b) => {
+    weightRecordsInMonth.sort((a, b) => {
       return b.measurementDate.getTime() - a.measurementDate.getTime();
     });
 
@@ -75,14 +75,14 @@ export const getAndBuildGraphData = async () => {
     heightData.push({
       month: monthKey,
       standardRange: range?.heightRange,
-      value: sortedHeightRecords[0]?.height ?? null,
+      value: heightRecordsInMonth[0]?.height ?? null,
     });
 
     // 体重データを保存
     weightData.push({
       month: monthKey,
       standardRange: range?.weightRange,
-      value: sortedWeightRecords[0]?.weight ?? null,
+      value: weightRecordsInMonth[0]?.weight ?? null,
     });
 
     // その月末までに登録された「ことば」の全記録を抽出

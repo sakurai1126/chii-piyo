@@ -61,7 +61,7 @@ export const GraphChart = ({ data, variant }: Props) => {
                 domain={variant === "milk" || variant === "diaper" ? [0, "auto"] : ["auto", "auto"]}
                 tick={{ fontSize: 10, fill: "#888888" }}
                 // 排泄記録と言葉の数の場合は小数を許可しない
-                allowDecimals={variant === "diaper" || variant === "word" ? false : true}
+                allowDecimals={variant !== "diaper" && variant !== "word"}
               />
 
               {/* データにホバーした際に出る吹き出し */}

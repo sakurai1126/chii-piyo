@@ -24,7 +24,7 @@ export const growthStandardRanges: GrowthStandardRange[] = [
   {
     ageLabel: "0年3〜4月未満",
     ageRangeMonths: [3, 4],
-    heightRange: [58.0, 65.9],
+    heightRange: [58, 65.9],
     weightRange: [5.22, 7.84],
   },
   {
@@ -54,8 +54,8 @@ export const growthStandardRanges: GrowthStandardRange[] = [
   {
     ageLabel: "0年8〜9月未満",
     ageRangeMonths: [8, 9],
-    heightRange: [65.5, 74.0],
-    weightRange: [6.85, 10.0],
+    heightRange: [65.5, 74],
+    weightRange: [6.85, 10],
   },
   {
     ageLabel: "0年9〜10月未満",
@@ -108,7 +108,7 @@ export const growthStandardRanges: GrowthStandardRange[] = [
   {
     ageLabel: "3年6〜12月未満",
     ageRangeMonths: [42, 48],
-    heightRange: [91.0, 104.7],
+    heightRange: [91, 104.7],
     weightRange: [12.1, 17.94],
   },
   {
@@ -126,7 +126,7 @@ export const growthStandardRanges: GrowthStandardRange[] = [
   {
     ageLabel: "5年0〜6月未満",
     ageRangeMonths: [60, 66],
-    heightRange: [100.3, 116.0],
+    heightRange: [100.3, 116],
     weightRange: [14.49, 22.35],
   },
   {

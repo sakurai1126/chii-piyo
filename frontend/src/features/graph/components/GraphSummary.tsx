@@ -22,67 +22,60 @@ export const GraphSummary = ({ growthRecords, careRecords, wordRecords }: Props)
   );
 };
 
+// 前月比計算
+const calculateDiff = (
+  growthRecords: GrowthRecordResponseDto[],
+  type: "height" | "weight",
+  latestRecord?: GrowthRecordResponseDto,
+) => {
+  if (!latestRecord) return null;
+
+  // latestRecordから最新の身長/体重を取得
+  const latestValue = type === "height" ? latestRecord.height : latestRecord.weight;
+  if (latestValue == null) return null;
+
+  // 最新のデータの記録日時
+  const latestDate = new Date(latestRecord.measurementDate);
+  // 最新データの1ヶ月前
+  const prevMonth = new Date(latestDate.getFullYear(), latestDate.getMonth() - 1);
+
+  // 記録が前月のデータに一致するものを取得
+  const prevMonthRecord = growthRecords.find((record) => {
+    // 種別ごとにデータを確認
+    const value = type === "height" ? record.height : record.weight;
+    if (value == null) return false;
+
+    // 記録日時が対象(前月)と一致するか
+    return (
+      record.measurementDate.getFullYear() === prevMonth.getFullYear() &&
+      record.measurementDate.getMonth() === prevMonth.getMonth()
+    );
+  });
+
+  // 種別ごとに前月データを取得
+  const prevValue = type === "height" ? prevMonthRecord?.height : prevMonthRecord?.weight;
+
+  // 最新データ(latestValue)から前月データ(prevValue)を引いた値を返す
+  return prevValue != null ? (latestValue - prevValue).toFixed(1) : null;
+};
+
+// 前月比の表示テキストを生成
+const formatDiffText = (diff: string | null, unit: string) => {
+  if (diff == null) return "前月記録なし";
+  const sign = Number(diff) > 0 ? "+" : "";
+  return `前月比 ${sign}${diff}${unit}`;
+};
+
 // 成長記録を計算
 const GrowthGraphSummary = ({ growthRecords }: { growthRecords: GrowthRecordResponseDto[] }) => {
   // 最新の身長データを取得
   const latestHeightRecord = growthRecords.find((record) => record.height != null);
-  const latestHeight = latestHeightRecord?.height;
-
   // 最新の体重データを取得
   const latestWeightRecord = growthRecords.find((record) => record.weight != null);
-  const latestWeight = latestWeightRecord?.weight;
 
-  // 差分表示用変数を定義
-  let diffHeight: string | null = null;
-  let diffWeight: string | null = null;
-
-  // 最新の身長データが存在する場合前月データを算出
-  if (latestHeight != null && latestHeightRecord) {
-    // 最新の身長データの記録日時
-    const latestDate = new Date(latestHeightRecord.measurementDate);
-
-    // 最新データの1ヶ月前の年月
-    const prevMonth = new Date(latestDate.getFullYear(), latestDate.getMonth() - 1);
-
-    // 記録が前月のデータに一致するものを取得
-    const prevMonthHeightRecord = growthRecords.find((record) => {
-      if (record.height == null) return false;
-      const targetDate = new Date(record.measurementDate);
-      return (
-        targetDate.getFullYear() === prevMonth.getFullYear() &&
-        targetDate.getMonth() === prevMonth.getMonth()
-      );
-    })?.height;
-
-    // 取得できた場合差分変数を更新
-    if (prevMonthHeightRecord != null) {
-      diffHeight = (latestHeight - prevMonthHeightRecord).toFixed(1);
-    }
-  }
-
-  // 最新の体重データが存在する場合前月データを算出
-  if (latestWeight != null && latestWeightRecord) {
-    // 最新の体重データの記録日時
-    const latestDate = new Date(latestWeightRecord.measurementDate);
-
-    // 最新データの1ヶ月前の年月
-    const prevMonth = new Date(latestDate.getFullYear(), latestDate.getMonth() - 1);
-
-    // 記録が前月のデータに一致するものを取得
-    const prevMonthWeightRecord = growthRecords.find((record) => {
-      if (record.weight == null) return false;
-      const targetDate = new Date(record.measurementDate);
-      return (
-        targetDate.getFullYear() === prevMonth.getFullYear() &&
-        targetDate.getMonth() === prevMonth.getMonth()
-      );
-    })?.weight;
-
-    // 取得できた場合差分変数を更新
-    if (prevMonthWeightRecord != null) {
-      diffWeight = (latestWeight - prevMonthWeightRecord).toFixed(1);
-    }
-  }
+  // 差分表示処理
+  const diffHeight = calculateDiff(growthRecords, "height", latestHeightRecord);
+  const diffWeight = calculateDiff(growthRecords, "weight", latestWeightRecord);
 
   return (
     <>
@@ -91,20 +84,16 @@ const GrowthGraphSummary = ({ growthRecords }: { growthRecords: GrowthRecordResp
         <p className="max-md:text-[13px]">身長</p>
         <div className="mt-2 flex items-end gap-1 max-md:mt-1">
           <p className="text-3xl font-medium max-lg:text-2xl max-md:text-[28px]">
-            {latestHeight ? latestHeight.toFixed(1) : "--"}
+            {latestHeightRecord?.height ? latestHeightRecord.height.toFixed(1) : "--"}
           </p>
           <p className="text-2xl max-lg:text-xl">cm</p>
         </div>
         {latestHeightRecord && (
-          <>
-            <p className="text-note-gray mt-2 text-xs max-md:mt-1">
-              {formatJapaneseDateNonTime(latestHeightRecord.measurementDate)}時点
-              <br />
-              {diffHeight != null
-                ? `前月比 ${Number(diffHeight) > 0 ? "+" : ""}${diffHeight}cm`
-                : "前月記録なし"}
-            </p>
-          </>
+          <p className="text-note-gray mt-2 text-xs max-md:mt-1">
+            {formatJapaneseDateNonTime(latestHeightRecord.measurementDate)}時点
+            <br />
+            {formatDiffText(diffHeight, "cm")}
+          </p>
         )}
       </div>
 
@@ -113,20 +102,16 @@ const GrowthGraphSummary = ({ growthRecords }: { growthRecords: GrowthRecordResp
         <p className="max-md:text-[13px]">体重</p>
         <div className="mt-2 flex items-end gap-1 max-md:mt-1">
           <p className="text-3xl font-medium max-lg:text-2xl max-md:text-[28px]">
-            {latestWeight ? latestWeight.toFixed(1) : "--"}
+            {latestWeightRecord?.weight ? latestWeightRecord.weight.toFixed(1) : "--"}
           </p>
           <p className="text-2xl max-lg:text-xl">kg</p>
         </div>
         {latestWeightRecord && (
-          <>
-            <p className="text-note-gray mt-2 text-xs max-md:mt-1">
-              {formatJapaneseDateNonTime(latestWeightRecord.measurementDate)}時点
-              <br />
-              {diffWeight != null
-                ? `前月比 ${Number(diffWeight) > 0 ? "+" : ""}${diffWeight}kg`
-                : "前月記録なし"}
-            </p>
-          </>
+          <p className="text-note-gray mt-2 text-xs max-md:mt-1">
+            {formatJapaneseDateNonTime(latestWeightRecord.measurementDate)}時点
+            <br />
+            {formatDiffText(diffWeight, "kg")}
+          </p>
         )}
       </div>
     </>

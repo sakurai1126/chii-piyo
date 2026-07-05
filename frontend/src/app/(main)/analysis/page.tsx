@@ -1,8 +1,7 @@
 import Container from "@/components/layout/Container";
 import { ChildCareNavigation } from "@/components/ui/ChildCareNavigation";
 import PageTitle from "@/components/ui/PageTitle";
-import { getAndBuildGraphData, GraphChart } from "@/features/graph";
-import { GraphSummary } from "@/features/graph";
+import { getAndBuildGraphData, GraphChart, GraphSummary } from "@/features/graph";
 
 export default async function AnalysisPage() {
   const {
