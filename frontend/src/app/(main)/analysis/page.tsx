@@ -5,8 +5,16 @@ import { getAndBuildGraphData, GraphChart } from "@/features/graph";
 import { GraphSummary } from "@/features/graph";
 
 export default async function AnalysisPage() {
-  const { heightData, weightData, milkData, diaperData, careRecords, growthRecords, wordRecords } =
-    await getAndBuildGraphData();
+  const {
+    heightData,
+    weightData,
+    milkData,
+    diaperData,
+    wordData,
+    careRecords,
+    growthRecords,
+    wordRecords,
+  } = await getAndBuildGraphData();
 
   return (
     <Container className="mt-10 max-md:mt-5">
@@ -38,7 +46,7 @@ export default async function AnalysisPage() {
           <GraphChart data={diaperData} variant="diaper" />
         </div>
         {/* ことばデータグラフ */}
-        <GraphChart data={heightData} variant="word" />
+        <GraphChart data={wordData} variant="word" />
       </div>
     </Container>
   );

@@ -32,7 +32,7 @@ export const GraphChart = ({ data, variant }: Props) => {
     weight: { title: "体重", unit: "kg", graphHeight: 400 },
     milk: { title: "ミルク量", unit: "ml", graphHeight: 300 },
     diaper: { title: "排泄記録", unit: "回", graphHeight: 300 },
-    word: { title: "覚えた言葉", unit: "語", graphHeight: 300 },
+    word: { title: "おぼえたことば", unit: "語", graphHeight: 300 },
   };
 
   return (
@@ -101,7 +101,7 @@ export const GraphChart = ({ data, variant }: Props) => {
                   <Line
                     type="monotone"
                     dataKey="value"
-                    name="記録"
+                    name="身長記録"
                     stroke="#FF4F4F"
                     strokeWidth={3}
                     dot={{ fill: "#FF4F4F", strokeWidth: 2 }}
@@ -128,7 +128,7 @@ export const GraphChart = ({ data, variant }: Props) => {
                   <Line
                     type="monotone"
                     dataKey="value"
-                    name="記録"
+                    name="体重記録"
                     stroke="#D1CB32"
                     strokeWidth={3}
                     dot={{ fill: "#D1CB32", strokeWidth: 2 }}
@@ -140,7 +140,7 @@ export const GraphChart = ({ data, variant }: Props) => {
 
               {/* ミルク量棒グラフの描画 */}
               {variant === "milk" && (
-                <Bar dataKey="value" name="記録" fill="#4ADB26" barSize={20} />
+                <Bar dataKey="value" name="ミルク量" fill="#4ADB26" barSize={20} />
               )}
 
               {/* 排泄記録棒グラフの描画 */}
@@ -153,16 +153,7 @@ export const GraphChart = ({ data, variant }: Props) => {
 
               {/* 覚えた言葉の数折れ線グラフの描画 */}
               {variant === "word" && (
-                <Line
-                  type="monotone"
-                  dataKey="value"
-                  name="記録"
-                  stroke="#DB5926"
-                  strokeWidth={3}
-                  dot={{ fill: "#DB5926", strokeWidth: 2 }}
-                  // 途中の月に記録がない場合でも、前後の記録同士を線で繋ぐ設定
-                  connectNulls={true}
-                />
+                <Bar dataKey="value" name="おぼえたことば" fill="#DB5926" barSize={20} />
               )}
             </ComposedChart>
           </ResponsiveContainer>

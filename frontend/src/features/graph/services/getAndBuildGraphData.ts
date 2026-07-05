@@ -7,7 +7,8 @@ import { growthStandardRanges } from "./growthStandardRanges";
 
 export const getAndBuildGraphData = async () => {
   // 誕生日指定
-  const birthday = new Date("2025-08-06");
+  const birthYear = 2025;
+  const birthMonth = 8;
 
   // 今日のまでの１週間分の指定
   const today = new Date();
@@ -21,137 +22,153 @@ export const getAndBuildGraphData = async () => {
     getWordRecords(),
   ]);
 
-  // 身長/体重共通のデータ取得処理
-  const getMonthlyGrowthData = (i: number, type: "height" | "weight") => {
-    // 対象月の初日を取得してそこから年と月を取得
+  // 1年で取得集計するデータの処理
+  const heightData: { month: string; standardRange?: number[]; value: number | null }[] = [];
+  const weightData: { month: string; standardRange?: number[]; value: number | null }[] = [];
+  const wordData: { month: string; value: number }[] = [];
+
+  for (let i = 0; i < 12; i++) {
+    // 対象月の初日を取得してそこから対象の年と月を取得
     const targetMonthDate = new Date(today.getFullYear(), today.getMonth() - (11 - i), 1);
     const targetYear = targetMonthDate.getFullYear();
     const targetMonth = targetMonthDate.getMonth();
 
     // フォーマット用の文字列作成 (YYYY-MM)
-    const monthKey = formatShortMonth(
-      `${targetYear}-${(targetMonth + 1).toString().padStart(2, "0")}`,
-    );
+    const monthKey = formatShortMonth(targetMonthDate);
 
-    // 取得した成長データ(growthRecords)から対象月の記録を抽出
-    const recordsInMonth = growthRecords.filter((record) => {
-      // 記録日時を取得
-      const recordDate = new Date(record.measurementDate);
-      // 以下条件に合うものを取得
+    // 取得した成長データ(growthRecords)から対象月の身長/体重記録を抽出
+    const heightRecordsInMonth = growthRecords.filter((record) => {
       return (
-        // 記録年が目的の年と一致
-        recordDate.getFullYear() === targetYear &&
-        // 記録月が目的の月と一致
-        recordDate.getMonth() === targetMonth &&
-        // 対象のデータが存在している
-        ((type === "height" && record.height != null) ||
-          (type === "weight" && record.weight != null))
+        // 記録年が対象年と一致 & 記録月が対象月と一致 & 対象のデータが存在している
+        record.measurementDate.getFullYear() === targetYear &&
+        record.measurementDate.getMonth() === targetMonth &&
+        record.height != null
+      );
+    });
+    const weightRecordsInMonth = growthRecords.filter((record) => {
+      return (
+        record.measurementDate.getFullYear() === targetYear &&
+        record.measurementDate.getMonth() === targetMonth &&
+        record.weight != null
       );
     });
 
     // 月に複数件ある場合の対処のため登録日時順にソート
-    const sortedRecords = [...recordsInMonth].sort((a, b) => {
-      return new Date(b.measurementDate).getTime() - new Date(a.measurementDate).getTime();
+    const sortedHeightRecords = heightRecordsInMonth.sort((a, b) => {
+      return b.measurementDate.getTime() - a.measurementDate.getTime();
     });
 
-    // 配列内の一件目（対象月内の最新データ）を取得
-    const latestRecord = sortedRecords.length > 0 ? sortedRecords[0] : null;
+    const sortedWeightRecords = weightRecordsInMonth.sort((a, b) => {
+      return b.measurementDate.getTime() - a.measurementDate.getTime();
+    });
 
     // 対象月初日時点の適正範囲算出のため月齢の算出
     // 年差を12か月に変換してから誕生月分を引いて対象月を加算する
-    const monthsOld =
-      (targetMonthDate.getFullYear() - birthday.getFullYear()) * 12 -
-      birthday.getMonth() +
-      targetMonth;
+    const monthsOld = (targetYear - birthYear) * 12 - (birthMonth - 1) + targetMonth;
 
     // 計算した月齢から該当するstandardRangeを取得
     const range = growthStandardRanges.find(
       (r) => monthsOld >= r.ageRangeMonths[0] && monthsOld < r.ageRangeMonths[1],
     );
 
-    return { monthKey, latestRecord, range };
+    // 身長データを保存
+    heightData.push({
+      month: monthKey,
+      standardRange: range?.heightRange,
+      value: sortedHeightRecords[0]?.height ?? null,
+    });
+
+    // 体重データを保存
+    weightData.push({
+      month: monthKey,
+      standardRange: range?.weightRange,
+      value: sortedWeightRecords[0]?.weight ?? null,
+    });
+
+    // その月末までに登録された「ことば」の全記録を抽出
+    const recordsUpToMonth = wordRecords.filter((record) => {
+      // 以下条件に合うものを取得
+      return (
+        // 記録年が対象年より以前
+        record.recordedDate.getFullYear() < targetYear ||
+        // 記録年が対象年かつ記録月が対象月以前
+        (record.recordedDate.getFullYear() === targetYear &&
+          record.recordedDate.getMonth() <= targetMonth)
+      );
+    });
+
+    // ことばデータを保存
+    wordData.push({
+      month: monthKey,
+      value: recordsUpToMonth.length,
+    });
+  }
+
+  // 1週間で取得集計するデータの処理
+  const milkData: { day: string; value: number }[] = [];
+  const diaperData: { day: string; value: number; secondValue: number }[] = [];
+
+  // 対象日を取得する関数（後続の1週間ループ内処理の共通化）
+  const targetDay = (base: Date, days: number) => {
+    return new Date(base.getFullYear(), base.getMonth(), base.getDate() + days);
   };
 
-  // 直近1年分の身長データの作成
-  const heightData = Array.from({ length: 12 }, (_, i) => {
-    const { monthKey, latestRecord, range } = getMonthlyGrowthData(i, "height");
+  // 日付表示兼比較用の文字をデータに追加
+  const formattedCareRecords = careRecords.items.map((record) => ({
+    ...record,
+    recordedAtStr: formatShortDate(record.recordedAt),
+  }));
 
-    return {
-      month: monthKey,
-      standardRange: range ? range.heightRange : undefined,
-      value: latestRecord?.height ?? null,
-    };
-  });
-
-  // 直近1年分の体重データの作成
-  const weightData = Array.from({ length: 12 }, (_, i) => {
-    const { monthKey, latestRecord, range } = getMonthlyGrowthData(i, "weight");
-    return {
-      month: monthKey,
-      standardRange: range ? range.weightRange : undefined,
-      value: latestRecord?.weight ?? null,
-    };
-  });
-
-  // ミルク量データ
-  const milkData = Array.from({ length: 7 }, (_, i) => {
+  for (let i = 0; i < 7; i++) {
     // 対象の日付を取得
     const targetDate = formatShortDate(targetDay(today, i - 6));
-    // careRecordsから対象日のミルク記録のみを抽出しamountMlを合計する
-    const totalMilkAmount = careRecords.items
-      .filter(
-        (record) =>
-          record.recordType === "MILK" && formatShortDate(record.recordedAt) === targetDate,
-      )
+
+    // その日の記録だけを事前に絞り込み
+    const recordsInDay = formattedCareRecords.filter(
+      (record) => record.recordedAtStr === targetDate,
+    );
+
+    // データタイプ：MILKのamountMlデータを集計しミルク量を算出
+    const totalMilkAmount = recordsInDay
+      .filter((record) => record.recordType === "MILK")
       .reduce((sum, record) => sum + (record.milkDetail?.amountMl ?? 0), 0);
 
-    return {
+    // ミルクデータを保存
+    milkData.push({
       day: targetDate,
       value: totalMilkAmount,
-    };
-  });
+    });
 
-  // 排泄記録データ
-  const diaperData = Array.from({ length: 7 }, (_, i) => {
-    // 対象の日付を取得
-    const targetDate = formatShortDate(targetDay(today, i - 6));
-    // careRecordsから対象日の排泄記録のみを抽出しそれぞれ回数を合計する
-    const wetCount = careRecords.items
+    // データタイプ：DIAPERのWETデータをカウントし排泄記録を算出
+    const wetCount = recordsInDay
       .filter(
-        (record) =>
-          record.recordType === "DIAPER" &&
-          formatShortDate(record.recordedAt) === targetDate &&
-          record.diaperDetail?.diaperType === "WET",
+        (record) => record.recordType === "DIAPER" && record.diaperDetail?.diaperType === "WET",
       )
       .reduce((sum) => sum + 1, 0);
 
-    const dirtyCount = careRecords.items
+    // データタイプ：DIAPERのDIRTYデータをカウントし排泄記録を算出
+    const dirtyCount = recordsInDay
       .filter(
-        (record) =>
-          record.recordType === "DIAPER" &&
-          formatShortDate(record.recordedAt) === targetDate &&
-          record.diaperDetail?.diaperType === "DIRTY",
+        (record) => record.recordType === "DIAPER" && record.diaperDetail?.diaperType === "DIRTY",
       )
       .reduce((sum) => sum + 1, 0);
 
-    return {
+    // 排泄データを保存
+    diaperData.push({
       day: targetDate,
       value: wetCount,
       secondValue: dirtyCount,
-    };
-  });
+    });
+  }
 
   return {
     heightData,
     weightData,
     milkData,
     diaperData,
+    wordData,
     careRecords,
     growthRecords,
     wordRecords,
   };
-};
-
-const targetDay = (base: Date, days: number) => {
-  return new Date(base.getFullYear(), base.getMonth(), base.getDate() + days);
 };
