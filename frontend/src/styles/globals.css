@@ -62,6 +62,13 @@
   --color-growth-text: #f64646;
 
   --color-calender-head: #fffc9f;
+
+  /* グラフ */
+  --color-graph-border-height: #db9c26;
+  --color-graph-border-weight: #d1cb32;
+  --color-graph-border-diaper: #26b5db;
+  --color-graph-border-milk: #4adb26;
+  --color-graph-border-word: #db5926;
 }
 
 html {

@@ -38,6 +38,50 @@ export const formatJapaneseDateNonTime = (dateParam: string | Date): string => {
  * Date型の情報をフォーマットした文字列で返す
  *
  * @param date Date型の日付情報
+ * @returns "MM/DD"形式の文字列
+ */
+export const formatShortDate = (dateParam: string | Date): string => {
+  const date = typeof dateParam === "string" ? new Date(dateParam) : dateParam;
+
+  if (Number.isNaN(date.getTime())) return "";
+
+  // タイムゾーンを日本時間に指定してフォーマット（en-USで月/日形式にする）
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Tokyo",
+    month: "numeric",
+    day: "numeric",
+  }).format(date);
+};
+
+/**
+ * Date型の情報をフォーマットした文字列で返す
+ *
+ * @param date Date型の日付情報
+ * @returns "YYYY/M"形式の文字列
+ */
+export const formatShortMonth = (dateParam: string | Date): string => {
+  const date = typeof dateParam === "string" ? new Date(dateParam) : dateParam;
+
+  if (Number.isNaN(date.getTime())) return "";
+
+  // タイムゾーンを日本時間に指定して各パーツを取得
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Tokyo",
+    year: "numeric",
+    month: "numeric",
+  });
+
+  const parts = formatter.formatToParts(date);
+  const year = parts.find((p) => p.type === "year")?.value;
+  const month = parts.find((p) => p.type === "month")?.value;
+
+  return `${year}/${month}`;
+};
+
+/**
+ * Date型の情報をフォーマットした文字列で返す
+ *
+ * @param date Date型の日付情報
  * @returns "YYYY-MM-DD"形式の文字列
  */
 export const formatJapaneseDateBasic = (dateParam: string | Date): string => {
