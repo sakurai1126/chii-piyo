@@ -34,6 +34,7 @@ export const GraphChart = ({ data, variant }: Props) => {
     diaper: { title: "排泄記録", unit: "回", graphHeight: 300 },
     word: { title: "覚えた言葉", unit: "語", graphHeight: 300 },
   };
+
   return (
     <div className="border-brown-dark rounded-lg border bg-white/50 px-6 py-5 backdrop-blur-[7.5px] max-md:overflow-hidden max-md:px-0 max-md:py-3">
       <h3 className="mb-4 text-sm max-md:mb-2 max-md:pl-3 max-md:text-xs">
