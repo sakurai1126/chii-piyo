@@ -16,8 +16,10 @@ export default async function CarePage() {
   const endDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + 6);
 
   // 初期データを取得
-  const careRecords = await getCareRecords({ startDate, endDate });
-  const growthRecords = await getGrowthRecords({ startDate, endDate });
+  const [careRecords, growthRecords] = await Promise.all([
+    getCareRecords({ startDate, endDate }),
+    getGrowthRecords({ startDate, endDate }),
+  ]);
 
   return (
     <Container className="mt-10 max-md:mt-5">

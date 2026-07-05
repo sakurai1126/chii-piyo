@@ -1,8 +1,11 @@
 import Container from "@/components/layout/Container";
 import { ChildCareNavigation } from "@/components/ui/ChildCareNavigation";
 import PageTitle from "@/components/ui/PageTitle";
+import { getCareRecords } from "@/features/care/api/getCareRecords";
+import { getGrowthRecords } from "@/features/care/api/getGrowthRecords";
 import { GraphChart } from "@/features/graph";
 import { GraphSummary } from "@/features/graph";
+import { getWordRecords } from "@/features/record/api/getWordRecords";
 import { formatJapaneseDateNonTime } from "@/utils/date";
 
 export default async function AnalysisPage() {
@@ -14,6 +17,19 @@ export default async function AnalysisPage() {
     { month: formatJapaneseDateNonTime("2026-08-01"), standardRange: [55.9, 64.5], value: 58.0 },
   ];
 
+  // 今日のまでの１週間分の指定
+  const today = new Date();
+  const careStartDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 6);
+  const growthStartDate = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
+
+  // 初期データを取得
+
+  const [careRecords, growthRecords, wordRecords] = await Promise.all([
+    getCareRecords({ startDate: careStartDate, endDate: today }),
+    getGrowthRecords({ startDate: growthStartDate, endDate: today }),
+    getWordRecords(),
+  ]);
+
   return (
     <Container className="mt-10 max-md:mt-5">
       <ChildCareNavigation currentPage="graph" />
@@ -22,7 +38,11 @@ export default async function AnalysisPage() {
       </div>
 
       {/* サマリー表示 */}
-      <GraphSummary />
+      <GraphSummary
+        growthRecords={growthRecords}
+        careRecords={careRecords}
+        wordRecords={wordRecords}
+      />
 
       {/* 各種グラフ */}
       <div className="mt-15 grid gap-10 max-md:gap-5">

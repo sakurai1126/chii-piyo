@@ -44,7 +44,7 @@ public class GrowthRecordRepository {
                 // 記録日がendDateより前のものを絞り込み
                 GrowthRecordsDynamicSqlSupport.measurementDate,
                 isLessThan(endDate.plusDays(1))
-            ).orderBy(GrowthRecordsDynamicSqlSupport.createdAt)
+            ).orderBy(GrowthRecordsDynamicSqlSupport.measurementDate.descending())
         );
     }
 
