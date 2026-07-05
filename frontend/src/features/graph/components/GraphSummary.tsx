@@ -54,9 +54,12 @@ const calculateDiff = (
 
   // 種別ごとに前月データを取得
   const prevValue = type === "height" ? prevMonthRecord?.height : prevMonthRecord?.weight;
+  if (prevValue == null) {
+    return null;
+  }
 
   // 最新データ(latestValue)から前月データ(prevValue)を引いた値を返す
-  return prevValue != null ? (latestValue - prevValue).toFixed(1) : null;
+  return (latestValue - prevValue).toFixed(1);
 };
 
 // 前月比の表示テキストを生成
