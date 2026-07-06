@@ -83,7 +83,9 @@ public class FirstRecordService {
             .collect(Collectors.toMap(Media::getId, media -> media));
 
         // 記録IDをキーにして、紐づくメディアのリストをグループ化
+        // 取得したメディア内のデータでフィルターしてゴミ箱内データのID混入を弾く
         Map<Long, List<Media>> mediaByRecordId = firstRecordMediaList.stream()
+            .filter(firstRecordMedia -> mediaMap.containsKey(firstRecordMedia.getMediaId()))
             .collect(Collectors.groupingBy(
                 FirstRecordMedia::getFirstRecordId,
                 Collectors.mapping(

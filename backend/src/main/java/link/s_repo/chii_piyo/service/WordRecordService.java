@@ -115,7 +115,9 @@ public class WordRecordService {
             .collect(Collectors.toMap(Media::getId, media -> media));
 
         // 記録IDをキーにして、紐づくメディアのリストをグループ化
+        // 取得したメディア内のデータでフィルターしてゴミ箱内データのID混入を弾く
         Map<Long, List<Media>> mediaByRecordId = wordRecordMediaList.stream()
+            .filter(wordRecordMedia -> mediaMap.containsKey(wordRecordMedia.getMediaId()))
             .collect(Collectors.groupingBy(
                 WordRecordMedia::getWordRecordId,
                 Collectors.mapping(
@@ -126,7 +128,7 @@ public class WordRecordService {
 
         // レコード型で必要情報を返却
         return records.stream()
-            .map(record -> new WordRecordService.WordRecordWithMedia(
+            .map(record -> new WordRecordWithMedia(
                 record,
                 mediaByRecordId.getOrDefault(record.getId(), List.of())
             ))
