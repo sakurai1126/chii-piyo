@@ -69,6 +69,9 @@
   --color-graph-border-diaper: #26b5db;
   --color-graph-border-milk: #4adb26;
   --color-graph-border-word: #db5926;
+
+  /* アニメーション */
+  --animate-fade-slideshow: fade-slideshow 30s infinite;
 }
 
 html {
@@ -104,4 +107,18 @@ body {
 
 .animate-fade-out {
   animation: fadeOut 0.3s ease-out forwards;
+}
+
+@keyframes fade-slideshow {
+  0%,
+  13% {
+    opacity: 1;
+  }
+  17%,
+  96% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }

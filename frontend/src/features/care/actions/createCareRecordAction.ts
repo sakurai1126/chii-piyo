@@ -42,6 +42,7 @@ export const createCareRecordAction = async (input: Input): Promise<ActionResult
     });
 
     // キャッシュを破棄し、サーバーコンポーネントを再レンダリング
+    revalidatePath("/");
     revalidatePath("/care");
 
     return { success: true };

@@ -37,6 +37,7 @@ export const createGrowthRecordAction = async (input: Input): Promise<ActionResu
     });
 
     // キャッシュを破棄し、サーバーコンポーネントを再レンダリング
+    revalidatePath("/");
     revalidatePath("/care");
 
     return { success: true };
