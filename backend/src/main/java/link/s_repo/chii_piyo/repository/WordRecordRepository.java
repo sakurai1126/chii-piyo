@@ -98,4 +98,24 @@ public class WordRecordRepository {
         wordRecordMediaMapper.delete(
             c -> c.where(WordRecordMediaDynamicSqlSupport.wordRecordId, isEqualTo(recordId)));
     }
+
+    /**
+     * ことばの記録のメディア情報をメディアIDから削除する
+     *
+     * @param mediaId 対象メディアのID
+     */
+    public void deleteMediaByMediaId(Long mediaId) {
+        wordRecordMediaMapper.delete(
+            c -> c.where(WordRecordMediaDynamicSqlSupport.mediaId, isEqualTo(mediaId)));
+    }
+
+    /**
+     * ことばの記録のメディア情報をメディアIDリストから削除する
+     *
+     * @param mediaIds 対象メディアのIDリスト
+     */
+    public void deleteMediaByMediaIds(List<Long> mediaIds) {
+        wordRecordMediaMapper.delete(
+            c -> c.where(WordRecordMediaDynamicSqlSupport.mediaId, isIn(mediaIds)));
+    }
 }

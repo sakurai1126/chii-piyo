@@ -5,10 +5,12 @@ import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
 import link.s_repo.chii_piyo.model.gen.Media;
 import link.s_repo.chii_piyo.model.gen.TrashItems;
 import link.s_repo.chii_piyo.repository.FavoriteRepository;
+import link.s_repo.chii_piyo.repository.FirstRecordRepository;
 import link.s_repo.chii_piyo.repository.MediaCommentRepository;
 import link.s_repo.chii_piyo.repository.MediaRepository;
 import link.s_repo.chii_piyo.repository.TagRepository;
 import link.s_repo.chii_piyo.repository.TrashRepository;
+import link.s_repo.chii_piyo.repository.WordRecordRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -39,6 +41,8 @@ public class TrashService {
     private final MediaCommentRepository mediaCommentRepository;
     private final FavoriteRepository favoriteRepository;
     private final TagRepository tagRepository;
+    private final FirstRecordRepository firstRecordRepository;
+    private final WordRecordRepository wordRecordRepository;
 
     /**
      * IDを受け取りゴミ箱データを作成する
@@ -164,6 +168,12 @@ public class TrashService {
         // 関連するタグデータを削除する
         tagRepository.deleteMediaTagsByMediaId(mediaId);
 
+        // 関連するはじめて記録の紐づきデータを削除する
+        firstRecordRepository.deleteMediaByMediaId(mediaId);
+
+        // 関連することばの記録の紐づきデータを削除する
+        wordRecordRepository.deleteMediaByMediaId(mediaId);
+
         // ゴミ箱データを削除
         trashRepository.delete(id);
 
@@ -230,6 +240,12 @@ public class TrashService {
 
         // 関連するタグデータを削除する
         tagRepository.deleteMediaTagsByMediaIds(mediaIds);
+
+        // 関連するはじめて記録の紐づきデータを削除する
+        firstRecordRepository.deleteMediaByMediaIds(mediaIds);
+
+        // 関連することばの記録の紐づきデータを削除する
+        wordRecordRepository.deleteMediaByMediaIds(mediaIds);
 
         // ゴミ箱データを削除
         trashRepository.delete(ids);

@@ -97,5 +97,23 @@ public class FirstRecordRepository {
             c -> c.where(FirstRecordMediaDynamicSqlSupport.firstRecordId, isEqualTo(recordId)));
     }
 
+    /**
+     * はじめて記録のメディア情報をメディアIDから削除する
+     *
+     * @param mediaId 対象メディアのID
+     */
+    public void deleteMediaByMediaId(Long mediaId) {
+        firstRecordMediaMapper.delete(
+            c -> c.where(FirstRecordMediaDynamicSqlSupport.mediaId, isEqualTo(mediaId)));
+    }
 
+    /**
+     * はじめて記録のメディア情報をメディアIDリストから削除する
+     *
+     * @param mediaIds 対象メディアのIDリスト
+     */
+    public void deleteMediaByMediaIds(List<Long> mediaIds) {
+        firstRecordMediaMapper.delete(
+            c -> c.where(FirstRecordMediaDynamicSqlSupport.mediaId, isIn(mediaIds)));
+    }
 }
