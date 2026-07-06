@@ -10,12 +10,16 @@ import { AlbumsGridSlide } from "./AlbumsGridSlide";
 
 type Props = {
   albums: AlbumResponseDto[];
+  variant?: "top" | "page";
 };
 
-export const AlbumsGrid = ({ albums }: Props) => {
+export const AlbumsGrid = ({ albums, variant = "page" }: Props) => {
+  // トップページからの呼び出しの場合albumsを4件のみの表示にする
+  const displayAlbums = variant === "top" ? albums.slice(0, 4) : albums;
+
   return (
     <div className="mt-15 grid grid-cols-4 gap-2 max-md:grid-cols-2">
-      {albums.map((album) => (
+      {displayAlbums.map((album) => (
         <div className="relative" key={album.id}>
           <div className="pointer-events-none absolute bottom-5 -left-1 z-10 max-w-full min-w-40 bg-[linear-gradient(90deg,rgba(185,0,0,0.8)_0%,rgba(185,0,0,0.64)_65%,rgba(185,0,0,0)_100%)] py-1 pr-5 pl-4 backdrop-blur-[7.5px]">
             <p className="line-clamp-3 text-xs break-all text-white max-md:text-[10px]">
