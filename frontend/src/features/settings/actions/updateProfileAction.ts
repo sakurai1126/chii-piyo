@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 
 import { UserManagementApi, UserResponseDto } from "@/lib/api-client/gen";
 import { createAuthorizedConfig } from "@/lib/api-client/server";
@@ -40,11 +41,22 @@ export const updateProfileAction = async (input: Input): Promise<ActionResult<Us
       },
     });
 
+    // 再レンダリング時、テーマ変更が即時反映されない不整合が起きないようCookieをセット
+    if (input.isDarkMode !== undefined) {
+      const cookieStore = await cookies();
+      cookieStore.set("theme", input.isDarkMode ? "dark" : "light", {
+        path: "/",
+        maxAge: 604800,
+        sameSite: "lax",
+        secure: true,
+      });
+    }
+
     // キャッシュを破棄し、サーバーコンポーネントを再レンダリング
-    revalidatePath("/", "layout");
+    revalidatePath("/settings");
 
     return { success: true, data: response };
   } catch (error) {
-    return handleActionError(error, "アルバム作成に失敗しました");
+    return handleActionError(error, "プロフィール更新に失敗しました");
   }
 };
