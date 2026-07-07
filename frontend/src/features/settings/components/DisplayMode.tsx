@@ -3,7 +3,8 @@ import Image from "next/image";
 
 import { UserResponseDto } from "@/lib/api-client/gen";
 
-import displayMode from "../assets/display-mode.svg";
+import icon from "../assets/display-mode.svg";
+import whiteIcon from "../assets/white/display-mode.svg";
 import { useChangeSettings } from "../hooks/useChangeSettings";
 type Props = {
   currentUser: UserResponseDto;
@@ -17,10 +18,23 @@ export const DisplayMode = ({ currentUser }: Props) => {
   return (
     <div className="mt-10 max-md:mt-8" id="display-mode">
       <div className="flex items-center gap-2">
-        <Image src={displayMode} alt="" width={30} height={30} className="max-md:h-6 max-md:w-6" />
+        <Image
+          src={icon}
+          alt=""
+          width={30}
+          height={30}
+          className="max-md:h-6 max-md:w-6 dark:hidden"
+        />
+        <Image
+          src={whiteIcon}
+          alt=""
+          width={30}
+          height={30}
+          className="hidden max-md:h-6 max-md:w-6 dark:block"
+        />
         <p className="font-medium max-md:text-[13px]">表示モード</p>
       </div>
-      <div className="bg-background-light border-brown-dark mt-4 rounded-lg border max-md:mt-3">
+      <div className="bg-background-normal dark:bg-background-accent border-brown-dark mt-4 rounded-lg border max-md:mt-3">
         <div className="flex items-center justify-between px-8 py-6 max-lg:px-4 max-md:px-5 max-md:py-4">
           <p className="max-md:text-[13px]">ダークモード</p>
           <label

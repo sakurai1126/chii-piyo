@@ -150,7 +150,7 @@ export const CareTimeLineItem = ({ index, careItem, growthItem }: Props) => {
       <div
         className={`bg-brown-dark absolute left-1 h-full w-px ${index === 0 ? "top-[50%]" : ""} ${growthItem ? "opacity-0" : ""}`}
       ></div>
-      <div className="bg-background-light border-brown-dark w-full gap-5 rounded-lg border px-6 py-3 max-md:p-3">
+      <div className="bg-background-normal dark:bg-background-accent border-brown-dark w-full gap-5 rounded-lg border px-6 py-3 max-md:p-3">
         <div className="flex items-start gap-5">
           {/* アイコン表示 */}
           {careItem && (
@@ -244,7 +244,7 @@ export const CareTimeLineItem = ({ index, careItem, growthItem }: Props) => {
                     min={10}
                     max={400}
                     step={10}
-                    className="border-line-gray focus:outline-brown-light bg-light-dark h-8 w-20 rounded-sm border px-2 font-medium max-md:h-6 max-md:w-15 max-md:text-sm"
+                    className="border-line-gray focus:outline-brown-light bg-light-dark h-8 w-20 rounded-sm border px-2 font-medium max-md:h-6 max-md:w-15 max-md:text-sm dark:outline-none"
                     value={updateData.amountMl}
                     onChange={(e) => {
                       setUpdateData((prev) => ({ ...prev, amountMl: Number(e.target.value) }));
@@ -290,7 +290,7 @@ export const CareTimeLineItem = ({ index, careItem, growthItem }: Props) => {
                     min={34}
                     max={42}
                     step="0.1"
-                    className="border-line-gray focus:outline-brown-light bg-light-dark h-8 w-20 border px-2 font-medium max-md:h-6 max-md:w-15 max-md:text-sm"
+                    className="border-line-gray focus:outline-brown-light bg-light-dark h-8 w-20 border px-2 font-medium max-md:h-6 max-md:w-15 max-md:text-sm dark:outline-none"
                     value={updateData.temperature ?? ""}
                     onChange={(e) => {
                       setUpdateData((prev) => ({
@@ -349,7 +349,7 @@ export const CareTimeLineItem = ({ index, careItem, growthItem }: Props) => {
               {/* メモ編集 */}
               <input
                 type="text"
-                className="border-line-gray focus:outline-brown-light bg-light-dark mt-3 h-8 w-full max-w-80 rounded-sm border px-2 max-md:h-6 max-md:text-sm"
+                className="border-line-gray focus:outline-brown-light bg-light-dark mt-3 h-8 w-full max-w-80 rounded-sm border px-2 max-md:h-6 max-md:text-sm dark:outline-none"
                 value={updateData.note}
                 onChange={(e) => setUpdateData((prev) => ({ ...prev, note: e.target.value }))}
               />
@@ -388,7 +388,7 @@ export const CareTimeLineItem = ({ index, careItem, growthItem }: Props) => {
                 編集
               </button>
               <button
-                className="text-warning cursor-pointer text-sm underline transition-all hover:opacity-70 max-md:text-[10px]"
+                className="text-warning cursor-pointer text-sm underline transition-all hover:opacity-70 max-md:text-[10px] dark:font-medium"
                 onClick={() => setIsDeleteConfirmOpen(true)}
                 disabled={isPending}
               >

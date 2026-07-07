@@ -31,7 +31,7 @@ export const ImageUploader = ({ onFilesAdd, maxFiles, maxSize }: Props) => {
   return (
     <section
       aria-label="画像のドラッグ&ドロップエリア"
-      className={`bg-background-dark border-brown-middle relative block rounded-4xl border-2 border-dotted pt-10 pb-15 text-center transition-all duration-500 max-md:rounded-2xl max-md:pb-5 ${isDragging ? "bg-background-light" : ""} `}
+      className={`border-brown-middle dark:border-note-gray bg-brown-back dark:bg-dark-image-back relative block rounded-4xl border-2 border-dotted pt-10 pb-15 text-center transition-all duration-500 max-md:rounded-2xl max-md:pb-5 ${isDragging ? "bg-background-normal" : ""} `}
       onDrop={handleDrop}
       onDragOver={(e) => e.preventDefault()}
       onDragEnter={handleDragEnter}
@@ -71,7 +71,7 @@ export const ImageUploader = ({ onFilesAdd, maxFiles, maxSize }: Props) => {
         ドラッグ＆ドロップにも対応
       </p>
       <button
-        className="bg-brown-middle border-brown-middle hover:text-brown-middle hover:bg-background-light mt-5 h-10 w-40 cursor-pointer rounded-4xl border font-medium text-white transition-all duration-500 max-md:hidden"
+        className="bg-brown-middle border-brown-middle hover:text-brown-middle hover:bg-white-back mt-5 h-10 w-40 cursor-pointer rounded-4xl border font-medium text-white transition-all duration-500 max-md:hidden"
         onClick={() => inputRef.current?.click()}
       >
         写真を選択

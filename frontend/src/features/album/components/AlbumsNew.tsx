@@ -54,7 +54,7 @@ export const AlbumsNew = () => {
                     <p className="text-sm">アルバム名</p>
                     <input
                       type="text"
-                      className="border-line-gray focus:outline-brown-light bg-light-dark mt-3 w-full rounded-sm border p-2 text-sm"
+                      className="border-line-gray focus:outline-brown-light bg-light-dark mt-3 w-full rounded-sm border p-2 text-sm dark:outline-none"
                       value={newTitle}
                       onChange={(e) => setNewTitle(e.target.value)}
                       disabled={isPending}

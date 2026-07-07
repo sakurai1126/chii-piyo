@@ -31,7 +31,7 @@ export const TagFilter = ({ tags, updateFilter, currentValue = [] }: Props) => {
     updateFilter({ key: "tagId", value: tagId.toString() });
   };
   return (
-    <div className="bg-background-dark w-full rounded-lg px-7 pt-6 pb-8 max-md:p-3 max-md:pb-4">
+    <div className="bg-background-accent w-full rounded-lg px-7 pt-6 pb-8 max-md:p-3 max-md:pb-4">
       <div className="flex items-center gap-1.5">
         <Image src={icon} alt="" width={32} height={32} className="h-6.5 w-6.5" />
         <p className="max-md:text-[13px]">タグ</p>
@@ -62,7 +62,7 @@ export const TagFilter = ({ tags, updateFilter, currentValue = [] }: Props) => {
             />
             <p className="text-sm max-md:text-xs">{tag.name}</p>
             <p
-              className={`rounded-4xl px-1 py-px text-[10px] tracking-tighter text-white ${currentValue.includes(tag.id.toString()) ? "bg-accent-orange" : "bg-disabled-text"}`}
+              className={`rounded-4xl px-1 py-px text-[10px] tracking-tighter text-white ${currentValue.includes(tag.id.toString()) ? "bg-accent-orange" : "bg-note-gray"}`}
             >
               {tag.mediaCount}
             </p>

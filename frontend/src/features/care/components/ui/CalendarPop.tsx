@@ -64,7 +64,7 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
           }}
         >
           <div
-            className={`border-accent-pink bg-background-light/80 w-fit min-w-80 rounded-lg border backdrop-blur-[30px] max-md:absolute max-md:-left-2.5 max-md:w-[calc(100vw-20px)] max-md:-translate-y-[calc(100%+15px)] ${translateClass}`}
+            className={`border-accent-pink bg-background-normal/80 w-fit min-w-80 rounded-lg border backdrop-blur-[30px] max-md:absolute max-md:-left-2.5 max-md:w-[calc(100vw-20px)] max-md:-translate-y-[calc(100%+15px)] ${translateClass}`}
             style={{ top: state.top }}
           >
             <div className="relative">
@@ -345,7 +345,7 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
                           編集
                         </button>
                         <button
-                          className="text-warning cursor-pointer text-xs underline transition-all hover:opacity-70"
+                          className="text-warning cursor-pointer text-xs underline transition-all hover:opacity-70 dark:font-medium"
                           onClick={() => setIsDeleteConfirmOpen(true)}
                           disabled={isPending}
                         >

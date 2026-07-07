@@ -28,7 +28,7 @@ export const AlbumsGrid = ({ albums, variant = "page" }: Props) => {
           </div>
           <div className="pointer-events-none absolute top-4 right-2 z-10 flex items-center gap-1 max-md:top-3">
             <div className="rounded-2xl bg-[linear-gradient(100deg,#FFC0AB_35%,#FFF829_65%)] p-px">
-              <div className="bg-background-light flex items-center gap-1 rounded-2xl px-2.5 py-1">
+              <div className="bg-white-back flex items-center gap-1 rounded-2xl px-2.5 py-1">
                 <Image
                   src={media}
                   alt=""
@@ -40,7 +40,7 @@ export const AlbumsGrid = ({ albums, variant = "page" }: Props) => {
               </div>
             </div>
             <div className="rounded-2xl bg-[linear-gradient(100deg,#FFC0AB_35%,#FFF829_65%)] p-px">
-              <div className="bg-background-light flex items-center gap-1 rounded-2xl px-2.5 py-1">
+              <div className="bg-white-back flex items-center gap-1 rounded-2xl px-2.5 py-1">
                 <Image
                   src={video}
                   alt=""

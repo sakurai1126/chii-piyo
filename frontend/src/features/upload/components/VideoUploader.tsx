@@ -31,7 +31,7 @@ export const VideoUploader = ({ onFilesAdd, maxFiles, maxSize }: Props) => {
   return (
     <section
       aria-label="動画のドラッグ&ドロップエリア"
-      className={`bg-green-back border-green-accent relative block rounded-4xl border-2 border-dotted pt-10 pb-15 text-center max-md:rounded-2xl max-md:pb-5 ${isDragging ? "bg-background-light" : ""}`}
+      className={`bg-green-back border-green-accent dark:bg-dark-video-back dark:border-green-accent relative block rounded-4xl border-2 border-dotted pt-10 pb-15 text-center max-md:rounded-2xl max-md:pb-5 ${isDragging ? "bg-background-normal" : ""}`}
       onDrop={handleDrop}
       onDragOver={(e) => e.preventDefault()}
       onDragEnter={handleDragEnter}
@@ -71,7 +71,7 @@ export const VideoUploader = ({ onFilesAdd, maxFiles, maxSize }: Props) => {
         ドラッグ＆ドロップにも対応
       </p>
       <button
-        className="bg-green-accent hover:text-green-accent border-green-accent hover:bg-background-light mt-5 h-10 w-40 cursor-pointer rounded-4xl border font-medium text-white transition-all duration-500 max-md:hidden"
+        className="bg-green-accent hover:text-green-accent border-green-accent hover:bg-white-back mt-5 h-10 w-40 cursor-pointer rounded-4xl border font-medium text-white transition-all duration-500 max-md:hidden"
         onClick={() => inputRef.current?.click()}
       >
         動画を選択

@@ -56,7 +56,7 @@ export const RecordEditMenu = ({
           </p>
           <input
             type="text"
-            className="focus:outline-brown-light border-line-gray bg-light-dark h-12 w-100 rounded-sm border px-2 max-md:h-9 max-md:w-full max-md:max-w-100 max-md:text-[13px]"
+            className="focus:outline-brown-light border-line-gray bg-light-dark h-12 w-100 rounded-sm border px-2 max-md:h-9 max-md:w-full max-md:max-w-100 max-md:text-[13px] dark:outline-none"
             value={data.title}
             onChange={(e) => setData({ ...data, title: e.target.value })}
           />
@@ -65,7 +65,7 @@ export const RecordEditMenu = ({
           <p className="max-md:text-[13px]">日付</p>
           <input
             type="date"
-            className="focus:outline-brown-light border-line-gray bg-light-dark h-12 w-40 rounded-sm border px-2 max-md:h-9 max-md:text-[13px]"
+            className="focus:outline-brown-light border-line-gray bg-light-dark h-12 w-40 rounded-sm border px-2 max-md:h-9 max-md:text-[13px] dark:outline-none"
             value={data.recordedDate}
             onChange={(e) => setData({ ...data, recordedDate: e.target.value })}
           />
@@ -75,7 +75,7 @@ export const RecordEditMenu = ({
       {/* コメント入力 */}
       <p className="mt-5 max-md:text-[13px]">コメント</p>
       <textarea
-        className="focus:outline-brown-light border-line-gray bg-light-dark mt-2 h-25 w-full rounded-sm border p-2 max-md:h-20 max-md:text-[13px]"
+        className="focus:outline-brown-light border-line-gray bg-light-dark mt-2 h-25 w-full rounded-sm border p-2 max-md:h-20 max-md:text-[13px] dark:outline-none"
         value={data.comment}
         onChange={(e) => setData({ ...data, comment: e.target.value })}
       ></textarea>

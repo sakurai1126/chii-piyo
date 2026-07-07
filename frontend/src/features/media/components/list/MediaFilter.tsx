@@ -54,7 +54,7 @@ export const MediaFilter = ({ tags, sharingGroups }: Props) => {
   return (
     <div className="relative z-10">
       <div
-        className={`bg-background-light border-brown-dark relative mt-10 rounded-lg border p-7 ${isOpen ? "max-md:px-4 max-md:pt-6 max-md:pb-0" : "max-md:p-0"}`}
+        className={`bg-background-normal border-brown-dark relative mt-10 rounded-lg border p-7 ${isOpen ? "max-md:px-4 max-md:pt-6 max-md:pb-0" : "max-md:p-0"}`}
       >
         <Image
           src={illust}
@@ -143,7 +143,7 @@ export const MediaFilter = ({ tags, sharingGroups }: Props) => {
         {searchParams.size > 0 && (
           <Button
             variant="cancel"
-            className="text-note-gray mt-3 ml-auto block w-60"
+            className="text-note-gray dark:text-line-gray mt-3 ml-auto block w-60"
             onClick={paramsReset}
           >
             検索条件をリセット

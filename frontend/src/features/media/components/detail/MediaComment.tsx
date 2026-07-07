@@ -117,7 +117,7 @@ export const MediaComment = ({ mediaId, comments, currentUser, users }: Props) =
                   </div>
                   {comment.userId === currentUser.id && (
                     <button
-                      className="text-warning cursor-pointer text-xs underline transition-all hover:opacity-70 max-md:mt-2 max-md:ml-auto max-md:text-[10px]"
+                      className="text-warning cursor-pointer text-xs underline transition-all hover:opacity-70 max-md:mt-2 max-md:ml-auto max-md:text-[10px] dark:font-medium"
                       onClick={() => openDeleteModal(comment.id)}
                       disabled={isPending}
                     >
@@ -140,7 +140,7 @@ export const MediaComment = ({ mediaId, comments, currentUser, users }: Props) =
               </div>
               <textarea
                 placeholder="コメントを入力してください"
-                className="border-line-gray focus:outline-brown-light bg-light-dark min-h-20 w-full rounded-sm border p-2 text-sm max-md:text-xs"
+                className="border-line-gray focus:outline-brown-light bg-light-dark min-h-20 w-full rounded-sm border p-2 text-sm max-md:text-xs dark:outline-none"
                 value={inputComment}
                 onChange={(e) => setInputComment(e.target.value)}
               ></textarea>

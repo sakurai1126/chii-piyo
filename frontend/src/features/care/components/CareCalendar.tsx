@@ -12,6 +12,7 @@ import growthIcon from "../assets/growth.svg";
 import healthIcon from "../assets/health.svg";
 import mealIcon from "../assets/meal.svg";
 import milkIcon from "../assets/milk.svg";
+import whitePiyoIcon from "../assets/piyo-white.svg";
 import piyoIcon from "../assets/piyo.svg";
 import plusIcon from "../assets/plus.svg";
 import { useCalendar } from "../hooks/useCalendar";
@@ -77,7 +78,7 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
         </button>
       </div>
       {/* カレンダー表示 */}
-      <div className="border-brown-dark bg-translucent relative mt-4 w-full rounded-xl border-2 backdrop-blur-[7.5px] max-md:h-auto">
+      <div className="border-brown-dark bg-translucent dark:bg-dark-calender relative mt-4 w-full rounded-xl border-2 backdrop-blur-[7.5px] max-md:h-auto">
         {pop.isPopOpen && (
           <CalendarPop
             state={pop}
@@ -132,7 +133,14 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
         {/* 身長・体重アイコン表示行 */}
         <div className="flex h-10">
           <div className="bg-calender-head/50 grid h-10 w-10 shrink-0 place-content-center">
-            <Image src={piyoIcon} alt="" className="" width={15} height={15} />
+            <Image src={piyoIcon} alt="" className="dark:hidden" width={15} height={15} />
+            <Image
+              src={whitePiyoIcon}
+              alt=""
+              className="hidden dark:block"
+              width={15}
+              height={15}
+            />
           </div>
           <div className="grid w-full grid-cols-7 max-md:grid-cols-1">
             {Array.from({ length: 7 }, (_, dayIndex) => (

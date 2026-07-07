@@ -22,7 +22,7 @@ type Props = {
 
 export const SettingsTags = ({ tags }: Props) => {
   return (
-    <div className="bg-background-light border-brown-dark mt-4 rounded-lg border px-7.5 py-6 max-md:mt-3 max-md:p-5">
+    <div className="bg-background-normal dark:bg-background-accent border-brown-dark mt-4 rounded-lg border px-7.5 py-6 max-md:mt-3 max-md:p-5">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
         {tags.map((tag) => (
           <TagItem key={tag.id} tag={tag} />

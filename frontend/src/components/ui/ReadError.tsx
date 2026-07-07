@@ -8,7 +8,7 @@ type Props = {
 export default function ReadError({ error, onRefresh }: Readonly<Props>) {
   return (
     <div className="mt-3 flex items-center gap-3">
-      <p className="text-warning text-xs">{error}</p>
+      <p className="text-warning text-xs dark:font-medium">{error}</p>
       {onRefresh && (
         <button type="button" onClick={onRefresh} className="text-brown-middle text-xs underline">
           再試行

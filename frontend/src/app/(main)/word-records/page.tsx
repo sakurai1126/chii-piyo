@@ -19,7 +19,7 @@ export default async function WordRecordsPage() {
       <div className="mt-10">
         <PageTitle text="ことばの記録" />
         <div className="mt-15 flex items-center gap-10">
-          <div className="bg-background-light border-brown-dark grid h-39 w-55 shrink-0 place-content-center rounded-lg border text-center">
+          <div className="bg-background-normal dark:bg-background-accent border-brown-dark grid h-39 w-55 shrink-0 place-content-center rounded-lg border text-center">
             <p className="text-6xl font-medium">{wordRecords.length}</p>
             <p className="mt-2">おぼえたことばの数</p>
           </div>

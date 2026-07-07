@@ -53,7 +53,7 @@ export const UploadFile = ({
   const isVideo = item.file.type.startsWith("video/");
 
   return (
-    <div className="bg-background-light border-brown-dark rounded-xl border px-5 pt-5">
+    <div className="bg-background-normal border-brown-dark rounded-xl border px-5 pt-5">
       <div className="flex items-start gap-8 max-md:gap-3">
         {isVideo ? (
           <video
@@ -96,14 +96,14 @@ export const UploadFile = ({
               )}
               {/* エラーメッセージ */}
               {item.errorMessage && (
-                <p className="text-warning mt-1 text-xs">{item.errorMessage}</p>
+                <p className="text-warning mt-1 text-xs dark:font-medium">{item.errorMessage}</p>
               )}{" "}
             </div>
 
             {/* 削除ボタン - アップロード中は非表示 */}
             {!isLocked && (
               <button
-                className="text-warning hover:text-warning-hover cursor-pointer text-xs underline transition-all duration-400 max-md:ml-auto"
+                className="text-warning cursor-pointer text-xs underline transition-all hover:opacity-70 max-md:ml-auto dark:font-medium"
                 onClick={onRemove}
                 type="button"
               >
@@ -130,7 +130,7 @@ export const UploadFile = ({
           <p className="mt-6 max-md:text-[13px]">コメント</p>
           <textarea
             name={`comment-${uid}`}
-            className="border-line-gray focus:outline-brown-light bg-light-dark mt-2 h-20 w-full max-w-172.5 rounded-sm border p-3 max-md:h-18"
+            className="border-line-gray focus:outline-brown-light bg-light-dark mt-2 h-20 w-full max-w-172.5 rounded-sm border p-3 max-md:h-18 dark:outline-none"
             disabled={isLocked}
             onChange={(e) => handleMetadataChange({ comment: e.target.value })}
           />
@@ -209,9 +209,9 @@ const STATUS_LABEL: Record<UploadStatus, string> = {
 // アップロード状態に応じた表示色クラス
 const STATUS_BADGE_CLASS: Record<UploadStatus, string> = {
   idle: "",
-  creating: "bg-background-dark text-brown-middle",
-  uploading: "bg-background-dark text-brown-middle",
-  completing: "bg-background-dark text-brown-middle",
+  creating: "bg-background-accent text-brown-middle",
+  uploading: "bg-background-accent text-brown-middle",
+  completing: "bg-background-accent text-brown-middle",
   completed: "bg-success-back text-success",
   failed: "bg-accent-pink-back text-accent-pink",
 };

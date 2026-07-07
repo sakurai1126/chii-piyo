@@ -60,7 +60,7 @@ export const RecordItem = ({ item, index, tags, sharingGroups, variant }: Props)
           ></div>
         </>
       )}
-      <div className="bg-background-light border-brown-dark w-full rounded-lg border px-6 pt-6 pb-4 max-md:p-3">
+      <div className="bg-background-normal dark:bg-background-accent border-brown-dark w-full rounded-lg border px-6 pt-6 pb-4 max-md:p-3">
         {/* 通常表示 */}
         {!isEditMode && (
           <RecordItemDisplayMode item={item} setIsEditMode={setIsEditMode} variant={variant} />
@@ -161,7 +161,7 @@ const RecordItemDisplayMode = ({
           編集
         </button>
         <button
-          className="text-warning cursor-pointer underline transition-all hover:opacity-70 max-md:text-xs"
+          className="text-warning cursor-pointer underline transition-all hover:opacity-70 max-md:text-xs dark:font-medium"
           onClick={() => setIsDeleteConfirmOpen(true)}
         >
           削除

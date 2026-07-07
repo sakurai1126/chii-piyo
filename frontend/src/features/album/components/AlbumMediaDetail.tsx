@@ -62,7 +62,7 @@ export const AlbumMediaDetail = ({ album, media }: Props) => {
           </a>
 
           <button
-            className="text-warning cursor-pointer text-xs underline transition-all hover:opacity-70 max-md:text-[10px]"
+            className="text-warning cursor-pointer text-xs underline transition-all hover:opacity-70 max-md:text-[10px] dark:font-medium"
             onClick={() => setIsOpen(true)}
           >
             アルバムから削除する
