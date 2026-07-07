@@ -29,12 +29,22 @@ export default function BackGround({ children }: Readonly<{ children: React.Reac
         />
       </div>
 
+      {/* ライトモード時のみ表示 */}
       <Image
         src="/images/bg-star.svg"
         alt=""
         width={2498}
         height={2498}
-        className="pointer-events-none absolute top-[-48vw] left-[-40vw] w-[174vw] max-w-[174vw]"
+        className="pointer-events-none absolute top-[-48vw] left-[-40vw] block w-[174vw] max-w-[174vw] dark:hidden"
+      />
+
+      {/* ダークモード時のみ表示 */}
+      <Image
+        src="/images/bg-star-light.svg"
+        alt=""
+        width={2498}
+        height={2498}
+        className="pointer-events-none absolute top-[-48vw] left-[-40vw] hidden w-[174vw] max-w-[174vw] dark:block"
       />
       <div className="relative z-1">{children}</div>
     </div>

@@ -11,7 +11,7 @@ type Props = {
 export const MediaKindFilter = ({ updateFilter, currentValue = "" }: Props) => {
   const uid = useId();
   return (
-    <div className="bg-brown-back shrink-0 rounded-lg px-7 pt-6 pb-8 max-md:p-3 max-md:pb-4">
+    <div className="bg-background-accent shrink-0 rounded-lg px-7 pt-6 pb-8 max-md:p-3 max-md:pb-4">
       <div className="flex items-center gap-1.5">
         <Image src={icon} alt="" width={32} height={32} className="h-6.5 w-6.5" />
         <p className="max-md:text-[13px]">写真/動画</p>
@@ -19,7 +19,7 @@ export const MediaKindFilter = ({ updateFilter, currentValue = "" }: Props) => {
       <div className="mt-3 flex gap-2">
         <label
           htmlFor={`allMedia-${uid}`}
-          className="has-checked:border-accent-orange has-checked:bg-accent-orange-back has-checked:text-brown-middle border-line-gray flex cursor-pointer items-center gap-2 rounded-lg border bg-white py-1.5 pr-5 pl-3 transition-all max-md:py-1"
+          className="has-checked:border-accent-orange has-checked:bg-accent-orange-back has-checked:text-brown-middle border-line-gray bg-light-dark flex cursor-pointer items-center gap-2 rounded-lg border py-1.5 pr-5 pl-3 transition-all max-md:py-1"
         >
           <input
             type="radio"
@@ -35,7 +35,7 @@ export const MediaKindFilter = ({ updateFilter, currentValue = "" }: Props) => {
         </label>
         <label
           htmlFor={`photo-${uid}`}
-          className="has-checked:border-accent-orange has-checked:bg-accent-orange-back has-checked:text-brown-middle border-line-gray flex cursor-pointer items-center gap-2 rounded-lg border bg-white py-1.5 pr-5 pl-3 transition-all max-md:py-1"
+          className="has-checked:border-accent-orange has-checked:bg-accent-orange-back has-checked:text-brown-middle border-line-gray bg-light-dark flex cursor-pointer items-center gap-2 rounded-lg border py-1.5 pr-5 pl-3 transition-all max-md:py-1"
         >
           <input
             type="radio"
@@ -51,7 +51,7 @@ export const MediaKindFilter = ({ updateFilter, currentValue = "" }: Props) => {
         </label>
         <label
           htmlFor={`video-${uid}`}
-          className="has-checked:border-accent-orange has-checked:bg-accent-orange-back has-checked:text-brown-middle border-line-gray flex cursor-pointer items-center gap-2 rounded-lg border bg-white py-1.5 pr-5 pl-3 transition-all max-md:py-1"
+          className="has-checked:border-accent-orange has-checked:bg-accent-orange-back has-checked:text-brown-middle border-line-gray bg-light-dark flex cursor-pointer items-center gap-2 rounded-lg border py-1.5 pr-5 pl-3 transition-all max-md:py-1"
         >
           <input
             type="radio"

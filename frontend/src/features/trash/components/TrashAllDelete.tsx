@@ -28,7 +28,7 @@ export const TrashAllDelete = () => {
     <>
       <div className="border-line-gray mt-10 flex items-center justify-between border-t pt-7 max-md:flex-col max-md:items-start">
         <div>
-          <p className="text-warning text-sm max-md:text-xs">ゴミ箱を空にする</p>
+          <p className="text-warning text-sm max-md:text-xs dark:font-medium">ゴミ箱を空にする</p>
           <p className="mt-2 text-sm max-md:text-xs">
             すべてのメディアを完全に削除します。
             <br className="md:hidden" />

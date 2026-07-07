@@ -86,7 +86,7 @@ export const MediaList = ({
 
       {/* エラーメッセージ */}
       {isError && (
-        <p className="text-warning py-4 text-center text-sm">
+        <p className="text-warning py-4 text-center text-sm dark:font-medium">
           {error?.message ?? "読み込みに失敗しました"}
         </p>
       )}

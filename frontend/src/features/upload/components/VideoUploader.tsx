@@ -31,7 +31,7 @@ export const VideoUploader = ({ onFilesAdd, maxFiles, maxSize }: Props) => {
   return (
     <section
       aria-label="動画のドラッグ&ドロップエリア"
-      className={`bg-green-back border-green-accent relative block rounded-4xl border-2 border-dotted pt-10 pb-15 text-center max-md:rounded-2xl max-md:pb-5 ${isDragging ? "bg-white-back" : ""}`}
+      className={`bg-green-back border-green-accent dark:bg-dark-video-back dark:border-green-accent relative block rounded-4xl border-2 border-dotted pt-10 pb-15 text-center max-md:rounded-2xl max-md:pb-5 ${isDragging ? "bg-background-normal" : ""}`}
       onDrop={handleDrop}
       onDragOver={(e) => e.preventDefault()}
       onDragEnter={handleDragEnter}

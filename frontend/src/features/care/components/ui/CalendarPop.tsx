@@ -64,7 +64,7 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
           }}
         >
           <div
-            className={`border-accent-pink bg-white-back/80 w-fit min-w-80 rounded-lg border backdrop-blur-[30px] max-md:absolute max-md:-left-2.5 max-md:w-[calc(100vw-20px)] max-md:-translate-y-[calc(100%+15px)] ${translateClass}`}
+            className={`border-accent-pink bg-background-normal/80 w-fit min-w-80 rounded-lg border backdrop-blur-[30px] max-md:absolute max-md:-left-2.5 max-md:w-[calc(100vw-20px)] max-md:-translate-y-[calc(100%+15px)] ${translateClass}`}
             style={{ top: state.top }}
           >
             <div className="relative">
@@ -196,7 +196,7 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
                                   min={10}
                                   max={400}
                                   step={10}
-                                  className="border-line-gray rounded-sm border bg-white px-1 text-sm font-medium outline-0"
+                                  className="border-line-gray bg-light-dark rounded-sm border px-1 text-sm font-medium outline-0"
                                   onChange={(e) => {
                                     setUpdateData((prev) => ({
                                       ...prev,
@@ -257,7 +257,7 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
                                   min={34}
                                   max={42}
                                   step={0.1}
-                                  className="border-line-gray rounded-sm border bg-white px-1 text-sm font-medium outline-0"
+                                  className="border-line-gray bg-light-dark rounded-sm border px-1 text-sm font-medium outline-0"
                                   onChange={(e) => {
                                     setUpdateData((prev) => ({
                                       ...prev,
@@ -281,7 +281,7 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
                                 min={0}
                                 max={200}
                                 step={0.1}
-                                className="border-line-gray w-20 rounded-sm border bg-white px-1.5 text-sm font-medium outline-none"
+                                className="border-line-gray bg-light-dark w-20 rounded-sm border px-1.5 text-sm font-medium outline-none"
                                 value={updateData.height ?? ""}
                                 onChange={(e) => {
                                   setUpdateData((prev) => ({
@@ -302,7 +302,7 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
                                 min={0}
                                 max={200}
                                 step={0.1}
-                                className="border-line-gray w-20 rounded-sm border bg-white px-1.5 text-sm font-medium outline-none"
+                                className="border-line-gray bg-light-dark w-20 rounded-sm border px-1.5 text-sm font-medium outline-none"
                                 value={updateData.weight ?? ""}
                                 onChange={(e) => {
                                   setUpdateData((prev) => ({
@@ -320,7 +320,7 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
                         {/* メモ編集 */}
                         <input
                           type="text"
-                          className="border-line-gray mt-2 w-full rounded-sm border bg-white p-1 text-xs outline-0"
+                          className="border-line-gray bg-light-dark mt-2 w-full rounded-sm border p-1 text-xs outline-0"
                           value={updateData.note}
                           onChange={(e) => {
                             setUpdateData((prev) => ({
@@ -345,7 +345,7 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
                           編集
                         </button>
                         <button
-                          className="text-warning cursor-pointer text-xs underline transition-all hover:opacity-70"
+                          className="text-warning cursor-pointer text-xs underline transition-all hover:opacity-70 dark:font-medium"
                           onClick={() => setIsDeleteConfirmOpen(true)}
                           disabled={isPending}
                         >

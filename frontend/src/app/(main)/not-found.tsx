@@ -17,7 +17,7 @@ export default function NotFound() {
       </div>
       <Link
         href="/"
-        className="bg-brown-light border-brown-middle hover:text-brown-dark mx-auto mt-8 grid h-12 w-60 place-content-center rounded-lg border text-white transition-all hover:bg-white max-md:mt-5 max-md:h-9 max-md:w-45 max-md:text-sm"
+        className="bg-brown-light border-brown-middle hover:text-brown-dark hover:bg-light-dark mx-auto mt-8 grid h-12 w-60 place-content-center rounded-lg border text-white transition-all max-md:mt-5 max-md:h-9 max-md:w-45 max-md:text-sm"
       >
         TOPに戻る
       </Link>

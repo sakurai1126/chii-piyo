@@ -57,10 +57,10 @@ export const NewSharingGroupEdit = ({ users }: Props) => {
       <AccordionContent isOpen={isNewGroupEdit}>
         <p className="mt-3 font-medium max-md:text-[13px]">新規グループの追加</p>
 
-        <div className="bg-white-back border-brown-dark mt-3 rounded-lg border px-8 py-4 max-md:mt-3">
+        <div className="bg-background-normal border-brown-dark mt-3 rounded-lg border px-8 py-4 max-md:mt-3">
           <p className="max-md:text-[13px]">共有グループの名前</p>
           <input
-            className="border-line-gray focus:outline-brown-light mt-2 block h-10 w-full max-w-90 rounded-sm border bg-white px-2.5"
+            className="border-line-gray focus:outline-brown-light bg-light-dark mt-2 block h-10 w-full max-w-90 rounded-sm border px-2.5 dark:outline-none"
             onChange={(e) => setNewGroupName(e.target.value)}
             value={newGroupName}
             disabled={isPending}

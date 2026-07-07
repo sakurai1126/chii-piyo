@@ -210,7 +210,7 @@ export const AddMediaModal = ({
         {isOpen && (
           <Modal>
             <div className="grid h-screen w-screen place-content-center">
-              <div className="bg-white-back border-brown-dark relative mx-auto h-[85vh] w-[calc(100vw-40px)] max-w-250 overflow-y-scroll rounded-lg border p-10 max-md:min-h-0 max-md:p-5 max-md:pb-9">
+              <div className="bg-background-normal border-brown-dark relative mx-auto h-[85vh] w-[calc(100vw-40px)] max-w-250 overflow-y-scroll rounded-lg border p-10 max-md:min-h-0 max-md:p-5 max-md:pb-9">
                 <div className="flex items-center justify-between">
                   <p className="text-xl font-medium max-md:text-[16px]">
                     {variant === "album" ? "アルバム" : "記録"}にメディアを追加する
@@ -225,7 +225,7 @@ export const AddMediaModal = ({
                 </div>
                 <button
                   onClick={() => setIsFilterOpen(!isFilterOpen)}
-                  className="text-brown-dark border-brown-dark bg-brown-back mt-7 flex w-full items-center justify-center gap-2 rounded-lg border py-5 text-[13px] outline-0 md:hidden"
+                  className="text-brown-dark border-brown-dark bg-background-accent mt-7 flex w-full items-center justify-center gap-2 rounded-lg border py-5 text-[13px] outline-0 md:hidden"
                 >
                   <p>{isFilterOpen ? "絞込検索を閉じる" : "絞込検索"}</p>
 
@@ -380,7 +380,7 @@ export const AddMediaModal = ({
 
                   {/* エラーメッセージ */}
                   {isError && (
-                    <p className="text-warning py-4 text-center text-sm">
+                    <p className="text-warning py-4 text-center text-sm dark:font-medium">
                       {error?.message ?? "読み込みに失敗しました"}
                     </p>
                   )}

@@ -34,7 +34,7 @@ export const Modal = ({ children, className }: Readonly<Props>) => {
           transition={{ duration: 0.3 }}
         >
           <div
-            className={`${isReturning ? "animate-fade-out" : "animate-fade-in"} fixed top-0 left-0 z-100 h-full w-full overflow-y-auto bg-[rgba(255,255,231,0.7)] backdrop-blur-[7.5px] ${className}`}
+            className={`${isReturning ? "animate-fade-out" : "animate-fade-in"} bg-modal-back fixed top-0 left-0 z-100 h-full w-full overflow-y-auto backdrop-blur-[7.5px] ${className}`}
           >
             {children}
           </div>

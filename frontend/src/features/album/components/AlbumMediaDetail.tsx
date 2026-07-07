@@ -41,7 +41,7 @@ export const AlbumMediaDetail = ({ album, media }: Props) => {
   return (
     <div className="mt-7">
       <p className="max-md:text-sm">アルバム</p>
-      <div className="border-brown-dark mt-2 flex justify-between rounded-lg border bg-[rgba(255,255,255,0.5)] p-4 backdrop-blur-[7.5px] max-md:flex-col">
+      <div className="border-brown-dark bg-translucent mt-2 flex justify-between rounded-lg border p-4 backdrop-blur-[7.5px] max-md:flex-col">
         <div className="flex gap-3">
           <Image
             src={album.coverMediaUrls[0] ?? "/images/no-image.svg"}
@@ -62,7 +62,7 @@ export const AlbumMediaDetail = ({ album, media }: Props) => {
           </a>
 
           <button
-            className="text-warning cursor-pointer text-xs underline transition-all hover:opacity-70 max-md:text-[10px]"
+            className="text-warning cursor-pointer text-xs underline transition-all hover:opacity-70 max-md:text-[10px] dark:font-medium"
             onClick={() => setIsOpen(true)}
           >
             アルバムから削除する

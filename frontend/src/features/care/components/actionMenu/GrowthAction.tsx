@@ -100,7 +100,7 @@ export const GrowthAction = () => {
               min={0}
               max={200}
               step={0.1}
-              className="border-line-gray h-10 rounded-sm border bg-white pl-2 text-2xl font-medium max-md:pr-1 max-md:text-xl"
+              className="border-line-gray bg-light-dark h-10 rounded-sm border pl-2 text-2xl font-medium max-md:pr-1 max-md:text-xl"
               disabled={isPending}
               onChange={(e) =>
                 setHeight(e.target.value === "" ? undefined : Number(e.target.value))
@@ -116,7 +116,7 @@ export const GrowthAction = () => {
               min={0}
               max={200}
               step={0.1}
-              className="border-line-gray h-10 rounded-sm border bg-white pl-2 text-2xl font-medium max-md:pr-1 max-md:text-xl"
+              className="border-line-gray bg-light-dark h-10 rounded-sm border pl-2 text-2xl font-medium max-md:pr-1 max-md:text-xl"
               disabled={isPending}
               onChange={(e) =>
                 setWeight(e.target.value === "" ? undefined : Number(e.target.value))
@@ -129,7 +129,7 @@ export const GrowthAction = () => {
       </CareActionModal>
 
       <button
-        className="border-growth-border group w-full cursor-pointer rounded-lg border bg-white/50 p-5 backdrop-blur-[7.5px] transition-all max-md:flex max-md:items-center max-md:justify-center max-md:gap-3 max-md:rounded-4xl max-md:p-4"
+        className="border-growth-border group bg-translucent w-full cursor-pointer rounded-lg border p-5 backdrop-blur-[7.5px] transition-all max-md:flex max-md:items-center max-md:justify-center max-md:gap-3 max-md:rounded-4xl max-md:p-4"
         onClick={openModal}
         disabled={isPending}
       >

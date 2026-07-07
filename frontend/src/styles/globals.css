@@ -1,4 +1,8 @@
 @import "tailwindcss";
+
+/* 親要素に .dark クラスがある場合はダークモード用のスタイルを適用する */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* frontend/ 以下を全スキャン */
 @source "../../";
 
@@ -6,6 +10,37 @@
 :root {
   --background: #ffffe7;
   --foreground: #333333;
+  --translucent: #ffffff80;
+  --background-normal: #ffffef;
+  --background-accent: #fdf3dc;
+  --modal-back: #ffffffcc;
+  --light-dark: #ffffff;
+  --line-gray: #cccccc;
+  --cancel-back: #ffffff;
+  --cancel-hover: #cccccc;
+  --login-form: #ffffff;
+  --accent-orange-radio: #e87116;
+  --accent-pink: #ff4f4f;
+  --calender-head: #fffc9f;
+}
+
+.dark {
+  color-scheme: dark;
+
+  --background: #09022a;
+  --foreground: #f2f2f2;
+  --translucent: #0d1f59cc;
+  --background-normal: #0d032f;
+  --background-accent: #0e164c;
+  --modal-back: #060020d9;
+  --light-dark: #1e1b2d;
+  --line-gray: #555555;
+  --cancel-back: #cccccc;
+  --cancel-hover: #aaaaaa;
+  --login-form: #1f1448;
+  --accent-orange-radio: #8e0303;
+  --accent-pink: #aa0707;
+  --calender-head: #0a0e55;
 }
 
 /* tailwind用の変数定義 */
@@ -13,12 +48,29 @@
   --font-sans: var(--font-m-plus-rounded), sans-serif;
   --font-title: var(--font-zen-maru-gothic), sans-serif;
 
-  --color-background: #ffffe7;
-  --color-foreground: #333333;
+  --color-translucent: var(--translucent);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-background-normal: var(--background-normal);
+  --color-background-accent: var(--background-accent);
+
+  --color-modal-back: var(--modal-back);
+  --color-light-dark: var(--light-dark);
+
+  --color-cancel-back: var(--cancel-back);
+  --color-cancel-hover: var(--cancel-hover);
+
+  --color-login-form: var(--login-form);
+
+  --color-white-back: #ffffef;
+
+  --color-black-text: #333333;
 
   --color-brown-light: #d07800;
-  --color-brown-dark: #6f4000;
   --color-brown-middle: #a56f0c;
+  --color-brown-dark: #6f4000;
   --color-warning: #900521;
   --color-warning-hover: #ff365e;
   --color-warning-back: #d80000;
@@ -26,25 +78,24 @@
   --color-success: #258210;
   --color-success-back: #d8ffd0;
 
-  --color-white-back: #ffffef;
-
   --color-brown-back: #fdf3dc;
+
   --color-note-gray: #888888;
 
-  --color-accent-pink: #ff4f4f;
+  --color-accent-pink: var(--accent-pink);
   --color-accent-pink-back: #ffd5c7;
 
   --color-accent-brown-back: #fef0b5;
   --color-green-back: #feffd8;
   --color-green-accent: #6c6c00;
 
-  --color-line-gray: #cccccc;
+  --color-line-gray: var(--line-gray);
   --color-disabled-back: #eeeeee;
   --color-disabled-text: #aaaaaa;
 
   --color-accent-orange: #ffa600;
   --color-accent-orange-back: #fdefca;
-  --color-accent-orange-radio: #e87116;
+  --color-accent-orange-radio: var(--accent-orange-radio);
 
   --color-remove: #cd193d;
   --color-remove-back: #ffeee1;
@@ -61,7 +112,7 @@
   --color-growth-border: #db5926;
   --color-growth-text: #f64646;
 
-  --color-calender-head: #fffc9f;
+  --color-calender-head: var(--calender-head);
 
   /* グラフ */
   --color-graph-border-height: #db9c26;
@@ -69,6 +120,11 @@
   --color-graph-border-diaper: #26b5db;
   --color-graph-border-milk: #4adb26;
   --color-graph-border-word: #db5926;
+
+  /* ダークモード限定 */
+  --color-dark-image-back: #12131f;
+  --color-dark-video-back: #121b1f;
+  --color-dark-calender: #090a2b40;
 
   /* アニメーション */
   --animate-fade-slideshow: fade-slideshow 30s infinite;

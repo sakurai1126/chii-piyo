@@ -138,6 +138,7 @@ export const useChangeSettings = ({ currentUser }: Props) => {
 
   /**
    * ダークモードの変更処理
+   * 読み込み時にブラウザ側で即時判定ができるようCookieに状態を保存
    *
    * 成功/失敗はトーストで通知
    */
@@ -146,8 +147,19 @@ export const useChangeSettings = ({ currentUser }: Props) => {
       const updatedUser = await updateProfileAction({ isDarkMode: !isDarkMode });
       if (updatedUser.success) {
         setUser(updatedUser.data);
+        // Cookieに保存(有効期限:7日間)
+        document.cookie = `theme=${updatedUser.data.isDarkMode ? "dark" : "light"}; path=/; max-age=604800; SameSite=Lax; Secure`;
+
+        // htmlタグのクラスを操作してクライアント側に即時反映
+        if (updatedUser.data.isDarkMode) {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+
         setIsDarkMode(updatedUser.data.isDarkMode);
-        toast.success(`ダークモード表示を${isDarkMode ? "OFF" : "ON"}にしました`);
+
+        toast.success(`ダークモード表示を${updatedUser.data.isDarkMode ? "ON" : "OFF"}にしました`);
       } else {
         toast.error("ダークモード表示の変更に失敗しました");
       }

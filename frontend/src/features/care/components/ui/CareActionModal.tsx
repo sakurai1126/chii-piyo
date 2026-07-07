@@ -53,7 +53,7 @@ export const CareActionModal = ({
                     type="text"
                     value={note}
                     onChange={(e) => setNote(e.target.value)}
-                    className="border-line-gray focus:outline-brown-light mt-2 h-10 w-full rounded-sm border bg-white px-2"
+                    className="border-line-gray focus:outline-brown-light bg-light-dark mt-2 h-10 w-full rounded-sm border px-2 dark:outline-none"
                     disabled={isPending}
                   />
                   <SetDateAndTime

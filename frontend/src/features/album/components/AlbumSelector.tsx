@@ -44,9 +44,9 @@ export const AlbumSelector = ({
 
           {/* アルバム選択 */}
           {albums.length > 0 && (
-            <div className="border-line-gray relative mt-2 h-12 w-115 max-w-full rounded-sm border bg-white max-md:h-9">
+            <div className="border-line-gray bg-light-dark relative mt-2 h-12 w-115 max-w-full rounded-sm border max-md:h-9">
               <select
-                className="focus:outline-brown-light h-full w-full appearance-none px-4 max-md:px-3 max-md:text-[13px]"
+                className="focus:outline-brown-light bg-light-dark h-full w-full appearance-none px-4 max-md:px-3 max-md:text-[13px] dark:outline-none"
                 onChange={(e) => onAlbumSelect(Number(e.target.value))}
                 value={selectedAlbumId ?? ""}
               >

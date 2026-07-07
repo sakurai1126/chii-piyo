@@ -5,7 +5,8 @@ import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { UserResponseDto } from "@/lib/api-client/gen";
 
-import profile from "../assets/profile.svg";
+import icon from "../assets/profile.svg";
+import whiteIcon from "../assets/white/profile.svg";
 import { useChangeSettings } from "../hooks/useChangeSettings";
 
 type Props = {
@@ -30,10 +31,23 @@ export const Profile = ({ currentUser }: Props) => {
   return (
     <div className="mt-10 max-md:mt-8" id="profile">
       <div className="flex items-center gap-2">
-        <Image src={profile} alt="" width={30} height={30} className="max-md:h-6 max-md:w-6" />
+        <Image
+          src={icon}
+          alt=""
+          width={30}
+          height={30}
+          className="max-md:h-6 max-md:w-6 dark:hidden"
+        />
+        <Image
+          src={whiteIcon}
+          alt=""
+          width={30}
+          height={30}
+          className="hidden max-md:h-6 max-md:w-6 dark:block"
+        />
         <p className="font-medium max-md:text-[13px]">プロフィール</p>
       </div>
-      <div className="bg-white-back border-brown-dark mt-4 rounded-lg border py-6 pr-4 pl-10 max-md:mt-3 max-md:p-5">
+      <div className="bg-background-normal dark:bg-background-accent border-brown-dark mt-4 rounded-lg border py-6 pr-4 pl-10 max-md:mt-3 max-md:p-5">
         <div className="flex gap-5 max-md:flex-col max-md:items-center">
           <div className="w-fit">
             <div className="mx-auto h-20 w-20 shrink-0 rounded-full bg-[linear-gradient(100deg,#FFC0AB_35%,#FFF829_65%)] p-px">
@@ -70,7 +84,7 @@ export const Profile = ({ currentUser }: Props) => {
                   <p className="max-md:text-[13px]">新しい表示名</p>
                   <input
                     type="text"
-                    className="border-line-gray focus:outline-brown-light mt-2 block h-10 w-full max-w-90 rounded-sm border bg-white px-2.5"
+                    className="border-line-gray focus:outline-brown-light bg-light-dark mt-2 block h-10 w-full max-w-90 rounded-sm border px-2.5 dark:outline-none"
                     value={newName}
                     onChange={(e) => setNewName(e.target.value)}
                   />

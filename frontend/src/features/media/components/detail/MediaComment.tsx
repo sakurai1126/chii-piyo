@@ -89,7 +89,7 @@ export const MediaComment = ({ mediaId, comments, currentUser, users }: Props) =
       <p className="max-md:text-sm">コメント</p>
       {comments.length !== 0 || isCommentMode ? (
         <>
-          <div className="border-brown-dark mt-2 rounded-lg border bg-[rgba(255,255,255,0.5)] px-4 py-6 backdrop-blur-[7.5px]">
+          <div className="border-brown-dark bg-translucent mt-2 rounded-lg border px-4 py-6 backdrop-blur-[7.5px]">
             <div className="grid gap-6">
               {comments.map((comment) => (
                 <div className="flex items-start justify-between max-md:flex-col" key={comment.id}>
@@ -117,7 +117,7 @@ export const MediaComment = ({ mediaId, comments, currentUser, users }: Props) =
                   </div>
                   {comment.userId === currentUser.id && (
                     <button
-                      className="text-warning cursor-pointer text-xs underline transition-all hover:opacity-70 max-md:mt-2 max-md:ml-auto max-md:text-[10px]"
+                      className="text-warning cursor-pointer text-xs underline transition-all hover:opacity-70 max-md:mt-2 max-md:ml-auto max-md:text-[10px] dark:font-medium"
                       onClick={() => openDeleteModal(comment.id)}
                       disabled={isPending}
                     >
@@ -140,13 +140,13 @@ export const MediaComment = ({ mediaId, comments, currentUser, users }: Props) =
               </div>
               <textarea
                 placeholder="コメントを入力してください"
-                className="border-line-gray focus:outline-brown-light min-h-20 w-full rounded-sm border bg-white p-2 text-sm max-md:text-xs"
+                className="border-line-gray focus:outline-brown-light bg-light-dark min-h-20 w-full rounded-sm border p-2 text-sm max-md:text-xs dark:outline-none"
                 value={inputComment}
                 onChange={(e) => setInputComment(e.target.value)}
               ></textarea>
             </div>
             <Button
-              className="mt-4 ml-auto block max-md:h-9 max-md:w-28 max-md:text-xs"
+              className="mt-4 ml-auto block w-43 max-md:h-9 max-md:w-36 max-md:text-xs"
               onClick={addComment}
               disabled={isPending}
             >

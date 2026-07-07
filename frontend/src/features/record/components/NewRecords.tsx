@@ -22,11 +22,11 @@ export const NewRecords = ({ tags, sharingGroups, variant }: Props) => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   return (
-    <div className="border-brown-dark bg-white-back w-full rounded-lg border border-dashed max-md:mt-6">
+    <div className="border-brown-dark bg-background-normal w-full rounded-lg border border-dashed max-md:mt-6">
       {/* 開くボタン */}
       <AccordionContent isOpen={!isMenuOpen}>
         <button
-          className={`hover:bg-white-back bg-green-back flex w-full cursor-pointer items-center justify-center gap-3 rounded-lg transition-all ${variant === "word" ? "h-30" : "h-20"}`}
+          className={`hover:bg-background-normal bg-green-back dark:bg-background-accent flex w-full cursor-pointer items-center justify-center gap-3 rounded-lg transition-all ${variant === "word" ? "h-30" : "h-20"}`}
           onClick={() => setIsMenuOpen(true)}
         >
           <p className="text-brown-light font-medium max-md:text-[13px]">

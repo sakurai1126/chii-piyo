@@ -75,7 +75,7 @@ export const TrashItem = ({
 
   return (
     <div>
-      <div className="bg-white-back border-brown-dark flex items-center justify-between rounded-lg border py-5 pr-12 pl-7 max-md:flex-col max-md:items-start max-md:px-5 max-md:py-4">
+      <div className="bg-background-normal border-brown-dark flex items-center justify-between rounded-lg border py-5 pr-12 pl-7 max-md:flex-col max-md:items-start max-md:px-5 max-md:py-4">
         <div className="flex items-center gap-7 max-md:gap-4">
           <label
             htmlFor={`trashItem-${uid}`}
@@ -108,7 +108,7 @@ export const TrashItem = ({
             <p className="mt-1 text-[13px] max-md:text-[11px]">
               削除日：{formatJapaneseDateNonTime(trashItem.expiresAt)}
             </p>
-            <p className="text-warning mt-1 text-[13px] max-md:text-[11px]">
+            <p className="text-warning mt-1 text-[13px] max-md:text-[11px] dark:font-medium">
               あと{calculateRemainingDays(trashItem.expiresAt)}日
             </p>
           </div>

@@ -32,7 +32,7 @@ export const AlbumAddForm = ({ onAlbumCreated }: Readonly<Props>) => {
       <p className="mt-8 max-md:mt-4 max-md:text-[13px]">アルバムを新しく追加する</p>
       <div className="mt-2 flex items-center gap-5">
         <input
-          className="border-line-gray focus:outline-brown-light h-12 w-90 max-w-full rounded-sm border bg-white p-3 max-md:h-9 max-md:text-[13px]"
+          className="border-line-gray focus:outline-brown-light bg-light-dark h-12 w-90 max-w-full rounded-sm border p-3 max-md:h-9 max-md:text-[13px] dark:outline-none"
           type="text"
           value={albumTitle}
           onChange={(e) => setAlbumTitle(e.target.value)}
