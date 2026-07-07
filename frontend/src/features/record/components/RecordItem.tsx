@@ -60,7 +60,7 @@ export const RecordItem = ({ item, index, tags, sharingGroups, variant }: Props)
           ></div>
         </>
       )}
-      <div className="bg-white-back border-brown-dark w-full rounded-lg border px-6 pt-6 pb-4 max-md:p-3">
+      <div className="bg-background-light border-brown-dark w-full rounded-lg border px-6 pt-6 pb-4 max-md:p-3">
         {/* 通常表示 */}
         {!isEditMode && (
           <RecordItemDisplayMode item={item} setIsEditMode={setIsEditMode} variant={variant} />

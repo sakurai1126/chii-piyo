@@ -184,14 +184,14 @@ export const MediaViewer = ({ media, isModal, users }: Props) => {
         {isModal ? (
           <a
             href={"/media"}
-            className="border-line-gray mx-auto mt-10 grid h-10 w-35 place-content-center rounded-lg border bg-white transition-all hover:bg-gray-100 max-md:m-0 max-md:h-9 max-md:w-30 max-md:text-xs"
+            className="border-line-gray bg-cancel-back hover:bg-cancel-hover text-black-text mx-auto mt-10 grid h-10 w-35 place-content-center rounded-lg border transition-all max-md:m-0 max-md:h-9 max-md:w-30 max-md:text-xs"
           >
             メディア一覧
           </a>
         ) : (
           <Link
             href="/media"
-            className="border-line-gray mx-auto mt-10 grid h-10 w-35 place-content-center rounded-lg border bg-white transition-all hover:bg-gray-100 max-md:m-0 max-md:h-9 max-md:w-30 max-md:text-xs"
+            className="border-line-gray bg-cancel-back hover:bg-cancel-hover text-black-text mx-auto mt-10 grid h-10 w-35 place-content-center rounded-lg border transition-all max-md:m-0 max-md:h-9 max-md:w-30 max-md:text-xs"
           >
             メディア一覧
           </Link>

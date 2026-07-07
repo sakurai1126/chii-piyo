@@ -140,7 +140,7 @@ export const SharingGroupListItem = ({ users, sharingGroup }: Props) => {
         <AccordionContent isOpen={isOpen}>
           <p className="pt-5">共有範囲グループ名の編集</p>
           <input
-            className="border-line-gray focus:outline-brown-light mt-2 block h-10 w-full max-w-90 rounded-sm border bg-white px-2.5"
+            className="border-line-gray focus:outline-brown-light bg-light-dark mt-2 block h-10 w-full max-w-90 rounded-sm border px-2.5"
             onChange={(e) => setNewGroupName(e.target.value)}
             value={newGroupName}
             disabled={isPending}

@@ -98,7 +98,7 @@ export const DiaperAction = () => {
       </CareActionModal>
 
       <button
-        className="border-diaper-border group w-full cursor-pointer rounded-lg border bg-white/50 p-5 backdrop-blur-[7.5px] transition-all max-md:rounded-4xl max-md:p-4"
+        className="border-diaper-border group bg-translucent w-full cursor-pointer rounded-lg border p-5 backdrop-blur-[7.5px] transition-all max-md:rounded-4xl max-md:p-4"
         disabled={isPending}
         onClick={openModal}
       >

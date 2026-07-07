@@ -6,6 +6,27 @@
 :root {
   --background: #ffffe7;
   --foreground: #333333;
+  --translucent: #ffffff80;
+  --background-light: #ffffef;
+  --background-dark: #fdf3dc;
+  --modal-back: #ffffffcc;
+  --light-dark: #ffffff;
+  --line-gray: #cccccc;
+  --cancel-back: #ffffff;
+  --cancel-hover: #cccccc;
+}
+
+.dark {
+  --background: #09022a;
+  --foreground: #f2f2f2;
+  --translucent: #0600204d;
+  --background-light: #120245;
+  --background-dark: #101154d9;
+  --modal-back: #060020d9;
+  --light-dark: #1e1b2d;
+  --line-gray: #555555;
+  --cancel-back: #cccccc;
+  --cancel-hover: #aaaaaa;
 }
 
 /* tailwind用の変数定義 */
@@ -13,8 +34,21 @@
   --font-sans: var(--font-m-plus-rounded), sans-serif;
   --font-title: var(--font-zen-maru-gothic), sans-serif;
 
-  --color-background: #ffffe7;
-  --color-foreground: #333333;
+  --color-translucent: var(--translucent);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-background-light: var(--background-light);
+  --color-background-dark: var(--background-dark);
+
+  --color-modal-back: var(--modal-back);
+  --color-light-dark: var(--light-dark);
+
+  --color-cancel-back: var(--cancel-back);
+  --color-cancel-hover: var(--cancel-hover);
+
+  --color-black-text: #333333;
 
   --color-brown-light: #d07800;
   --color-brown-dark: #6f4000;
@@ -26,9 +60,8 @@
   --color-success: #258210;
   --color-success-back: #d8ffd0;
 
-  --color-white-back: #ffffef;
-
   --color-brown-back: #fdf3dc;
+
   --color-note-gray: #888888;
 
   --color-accent-pink: #ff4f4f;
@@ -38,7 +71,7 @@
   --color-green-back: #feffd8;
   --color-green-accent: #6c6c00;
 
-  --color-line-gray: #cccccc;
+  --color-line-gray: var(--line-gray);
   --color-disabled-back: #eeeeee;
   --color-disabled-text: #aaaaaa;
 

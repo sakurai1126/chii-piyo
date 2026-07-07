@@ -110,7 +110,7 @@ export const MultiEdit = ({
         <p className="max-md:text-xs">{isOpen ? "閉じる" : "選択を開始"}</p>
       </Button>
       <AccordionContent isOpen={isOpen}>
-        <div className="bg-white-back border-brown-dark mt-8 rounded-xl border px-8 py-6 max-md:mt-4 max-md:px-4 max-md:pt-4">
+        <div className="bg-background-dark border-brown-dark mt-8 rounded-xl border px-8 py-6 max-md:mt-4 max-md:px-4 max-md:pt-4">
           <p className="border-line-gray w-fit border-b pb-2 text-xl font-medium max-md:text-sm">
             選択したメディアを一括で編集する
           </p>

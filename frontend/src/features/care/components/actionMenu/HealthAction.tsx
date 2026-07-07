@@ -85,7 +85,7 @@ export const HealthAction = () => {
             min={34}
             max={42}
             step={0.1}
-            className="border-line-gray h-10 rounded-sm border bg-white pl-2 text-2xl font-medium max-md:text-xl"
+            className="border-line-gray bg-light-dark h-10 rounded-sm border pl-2 text-2xl font-medium max-md:text-xl"
             value={temperature}
             onChange={(e) => setTemperature(Number(e.target.value))}
             disabled={isPending}
@@ -94,7 +94,7 @@ export const HealthAction = () => {
         </div>
       </CareActionModal>
       <button
-        className="border-health-border group w-full cursor-pointer rounded-lg border bg-white/50 p-5 backdrop-blur-[7.5px] transition-all max-md:rounded-4xl max-md:p-4"
+        className="border-health-border group bg-translucent w-full cursor-pointer rounded-lg border p-5 backdrop-blur-[7.5px] transition-all max-md:rounded-4xl max-md:p-4"
         onClick={openModal}
         disabled={isPending}
       >

@@ -83,7 +83,7 @@ const GrowthGraphSummary = ({ growthRecords }: { growthRecords: GrowthRecordResp
   return (
     <>
       {/* 身長 */}
-      <div className="border-graph-border-height col-span-2 flex h-40 flex-col items-center justify-center rounded-lg border bg-white/50 text-center backdrop-blur-[7.5px] max-md:col-span-1 max-md:h-30">
+      <div className="border-graph-border-height bg-translucent col-span-2 flex h-40 flex-col items-center justify-center rounded-lg border text-center backdrop-blur-[7.5px] max-md:col-span-1 max-md:h-30">
         <p className="max-md:text-[13px]">身長</p>
         <div className="mt-2 flex items-end gap-1 max-md:mt-1">
           <p className="text-3xl font-medium max-lg:text-2xl max-md:text-[28px]">
@@ -101,7 +101,7 @@ const GrowthGraphSummary = ({ growthRecords }: { growthRecords: GrowthRecordResp
       </div>
 
       {/* 体重 */}
-      <div className="border-graph-border-weight col-span-2 flex h-40 flex-col items-center justify-center rounded-lg border bg-white/50 text-center backdrop-blur-[7.5px] max-md:col-span-1 max-md:h-30">
+      <div className="border-graph-border-weight bg-translucent col-span-2 flex h-40 flex-col items-center justify-center rounded-lg border text-center backdrop-blur-[7.5px] max-md:col-span-1 max-md:h-30">
         <p className="max-md:text-[13px]">体重</p>
         <div className="mt-2 flex items-end gap-1 max-md:mt-1">
           <p className="text-3xl font-medium max-lg:text-2xl max-md:text-[28px]">
@@ -140,7 +140,7 @@ const DiaperGraphSummary = ({ careRecords }: { careRecords: CareRecordListRespon
   return (
     <>
       {/* 排泄回数 */}
-      <div className="border-graph-border-diaper col-span-3 flex h-40 flex-col items-center justify-center rounded-lg border bg-white/50 text-center backdrop-blur-[7.5px] max-md:col-span-2 max-md:h-30">
+      <div className="border-graph-border-diaper bg-translucent col-span-3 flex h-40 flex-col items-center justify-center rounded-lg border text-center backdrop-blur-[7.5px] max-md:col-span-2 max-md:h-30">
         <p className="text-sm max-md:text-xs">排泄回数</p>
         <div className="mt-1 flex items-center gap-4 max-md:mt-1">
           <div>
@@ -180,7 +180,7 @@ const MilkGraphSummary = ({ careRecords }: { careRecords: CareRecordListResponse
   return (
     <>
       {/* ミルク量 */}
-      <div className="border-graph-border-milk col-span-2 flex h-40 flex-col items-center justify-center rounded-lg border bg-white/50 text-center backdrop-blur-[7.5px] max-md:col-span-1 max-md:h-30">
+      <div className="border-graph-border-milk bg-translucent col-span-2 flex h-40 flex-col items-center justify-center rounded-lg border text-center backdrop-blur-[7.5px] max-md:col-span-1 max-md:h-30">
         <p className="text-sm max-md:text-xs">ミルク量</p>
         <div className="mt-2 flex items-end gap-1 max-md:mt-1">
           <p className="text-3xl font-medium max-lg:text-2xl max-md:text-[28px]">
@@ -199,7 +199,7 @@ const WordGraphSummary = ({ wordRecords }: { wordRecords: WordRecordResponseDto[
   return (
     <>
       {/* 覚えた言葉の数 */}
-      <div className="border-graph-border-word col-span-2 flex h-40 flex-col items-center justify-center rounded-lg border bg-white/50 text-center backdrop-blur-[7.5px] max-md:col-span-1 max-md:h-30">
+      <div className="border-graph-border-word bg-translucent col-span-2 flex h-40 flex-col items-center justify-center rounded-lg border text-center backdrop-blur-[7.5px] max-md:col-span-1 max-md:h-30">
         <p className="text-sm max-md:text-xs">覚えた言葉の数</p>
         <div className="mt-2 flex items-end gap-1 max-md:mt-1">
           <p className="text-3xl font-medium max-lg:text-2xl max-md:text-[28px]">

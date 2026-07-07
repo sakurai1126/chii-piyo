@@ -53,7 +53,7 @@ export const UploadFile = ({
   const isVideo = item.file.type.startsWith("video/");
 
   return (
-    <div className="bg-white-back border-brown-dark rounded-xl border px-5 pt-5">
+    <div className="bg-background-light border-brown-dark rounded-xl border px-5 pt-5">
       <div className="flex items-start gap-8 max-md:gap-3">
         {isVideo ? (
           <video
@@ -130,7 +130,7 @@ export const UploadFile = ({
           <p className="mt-6 max-md:text-[13px]">コメント</p>
           <textarea
             name={`comment-${uid}`}
-            className="border-line-gray focus:outline-brown-light mt-2 h-20 w-full max-w-172.5 rounded-sm border bg-white p-3 max-md:h-18"
+            className="border-line-gray focus:outline-brown-light bg-light-dark mt-2 h-20 w-full max-w-172.5 rounded-sm border p-3 max-md:h-18"
             disabled={isLocked}
             onChange={(e) => handleMetadataChange({ comment: e.target.value })}
           />
@@ -209,9 +209,9 @@ const STATUS_LABEL: Record<UploadStatus, string> = {
 // アップロード状態に応じた表示色クラス
 const STATUS_BADGE_CLASS: Record<UploadStatus, string> = {
   idle: "",
-  creating: "bg-brown-back text-brown-middle",
-  uploading: "bg-brown-back text-brown-middle",
-  completing: "bg-brown-back text-brown-middle",
+  creating: "bg-background-dark text-brown-middle",
+  uploading: "bg-background-dark text-brown-middle",
+  completing: "bg-background-dark text-brown-middle",
   completed: "bg-success-back text-success",
   failed: "bg-accent-pink-back text-accent-pink",
 };

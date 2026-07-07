@@ -3,16 +3,16 @@ import Link from "next/link";
 
 export default function HamburgerMenu() {
   return (
-    <div className="absolute top-0 right-16 text-nowrap max-md:top-12 max-md:right-auto max-md:left-5">
+    <div className="absolute top-0 right-16 z-50 text-nowrap max-md:top-12 max-md:right-auto max-md:left-5">
       <div className="relative">
         <Image
           src="/images/menu-illust.png"
-          width={143}
-          height={95}
+          width={185}
+          height={139}
           alt="ひよこのイラスト"
-          className="absolute bottom-7 left-3 z-1 mix-blend-multiply max-md:right-4 max-md:bottom-5 max-md:left-auto max-md:w-22"
+          className="absolute bottom-4 left-1.5 z-51 max-md:right-4 max-md:bottom-5 max-md:left-auto max-md:w-22"
         />
-        <div className="border-brown-dark flex gap-15 rounded-lg border-2 bg-white/50 py-7 pr-13 pl-20 backdrop-blur-[7.5px] max-md:w-70 max-md:flex-col max-md:gap-6 max-md:border max-md:p-5 max-md:pb-16">
+        <div className="border-brown-dark bg-translucent flex gap-15 rounded-lg border-2 py-7 pr-13 pl-20 backdrop-blur-[15px] max-md:w-70 max-md:flex-col max-md:gap-6 max-md:border max-md:p-5 max-md:pb-16">
           <div className="max-md:flex max-md:gap-19.5">
             <Link href="/" className="block w-fit font-medium max-md:text-[13px]">
               ホーム

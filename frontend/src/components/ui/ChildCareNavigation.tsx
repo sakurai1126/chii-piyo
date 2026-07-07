@@ -11,7 +11,7 @@ const variantStyles = {
 
 export const ChildCareNavigation = ({ currentPage }: Props) => {
   return (
-    <div className="bg-brown-back mx-auto w-fit rounded-lg p-2 max-md:py-1">
+    <div className="bg-background-dark mx-auto w-fit rounded-lg p-2 max-md:py-1">
       <div className="flex gap-2 max-md:grid max-md:grid-cols-4">
         <Link
           href="/care"

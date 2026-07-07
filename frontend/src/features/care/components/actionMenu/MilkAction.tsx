@@ -129,7 +129,7 @@ export const MilkAction = () => {
       </CareActionModal>
 
       <button
-        className="border-milk-border group w-full cursor-pointer rounded-lg border bg-white/50 p-5 backdrop-blur-[7.5px] transition-all max-md:rounded-4xl max-md:p-4"
+        className="border-milk-border group bg-translucent w-full cursor-pointer rounded-lg border p-5 backdrop-blur-[7.5px] transition-all max-md:rounded-4xl max-md:p-4"
         onClick={openModal}
         disabled={isPending}
       >

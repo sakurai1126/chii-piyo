@@ -4,7 +4,7 @@ const variantStyles = {
   primary:
     "border-brown-dark bg-brown-light hover:bg-brown-dark flex h-10 w-fit cursor-pointer items-center justify-center gap-3 rounded-lg border px-7 text-sm font-medium text-white transition-all duration-300 max-md:gap-2 max-md:px-3 max-md:text-xs",
   cancel:
-    "border-line-gray mx-auto mt-5 flex h-10 w-fit cursor-pointer items-center justify-center gap-3 rounded-lg border bg-white px-7 text-sm font-medium transition-all duration-300 hover:bg-gray-100 max-md:gap-2 max-md:px-3 max-md:text-xs",
+    "border-line-gray bg-cancel-back text-black-text hover:bg-cancel-hover mx-auto mt-5 flex h-10 w-fit cursor-pointer items-center justify-center gap-3 rounded-lg border px-7 text-sm font-medium transition-all duration-300 max-md:gap-2 max-md:px-3 max-md:text-xs",
 };
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {

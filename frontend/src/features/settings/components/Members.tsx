@@ -21,7 +21,7 @@ export const Members = async ({ users, sharingGroups }: Props) => {
         <Image src={members} alt="" width={30} height={30} className="max-md:h-6 max-md:w-6" />
         <p className="font-medium max-md:text-[13px]">メンバー一覧</p>
       </div>
-      <div className="bg-white-back border-brown-dark mt-4 rounded-lg border max-md:mt-3">
+      <div className="bg-background-light border-brown-dark mt-4 rounded-lg border max-md:mt-3">
         {users.map((user, index) => (
           <div
             className={`py-4 pr-5 pl-7 max-md:p-5 ${index > 0 ? "border-brown-dark/50 border-t" : ""}`}

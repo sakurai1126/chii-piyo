@@ -36,7 +36,7 @@ export const GraphChart = ({ data, variant }: Props) => {
   };
 
   return (
-    <div className="border-brown-dark rounded-lg border bg-white/50 px-6 py-5 backdrop-blur-[7.5px] max-md:overflow-hidden max-md:px-0 max-md:py-3">
+    <div className="border-brown-dark bg-translucent rounded-lg border px-6 py-5 backdrop-blur-[7.5px] max-md:overflow-hidden max-md:px-0 max-md:py-3">
       <h3 className="mb-4 text-sm max-md:mb-2 max-md:pl-3 max-md:text-xs">
         {displayInfo[variant].title}
       </h3>

@@ -59,7 +59,7 @@ export const Sidebar = () => {
             <a
               key={id}
               href={`#${id}`}
-              className={`group hover:bg-brown-back relative flex h-11 cursor-pointer items-center gap-2 rounded-lg px-5 transition-all max-lg:px-2 max-md:h-9 max-md:shrink-0 max-md:gap-1 max-md:rounded-none max-md:px-3 ${isActive ? "bg-brown-back" : ""}`}
+              className={`group hover:bg-background-dark relative flex h-11 cursor-pointer items-center gap-2 rounded-lg px-5 transition-all max-lg:px-2 max-md:h-9 max-md:shrink-0 max-md:gap-1 max-md:rounded-none max-md:px-3 ${isActive ? "bg-background-dark" : ""}`}
             >
               <Image src={icon} alt="" width={30} height={30} className="max-md:h-5 max-md:w-5" />
               <p className="text-brown-dark text-[15px] text-nowrap max-lg:text-sm max-md:text-xs">

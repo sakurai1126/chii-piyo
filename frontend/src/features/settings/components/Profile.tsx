@@ -33,7 +33,7 @@ export const Profile = ({ currentUser }: Props) => {
         <Image src={profile} alt="" width={30} height={30} className="max-md:h-6 max-md:w-6" />
         <p className="font-medium max-md:text-[13px]">プロフィール</p>
       </div>
-      <div className="bg-white-back border-brown-dark mt-4 rounded-lg border py-6 pr-4 pl-10 max-md:mt-3 max-md:p-5">
+      <div className="bg-background-light border-brown-dark mt-4 rounded-lg border py-6 pr-4 pl-10 max-md:mt-3 max-md:p-5">
         <div className="flex gap-5 max-md:flex-col max-md:items-center">
           <div className="w-fit">
             <div className="mx-auto h-20 w-20 shrink-0 rounded-full bg-[linear-gradient(100deg,#FFC0AB_35%,#FFF829_65%)] p-px">
@@ -70,7 +70,7 @@ export const Profile = ({ currentUser }: Props) => {
                   <p className="max-md:text-[13px]">新しい表示名</p>
                   <input
                     type="text"
-                    className="border-line-gray focus:outline-brown-light mt-2 block h-10 w-full max-w-90 rounded-sm border bg-white px-2.5"
+                    className="border-line-gray focus:outline-brown-light bg-light-dark mt-2 block h-10 w-full max-w-90 rounded-sm border px-2.5"
                     value={newName}
                     onChange={(e) => setNewName(e.target.value)}
                   />

@@ -31,6 +31,7 @@ export default function BackGround({ children }: Readonly<{ children: React.Reac
 
       <Image
         src="/images/bg-star.svg"
+        // src="/images/bg-star-light.svg"
         alt=""
         width={2498}
         height={2498}

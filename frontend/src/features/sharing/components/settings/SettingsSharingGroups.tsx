@@ -15,7 +15,7 @@ type Props = {
 export const SettingsSharingGroups = ({ users, sharingGroups }: Props) => {
   return (
     <>
-      <div className="bg-white-back border-brown-dark mt-4 rounded-lg border max-md:mt-3">
+      <div className="bg-background-light border-brown-dark mt-4 rounded-lg border max-md:mt-3">
         {/* デフォルト 全員公開 */}
         <div className="flex items-center justify-between px-8 py-4 max-lg:px-4 max-md:flex-col max-md:items-start max-md:px-5">
           <div className="flex items-center max-md:flex-col max-md:items-start">

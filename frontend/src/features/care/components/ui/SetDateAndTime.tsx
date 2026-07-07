@@ -22,7 +22,7 @@ export const SetDateAndTime = ({ date, time, setDate, setTime, isPending }: Prop
         />
         <input
           type="date"
-          className="border-line-gray rounded-sm border bg-white px-4 py-2 text-xl font-medium outline-0 max-md:px-2 max-md:text-sm"
+          className="border-line-gray bg-light-dark rounded-sm border px-4 py-2 text-xl font-medium outline-0 max-md:px-2 max-md:text-sm"
           value={date}
           onChange={(e) => setDate(e.target.value)}
           disabled={isPending}

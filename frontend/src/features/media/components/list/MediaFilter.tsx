@@ -54,7 +54,7 @@ export const MediaFilter = ({ tags, sharingGroups }: Props) => {
   return (
     <div className="relative z-10">
       <div
-        className={`bg-white-back border-brown-dark relative mt-10 rounded-lg border p-7 ${isOpen ? "max-md:px-4 max-md:pt-6 max-md:pb-0" : "max-md:p-0"}`}
+        className={`bg-background-light border-brown-dark relative mt-10 rounded-lg border p-7 ${isOpen ? "max-md:px-4 max-md:pt-6 max-md:pb-0" : "max-md:p-0"}`}
       >
         <Image
           src={illust}

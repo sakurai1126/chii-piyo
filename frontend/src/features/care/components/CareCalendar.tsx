@@ -77,7 +77,7 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
         </button>
       </div>
       {/* カレンダー表示 */}
-      <div className="border-brown-dark relative mt-4 w-full rounded-xl border-2 bg-white/50 backdrop-blur-[7.5px] max-md:h-auto">
+      <div className="border-brown-dark bg-translucent relative mt-4 w-full rounded-xl border-2 backdrop-blur-[7.5px] max-md:h-auto">
         {pop.isPopOpen && (
           <CalendarPop
             state={pop}
