@@ -10,6 +10,7 @@ import link.s_repo.chii_piyo.repository.SharingGroupRepository;
 import link.s_repo.chii_piyo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -188,6 +189,7 @@ public class SharingGroupService {
      *
      * @param id 共有グループID
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional(rollbackFor = Exception.class)
     public void deleteSharingGroup(Long id) {
         // 存在チェック
@@ -210,6 +212,7 @@ public class SharingGroupService {
      * @param name          新しい名前
      * @return 共有グループエンティティ
      */
+    @PreAuthorize("hasRole('ADMIN')")
     public SharingGroups updateSharingGroup(SharingGroups sharingGroups, String name) {
         sharingGroups.setName(name);
         sharingGroupRepository.update(sharingGroups);

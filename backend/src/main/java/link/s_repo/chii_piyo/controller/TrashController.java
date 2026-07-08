@@ -15,6 +15,7 @@ import link.s_repo.chii_piyo.service.TrashService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -44,6 +45,7 @@ public class TrashController implements TrashManagementApi {
      * @return 204ステータス
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteTrashItem(String xRequestedWith, Long id) {
         // サービス層でメディアごと削除
         trashService.permanentlyDelete(id);
@@ -61,6 +63,7 @@ public class TrashController implements TrashManagementApi {
      * @return 204ステータス
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteTrashItems(String xRequestedWith, List<Long> trashItemIds) {
         // サービス層でメディアごと複数削除
         trashService.multiplePermanentlyDelete(trashItemIds);
@@ -77,6 +80,7 @@ public class TrashController implements TrashManagementApi {
      * @return 204ステータス
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> emptyTrash(String xRequestedWith) {
         // サービス層でメディアごと全件削除
         trashService.allDelete();
@@ -95,6 +99,7 @@ public class TrashController implements TrashManagementApi {
      * @return ゴミ箱アイテム一覧
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<TrashItemListResponseDto> getTrashItems(
         String xRequestedWith, Integer offset, Integer limit) {
         // サービス層でデータ取得
@@ -153,6 +158,7 @@ public class TrashController implements TrashManagementApi {
      * @return 204ステータス
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> restoreTrashItem(String xRequestedWith, Long id) {
         // サービス層でゴミ箱内データの削除処理
         trashService.restoreTrashItem(id);
@@ -171,6 +177,7 @@ public class TrashController implements TrashManagementApi {
      * @return 204ステータス
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> restoreTrashItems(
         String xRequestedWith, TrashRestoreRequestDto trashRestoreRequestDto) {
 

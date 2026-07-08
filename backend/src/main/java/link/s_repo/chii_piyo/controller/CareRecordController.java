@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
@@ -42,6 +43,7 @@ public class CareRecordController implements CareRecordManagementApi {
      * @return 201ステータス
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> createCareRecord(
         String xRequestedWith, CareRecordRequestDto careRecordData) {
         // 認証情報から現在のユーザーIDを取得
@@ -64,6 +66,7 @@ public class CareRecordController implements CareRecordManagementApi {
      * @return 育児記録一覧
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CareRecordListResponseDto> getCareRecords(
         String xRequestedWith, LocalDate startDate, LocalDate endDate) {
 
@@ -102,6 +105,7 @@ public class CareRecordController implements CareRecordManagementApi {
      * @param careRecordData 更新する育児記録情報
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> updateCareRecord(
         String xRequestedWith, Long id, CareRecordRequestDto careRecordData) {
         // サービス層で更新処理
@@ -120,6 +124,7 @@ public class CareRecordController implements CareRecordManagementApi {
      * @return 204ステータス
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteCareRecord(String xRequestedWith, Long id) {
         // サービス層で削除する
         careRecordService.deleteCareRecord(id);

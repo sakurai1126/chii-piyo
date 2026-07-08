@@ -45,7 +45,8 @@ public class CustomJwtAuthenticationConverter implements Converter<Jwt, Abstract
 
         // 権限情報を持つオブジェクトを作成する
         Collection<GrantedAuthority> authorities = List.of(
-            // PreAuthorizeでROLE_を期待しているため"ROLE_ユーザーロール"の形式でSimpleGrantedAuthorityを作成
+            // PreAuthorizeアノテーションで権限制御をする際にはSpring SequrityはROLE_***の形式で受け取るため
+            // "ROLE_ユーザーロール"の形式で権限を登録
             new SimpleGrantedAuthority("ROLE_" + user.getRole())
         );
 

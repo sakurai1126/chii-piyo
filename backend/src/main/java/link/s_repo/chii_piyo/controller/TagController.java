@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -40,6 +41,7 @@ public class TagController implements TagManagementApi {
      * @return 作成されたタグの情報
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<TagResponseDto> createTag(String xRequestedWith, TagRequestDto tagData) {
         // サービス層でタグを作成する
         Tags createdTag = tagService.createTag(tagData.getName());
@@ -81,6 +83,7 @@ public class TagController implements TagManagementApi {
      * @return 更新後のタグ一覧
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<TagResponseDto>> updateMediaTags(
         String xRequestedWith, Long mediaId, MediaTagsUpdateRequestDto mediaTagsData) {
         // メディアの存在チェック
@@ -107,6 +110,7 @@ public class TagController implements TagManagementApi {
      * @return 204ステータス
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> updateTag(
         String xRequestedWith, Long tagId, TagRequestDto tagData) {
         // タグ名が空の場合は400 Bad Requestを返す
@@ -128,6 +132,7 @@ public class TagController implements TagManagementApi {
      * @return 204ステータス
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteTag(String xRequestedWith, Long tagId) {
         // サービス層でタグを削除する
         tagService.deleteTag(tagId);

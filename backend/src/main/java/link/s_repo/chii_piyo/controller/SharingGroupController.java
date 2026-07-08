@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -34,6 +35,7 @@ public class SharingGroupController implements SharingGroupManagementApi {
      * 共有グループを新規作成する
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> createSharingGroup(
         String xRequestedWith, SharingGroupRequestDto sharingGroupData) {
         // サービス層で共有グループを作成する
@@ -128,6 +130,7 @@ public class SharingGroupController implements SharingGroupManagementApi {
      * @return 更新されたメンバー情報一覧
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<SharingGroupResponseDto> updateSharingGroup(
         String xRequestedWith, Long id, SharingGroupUpdateRequestDto sharingGroupUpdateData) {
         // サービス層でグループのエンティティを取得

@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
@@ -35,6 +36,7 @@ public class GrowthRecordController implements GrowthRecordManagementApi {
      * @return 201ステータス
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> createGrowthRecord(
         String xRequestedWith, GrowthRecordRequestDto growthRecordData) {
 
@@ -54,6 +56,7 @@ public class GrowthRecordController implements GrowthRecordManagementApi {
      * @return 身長・体重記録一覧
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<GrowthRecordResponseDto>> getGrowthRecords(
         String xRequestedWith, LocalDate startDate, LocalDate endDate) {
         // サービス層からデータを取得
@@ -77,6 +80,7 @@ public class GrowthRecordController implements GrowthRecordManagementApi {
      * @return 更新された身長・体重記録
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> updateGrowthRecord(
         String xRequestedWith, Long id, GrowthRecordRequestDto growthRecordData) {
         // サービス層で更新する
@@ -94,6 +98,7 @@ public class GrowthRecordController implements GrowthRecordManagementApi {
      * @return 204ステータス
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteGrowthRecord(String xRequestedWith, Long id) {
         // サービス層で削除する
         growthRecordService.deleteGrowthRecord(id);
