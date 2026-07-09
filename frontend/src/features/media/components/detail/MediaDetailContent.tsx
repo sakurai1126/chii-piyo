@@ -1,6 +1,6 @@
 import { AlbumMediaDetail } from "@/features/album";
 import { getAlbum } from "@/features/album/server";
-import { getCurrentUser } from "@/features/auth";
+import { getCurrentUser, isAdminUser } from "@/features/auth";
 import { getUsers } from "@/features/auth/actions/getUsers";
 import { ShareGroupMediaDetail } from "@/features/sharing";
 import { getSharingGroups } from "@/features/sharing/server";
@@ -21,7 +21,8 @@ type Props = {
 };
 
 export const MediaDetailContent = async ({ id, isModal = false }: Props) => {
-  const [media, comments, currentUser, sharingGroups, users, tags] = await Promise.all([
+  const [isAdmin, media, comments, currentUser, sharingGroups, users, tags] = await Promise.all([
+    isAdminUser(),
     getMedia(Number(id)),
     getMediaComments(Number(id)),
     getCurrentUser(),
@@ -55,14 +56,21 @@ export const MediaDetailContent = async ({ id, isModal = false }: Props) => {
           <MediaMetaData media={media} users={users} />
 
           {/* タグ */}
-          <TagMediaDetail mediaId={media.id} mediaTags={media.tags} tags={tags} />
+          <TagMediaDetail isAdmin={isAdmin} mediaId={media.id} mediaTags={media.tags} tags={tags} />
 
           {/* 共有範囲 */}
-          <ShareGroupMediaDetail media={media} sharingGroups={sharingGroups} users={users} />
+          <ShareGroupMediaDetail
+            isAdmin={isAdmin}
+            media={media}
+            sharingGroups={sharingGroups}
+            users={users}
+          />
 
           {/* アルバム */}
-          {album && <AlbumMediaDetail album={album} media={media} />}
-          <MediaDelete mediaId={media.id} />
+          {album && <AlbumMediaDetail isAdmin={isAdmin} album={album} media={media} />}
+
+          {/* メディア削除UI */}
+          {isAdmin && <MediaDelete mediaId={media.id} />}
         </div>
       </div>
     </div>

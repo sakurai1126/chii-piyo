@@ -13,12 +13,13 @@ import { MediaResponseDto, SharingGroupResponseDto, UserResponseDto } from "@/li
 import { SharingGroupsSelector } from "./SharingGroupsSelector";
 
 type Props = {
+  isAdmin: boolean;
   media: MediaResponseDto;
   sharingGroups: SharingGroupResponseDto[];
   users: UserResponseDto[];
 };
 
-export const ShareGroupMediaDetail = ({ media, sharingGroups, users }: Props) => {
+export const ShareGroupMediaDetail = ({ isAdmin, media, sharingGroups, users }: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const currentSharingGroup = sharingGroups.find((group) => group.id === media.sharingGroupId);
   const [selectedGroupId, setSelectedGroupId] = useState<number | undefined>(
@@ -88,12 +89,14 @@ export const ShareGroupMediaDetail = ({ media, sharingGroups, users }: Props) =>
           </div>
         )}
 
-        <button
-          className="cursor-pointer text-sm underline transition-all hover:opacity-70 max-md:mt-3 max-md:ml-auto max-md:text-xs"
-          onClick={() => setIsOpen(true)}
-        >
-          共有範囲を変更する
-        </button>
+        {isAdmin && (
+          <button
+            className="cursor-pointer text-sm underline transition-all hover:opacity-70 max-md:mt-3 max-md:ml-auto max-md:text-xs"
+            onClick={() => setIsOpen(true)}
+          >
+            共有範囲を変更する
+          </button>
+        )}
       </div>
       <AnimatePresence>
         {isOpen && (

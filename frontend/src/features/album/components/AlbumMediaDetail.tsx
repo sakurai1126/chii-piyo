@@ -11,10 +11,11 @@ import { AlbumResponseDto, MediaResponseDto } from "@/lib/api-client/gen";
 import { deleteAlbumMediaAction } from "../actions/deleteAlbumMediaAction";
 
 type Props = {
+  isAdmin: boolean;
   album: AlbumResponseDto;
   media: MediaResponseDto;
 };
-export const AlbumMediaDetail = ({ album, media }: Props) => {
+export const AlbumMediaDetail = ({ isAdmin, album, media }: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   // 非同期処理中のボタン状態管理
   const [isPending, startTransition] = useTransition();
@@ -60,13 +61,14 @@ export const AlbumMediaDetail = ({ album, media }: Props) => {
           <a href={`/albums/${album.id}`}>
             <Button className="w-32 max-md:h-8 max-md:w-30">アルバムを見る</Button>
           </a>
-
-          <button
-            className="text-warning cursor-pointer text-xs underline transition-all hover:opacity-70 max-md:text-[10px] dark:font-medium"
-            onClick={() => setIsOpen(true)}
-          >
-            アルバムから削除する
-          </button>
+          {isAdmin && (
+            <button
+              className="text-warning cursor-pointer text-xs underline transition-all hover:opacity-70 max-md:text-[10px] dark:font-medium"
+              onClick={() => setIsOpen(true)}
+            >
+              アルバムから削除する
+            </button>
+          )}
         </div>
       </div>
       <ConfirmModal

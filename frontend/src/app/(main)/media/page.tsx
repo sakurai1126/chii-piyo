@@ -3,6 +3,7 @@ import Image from "next/image";
 import Container from "@/components/layout/Container";
 import { AccentButton } from "@/components/ui/AccentButton";
 import PageTitle from "@/components/ui/PageTitle";
+import { isAdminUser } from "@/features/auth";
 import { getUsers } from "@/features/auth/actions/getUsers";
 import { MediaFilter, MediaListSection } from "@/features/media";
 import { getMediaList } from "@/features/media/server";
@@ -10,7 +11,8 @@ import { getSharingGroups } from "@/features/sharing/server";
 import { getTags } from "@/features/tag/server";
 
 export default async function MediaPage() {
-  const [initialData, users, tags, sharingGroups] = await Promise.all([
+  const [isAdmin, initialData, users, tags, sharingGroups] = await Promise.all([
+    isAdminUser(),
     getMediaList({ offset: 0, limit: 12 }),
     getUsers(),
     getTags(),
@@ -38,6 +40,7 @@ export default async function MediaPage() {
 
       {/* 一括編集UI+メディアグリッド */}
       <MediaListSection
+        isAdmin={isAdmin}
         initialData={initialData}
         users={users}
         tags={tags}

@@ -392,6 +392,7 @@ public class MediaController implements MediaManagementApi {
      * @return 204ステータス
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> updateMediaBatch(
         String xRequestedWith, MediaBatchUpdateRequestDto mediaBatchUpdateData) {
 
