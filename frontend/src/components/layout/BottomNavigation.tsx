@@ -5,7 +5,11 @@ import Link from "next/link";
 
 import { useIsBottomScroll } from "@/hooks/useIsBottomScroll";
 
-export default function BottomNavigation() {
+type Props = {
+  isAdmin: boolean;
+};
+
+export default function BottomNavigation({ isAdmin }: Props) {
   const isBottom = useIsBottomScroll();
 
   return (
@@ -22,6 +26,7 @@ export default function BottomNavigation() {
         />
         <p className="text-brown-dark -mt-1 text-center text-[10px] font-medium">ホーム</p>
       </Link>
+
       <Link href="/media" className="grid place-content-center">
         <Image
           src="/images/nav-icon-2.svg"
@@ -32,7 +37,8 @@ export default function BottomNavigation() {
         />
         <p className="text-brown-dark -mt-1 text-center text-[10px] font-medium">写真/動画</p>
       </Link>
-      <Link href="/care" className="grid place-content-center">
+
+      <Link href={isAdmin ? "/care" : "/analysis"} className="grid place-content-center">
         <Image
           src="/images/nav-icon-3.svg"
           alt="記録アイコン"
