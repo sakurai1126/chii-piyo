@@ -6,18 +6,25 @@ import {
 import { formatJapaneseDateNonTime } from "@/utils/date";
 
 type Props = {
+  isAdmin: boolean;
   growthRecords: GrowthRecordResponseDto[];
   careRecords: CareRecordListResponseDto;
   wordRecords: WordRecordResponseDto[];
 };
 
-export const GraphSummary = ({ growthRecords, careRecords, wordRecords }: Props) => {
+export const GraphSummary = ({ isAdmin, growthRecords, careRecords, wordRecords }: Props) => {
   return (
-    <div className="mt-10 grid grid-cols-11 gap-3 max-md:mt-6 max-md:grid-cols-2 max-md:gap-1.5">
+    <div
+      className={`mt-10 grid gap-3 max-md:mt-6 max-md:gap-1.5 ${isAdmin ? "grid-cols-11 max-md:grid-cols-2" : "grid-cols-6 max-md:grid-cols-2"}`}
+    >
       <GrowthGraphSummary growthRecords={growthRecords} />
-      <DiaperGraphSummary careRecords={careRecords} />
-      <MilkGraphSummary careRecords={careRecords} />
-      <WordGraphSummary wordRecords={wordRecords} />
+      {isAdmin && (
+        <>
+          <DiaperGraphSummary careRecords={careRecords} />
+          <MilkGraphSummary careRecords={careRecords} />
+        </>
+      )}
+      <WordGraphSummary isAdmin={isAdmin} wordRecords={wordRecords} />
     </div>
   );
 };
@@ -178,37 +185,39 @@ const MilkGraphSummary = ({ careRecords }: { careRecords: CareRecordListResponse
   // 1日あたりの平均ミルク量を算出
   const averageMilkAmount = (totalMilkAmount / 7).toFixed(0);
   return (
-    <>
-      {/* ミルク量 */}
-      <div className="border-graph-border-milk bg-translucent col-span-2 flex h-40 flex-col items-center justify-center rounded-lg border text-center backdrop-blur-[7.5px] max-md:col-span-1 max-md:h-30">
-        <p className="text-sm max-md:text-xs">ミルク量</p>
-        <div className="mt-2 flex items-end gap-1 max-md:mt-1">
-          <p className="text-3xl font-medium max-lg:text-2xl max-md:text-[28px]">
-            {averageMilkAmount}
-          </p>
-          <p className="text-xl max-lg:text-lg">ml/日</p>
-        </div>
-        <p className="text-note-gray mt-2 text-xs max-md:mt-1">過去1週間分の集計</p>
+    <div className="border-graph-border-milk bg-translucent col-span-2 flex h-40 flex-col items-center justify-center rounded-lg border text-center backdrop-blur-[7.5px] max-md:col-span-1 max-md:h-30">
+      <p className="text-sm max-md:text-xs">ミルク量</p>
+      <div className="mt-2 flex items-end gap-1 max-md:mt-1">
+        <p className="text-3xl font-medium max-lg:text-2xl max-md:text-[28px]">
+          {averageMilkAmount}
+        </p>
+        <p className="text-xl max-lg:text-lg">ml/日</p>
       </div>
-    </>
+      <p className="text-note-gray mt-2 text-xs max-md:mt-1">過去1週間分の集計</p>
+    </div>
   );
 };
 
 // 覚えた言葉の数を表示
-const WordGraphSummary = ({ wordRecords }: { wordRecords: WordRecordResponseDto[] }) => {
+const WordGraphSummary = ({
+  isAdmin,
+  wordRecords,
+}: {
+  isAdmin: boolean;
+  wordRecords: WordRecordResponseDto[];
+}) => {
   return (
-    <>
-      {/* 覚えた言葉の数 */}
-      <div className="border-graph-border-word bg-translucent col-span-2 flex h-40 flex-col items-center justify-center rounded-lg border text-center backdrop-blur-[7.5px] max-md:col-span-1 max-md:h-30">
-        <p className="text-sm max-md:text-xs">覚えた言葉の数</p>
-        <div className="mt-2 flex items-end gap-1 max-md:mt-1">
-          <p className="text-3xl font-medium max-lg:text-2xl max-md:text-[28px]">
-            {wordRecords.length}
-          </p>
-          <p className="text-xl max-lg:text-lg">語</p>
-        </div>
-        <p className="text-note-gray mt-2 text-xs max-md:mt-1">全期間累計</p>
+    <div
+      className={`border-graph-border-word bg-translucent col-span-2 flex h-40 flex-col items-center justify-center rounded-lg border text-center backdrop-blur-[7.5px] max-md:h-30 ${isAdmin ? "max-md:col-span-1" : ""}`}
+    >
+      <p className="text-sm max-md:text-xs">覚えた言葉の数</p>
+      <div className="mt-2 flex items-end gap-1 max-md:mt-1">
+        <p className="text-3xl font-medium max-lg:text-2xl max-md:text-[28px]">
+          {wordRecords.length}
+        </p>
+        <p className="text-xl max-lg:text-lg">語</p>
       </div>
-    </>
+      <p className="text-note-gray mt-2 text-xs max-md:mt-1">全期間累計</p>
+    </div>
   );
 };

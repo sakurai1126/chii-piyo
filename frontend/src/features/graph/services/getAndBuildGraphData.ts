@@ -5,7 +5,7 @@ import { formatShortDate, formatShortMonth } from "@/utils/date";
 
 import { growthStandardRanges } from "./growthStandardRanges";
 
-export const getAndBuildGraphData = async () => {
+export const getAndBuildGraphData = async (isAdmin: boolean) => {
   // 誕生日指定
   const birthYear = 2025;
   const birthMonth = 8;
@@ -17,7 +17,9 @@ export const getAndBuildGraphData = async () => {
 
   // 初期データを取得
   const [careRecords, growthRecords, wordRecords] = await Promise.all([
-    getCareRecords({ startDate: careStartDate, endDate: today }),
+    isAdmin
+      ? getCareRecords({ startDate: careStartDate, endDate: today })
+      : Promise.resolve({ items: [] }),
     getGrowthRecords({ startDate: growthStartDate, endDate: today }),
     getWordRecords(),
   ]);

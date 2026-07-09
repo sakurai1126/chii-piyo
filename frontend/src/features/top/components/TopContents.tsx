@@ -11,13 +11,20 @@ import {
 } from "@/lib/api-client/gen";
 
 type Props = {
+  isAdmin: boolean;
   careRecords: CareRecordListResponseDto;
   growthRecords: GrowthRecordResponseDto[];
   wordRecords: WordRecordResponseDto[];
   albums: AlbumResponseDto[];
 };
 
-export const TopContents = ({ careRecords, growthRecords, wordRecords, albums }: Props) => {
+export const TopContents = ({
+  isAdmin,
+  careRecords,
+  growthRecords,
+  wordRecords,
+  albums,
+}: Props) => {
   const linkButtonBaseStyle =
     "border-brown-middle text-brown-middle bg-brown-back hover:bg-brown-light flex h-12 cursor-pointer items-center justify-center rounded-lg border text-sm font-medium transition-all duration-300 hover:text-white max-md:h-10";
 
@@ -27,17 +34,19 @@ export const TopContents = ({ careRecords, growthRecords, wordRecords, albums }:
   return (
     <>
       {/* 記録メニュー */}
-      <div className="mt-20 max-md:mt-15">
-        <h2 className="font-title text-center text-4xl max-md:text-[20px]">お世話を記録する</h2>
-        <div className={`${titleLineBaseStyle} -mb-5 max-md:mb-1`}></div>
-        <CareActionMenu />
-        <Link
-          href="/care"
-          className={`${linkButtonBaseStyle} mx-auto mt-10 w-50 max-md:mt-6 max-md:gap-2 max-md:text-sm`}
-        >
-          記録一覧
-        </Link>
-      </div>
+      {isAdmin && (
+        <div className="mt-20 max-md:mt-15">
+          <h2 className="font-title text-center text-4xl max-md:text-[20px]">お世話を記録する</h2>
+          <div className={`${titleLineBaseStyle} -mb-5 max-md:mb-1`}></div>
+          <CareActionMenu />
+          <Link
+            href="/care"
+            className={`${linkButtonBaseStyle} mx-auto mt-10 w-50 max-md:mt-6 max-md:gap-2 max-md:text-sm`}
+          >
+            記録一覧
+          </Link>
+        </div>
+      )}
       {/* アルバム */}
       <div className="mt-20 max-md:mt-15">
         <h2 className="font-title text-center text-4xl max-md:text-[20px]">アルバム</h2>
@@ -55,6 +64,7 @@ export const TopContents = ({ careRecords, growthRecords, wordRecords, albums }:
         <h2 className="font-title text-center text-4xl max-md:text-[20px]">最近の記録</h2>
         <div className={`${titleLineBaseStyle}`}></div>
         <GraphSummary
+          isAdmin={isAdmin}
           growthRecords={growthRecords}
           careRecords={careRecords}
           wordRecords={wordRecords}
@@ -64,7 +74,7 @@ export const TopContents = ({ careRecords, growthRecords, wordRecords, albums }:
             グラフ
           </Link>
           <Link href="/first-records" className={`${linkButtonBaseStyle} w-40 max-md:text-xs`}>
-            はじめて一覧
+            はじめて
           </Link>
           <Link href="/word-records" className={`${linkButtonBaseStyle} w-40 max-md:text-xs`}>
             ことば

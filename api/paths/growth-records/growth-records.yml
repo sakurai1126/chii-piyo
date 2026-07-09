@@ -18,8 +18,6 @@ get:
               $ref: "../../components/schemas/growth-records.yml#/GrowthRecordResponseDto"
     "401":
       $ref: "../../components/responses.yml#/Unauthorized"
-    "403":
-      $ref: "../../components/responses.yml#/Forbidden"
     "500":
       $ref: "../../components/responses.yml#/InternalServerError"
     default:

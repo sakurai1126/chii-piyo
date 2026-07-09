@@ -56,7 +56,6 @@ public class GrowthRecordController implements GrowthRecordManagementApi {
      * @return 身長・体重記録一覧
      */
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<GrowthRecordResponseDto>> getGrowthRecords(
         String xRequestedWith, LocalDate startDate, LocalDate endDate) {
         // サービス層からデータを取得
