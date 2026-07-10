@@ -1,3 +1,4 @@
+"use client";
 import { UseQueryResult } from "@tanstack/react-query";
 import Image from "next/image";
 import { useId, useState } from "react";
@@ -16,7 +17,7 @@ import { UploadMedia, UploadMetadata, UploadStatus } from "../types";
 type Props = {
   item: UploadMedia;
   onRemove: () => void;
-  tagsState: UseQueryResult<TagResponseDto[]>;
+  tags: TagResponseDto[];
   albumsState: UseQueryResult<AlbumResponseDto[]>;
   sharingGroupsState: UseQueryResult<SharingGroupResponseDto[]>;
   updateItemMetadata: (itemId: string, patch: Partial<UploadMetadata>) => void;
@@ -25,7 +26,7 @@ type Props = {
 export const UploadFile = ({
   item,
   onRemove,
-  tagsState,
+  tags,
   albumsState,
   sharingGroupsState,
   updateItemMetadata,
@@ -156,10 +157,7 @@ export const UploadFile = ({
           </div>
           {/* タグを編集 */}
           <TagSelector
-            tags={tagsState.data ?? []}
-            isLoading={tagsState.isLoading}
-            error={tagsState.error?.message}
-            onRefresh={tagsState.refetch}
+            tags={tags}
             selectedTagIds={item.metadata.tagIds ?? []}
             onTagSelect={(tagIds) => handleMetadataChange({ tagIds })}
             addTag={true}

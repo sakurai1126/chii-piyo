@@ -17,14 +17,14 @@ import { useMultipleSettings } from "../hooks/useMultipleSettings";
 import { UploadMetadata } from "../types";
 
 type Props = {
-  tagsState: UseQueryResult<TagResponseDto[]>;
+  tags: TagResponseDto[];
   albumsState: UseQueryResult<AlbumResponseDto[]>;
   sharingGroupsState: UseQueryResult<SharingGroupResponseDto[]>;
   updateAllMetadata: (patch: Partial<UploadMetadata>) => void;
 };
 
 export const MultipleSettings = ({
-  tagsState,
+  tags,
   albumsState,
   sharingGroupsState,
   updateAllMetadata,
@@ -64,10 +64,7 @@ export const MultipleSettings = ({
         </div>
         {/* タグを編集 */}
         <TagSelector
-          tags={tagsState.data ?? []}
-          isLoading={tagsState.isLoading}
-          error={tagsState.error?.message}
-          onRefresh={tagsState.refetch}
+          tags={tags}
           selectedTagIds={selected.tagIds ?? []}
           onTagSelect={(tagIds) => setSelected((prev) => ({ ...prev, tagIds }))}
           addTag={true}

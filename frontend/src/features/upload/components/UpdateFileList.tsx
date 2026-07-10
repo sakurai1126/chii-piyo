@@ -1,3 +1,5 @@
+"use client";
+
 import { UseQueryResult } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/Button";
@@ -13,7 +15,7 @@ type Props = {
   onRemoveAll: () => void;
   onUpload: () => void;
   isUploading: boolean;
-  tagsState: UseQueryResult<TagResponseDto[]>;
+  tags: TagResponseDto[];
   albumsState: UseQueryResult<AlbumResponseDto[]>;
   sharingGroupsState: UseQueryResult<SharingGroupResponseDto[]>;
   updateItemMetadata: (itemId: string, patch: Partial<UploadMetadata>) => void;
@@ -25,7 +27,7 @@ export const UpdateFileList = ({
   onRemoveAll,
   onUpload,
   isUploading,
-  tagsState,
+  tags,
   albumsState,
   sharingGroupsState,
   updateItemMetadata,
@@ -62,7 +64,7 @@ export const UpdateFileList = ({
             key={item.id}
             item={item}
             onRemove={() => onRemove(index)}
-            tagsState={tagsState}
+            tags={tags}
             albumsState={albumsState}
             sharingGroupsState={sharingGroupsState}
             updateItemMetadata={updateItemMetadata}
