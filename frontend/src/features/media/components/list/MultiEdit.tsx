@@ -159,9 +159,6 @@ export const MultiEdit = ({
           {(editType === "all" || editType === "sharing") && (
             <SharingGroupsSelector
               sharingGroups={sharingGroups}
-              isLoading={false}
-              error={null}
-              onRefresh={() => {}}
               onSharingGroupSelect={(id) => setSelectedGroupId(id)}
               selectedGroupId={selectedGroupId}
             />

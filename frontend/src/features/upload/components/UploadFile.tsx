@@ -1,5 +1,5 @@
 "use client";
-import { UseQueryResult } from "@tanstack/react-query";
+
 import Image from "next/image";
 import { useId, useState } from "react";
 
@@ -18,7 +18,7 @@ type Props = {
   onRemove: () => void;
   tags: TagResponseDto[];
   albums: AlbumResponseDto[];
-  sharingGroupsState: UseQueryResult<SharingGroupResponseDto[]>;
+  sharingGroups: SharingGroupResponseDto[];
   updateItemMetadata: (itemId: string, patch: Partial<UploadMetadata>) => void;
 };
 
@@ -27,7 +27,7 @@ export const UploadFile = ({
   onRemove,
   tags,
   albums,
-  sharingGroupsState,
+  sharingGroups,
   updateItemMetadata,
 }: Props) => {
   const uid = useId();
@@ -158,10 +158,7 @@ export const UploadFile = ({
           />
           {/* 共有範囲を編集 */}
           <SharingGroupsSelector
-            sharingGroups={sharingGroupsState.data ?? []}
-            isLoading={sharingGroupsState.isLoading}
-            error={sharingGroupsState.error?.message}
-            onRefresh={sharingGroupsState.refetch}
+            sharingGroups={sharingGroups}
             onSharingGroupSelect={(sharingGroupId) => handleMetadataChange({ sharingGroupId })}
             selectedGroupId={item.metadata.sharingGroupId}
           />

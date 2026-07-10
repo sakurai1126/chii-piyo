@@ -1,7 +1,5 @@
 "use client";
 
-import { UseQueryResult } from "@tanstack/react-query";
-
 import { Button } from "@/components/ui/Button";
 import { AlbumResponseDto, SharingGroupResponseDto, TagResponseDto } from "@/lib/api-client/gen";
 
@@ -17,7 +15,7 @@ type Props = {
   isUploading: boolean;
   tags: TagResponseDto[];
   albums: AlbumResponseDto[];
-  sharingGroupsState: UseQueryResult<SharingGroupResponseDto[]>;
+  sharingGroups: SharingGroupResponseDto[];
   updateItemMetadata: (itemId: string, patch: Partial<UploadMetadata>) => void;
 };
 
@@ -29,7 +27,7 @@ export const UpdateFileList = ({
   isUploading,
   tags,
   albums,
-  sharingGroupsState,
+  sharingGroups,
   updateItemMetadata,
 }: Props) => {
   const totalSizeInKB = items.reduce((total, item) => total + item.file.size / 1024, 0);
@@ -66,7 +64,7 @@ export const UpdateFileList = ({
             onRemove={() => onRemove(index)}
             tags={tags}
             albums={albums}
-            sharingGroupsState={sharingGroupsState}
+            sharingGroups={sharingGroups}
             updateItemMetadata={updateItemMetadata}
           />
         ))}

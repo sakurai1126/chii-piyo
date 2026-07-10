@@ -1,6 +1,5 @@
 "use client";
 
-import { UseQueryResult } from "@tanstack/react-query";
 import Image from "next/image";
 
 import { AccordionContent } from "@/components/ui/AccordionContent";
@@ -18,16 +17,11 @@ import { UploadMetadata } from "../types";
 type Props = {
   tags: TagResponseDto[];
   albums: AlbumResponseDto[];
-  sharingGroupsState: UseQueryResult<SharingGroupResponseDto[]>;
+  sharingGroups: SharingGroupResponseDto[];
   updateAllMetadata: (patch: Partial<UploadMetadata>) => void;
 };
 
-export const MultipleSettings = ({
-  tags,
-  albums,
-  sharingGroupsState,
-  updateAllMetadata,
-}: Props) => {
+export const MultipleSettings = ({ tags, albums, sharingGroups, updateAllMetadata }: Props) => {
   const { uid, isOpen, setIsOpen, selected, setSelected, handleChange, handleReset } =
     useMultipleSettings({ updateAllMetadata });
   return (
@@ -64,10 +58,7 @@ export const MultipleSettings = ({
         />
         {/* 共有範囲を編集 */}
         <SharingGroupsSelector
-          sharingGroups={sharingGroupsState.data ?? []}
-          isLoading={sharingGroupsState.isLoading}
-          error={sharingGroupsState.error?.message}
-          onRefresh={sharingGroupsState.refetch}
+          sharingGroups={sharingGroups}
           onSharingGroupSelect={(sharingGroupId) =>
             setSelected((prev) => ({ ...prev, sharingGroupId }))
           }

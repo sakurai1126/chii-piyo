@@ -1,5 +1,4 @@
 "use client";
-import { useSharingGroups } from "@/features/sharing/hooks/useSharingGroups";
 import {
   ImageUploader,
   VideoUploader,
@@ -15,7 +14,7 @@ type Props = {
   tags: TagResponseDto[];
 };
 
-export const UploadPageContents = ({ albums, tags }: Readonly<Props>) => {
+export const UploadPageContents = ({ albums, sharingGroups, tags }: Readonly<Props>) => {
   const {
     items,
     setImageAndUrl,
@@ -29,7 +28,6 @@ export const UploadPageContents = ({ albums, tags }: Readonly<Props>) => {
     limits,
   } = useUploadPage();
 
-  const sharingGroupsState = useSharingGroups();
   return (
     <>
       <div className="mt-15 grid grid-cols-2 items-start gap-10 max-lg:gap-3 max-md:mt-6">
@@ -50,7 +48,7 @@ export const UploadPageContents = ({ albums, tags }: Readonly<Props>) => {
         <MultipleSettings
           tags={tags}
           albums={albums}
-          sharingGroupsState={sharingGroupsState}
+          sharingGroups={sharingGroups}
           updateAllMetadata={updateAllMetadata}
         />
       )}
@@ -65,7 +63,7 @@ export const UploadPageContents = ({ albums, tags }: Readonly<Props>) => {
           isUploading={isUploading}
           tags={tags}
           albums={albums}
-          sharingGroupsState={sharingGroupsState}
+          sharingGroups={sharingGroups}
           updateItemMetadata={updateItemMetadata}
         />
       )}
