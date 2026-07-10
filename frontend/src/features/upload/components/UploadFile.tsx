@@ -6,7 +6,6 @@ import { useId, useState } from "react";
 import { AccordionContent } from "@/components/ui/AccordionContent";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { AlbumSelector } from "@/features/album";
-import { AlbumAddForm } from "@/features/album/components/AlbumAddForm";
 import { SharingGroupsSelector } from "@/features/sharing";
 import { TagSelector } from "@/features/tag";
 import { AlbumResponseDto, SharingGroupResponseDto, TagResponseDto } from "@/lib/api-client/gen";
@@ -18,7 +17,7 @@ type Props = {
   item: UploadMedia;
   onRemove: () => void;
   tags: TagResponseDto[];
-  albumsState: UseQueryResult<AlbumResponseDto[]>;
+  albums: AlbumResponseDto[];
   sharingGroupsState: UseQueryResult<SharingGroupResponseDto[]>;
   updateItemMetadata: (itemId: string, patch: Partial<UploadMetadata>) => void;
 };
@@ -27,7 +26,7 @@ export const UploadFile = ({
   item,
   onRemove,
   tags,
-  albumsState,
+  albums,
   sharingGroupsState,
   updateItemMetadata,
 }: Props) => {
@@ -137,19 +136,14 @@ export const UploadFile = ({
           />
           {/* アルバムと日付設定 */}
           <div className="mt-8 flex gap-8 max-lg:flex-col max-md:mt-4 max-md:gap-4">
-            <div>
-              <AlbumSelector
-                albums={albumsState.data ?? []}
-                isLoading={albumsState.isLoading}
-                error={albumsState.error?.message}
-                onRefresh={albumsState.refetch}
-                onAlbumSelect={(albumId) =>
-                  handleMetadataChange({ albumId: albumId ? Number(albumId) : undefined })
-                }
-                selectedAlbumId={item.metadata.albumId}
-              />
-              <AlbumAddForm onAlbumCreated={albumsState.refetch} />
-            </div>
+            <AlbumSelector
+              albums={albums}
+              onAlbumSelect={(albumId) =>
+                handleMetadataChange({ albumId: albumId ? Number(albumId) : undefined })
+              }
+              selectedAlbumId={item.metadata.albumId}
+            />
+
             <DatePicker
               value={item.metadata.takenAt}
               onChange={(date) => handleMetadataChange({ takenAt: date })}

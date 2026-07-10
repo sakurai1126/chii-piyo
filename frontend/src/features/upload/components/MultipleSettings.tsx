@@ -7,7 +7,6 @@ import { AccordionContent } from "@/components/ui/AccordionContent";
 import { Button } from "@/components/ui/Button";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { AlbumSelector } from "@/features/album";
-import { AlbumAddForm } from "@/features/album/components/AlbumAddForm";
 import { SharingGroupsSelector } from "@/features/sharing";
 import { TagSelector } from "@/features/tag";
 import { AlbumResponseDto, SharingGroupResponseDto, TagResponseDto } from "@/lib/api-client/gen";
@@ -18,14 +17,14 @@ import { UploadMetadata } from "../types";
 
 type Props = {
   tags: TagResponseDto[];
-  albumsState: UseQueryResult<AlbumResponseDto[]>;
+  albums: AlbumResponseDto[];
   sharingGroupsState: UseQueryResult<SharingGroupResponseDto[]>;
   updateAllMetadata: (patch: Partial<UploadMetadata>) => void;
 };
 
 export const MultipleSettings = ({
   tags,
-  albumsState,
+  albums,
   sharingGroupsState,
   updateAllMetadata,
 }: Props) => {
@@ -45,17 +44,11 @@ export const MultipleSettings = ({
       <AccordionContent isOpen={isOpen} id={`accordion-${uid}`}>
         {/* アルバムと日付設定 */}
         <div className="mt-8 flex gap-8 max-lg:flex-col max-md:mt-4 max-md:gap-4">
-          <div>
-            <AlbumSelector
-              albums={albumsState.data ?? []}
-              isLoading={albumsState.isLoading}
-              error={albumsState.error?.message}
-              onRefresh={albumsState.refetch}
-              onAlbumSelect={(albumId) => setSelected((prev) => ({ ...prev, albumId }))}
-              selectedAlbumId={selected.albumId}
-            />
-            <AlbumAddForm onAlbumCreated={albumsState.refetch} />
-          </div>
+          <AlbumSelector
+            albums={albums}
+            onAlbumSelect={(albumId) => setSelected((prev) => ({ ...prev, albumId }))}
+            selectedAlbumId={selected.albumId}
+          />
 
           <DatePicker
             onChange={(takenAt) => setSelected((prev) => ({ ...prev, takenAt }))}

@@ -1,5 +1,4 @@
 "use client";
-import { useAlbums } from "@/features/album/hooks/useAlbums";
 import { useSharingGroups } from "@/features/sharing/hooks/useSharingGroups";
 import {
   ImageUploader,
@@ -16,7 +15,7 @@ type Props = {
   tags: TagResponseDto[];
 };
 
-export const UploadPageContents = ({ tags }: Readonly<Props>) => {
+export const UploadPageContents = ({ albums, tags }: Readonly<Props>) => {
   const {
     items,
     setImageAndUrl,
@@ -30,7 +29,6 @@ export const UploadPageContents = ({ tags }: Readonly<Props>) => {
     limits,
   } = useUploadPage();
 
-  const albumsState = useAlbums();
   const sharingGroupsState = useSharingGroups();
   return (
     <>
@@ -51,7 +49,7 @@ export const UploadPageContents = ({ tags }: Readonly<Props>) => {
       {items.length > 1 && (
         <MultipleSettings
           tags={tags}
-          albumsState={albumsState}
+          albums={albums}
           sharingGroupsState={sharingGroupsState}
           updateAllMetadata={updateAllMetadata}
         />
@@ -66,7 +64,7 @@ export const UploadPageContents = ({ tags }: Readonly<Props>) => {
           onUpload={handleUpload}
           isUploading={isUploading}
           tags={tags}
-          albumsState={albumsState}
+          albums={albums}
           sharingGroupsState={sharingGroupsState}
           updateItemMetadata={updateItemMetadata}
         />

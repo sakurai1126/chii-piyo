@@ -16,7 +16,7 @@ type Props = {
   onUpload: () => void;
   isUploading: boolean;
   tags: TagResponseDto[];
-  albumsState: UseQueryResult<AlbumResponseDto[]>;
+  albums: AlbumResponseDto[];
   sharingGroupsState: UseQueryResult<SharingGroupResponseDto[]>;
   updateItemMetadata: (itemId: string, patch: Partial<UploadMetadata>) => void;
 };
@@ -28,7 +28,7 @@ export const UpdateFileList = ({
   onUpload,
   isUploading,
   tags,
-  albumsState,
+  albums,
   sharingGroupsState,
   updateItemMetadata,
 }: Props) => {
@@ -65,7 +65,7 @@ export const UpdateFileList = ({
             item={item}
             onRemove={() => onRemove(index)}
             tags={tags}
-            albumsState={albumsState}
+            albums={albums}
             sharingGroupsState={sharingGroupsState}
             updateItemMetadata={updateItemMetadata}
           />

@@ -29,6 +29,7 @@ export const createAlbumAction = async (input: Input): Promise<ActionResult<Albu
     // キャッシュを破棄し、サーバーコンポーネントを再レンダリング
     revalidatePath("/albums");
     revalidatePath("/settings");
+    revalidatePath("/upload");
 
     return { success: true, data: response };
   } catch (error) {
