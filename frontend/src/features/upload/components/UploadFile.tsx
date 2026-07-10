@@ -1,11 +1,11 @@
-import { UseQueryResult } from "@tanstack/react-query";
+"use client";
+
 import Image from "next/image";
 import { useId, useState } from "react";
 
 import { AccordionContent } from "@/components/ui/AccordionContent";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { AlbumSelector } from "@/features/album";
-import { AlbumAddForm } from "@/features/album/components/AlbumAddForm";
 import { SharingGroupsSelector } from "@/features/sharing";
 import { TagSelector } from "@/features/tag";
 import { AlbumResponseDto, SharingGroupResponseDto, TagResponseDto } from "@/lib/api-client/gen";
@@ -16,18 +16,18 @@ import { UploadMedia, UploadMetadata, UploadStatus } from "../types";
 type Props = {
   item: UploadMedia;
   onRemove: () => void;
-  tagsState: UseQueryResult<TagResponseDto[]>;
-  albumsState: UseQueryResult<AlbumResponseDto[]>;
-  sharingGroupsState: UseQueryResult<SharingGroupResponseDto[]>;
+  tags: TagResponseDto[];
+  albums: AlbumResponseDto[];
+  sharingGroups: SharingGroupResponseDto[];
   updateItemMetadata: (itemId: string, patch: Partial<UploadMetadata>) => void;
 };
 
 export const UploadFile = ({
   item,
   onRemove,
-  tagsState,
-  albumsState,
-  sharingGroupsState,
+  tags,
+  albums,
+  sharingGroups,
   updateItemMetadata,
 }: Props) => {
   const uid = useId();
@@ -136,19 +136,14 @@ export const UploadFile = ({
           />
           {/* アルバムと日付設定 */}
           <div className="mt-8 flex gap-8 max-lg:flex-col max-md:mt-4 max-md:gap-4">
-            <div>
-              <AlbumSelector
-                albums={albumsState.data ?? []}
-                isLoading={albumsState.isLoading}
-                error={albumsState.error?.message}
-                onRefresh={albumsState.refetch}
-                onAlbumSelect={(albumId) =>
-                  handleMetadataChange({ albumId: albumId ? Number(albumId) : undefined })
-                }
-                selectedAlbumId={item.metadata.albumId}
-              />
-              <AlbumAddForm onAlbumCreated={albumsState.refetch} />
-            </div>
+            <AlbumSelector
+              albums={albums}
+              onAlbumSelect={(albumId) =>
+                handleMetadataChange({ albumId: albumId ? Number(albumId) : undefined })
+              }
+              selectedAlbumId={item.metadata.albumId}
+            />
+
             <DatePicker
               value={item.metadata.takenAt}
               onChange={(date) => handleMetadataChange({ takenAt: date })}
@@ -156,20 +151,14 @@ export const UploadFile = ({
           </div>
           {/* タグを編集 */}
           <TagSelector
-            tags={tagsState.data ?? []}
-            isLoading={tagsState.isLoading}
-            error={tagsState.error?.message}
-            onRefresh={tagsState.refetch}
+            tags={tags}
             selectedTagIds={item.metadata.tagIds ?? []}
             onTagSelect={(tagIds) => handleMetadataChange({ tagIds })}
             addTag={true}
           />
           {/* 共有範囲を編集 */}
           <SharingGroupsSelector
-            sharingGroups={sharingGroupsState.data ?? []}
-            isLoading={sharingGroupsState.isLoading}
-            error={sharingGroupsState.error?.message}
-            onRefresh={sharingGroupsState.refetch}
+            sharingGroups={sharingGroups}
             onSharingGroupSelect={(sharingGroupId) => handleMetadataChange({ sharingGroupId })}
             selectedGroupId={item.metadata.sharingGroupId}
           />

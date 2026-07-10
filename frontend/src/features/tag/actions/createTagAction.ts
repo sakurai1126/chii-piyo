@@ -27,7 +27,8 @@ export const createTagAction = async (input: Input): Promise<ActionResult<TagRes
     });
 
     // キャッシュを破棄し、サーバーコンポーネントを再レンダリング
-    revalidatePath("/", "layout");
+    revalidatePath("/settings");
+    revalidatePath("/upload");
 
     return { success: true, data: response };
   } catch (error) {
