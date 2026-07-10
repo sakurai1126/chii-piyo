@@ -17,12 +17,8 @@ patch:
           $ref: "../../components/schemas/users.yml#/UserRoleUpdateRequestDto"
     required: true
   responses:
-    "200":
-      description: 更新後のユーザー情報
-      content:
-        application/json;charset=UTF-8:
-          schema:
-            $ref: "../../components/schemas/users.yml#/UserResponseDto"
+    "204":
+      description: ユーザー情報の更新に成功
     "400":
       $ref: "../../components/responses.yml#/BadRequest"
     "401":

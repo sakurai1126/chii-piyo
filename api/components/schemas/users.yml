@@ -95,6 +95,8 @@ UserUpdateRequestDto:
 UserRoleUpdateRequestDto:
   type: object
   description: ユーザー権限更新リクエスト
+  required:
+    - role
   properties:
     role:
       type: string

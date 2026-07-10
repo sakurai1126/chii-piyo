@@ -5,12 +5,16 @@ import { SharingGroupResponseDto, UserResponseDto } from "@/lib/api-client/gen";
 import icon from "../assets/members.svg";
 import whiteIcon from "../assets/white/members.svg";
 
+import { RoleTag } from "./RoleTag";
+
 type Props = {
+  isAdmin: boolean;
+  currentUser: UserResponseDto;
   users: UserResponseDto[];
   sharingGroups: SharingGroupResponseDto[];
 };
 
-export const Members = async ({ users, sharingGroups }: Props) => {
+export const Members = async ({ isAdmin, currentUser, users, sharingGroups }: Props) => {
   const sharingGroupMap = new Map<number, string>();
   sharingGroups.forEach((sharingGroup) => {
     sharingGroupMap.set(sharingGroup.id, sharingGroup.name);
@@ -74,15 +78,7 @@ export const Members = async ({ users, sharingGroups }: Props) => {
                   </p>
                 </div>
               </div>
-              {user.role === "ADMIN" ? (
-                <p className="text-accent-pink bg-accent-pink-back grid h-7 w-20 place-content-center rounded-3xl border text-xs font-medium">
-                  管理者
-                </p>
-              ) : (
-                <p className="text-brown-middle bg-accent-orange-back grid h-7 w-20 place-content-center rounded-3xl border text-xs font-medium">
-                  閲覧者
-                </p>
-              )}
+              <RoleTag isAdmin={isAdmin} currentUser={currentUser} user={user} />
             </div>
             <div className="mt-2 grid gap-1 md:hidden">
               <p className="text-xs">メールアドレス：{user.email}</p>

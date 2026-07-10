@@ -29,7 +29,13 @@ const items = [
   { id: "account", label: "アカウント", icon: account, whiteIcon: whiteAccount },
 ];
 
-export const Sidebar = () => {
+const isAdminItems = ["tags", "sharing-groups", "albums"];
+
+type Props = {
+  isAdmin: boolean;
+};
+
+export const Sidebar = ({ isAdmin }: Props) => {
   const [activeId, setActiveId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -63,6 +69,8 @@ export const Sidebar = () => {
       <div className="grid gap-3 max-md:flex">
         {items.map((item) => {
           const isActive = activeId === item.id;
+          if (!isAdmin && isAdminItems.includes(item.id)) return null;
+
           return (
             <a
               key={item.id}

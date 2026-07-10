@@ -10,6 +10,7 @@ import link.s_repo.chii_piyo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
@@ -123,5 +124,32 @@ public class UserController implements UserManagementApi {
                 )
                 .toList()
         );
+    }
+
+
+    /**
+     * PATCH /users/{id}/role : ログインユーザーの権限を更新
+     *
+     * @param xRequestedWith     X-Requested-With ヘッダ (CSRF防御用)
+     * @param id                 ユーザーID
+     * @param userUpdateRoleData 更新するユーザー情報
+     * @return 更新後のユーザー情報 (status code 200)
+     */
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> updateRole(
+        String xRequestedWith, Long id, UserRoleUpdateRequestDto userUpdateRoleData) {
+
+        // ログイン中のユーザーIDを受け取り自分のID変更の場合は例外で弾く
+        Long currentUserId = currentUserProvider.getUserId();
+        if (currentUserId.equals(id)) {
+            throw new IllegalArgumentException("自分自身の権限は変更できません");
+        }
+
+        // サービス層で更新処理
+        userService.updateRole(id, userUpdateRoleData);
+
+        // 204ステータスを返却
+        return ResponseEntity.noContent().build();
     }
 }
