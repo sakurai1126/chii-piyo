@@ -1,31 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 
 import { Button } from "@/components/ui/Button";
+import { toast } from "@/components/ui/Toast";
 
-import { useCreateTag } from "../hooks/useCreateTag";
+import { createTagAction } from "../actions/createTagAction";
 
-type Props = {
-  onTagCreated?: () => void;
-};
+export default function TagAddForm() {
+  const [tagName, setTagName] = useState<string>("");
+  const [isPending, startTransition] = useTransition();
 
-export default function TagAddForm({ onTagCreated }: Readonly<Props>) {
-  const [tagName, setTagName] = useState("");
-
-  // 追加成功時の処理
-  const onSuccess = () => {
-    // タグ作成成功時のコールバックを呼び出す
-    onTagCreated?.();
-    // 入力値をリセット
-    setTagName("");
-  };
-
-  const { createTag, isCreating, error } = useCreateTag({ onSuccess });
-
-  // タグ追加ボタンのクリックハンドラー
-  const handleAddTag = () => {
-    createTag(tagName);
+  // タグ追加処理
+  const addTagAction = () => {
+    startTransition(async () => {
+      const result = await createTagAction({ name: tagName });
+      if (result.success) {
+        setTagName("");
+        toast.success("タグを追加しました");
+      } else {
+        toast.error(result.error);
+      }
+    });
   };
   return (
     <>
@@ -36,14 +32,12 @@ export default function TagAddForm({ onTagCreated }: Readonly<Props>) {
           type="text"
           value={tagName}
           onChange={(e) => setTagName(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleAddTag()}
         />
 
-        <Button className="max-w-20 max-md:max-h-8" onClick={handleAddTag} disabled={isCreating}>
+        <Button className="max-w-20 max-md:max-h-8" onClick={addTagAction} disabled={isPending}>
           追加
         </Button>
       </div>
-      {error && <p className="text-warning mt-2 text-sm dark:font-medium">{error}</p>}
     </>
   );
 }

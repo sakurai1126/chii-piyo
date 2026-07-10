@@ -1,31 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 
 import { Button } from "@/components/ui/Button";
+import { toast } from "@/components/ui/Toast";
 
-import { useCreateAlbum } from "../hooks/useCreateAlbum";
+import { createAlbumAction } from "../actions/createAlbumAction";
 
-type Props = {
-  onAlbumCreated?: () => void;
-};
-
-export const AlbumAddForm = ({ onAlbumCreated }: Readonly<Props>) => {
+export const AlbumAddForm = () => {
   const [albumTitle, setAlbumTitle] = useState<string>("");
+  const [isPending, startTransition] = useTransition();
 
-  // 追加成功時の処理
-  const onSuccess = () => {
-    // アルバム作成成功時のコールバックを呼び出す
-    onAlbumCreated?.();
-    // 入力値をリセット
-    setAlbumTitle("");
-  };
-
-  const { createAlbum, isCreating } = useCreateAlbum({ onSuccess });
-
-  // アルバム追加ボタンのクリックハンドラー
-  const handleAddAlbum = () => {
-    createAlbum(albumTitle);
+  // アルバム追加処理
+  const addAlbumAction = () => {
+    startTransition(async () => {
+      const result = await createAlbumAction({ title: albumTitle });
+      if (result.success) {
+        setAlbumTitle("");
+        toast.success("アルバムを追加しました");
+      } else {
+        toast.error(result.error);
+      }
+    });
   };
   return (
     <>
@@ -36,10 +32,9 @@ export const AlbumAddForm = ({ onAlbumCreated }: Readonly<Props>) => {
           type="text"
           value={albumTitle}
           onChange={(e) => setAlbumTitle(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleAddAlbum()}
         />
 
-        <Button className="max-w-20 max-md:max-h-8" onClick={handleAddAlbum} disabled={isCreating}>
+        <Button className="max-w-20 max-md:max-h-8" onClick={addAlbumAction} disabled={isPending}>
           追加
         </Button>
       </div>

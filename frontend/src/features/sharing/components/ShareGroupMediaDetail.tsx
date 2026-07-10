@@ -106,9 +106,6 @@ export const ShareGroupMediaDetail = ({ isAdmin, media, sharingGroups, users }: 
                 <div className="-mt-8">
                   <SharingGroupsSelector
                     sharingGroups={sharingGroups}
-                    isLoading={false}
-                    error={null}
-                    onRefresh={() => {}}
                     onSharingGroupSelect={(id) => setSelectedGroupId(id)}
                     selectedGroupId={selectedGroupId}
                   />
