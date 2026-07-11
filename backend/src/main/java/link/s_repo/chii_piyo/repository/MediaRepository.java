@@ -7,6 +7,7 @@ import link.s_repo.chii_piyo.repository.gen.FavoritesDynamicSqlSupport;
 import link.s_repo.chii_piyo.repository.gen.MediaDynamicSqlSupport;
 import link.s_repo.chii_piyo.repository.gen.MediaMapper;
 import link.s_repo.chii_piyo.repository.gen.MediaTagsDynamicSqlSupport;
+import link.s_repo.chii_piyo.repository.gen.SharingGroupMembersDynamicSqlSupport;
 import link.s_repo.chii_piyo.repository.gen.TrashItemsDynamicSqlSupport;
 import lombok.RequiredArgsConstructor;
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
@@ -36,9 +37,9 @@ public class MediaRepository {
      * @param id 対象のメディアのID
      * @return メディアデータ
      */
-    public Optional<Media> findById(Long id) {
+    public Optional<Media> findById(Long id, Long userId) {
         return mediaMapper.selectOne(c -> c
-            .where(MediaDynamicSqlSupport.id, isEqualTo(id), andNotInTrash())
+            .where(MediaDynamicSqlSupport.id, isEqualTo(id), andNotInTrash(), andSharingGroupFilter(userId))
         );
     }
 
@@ -49,9 +50,9 @@ public class MediaRepository {
      * @param ids 対象のメディアのIDリスト
      * @return メディアデータリスト
      */
-    public List<Media> findByIds(List<Long> ids) {
+    public List<Media> findByIds(List<Long> ids, Long userId) {
         return mediaMapper.select(c -> c
-            .where(MediaDynamicSqlSupport.id, isIn(ids), andNotInTrash())
+            .where(MediaDynamicSqlSupport.id, isIn(ids), andNotInTrash(), andSharingGroupFilter(userId))
         );
     }
 
@@ -183,10 +184,10 @@ public class MediaRepository {
      * 対象の前のメディアをID降順で2件取得
      * (ゴミ箱にあるデータは除外)
      */
-    public List<Media> findPreviousMedia(Long id) {
+    public List<Media> findPreviousMedia(Long id, Long userId) {
         return mediaMapper.select(c -> c
             // IDが小さいものが前のメディアになるため、ID < 対象IDで絞り込む
-            .where(MediaDynamicSqlSupport.id, isLessThan(id), andNotInTrash())
+            .where(MediaDynamicSqlSupport.id, isLessThan(id), andNotInTrash(), andSharingGroupFilter(userId))
             // ID降順で対象に近いものから順番に2件取得する
             .orderBy(MediaDynamicSqlSupport.id.descending())
             .limit(2)
@@ -197,10 +198,10 @@ public class MediaRepository {
      * 対象以降のメディアをID昇順で2件取得
      * (ゴミ箱にあるデータは除外)
      */
-    public List<Media> findNextMedia(Long id) {
+    public List<Media> findNextMedia(Long id, Long userId) {
         return mediaMapper.select(c -> c
             // IDが大きいものが後のメディアになるため、ID > 対象IDで絞り込む
-            .where(MediaDynamicSqlSupport.id, isGreaterThan(id), andNotInTrash())
+            .where(MediaDynamicSqlSupport.id, isGreaterThan(id), andNotInTrash(), andSharingGroupFilter(userId))
             // ID昇順で対象から順番に取得する
             .orderBy(MediaDynamicSqlSupport.id)
             .limit(2)
@@ -214,9 +215,10 @@ public class MediaRepository {
      * @param albumIds 対象のアルバムのIDリスト
      * @return メディアデータリスト
      */
-    public List<Media> findByAlbumIds(List<Long> albumIds) {
+    public List<Media> findByAlbumIds(List<Long> albumIds, Long userId) {
         return mediaMapper.select(
-            c -> c.where(MediaDynamicSqlSupport.albumId, isIn(albumIds), andNotInTrash())
+            c -> c.where(MediaDynamicSqlSupport.albumId, isIn(albumIds), andNotInTrash(),
+                andSharingGroupFilter(userId))
         );
     }
 
@@ -341,6 +343,12 @@ public class MediaRepository {
             );
         }
 
+
+        // 共有範囲でのフィルタリング
+        if (mediaSearchCriteria.currentUserId() != null) {
+            conditions.add(andSharingGroupFilter(mediaSearchCriteria.currentUserId()));
+        }
+
         // ゴミ箱のテーブル内に存在しないもののみで限定する
         conditions.add(
             and(MediaDynamicSqlSupport.id, isNotIn(
@@ -349,8 +357,25 @@ public class MediaRepository {
             ))
         );
 
+
         return conditions;
     }
+
+    /**
+     * 共有範囲に合わせてフィルタリングする
+     */
+    private AndOrCriteriaGroup andSharingGroupFilter(Long userId) {
+        // 共有グループ未設定(全員に公開)を許可
+        return and(MediaDynamicSqlSupport.sharingGroupId, isNull(),
+            // 加えて共有グループメンバーテーブルの中にユーザーIDがある共有グループで絞り込みをかける
+            or(MediaDynamicSqlSupport.sharingGroupId, isIn(
+                select(SharingGroupMembersDynamicSqlSupport.sharingGroupId)
+                    .from(SharingGroupMembersDynamicSqlSupport.sharingGroupMembers)
+                    .where(SharingGroupMembersDynamicSqlSupport.userId, isEqualTo(userId))
+            ))
+        );
+    }
+
 
     /**
      * アップロードが完了していてサムネイルのキーがデータ登録されていないものを取得

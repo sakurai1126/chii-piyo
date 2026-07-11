@@ -16,7 +16,7 @@ import java.util.List;
  * @param startDate      日時指定開始日
  * @param endDate        日時指定開始日
  * @param isFavorite     お気に入りのみかどうかのフラグ
- * @param currentUserId  現在のユーザーID (isFavoriteがtrueの場合に使用)
+ * @param currentUserId  現在のユーザーID
  */
 public record MediaSearchCriteria(
     Integer offset,

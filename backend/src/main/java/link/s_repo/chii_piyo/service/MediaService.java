@@ -15,6 +15,7 @@ import link.s_repo.chii_piyo.repository.AlbumRepository;
 import link.s_repo.chii_piyo.repository.MediaRepository;
 import link.s_repo.chii_piyo.repository.SharingGroupRepository;
 import link.s_repo.chii_piyo.repository.TagRepository;
+import link.s_repo.chii_piyo.security.CurrentUserProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -46,6 +47,7 @@ public class MediaService {
     private final SharingGroupRepository sharingGroupRepository;
     private final AlbumRepository albumRepository;
     private final TagRepository tagRepository;
+    private final CurrentUserProvider currentUserProvider;
 
     /**
      * メディアをID指定で1件取得する
@@ -55,7 +57,7 @@ public class MediaService {
      */
     @Transactional(readOnly = true)
     public Media getMedia(Long id) {
-        return mediaRepository.findById(id).orElseThrow(
+        return mediaRepository.findById(id, currentUserProvider.getUserId()).orElseThrow(
             () -> new ResourceNotFoundException("メディアが見つかりません " + "mediaId=" + id));
     }
 
@@ -67,7 +69,7 @@ public class MediaService {
      */
     @Transactional(readOnly = true)
     public List<Media> getMediabyIds(List<Long> ids) {
-        return mediaRepository.findByIds(ids);
+        return mediaRepository.findByIds(ids, currentUserProvider.getUserId());
     }
 
     /**
@@ -204,14 +206,16 @@ public class MediaService {
      * @return Mediaエンティティとナビゲーション位置をまとめたリスト
      */
     public List<GetMediaNavigationResult> getMediaNavigation(Long mediaId) {
+        Long userId = currentUserProvider.getUserId();
+
         // 対象の前のメディアをID降順で2件取得
-        List<Media> previousMediaList = mediaRepository.findPreviousMedia(mediaId);
+        List<Media> previousMediaList = mediaRepository.findPreviousMedia(mediaId, userId);
 
         // 表示順を昇順に揃え直す
         Collections.reverse(previousMediaList);
 
         // 以降のメディアをID昇順で2件取得
-        List<Media> nextMediaList = mediaRepository.findNextMedia(mediaId);
+        List<Media> nextMediaList = mediaRepository.findNextMedia(mediaId, userId);
 
         // buildNavigationResultsで前方メディアと現在以降のメディアを結合し、ナビゲーション位置を付与して返却する
         return buildNavigationResults(previousMediaList, nextMediaList);
@@ -288,7 +292,8 @@ public class MediaService {
     @Transactional
     public void updateMediaBatch(MediaBatchUpdateRequestDto mediaBatchUpdateData) {
         // 対象メディアを取得する
-        List<Media> mediaList = mediaRepository.findByIds(mediaBatchUpdateData.getMediaIds());
+        List<Media> mediaList = mediaRepository.findByIds(
+            mediaBatchUpdateData.getMediaIds(), currentUserProvider.getUserId());
 
         if (mediaBatchUpdateData.getMediaIds().size() != mediaList.size()) {
             throw new ResourceNotFoundException("メディアが見つかりません mediaId=" + mediaBatchUpdateData.getMediaIds());

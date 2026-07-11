@@ -7,6 +7,7 @@ import link.s_repo.chii_piyo.model.gen.Media;
 import link.s_repo.chii_piyo.model.gen.WordRecordRequestDto;
 import link.s_repo.chii_piyo.repository.MediaRepository;
 import link.s_repo.chii_piyo.repository.WordRecordRepository;
+import link.s_repo.chii_piyo.security.CurrentUserProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 public class WordRecordService {
     private final WordRecordRepository wordRecordRepository;
     private final MediaRepository mediaRepository;
+    private final CurrentUserProvider currentUserProvider;
 
     /**
      * ことば記録を新規作成する<br>
@@ -60,7 +62,7 @@ public class WordRecordService {
         }
 
         // mediaIdsのメディアの存在チェック
-        List<Media> mediaList = mediaRepository.findByIds(mediaIds);
+        List<Media> mediaList = mediaRepository.findByIds(mediaIds, currentUserProvider.getUserId());
 
         // 紐づくメディア情報のリストを作る
         if (mediaList.size() != mediaIds.size()) {
@@ -108,7 +110,8 @@ public class WordRecordService {
             .toList();
 
         // メディアを一括取得
-        List<Media> mediaList = mediaIds.isEmpty() ? List.of() : mediaRepository.findByIds(mediaIds);
+        List<Media> mediaList = mediaIds.isEmpty() ? List.of() :
+            mediaRepository.findByIds(mediaIds, currentUserProvider.getUserId());
 
         // 検索しやすいようIDをキーにしてMapを作成
         Map<Long, Media> mediaMap = mediaList.stream()

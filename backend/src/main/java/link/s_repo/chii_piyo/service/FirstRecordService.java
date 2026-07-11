@@ -7,6 +7,7 @@ import link.s_repo.chii_piyo.model.gen.FirstRecords;
 import link.s_repo.chii_piyo.model.gen.Media;
 import link.s_repo.chii_piyo.repository.FirstRecordRepository;
 import link.s_repo.chii_piyo.repository.MediaRepository;
+import link.s_repo.chii_piyo.security.CurrentUserProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 public class FirstRecordService {
     private final FirstRecordRepository firstRecordRepository;
     private final MediaRepository mediaRepository;
+    private final CurrentUserProvider currentUserProvider;
 
     /**
      * はじめて記録を新規作成する<br>
@@ -76,7 +78,9 @@ public class FirstRecordService {
             .toList();
 
         // メディアを一括取得
-        List<Media> mediaList = mediaIds.isEmpty() ? List.of() : mediaRepository.findByIds(mediaIds);
+        List<Media> mediaList = mediaIds.isEmpty()
+            ? List.of()
+            : mediaRepository.findByIds(mediaIds, currentUserProvider.getUserId());
 
         // 検索しやすいようIDをキーにしてMapを作成
         Map<Long, Media> mediaMap = mediaList.stream()
@@ -169,7 +173,7 @@ public class FirstRecordService {
         }
 
         // mediaIdsのメディアの存在チェック
-        List<Media> mediaList = mediaRepository.findByIds(mediaIds);
+        List<Media> mediaList = mediaRepository.findByIds(mediaIds, currentUserProvider.getUserId());
 
         // 紐づくメディア情報のリストを作る
         if (mediaList.size() != mediaIds.size()) {

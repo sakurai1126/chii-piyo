@@ -7,6 +7,7 @@ import link.s_repo.chii_piyo.model.gen.Media;
 
 import link.s_repo.chii_piyo.repository.AlbumRepository;
 import link.s_repo.chii_piyo.repository.MediaRepository;
+import link.s_repo.chii_piyo.security.CurrentUserProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ public class AlbumService {
     private final MediaRepository mediaRepository;
     private final S3StorageManager s3StorageManager;
     private final AlbumRepository albumRepository;
+    private final CurrentUserProvider currentUserProvider;
 
     /**
      * アルバムを新規作成する<br>
@@ -88,7 +90,7 @@ public class AlbumService {
         if (albumIds.isEmpty()) return Collections.emptyMap();
 
         // メディアの中からalbum_idカラムと受け取ったアルバムIDのリストに含まれるものを全件取得
-        List<Media> mediaList = mediaRepository.findByAlbumIds(albumIds);
+        List<Media> mediaList = mediaRepository.findByAlbumIds(albumIds, currentUserProvider.getUserId());
 
         // アルバムIDをキー、画像数と動画数を値とするマップを作成
         Map<Long, MediaDataResult> result = new HashMap<>();
@@ -187,7 +189,7 @@ public class AlbumService {
         getAlbumById(albumId);
 
         // mediaIdsのメディアの存在チェック
-        List<Media> mediaList = mediaRepository.findByIds(mediaIds);
+        List<Media> mediaList = mediaRepository.findByIds(mediaIds, currentUserProvider.getUserId());
 
         if (mediaList.size() != mediaIds.stream().distinct().toList().size()) {
             throw new ResourceNotFoundException("メディアが見つかりません mediaId=" + mediaIds);
@@ -212,7 +214,7 @@ public class AlbumService {
         getAlbumById(albumId);
 
         // mediaIdsのメディアの存在チェック
-        List<Media> mediaList = mediaRepository.findByIds(mediaIds);
+        List<Media> mediaList = mediaRepository.findByIds(mediaIds, currentUserProvider.getUserId());
 
         if (mediaList.size() != mediaIds.stream().distinct().toList().size()) {
             throw new ResourceNotFoundException("メディアが見つかりません mediaId=" + mediaIds);
