@@ -4,6 +4,7 @@ import link.s_repo.chii_piyo.model.gen.SharingGroupMembers;
 import link.s_repo.chii_piyo.model.gen.SharingGroups;
 import link.s_repo.chii_piyo.repository.gen.SharingGroupMembersDynamicSqlSupport;
 import link.s_repo.chii_piyo.repository.gen.SharingGroupMembersMapper;
+import link.s_repo.chii_piyo.repository.gen.SharingGroupsDynamicSqlSupport;
 import link.s_repo.chii_piyo.repository.gen.SharingGroupsMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -31,6 +32,18 @@ public class SharingGroupRepository {
      */
     public Optional<SharingGroups> findById(Long id) {
         return sharingGroupsMapper.selectByPrimaryKey(id);
+    }
+
+    /**
+     * 共有グループ一覧を取得する<br>
+     * 全件をID昇順で返す
+     *
+     * @return 共有グループエンティティの一覧
+     */
+    public List<SharingGroups> findByIdsOrderById(List<Long> ids) {
+        return sharingGroupsMapper.select(c -> c
+            .where(SharingGroupsDynamicSqlSupport.id, isIn(ids))
+            .orderBy(id));
     }
 
     /**

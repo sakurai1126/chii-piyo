@@ -13,18 +13,19 @@ import {
   Sidebar,
   Tags,
 } from "@/features/settings";
-import { getSharingGroups } from "@/features/sharing/server";
+import { getAllSharingGroups } from "@/features/sharing/server";
 import { getTags } from "@/features/tag/server";
 
 export default async function SettingsPage() {
-  const [isAdmin, currentUser, users, sharingGroups, tags, albums] = await Promise.all([
+  const [isAdmin, currentUser, users, tags, albums] = await Promise.all([
     isAdminUser(),
     getCurrentUser(),
     getUsers(),
-    getSharingGroups(),
     getTags(),
     getAlbums(),
   ]);
+
+  const sharingGroups = isAdmin ? await getAllSharingGroups() : undefined;
 
   return (
     <Container className="mt-20 max-md:mt-5">
@@ -48,7 +49,7 @@ export default async function SettingsPage() {
               {/* タグ */}
               <Tags tags={tags} />
               {/* 共有範囲 */}
-              <SharingGroups users={users} sharingGroups={sharingGroups} />
+              {sharingGroups && <SharingGroups users={users} sharingGroups={sharingGroups} />}
               {/* アルバム */}
               <Albums albums={albums} />
             </>

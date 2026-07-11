@@ -1,7 +1,7 @@
 get:
   tags:
     - sharingGroupManagement
-  summary: 共有グループ一覧を取得
+  summary: ログインユーザーの所属する共有グループ一覧を取得
   operationId: getSharingGroups
   parameters:
     - $ref: "../../components/parameters.yml#/XRequestedWith"

@@ -11,12 +11,12 @@ type Props = {
   isAdmin: boolean;
   currentUser: UserResponseDto;
   users: UserResponseDto[];
-  sharingGroups: SharingGroupResponseDto[];
+  sharingGroups?: SharingGroupResponseDto[];
 };
 
 export const Members = async ({ isAdmin, currentUser, users, sharingGroups }: Props) => {
   const sharingGroupMap = new Map<number, string>();
-  sharingGroups.forEach((sharingGroup) => {
+  sharingGroups?.forEach((sharingGroup) => {
     sharingGroupMap.set(sharingGroup.id, sharingGroup.name);
   });
 
@@ -65,34 +65,38 @@ export const Members = async ({ isAdmin, currentUser, users, sharingGroups }: Pr
                     {user.displayName}
                   </p>
                   <p className="text-sm max-md:hidden">メールアドレス：{user.email}</p>
-                  <p className="text-sm max-md:hidden">
-                    閲覧可能な共有範囲：
-                    {user.scopeSharingGroups.map((sharingGroupId, index) => {
-                      return (
-                        <span key={sharingGroupId}>
-                          {sharingGroupMap.get(sharingGroupId)}
-                          {index < user.scopeSharingGroups.length - 1 ? "、" : ""}
-                        </span>
-                      );
-                    })}
-                  </p>
+                  {isAdmin && (
+                    <p className="text-sm max-md:hidden">
+                      閲覧可能な共有範囲：
+                      {user.scopeSharingGroups.map((sharingGroupId, index) => {
+                        return (
+                          <span key={sharingGroupId}>
+                            {sharingGroupMap.get(sharingGroupId)}
+                            {index < user.scopeSharingGroups.length - 1 ? "、" : ""}
+                          </span>
+                        );
+                      })}
+                    </p>
+                  )}
                 </div>
               </div>
               <RoleTag isAdmin={isAdmin} currentUser={currentUser} user={user} />
             </div>
             <div className="mt-2 grid gap-1 md:hidden">
               <p className="text-xs">メールアドレス：{user.email}</p>
-              <p className="text-xs">
-                閲覧可能な共有範囲：
-                {user.scopeSharingGroups.map((sharingGroupId, index) => {
-                  return (
-                    <span key={sharingGroupId}>
-                      {sharingGroupMap.get(sharingGroupId)}
-                      {index < user.scopeSharingGroups.length - 1 ? "、" : ""}
-                    </span>
-                  );
-                })}
-              </p>
+              {isAdmin && (
+                <p className="text-xs">
+                  閲覧可能な共有範囲：
+                  {user.scopeSharingGroups.map((sharingGroupId, index) => {
+                    return (
+                      <span key={sharingGroupId}>
+                        {sharingGroupMap.get(sharingGroupId)}
+                        {index < user.scopeSharingGroups.length - 1 ? "、" : ""}
+                      </span>
+                    );
+                  })}
+                </p>
+              )}
             </div>
           </div>
         ))}
