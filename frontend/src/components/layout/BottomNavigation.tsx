@@ -9,7 +9,7 @@ type Props = {
   isAdmin: boolean;
 };
 
-export default function BottomNavigation({ isAdmin }: Props) {
+export default function BottomNavigation({ isAdmin }: Readonly<Props>) {
   const isBottom = useIsBottomScroll();
 
   return (

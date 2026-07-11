@@ -29,7 +29,7 @@ const items = [
   { id: "account", label: "アカウント", icon: account, whiteIcon: whiteAccount },
 ];
 
-const isAdminItems = ["tags", "sharing-groups", "albums"];
+const isAdminItems = new Set(["tags", "sharing-groups", "albums"]);
 
 type Props = {
   isAdmin: boolean;
@@ -69,7 +69,7 @@ export const Sidebar = ({ isAdmin }: Props) => {
       <div className="grid gap-3 max-md:flex">
         {items.map((item) => {
           const isActive = activeId === item.id;
-          if (!isAdmin && isAdminItems.includes(item.id)) return null;
+          if (!isAdmin && isAdminItems.has(item.id)) return null;
 
           return (
             <a
