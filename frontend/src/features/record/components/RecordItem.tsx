@@ -27,6 +27,7 @@ import { RecordEditMenu } from "./RecordEditMenu";
 const birthday = new Date("2025-08-06");
 
 type Props = {
+  isAdmin: boolean;
   index: number;
   tags: TagResponseDto[];
   sharingGroups: SharingGroupResponseDto[];
@@ -35,7 +36,7 @@ type Props = {
   | { variant: "word"; item: WordRecordResponseDto }
 );
 
-export const RecordItem = ({ item, index, tags, sharingGroups, variant }: Props) => {
+export const RecordItem = ({ isAdmin, item, index, tags, sharingGroups, variant }: Props) => {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
 
   // 編集時の初期値データ
@@ -63,7 +64,12 @@ export const RecordItem = ({ item, index, tags, sharingGroups, variant }: Props)
       <div className="bg-background-normal dark:bg-background-accent border-brown-dark w-full rounded-lg border px-6 pt-6 pb-4 max-md:p-3">
         {/* 通常表示 */}
         {!isEditMode && (
-          <RecordItemDisplayMode item={item} setIsEditMode={setIsEditMode} variant={variant} />
+          <RecordItemDisplayMode
+            isAdmin={isAdmin}
+            item={item}
+            setIsEditMode={setIsEditMode}
+            variant={variant}
+          />
         )}
         {isEditMode && (
           <RecordEditMenu
@@ -83,13 +89,15 @@ export const RecordItem = ({ item, index, tags, sharingGroups, variant }: Props)
  * 記録の通常表示
  */
 const RecordItemDisplayMode = ({
+  isAdmin,
   item,
   variant,
   setIsEditMode,
 }: {
-  setIsEditMode: Dispatch<SetStateAction<boolean>>;
-  variant: "first" | "word";
+  isAdmin: boolean;
   item: FirstRecordResponseDto | WordRecordResponseDto;
+  variant: "first" | "word";
+  setIsEditMode: Dispatch<SetStateAction<boolean>>;
 }) => {
   // 非同期処理中のボタン状態管理
   const [isPending, startTransition] = useTransition();
@@ -153,20 +161,23 @@ const RecordItemDisplayMode = ({
           </Link>
         ))}
       </div>
-      <div className="mt-3 ml-auto flex w-fit gap-3">
-        <button
-          className="cursor-pointer underline transition-all hover:opacity-70 max-md:text-xs"
-          onClick={() => setIsEditMode(true)}
-        >
-          編集
-        </button>
-        <button
-          className="text-warning cursor-pointer underline transition-all hover:opacity-70 max-md:text-xs dark:font-medium"
-          onClick={() => setIsDeleteConfirmOpen(true)}
-        >
-          削除
-        </button>
-      </div>
+      {isAdmin && (
+        <div className="mt-3 ml-auto flex w-fit gap-3">
+          <button
+            className="cursor-pointer underline transition-all hover:opacity-70 max-md:text-xs"
+            onClick={() => setIsEditMode(true)}
+          >
+            編集
+          </button>
+          <button
+            className="text-warning cursor-pointer underline transition-all hover:opacity-70 max-md:text-xs dark:font-medium"
+            onClick={() => setIsDeleteConfirmOpen(true)}
+          >
+            削除
+          </button>
+        </div>
+      )}
+
       {/* 削除確認モーダル */}
       <ConfirmModal
         isOpen={isDeleteConfirmOpen}

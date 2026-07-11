@@ -3,12 +3,14 @@ package link.s_repo.chii_piyo.service;
 import link.s_repo.chii_piyo.common.S3KeyGenerator;
 import link.s_repo.chii_piyo.component.S3StorageManager;
 import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
+import link.s_repo.chii_piyo.model.gen.UserRoleUpdateRequestDto;
 import link.s_repo.chii_piyo.model.gen.UserUpdateRequestDto;
 import link.s_repo.chii_piyo.model.gen.Users;
 import link.s_repo.chii_piyo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
 import java.util.Collections;
@@ -94,7 +96,6 @@ public class UserService {
         return user;
     }
 
-
     /**
      * プロフィールアイコンダウンロード用署名付きURLの生成
      *
@@ -135,11 +136,27 @@ public class UserService {
 
         // 取得下ユーザー情報から署名付きURLを取得して返却
         return users.stream().map(user -> {
-                // ダウンロード用URLを生成
-                URI presignedUrl = generateIconDownloadPresignedUrl(user);
-                // レコードにまとめる
-                return new UsersAndIconResult(user, presignedUrl);
-            }).toList();
+            // ダウンロード用URLを生成
+            URI presignedUrl = generateIconDownloadPresignedUrl(user);
+            // レコードにまとめる
+            return new UsersAndIconResult(user, presignedUrl);
+        }).toList();
+    }
+
+    /**
+     * ユーザーの権限情報の更新処理
+     *
+     * @param userId  ユーザーID
+     * @param request 更新する権限情報
+     */
+    @Transactional
+    public void updateRole(Long userId, UserRoleUpdateRequestDto request) {
+        // ユーザー情報をIDから取得
+        Users user = getUserById(userId);
+
+        user.setRole(request.getRole().getValue());
+
+        userRepository.update(user);
     }
 
     /**

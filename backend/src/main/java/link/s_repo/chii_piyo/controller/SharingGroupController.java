@@ -4,11 +4,13 @@ import link.s_repo.chii_piyo.controller.converter.SharingGroupConverter;
 import link.s_repo.chii_piyo.controller.converter.SharingGroupMemberConverter;
 import link.s_repo.chii_piyo.controller.gen.SharingGroupManagementApi;
 import link.s_repo.chii_piyo.model.gen.*;
+import link.s_repo.chii_piyo.security.CurrentUserProvider;
 import link.s_repo.chii_piyo.service.SharingGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -28,12 +30,14 @@ public class SharingGroupController implements SharingGroupManagementApi {
     private final SharingGroupService sharingGroupService;
     private final SharingGroupConverter sharingGroupConverter;
     private final SharingGroupMemberConverter sharingGroupMemberConverter;
+    private final CurrentUserProvider currentUserProvider;
 
     /**
      * POST /sharing-groups
      * 共有グループを新規作成する
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> createSharingGroup(
         String xRequestedWith, SharingGroupRequestDto sharingGroupData) {
         // サービス層で共有グループを作成する
@@ -74,13 +78,50 @@ public class SharingGroupController implements SharingGroupManagementApi {
      * 共有グループ一覧を取得する
      *
      * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
-     * @return 共有グループレスポンスDTOのリスト
+     * @return 共有グループ一覧
      */
     @Override
     public ResponseEntity<List<SharingGroupResponseDto>> getSharingGroups(String xRequestedWith) {
-        // サービス層でエンティティを取得
-        List<SharingGroups> sharingGroups = sharingGroupService.getSharingGroups();
+        // 認証情報からアプリケーション側のユーザーIDを取得
+        Long userId = currentUserProvider.getUserId();
 
+        // サービス層でエンティティを取得
+        List<SharingGroups> sharingGroups = sharingGroupService.getSharingGroups(userId);
+
+        // レスポンスDTOに変換する
+        List<SharingGroupResponseDto> response = buildSharingGroupsResponse(sharingGroups);
+
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * GET /sharing-groups/all : 共有グループ一覧を全件取得
+     *
+     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @return 共有グループ一覧
+     */
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<SharingGroupResponseDto>> getAllSharingGroups(
+        String xRequestedWith) {
+        // サービス層でエンティティを取得
+        List<SharingGroups> sharingGroups = sharingGroupService.getAllSharingGroups();
+
+        // レスポンスDTOに変換する
+        List<SharingGroupResponseDto> response = buildSharingGroupsResponse(sharingGroups);
+
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 取得した共有グループからレスポンスDTOを作成する
+     * ユーザー毎一覧取得及び管理者向け全件取得の共通処理
+     *
+     * @param sharingGroups 共有グループエンティティリスト
+     * @return 共有グループ一覧レスポンス
+     */
+    private List<SharingGroupResponseDto> buildSharingGroupsResponse(
+        List<SharingGroups> sharingGroups) {
         // 取得した共有グループからIDを抽出
         List<Long> groupIds = sharingGroups.stream()
             .map(SharingGroups::getId)
@@ -93,8 +134,8 @@ public class SharingGroupController implements SharingGroupManagementApi {
         SharingGroupService.MemberAndIconMapResult memberAndIconMap =
             sharingGroupService.memberAndIconMapping(targetMembers);
 
-        // コンバータでDTOに変換する
-        List<SharingGroupResponseDto> response = sharingGroups.stream()
+        // コンバータでDTOに変換して返却
+        return sharingGroups.stream()
             .map(group -> {
                 // MapからこのグループのIDに紐づくメンバーリスト(いない場合は空リスト)を取得する
                 List<SharingGroupMembers> members =
@@ -114,8 +155,6 @@ public class SharingGroupController implements SharingGroupManagementApi {
                 return sharingGroupConverter.toSharingGroupResponseDto(group, memberDtos);
             })
             .toList();
-
-        return ResponseEntity.ok(response);
     }
 
     /**
@@ -128,6 +167,7 @@ public class SharingGroupController implements SharingGroupManagementApi {
      * @return 更新されたメンバー情報一覧
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<SharingGroupResponseDto> updateSharingGroup(
         String xRequestedWith, Long id, SharingGroupUpdateRequestDto sharingGroupUpdateData) {
         // サービス層でグループのエンティティを取得

@@ -44,6 +44,10 @@ export interface DeleteSharingGroupRequest {
   id: number;
 }
 
+export interface GetAllSharingGroupsRequest {
+  xRequestedWith: string;
+}
+
 export interface GetSharingGroupRequest {
   xRequestedWith: string;
   id: number;
@@ -208,6 +212,72 @@ export class SharingGroupManagementApi extends runtime.BaseAPI {
   }
 
   /**
+   * Creates request options for getAllSharingGroups without sending the request
+   */
+  async getAllSharingGroupsRequestOpts(
+    requestParameters: GetAllSharingGroupsRequest,
+  ): Promise<runtime.RequestOpts> {
+    if (requestParameters["xRequestedWith"] == null) {
+      throw new runtime.RequiredError(
+        "xRequestedWith",
+        'Required parameter "xRequestedWith" was null or undefined when calling getAllSharingGroups().',
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    if (requestParameters["xRequestedWith"] != null) {
+      headerParameters["X-Requested-With"] = String(requestParameters["xRequestedWith"]);
+    }
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken;
+      const tokenString = await token("BearerAuth", []);
+
+      if (tokenString) {
+        headerParameters["Authorization"] = `Bearer ${tokenString}`;
+      }
+    }
+
+    let urlPath = `/sharing-groups/all`;
+
+    return {
+      path: urlPath,
+      method: "GET",
+      headers: headerParameters,
+      query: queryParameters,
+    };
+  }
+
+  /**
+   * 共有グループ一覧を全件取得
+   */
+  async getAllSharingGroupsRaw(
+    requestParameters: GetAllSharingGroupsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<Array<SharingGroupResponseDto>>> {
+    const requestOptions = await this.getAllSharingGroupsRequestOpts(requestParameters);
+    const response = await this.request(requestOptions, initOverrides);
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      jsonValue.map(SharingGroupResponseDtoFromJSON),
+    );
+  }
+
+  /**
+   * 共有グループ一覧を全件取得
+   */
+  async getAllSharingGroups(
+    requestParameters: GetAllSharingGroupsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<Array<SharingGroupResponseDto>> {
+    const response = await this.getAllSharingGroupsRaw(requestParameters, initOverrides);
+    return await response.value();
+  }
+
+  /**
    * Creates request options for getSharingGroup without sending the request
    */
   async getSharingGroupRequestOpts(
@@ -322,7 +392,7 @@ export class SharingGroupManagementApi extends runtime.BaseAPI {
   }
 
   /**
-   * 共有グループ一覧を取得
+   * ログインユーザーの所属する共有グループ一覧を取得
    */
   async getSharingGroupsRaw(
     requestParameters: GetSharingGroupsRequest,
@@ -337,7 +407,7 @@ export class SharingGroupManagementApi extends runtime.BaseAPI {
   }
 
   /**
-   * 共有グループ一覧を取得
+   * ログインユーザーの所属する共有グループ一覧を取得
    */
   async getSharingGroups(
     requestParameters: GetSharingGroupsRequest,

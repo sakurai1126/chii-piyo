@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
@@ -39,6 +40,7 @@ public class FirstRecordController implements FirstRecordManagementApi {
      * @return 201ステータス
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> createFirstRecord(
         String xRequestedWith, FirstRecordRequestDto firstRecordData) {
         // サービス層で登録処理
@@ -98,6 +100,7 @@ public class FirstRecordController implements FirstRecordManagementApi {
      * @return 204ステータス
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> updateFirstRecord(
         String xRequestedWith, Long id, FirstRecordRequestDto firstRecordData) {
         // サービス層で更新する
@@ -116,6 +119,7 @@ public class FirstRecordController implements FirstRecordManagementApi {
      * @return 204ステータス
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteFirstRecord(String xRequestedWith, Long id) {
         // サービス層で削除する
         firstRecordService.deleteFirstRecord(id);

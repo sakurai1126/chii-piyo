@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
@@ -78,6 +79,7 @@ public class AlbumController implements AlbumManagementApi {
      * @return 作成されたアルバムの情報
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AlbumResponseDto> createAlbum(
         String xRequestedWith, AlbumRequestDto albumData) {
         // サービス層でアルバムを作成する
@@ -118,7 +120,6 @@ public class AlbumController implements AlbumManagementApi {
      */
     @Override
     public ResponseEntity<List<AlbumResponseDto>> getAlbums(String xRequestedWith) {
-
         // サービス層でエンティティを取得し、コンバータでDTOに変換する
         List<Albums> albums = albumService.getAlbums();
 
@@ -161,6 +162,7 @@ public class AlbumController implements AlbumManagementApi {
      * @return 204ステータス
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> updateAlbum(
         String xRequestedWith, Long albumId, AlbumRequestDto albumData) {
         // アルバム名が空の場合は400 Bad Requestを返す
@@ -182,6 +184,7 @@ public class AlbumController implements AlbumManagementApi {
      * @return 204ステータス
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteAlbum(String xRequestedWith, Long albumId) {
         // サービス層でアルバムを削除する
         albumService.deleteAlbum(albumId);

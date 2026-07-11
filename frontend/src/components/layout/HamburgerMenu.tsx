@@ -1,7 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export default function HamburgerMenu() {
+import { isAdminUser } from "@/features/auth";
+
+export default async function HamburgerMenu() {
+  const isAdmin = await isAdminUser();
+
   return (
     <div className="absolute top-0 right-16 z-50 text-nowrap max-md:top-12 max-md:right-auto max-md:left-5">
       <div className="relative">
@@ -40,20 +44,27 @@ export default function HamburgerMenu() {
                 <Link href="/favorites" className="block w-fit text-sm max-md:text-xs">
                   お気に入り
                 </Link>
-                <Link href="/trash" className="block w-fit text-sm max-md:text-xs">
-                  ゴミ箱
-                </Link>
+                {isAdmin && (
+                  <Link href="/trash" className="block w-fit text-sm max-md:text-xs">
+                    ゴミ箱
+                  </Link>
+                )}
               </div>
             </div>
             <div>
               <p className="block w-fit font-medium max-md:text-[13px]">育児記録</p>
               <div className="mt-4 grid gap-2.5">
-                <Link href="/care" className="block w-fit text-sm max-md:text-xs">
-                  日々の記録
-                </Link>
-                <Link href="/analysis" className="block w-fit text-sm max-md:text-xs">
-                  グラフ
-                </Link>
+                {isAdmin && (
+                  <>
+                    <Link href="/care" className="block w-fit text-sm max-md:text-xs">
+                      日々の記録
+                    </Link>
+                    <Link href="/analysis" className="block w-fit text-sm max-md:text-xs">
+                      グラフ
+                    </Link>
+                  </>
+                )}
+
                 <Link href="/first-records" className="block w-fit text-sm max-md:text-xs">
                   はじめて記録
                 </Link>

@@ -24,7 +24,7 @@ export interface UserRoleUpdateRequestDto {
    * @type {UserRoleUpdateRequestDtoRoleEnum}
    * @memberof UserRoleUpdateRequestDto
    */
-  role?: UserRoleUpdateRequestDtoRoleEnum;
+  role: UserRoleUpdateRequestDtoRoleEnum;
 }
 
 /**
@@ -43,6 +43,7 @@ export type UserRoleUpdateRequestDtoRoleEnum =
 export function instanceOfUserRoleUpdateRequestDto(
   value: object,
 ): value is UserRoleUpdateRequestDto {
+  if (!("role" in value) || value["role"] === undefined) return false;
   return true;
 }
 
@@ -58,7 +59,7 @@ export function UserRoleUpdateRequestDtoFromJSONTyped(
     return json;
   }
   return {
-    role: json["role"] == null ? undefined : json["role"],
+    role: json["role"],
   };
 }
 

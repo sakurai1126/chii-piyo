@@ -7,6 +7,7 @@ import arrow from "../assets/arrow.svg";
 import { AlbumAddForm } from "./AlbumAddForm";
 
 type Props = {
+  isAdmin: boolean;
   // 表示するアルバム一覧
   albums: AlbumResponseDto[];
   // アルバム選択時のコールバック
@@ -15,7 +16,7 @@ type Props = {
   selectedAlbumId?: number;
 };
 
-export const AlbumSelector = ({ albums, onAlbumSelect, selectedAlbumId }: Props) => {
+export const AlbumSelector = ({ isAdmin, albums, onAlbumSelect, selectedAlbumId }: Props) => {
   return (
     <div>
       <p className="max-md:text-[13px]">アルバム</p>
@@ -46,7 +47,8 @@ export const AlbumSelector = ({ albums, onAlbumSelect, selectedAlbumId }: Props)
       ) : (
         <p className="mt-5 mr-10 text-sm max-md:mt-3 max-md:text-xs">アルバムがありません</p>
       )}
-      <AlbumAddForm />
+
+      {isAdmin && <AlbumAddForm />}
     </div>
   );
 };

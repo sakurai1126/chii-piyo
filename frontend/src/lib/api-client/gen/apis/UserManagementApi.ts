@@ -408,11 +408,11 @@ export class UserManagementApi extends runtime.BaseAPI {
   async updateRoleRaw(
     requestParameters: UpdateRoleRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<UserResponseDto>> {
+  ): Promise<runtime.ApiResponse<void>> {
     const requestOptions = await this.updateRoleRequestOpts(requestParameters);
     const response = await this.request(requestOptions, initOverrides);
 
-    return new runtime.JSONApiResponse(response, (jsonValue) => UserResponseDtoFromJSON(jsonValue));
+    return new runtime.VoidApiResponse(response);
   }
 
   /**
@@ -421,8 +421,7 @@ export class UserManagementApi extends runtime.BaseAPI {
   async updateRole(
     requestParameters: UpdateRoleRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<UserResponseDto> {
-    const response = await this.updateRoleRaw(requestParameters, initOverrides);
-    return await response.value();
+  ): Promise<void> {
+    await this.updateRoleRaw(requestParameters, initOverrides);
   }
 }

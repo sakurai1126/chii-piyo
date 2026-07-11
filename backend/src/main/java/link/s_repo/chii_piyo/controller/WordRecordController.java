@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
@@ -37,6 +38,7 @@ public class WordRecordController implements WordRecordManagementApi {
      * @return 201ステータス
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> createWordRecord(
         String xRequestedWith, WordRecordRequestDto wordRecordData) {
 
@@ -98,6 +100,7 @@ public class WordRecordController implements WordRecordManagementApi {
      * @return 204ステータス
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> updateWordRecord(
         String xRequestedWith, Long id, WordRecordRequestDto wordRecordData) {
         // サービス層で更新する
@@ -116,6 +119,7 @@ public class WordRecordController implements WordRecordManagementApi {
      * @return 204ステータス
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteWordRecord(String xRequestedWith, Long id) {
         // サービス層で削除する
         wordRecordService.deleteWordRecord(id);

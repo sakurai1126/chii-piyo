@@ -164,12 +164,8 @@ paths:
               $ref: '#/components/schemas/UserRoleUpdateRequestDto'
         required: true
       responses:
-        '200':
-          description: 更新後のユーザー情報
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/UserResponseDto'
+        '204':
+          description: ユーザー情報の更新に成功
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -186,7 +182,7 @@ paths:
     get:
       tags:
         - sharingGroupManagement
-      summary: 共有グループ一覧を取得
+      summary: ログインユーザーの所属する共有グループ一覧を取得
       operationId: getSharingGroups
       parameters:
         - $ref: '#/components/parameters/XRequestedWith'
@@ -225,6 +221,31 @@ paths:
           description: 共有グループ作成成功
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultErrors'
+  /sharing-groups/all:
+    get:
+      tags:
+        - sharingGroupManagement
+      summary: 共有グループ一覧を全件取得
+      operationId: getAllSharingGroups
+      parameters:
+        - $ref: '#/components/parameters/XRequestedWith'
+      responses:
+        '200':
+          description: 共有グループ一覧
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SharingGroupResponseDto'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -503,8 +524,6 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
@@ -534,6 +553,8 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
         default:
@@ -676,8 +697,6 @@ paths:
                   $ref: '#/components/schemas/TagResponseDto'
         '401':
           $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
         default:
@@ -855,6 +874,8 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
         default:
@@ -906,6 +927,8 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
@@ -1115,8 +1138,6 @@ paths:
                   $ref: '#/components/schemas/GrowthRecordResponseDto'
         '401':
           $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
         default:
@@ -1833,6 +1854,8 @@ components:
     UserRoleUpdateRequestDto:
       type: object
       description: ユーザー権限更新リクエスト
+      required:
+        - role
       properties:
         role:
           type: string

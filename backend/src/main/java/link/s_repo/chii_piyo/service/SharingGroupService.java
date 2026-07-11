@@ -10,6 +10,7 @@ import link.s_repo.chii_piyo.repository.SharingGroupRepository;
 import link.s_repo.chii_piyo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,13 +37,30 @@ public class SharingGroupService {
     private final S3StorageManager s3StorageManager;
 
     /**
+     * ログインユーザーの所属する共有グループ一覧を取得する<br>
+     * 全件をID昇順で返す
+     *
+     * @param userId ログイン中のユーザーID
+     * @return 共有グループエンティティの一覧
+     */
+    @Transactional(readOnly = true)
+    public List<SharingGroups> getSharingGroups(Long userId) {
+
+        // ユーザーの所属する共有グループのIDリストを取得
+        List<Long> userSharingScopeIds = getUserSharingScopes(userId);
+
+        // IDを元に共有グループを取得して返却
+        return sharingGroupRepository.findByIdsOrderById(userSharingScopeIds);
+    }
+
+    /**
      * 共有グループ一覧を取得する<br>
      * 全件をID昇順で返す
      *
      * @return 共有グループエンティティの一覧
      */
     @Transactional(readOnly = true)
-    public List<SharingGroups> getSharingGroups() {
+    public List<SharingGroups> getAllSharingGroups() {
         return sharingGroupRepository.findAllOrderById();
     }
 
@@ -188,6 +206,7 @@ public class SharingGroupService {
      *
      * @param id 共有グループID
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional(rollbackFor = Exception.class)
     public void deleteSharingGroup(Long id) {
         // 存在チェック
@@ -210,6 +229,7 @@ public class SharingGroupService {
      * @param name          新しい名前
      * @return 共有グループエンティティ
      */
+    @PreAuthorize("hasRole('ADMIN')")
     public SharingGroups updateSharingGroup(SharingGroups sharingGroups, String name) {
         sharingGroups.setName(name);
         sharingGroupRepository.update(sharingGroups);

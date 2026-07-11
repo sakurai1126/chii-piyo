@@ -9,12 +9,13 @@ import {
 import { AlbumResponseDto, SharingGroupResponseDto, TagResponseDto } from "@/lib/api-client/gen";
 
 type Props = {
+  isAdmin: boolean;
   albums: AlbumResponseDto[];
   sharingGroups: SharingGroupResponseDto[];
   tags: TagResponseDto[];
 };
 
-export const UploadPageContents = ({ albums, sharingGroups, tags }: Readonly<Props>) => {
+export const UploadPageContents = ({ isAdmin, albums, sharingGroups, tags }: Readonly<Props>) => {
   const {
     items,
     setImageAndUrl,
@@ -46,6 +47,7 @@ export const UploadPageContents = ({ albums, sharingGroups, tags }: Readonly<Pro
       {/* 条件一括設定 */}
       {items.length > 1 && (
         <MultipleSettings
+          isAdmin={isAdmin}
           tags={tags}
           albums={albums}
           sharingGroups={sharingGroups}
@@ -56,6 +58,7 @@ export const UploadPageContents = ({ albums, sharingGroups, tags }: Readonly<Pro
       {/* アップロードするファイルの一覧 */}
       {items.length > 0 && (
         <UpdateFileList
+          isAdmin={isAdmin}
           items={items}
           onRemove={removeFile}
           onRemoveAll={removeAllFiles}

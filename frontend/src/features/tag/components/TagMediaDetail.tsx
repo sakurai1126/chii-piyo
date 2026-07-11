@@ -15,12 +15,13 @@ import plus from "../assets/plus.svg";
 import { TagSelector } from "./TagSelector";
 
 type Props = {
+  isAdmin: boolean;
   mediaId: number;
   mediaTags: TagResponseDto[] | undefined;
   tags: TagResponseDto[];
 };
 
-export const TagMediaDetail = ({ mediaId, mediaTags, tags }: Props) => {
+export const TagMediaDetail = ({ isAdmin, mediaId, mediaTags, tags }: Props) => {
   const [selectedTagIds, setSelectedTagIds] = useState<number[]>(
     mediaTags?.map((tag) => tag.id) || [],
   );
@@ -67,14 +68,16 @@ export const TagMediaDetail = ({ mediaId, mediaTags, tags }: Props) => {
             {tag.name}
           </p>
         ))}
-        <button
-          className="border-line-gray text-note-gray hover:bg-line-gray flex cursor-pointer items-center gap-1 rounded-2xl border border-dashed bg-white px-3 py-1 text-sm transition-all hover:text-white max-md:text-xs"
-          onClick={() => setIsOpen(true)}
-          disabled={isPending}
-        >
-          <Image src={plus} alt="" width={14} height={14} className="max-md:h-3 max-md:w-3" />
-          <p>編集</p>
-        </button>
+        {isAdmin && (
+          <button
+            className="border-line-gray text-note-gray hover:bg-line-gray flex cursor-pointer items-center gap-1 rounded-2xl border border-dashed bg-white px-3 py-1 text-sm transition-all hover:text-white max-md:text-xs"
+            onClick={() => setIsOpen(true)}
+            disabled={isPending}
+          >
+            <Image src={plus} alt="" width={14} height={14} className="max-md:h-3 max-md:w-3" />
+            <p>編集</p>
+          </button>
+        )}
       </div>
       <AnimatePresence>
         {isOpen && (

@@ -56,6 +56,22 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * 引数エラーなどの不正なリクエスト
+     * ログにエラー内容を出力し、400エラーとして処理する
+     *
+     * @param e IllegalArgumentException
+     * @return エラーレスポンス
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponse<Void>> handleIllegalArgument(IllegalArgumentException e) {
+        log.warn("不正なリクエスト: {}", e.getMessage());
+        return ResponseEntity.badRequest()
+            .body(ApiResponse.error(
+                ErrorCode.VALIDATION_ERROR.getCode(),
+                e.getMessage()));
+    }
+
+    /**
      * バリデーションエラー
      *
      * @param e バリデーションエラー時の例外

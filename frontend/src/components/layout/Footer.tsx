@@ -1,7 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export default function Footer() {
+import { isAdminUser } from "@/features/auth";
+
+export default async function Footer() {
+  const isAdmin = await isAdminUser();
+
   return (
     <footer className="border-brown-dark mt-40 border-t pt-10 pb-15 max-md:mt-20 max-md:pt-6 max-md:pb-10">
       <Image
@@ -18,9 +22,11 @@ export default function Footer() {
         <Link href="/media" className="max-md:text-[13px]">
           写真・動画
         </Link>
-        <Link href="/care" className="max-md:text-[13px]">
-          育児記録
-        </Link>
+        {isAdmin && (
+          <Link href="/care" className="max-md:text-[13px]">
+            育児記録
+          </Link>
+        )}
         <Link href="/settings" className="max-md:text-[13px]">
           設定
         </Link>

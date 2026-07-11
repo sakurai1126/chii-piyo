@@ -45,6 +45,8 @@ put:
       $ref: "../../components/responses.yml#/BadRequest"
     "401":
       $ref: "../../components/responses.yml#/Unauthorized"
+    "403":
+      $ref: "../../components/responses.yml#/Forbidden"
     "404":
       $ref: "../../components/responses.yml#/NotFound"
     "500":

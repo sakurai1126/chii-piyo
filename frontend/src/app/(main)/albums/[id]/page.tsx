@@ -2,6 +2,7 @@ import Container from "@/components/layout/Container";
 import PageTitle from "@/components/ui/PageTitle";
 import { AddMediaAlbum } from "@/features/album/components/AddMediaAlbum";
 import { getAlbum } from "@/features/album/server";
+import { isAdminUser } from "@/features/auth";
 import { getUsers } from "@/features/auth/actions/getUsers";
 import { MediaFilter, MediaListSection } from "@/features/media";
 import { getMediaList } from "@/features/media/server";
@@ -14,7 +15,8 @@ type Props = {
 
 export default async function AlbumDetailPage({ params }: Readonly<Props>) {
   const { id } = await params;
-  const [initialData, users, tags, sharingGroups, album] = await Promise.all([
+  const [isAdmin, initialData, users, tags, sharingGroups, album] = await Promise.all([
+    isAdminUser(),
     getMediaList({ offset: 0, limit: 12, albumId: Number(id) }),
     getUsers(),
     getTags(),
@@ -36,6 +38,7 @@ export default async function AlbumDetailPage({ params }: Readonly<Props>) {
 
           {/* 一括編集UI+メディアグリッド */}
           <MediaListSection
+            isAdmin={isAdmin}
             initialData={initialData}
             users={users}
             tags={tags}

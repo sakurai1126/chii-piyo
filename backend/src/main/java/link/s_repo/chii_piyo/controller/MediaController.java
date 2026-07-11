@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
@@ -319,6 +320,7 @@ public class MediaController implements MediaManagementApi {
      * @return 204ステータス
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> updateMedia(
         String xRequestedWith,
         Long id,
@@ -342,6 +344,7 @@ public class MediaController implements MediaManagementApi {
      * @return 204ステータス
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteMedia(String xRequestedWith, Long id) {
         // メディアの存在チェック
         mediaService.getMedia(id);
@@ -363,6 +366,7 @@ public class MediaController implements MediaManagementApi {
      * @return 204ステータス
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteMultipleMedia(String xRequestedWith, List<Long> mediaIds) {
         // 重複を削除しメディアの存在チェック
         List<Long> distinctMediaIds = mediaIds.stream().distinct().toList();
@@ -387,6 +391,7 @@ public class MediaController implements MediaManagementApi {
      * @return 204ステータス
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> updateMediaBatch(
         String xRequestedWith, MediaBatchUpdateRequestDto mediaBatchUpdateData) {
 

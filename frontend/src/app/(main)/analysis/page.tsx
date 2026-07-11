@@ -1,9 +1,11 @@
 import Container from "@/components/layout/Container";
 import { ChildCareNavigation } from "@/components/ui/ChildCareNavigation";
 import PageTitle from "@/components/ui/PageTitle";
+import { isAdminUser } from "@/features/auth";
 import { getAndBuildGraphData, GraphChart, GraphSummary } from "@/features/graph";
 
 export default async function AnalysisPage() {
+  const isAdmin = await isAdminUser();
   const {
     heightData,
     weightData,
@@ -13,7 +15,7 @@ export default async function AnalysisPage() {
     careRecords,
     growthRecords,
     wordRecords,
-  } = await getAndBuildGraphData();
+  } = await getAndBuildGraphData(isAdmin);
 
   return (
     <Container className="mt-10 max-md:mt-5">
@@ -24,6 +26,7 @@ export default async function AnalysisPage() {
 
       {/* サマリー表示 */}
       <GraphSummary
+        isAdmin={isAdmin}
         growthRecords={growthRecords}
         careRecords={careRecords}
         wordRecords={wordRecords}
@@ -37,13 +40,16 @@ export default async function AnalysisPage() {
         {/* 体重データグラフ */}
         <GraphChart data={weightData} variant="weight" />
 
-        <div className="grid grid-cols-2 gap-10 max-md:grid-cols-1 max-md:gap-5">
-          {/* ミルクデータグラフ */}
-          <GraphChart data={milkData} variant="milk" />
+        {isAdmin && (
+          <div className="grid grid-cols-2 gap-10 max-md:grid-cols-1 max-md:gap-5">
+            {/* ミルクデータグラフ */}
+            <GraphChart data={milkData} variant="milk" />
 
-          {/* 排泄データグラフ */}
-          <GraphChart data={diaperData} variant="diaper" />
-        </div>
+            {/* 排泄データグラフ */}
+            <GraphChart data={diaperData} variant="diaper" />
+          </div>
+        )}
+
         {/* ことばデータグラフ */}
         <GraphChart data={wordData} variant="word" />
       </div>

@@ -1,10 +1,17 @@
+import { notFound } from "next/navigation";
+
 import Container from "@/components/layout/Container";
 import { ChildCareNavigation } from "@/components/ui/ChildCareNavigation";
+import { isAdminUser } from "@/features/auth";
 import { CareActionMenu, CareCalendar } from "@/features/care";
 import { getCareRecords } from "@/features/care/api/getCareRecords";
 import { getGrowthRecords } from "@/features/care/api/getGrowthRecords";
 
 export default async function CarePage() {
+  // 管理者でなければ404表示
+  const isAdmin = await isAdminUser();
+  if (!isAdmin) notFound();
+
   // 今日の日付を取得
   const today = new Date();
   // 週の始まりと終わりを取得
