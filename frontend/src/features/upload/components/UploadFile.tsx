@@ -14,6 +14,7 @@ import boxArrow from "../assets/brown-arrow.svg";
 import { UploadMedia, UploadMetadata, UploadStatus } from "../types";
 
 type Props = {
+  isAdmin: boolean;
   item: UploadMedia;
   onRemove: () => void;
   tags: TagResponseDto[];
@@ -23,6 +24,7 @@ type Props = {
 };
 
 export const UploadFile = ({
+  isAdmin,
   item,
   onRemove,
   tags,
@@ -137,6 +139,7 @@ export const UploadFile = ({
           {/* アルバムと日付設定 */}
           <div className="mt-8 flex gap-8 max-lg:flex-col max-md:mt-4 max-md:gap-4">
             <AlbumSelector
+              isAdmin={isAdmin}
               albums={albums}
               onAlbumSelect={(albumId) =>
                 handleMetadataChange({ albumId: albumId ? Number(albumId) : undefined })
@@ -154,7 +157,7 @@ export const UploadFile = ({
             tags={tags}
             selectedTagIds={item.metadata.tagIds ?? []}
             onTagSelect={(tagIds) => handleMetadataChange({ tagIds })}
-            addTag={true}
+            addTag={isAdmin}
           />
           {/* 共有範囲を編集 */}
           <SharingGroupsSelector

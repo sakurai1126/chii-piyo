@@ -8,6 +8,7 @@ import { UploadMedia, UploadMetadata } from "../types";
 import { UploadFile } from "./UploadFile";
 
 type Props = {
+  isAdmin: boolean;
   items: UploadMedia[];
   onRemove: (index: number) => void;
   onRemoveAll: () => void;
@@ -20,6 +21,7 @@ type Props = {
 };
 
 export const UpdateFileList = ({
+  isAdmin,
   items,
   onRemove,
   onRemoveAll,
@@ -60,6 +62,7 @@ export const UpdateFileList = ({
         {items.map((item, index) => (
           <UploadFile
             key={item.id}
+            isAdmin={isAdmin}
             item={item}
             onRemove={() => onRemove(index)}
             tags={tags}

@@ -15,13 +15,20 @@ import { useMultipleSettings } from "../hooks/useMultipleSettings";
 import { UploadMetadata } from "../types";
 
 type Props = {
+  isAdmin: boolean;
   tags: TagResponseDto[];
   albums: AlbumResponseDto[];
   sharingGroups: SharingGroupResponseDto[];
   updateAllMetadata: (patch: Partial<UploadMetadata>) => void;
 };
 
-export const MultipleSettings = ({ tags, albums, sharingGroups, updateAllMetadata }: Props) => {
+export const MultipleSettings = ({
+  isAdmin,
+  tags,
+  albums,
+  sharingGroups,
+  updateAllMetadata,
+}: Props) => {
   const { uid, isOpen, setIsOpen, selected, setSelected, handleChange, handleReset } =
     useMultipleSettings({ updateAllMetadata });
   return (
@@ -39,6 +46,7 @@ export const MultipleSettings = ({ tags, albums, sharingGroups, updateAllMetadat
         {/* アルバムと日付設定 */}
         <div className="mt-8 flex gap-8 max-lg:flex-col max-md:mt-4 max-md:gap-4">
           <AlbumSelector
+            isAdmin={isAdmin}
             albums={albums}
             onAlbumSelect={(albumId) => setSelected((prev) => ({ ...prev, albumId }))}
             selectedAlbumId={selected.albumId}
@@ -54,7 +62,7 @@ export const MultipleSettings = ({ tags, albums, sharingGroups, updateAllMetadat
           tags={tags}
           selectedTagIds={selected.tagIds ?? []}
           onTagSelect={(tagIds) => setSelected((prev) => ({ ...prev, tagIds }))}
-          addTag={true}
+          addTag={isAdmin}
         />
         {/* 共有範囲を編集 */}
         <SharingGroupsSelector

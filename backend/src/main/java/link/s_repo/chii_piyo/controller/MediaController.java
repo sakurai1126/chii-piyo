@@ -100,7 +100,6 @@ public class MediaController implements MediaManagementApi {
      * @return 更新後のメディア情報
      */
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<MediaResponseDto> updateMediaUploadStatus(
         String xRequestedWith,
         Long mediaId,
