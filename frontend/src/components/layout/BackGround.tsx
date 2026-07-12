@@ -6,14 +6,16 @@ export default async function BackGround({ children }: Readonly<{ children: Reac
   const isEasy = await isEasyMode();
 
   return (
-    <div className="relative overflow-clip">
-      <div className="pointer-events-none relative mx-auto w-full max-w-250">
+    <div
+      className={`relative overflow-clip ${isEasy ? "bg-[url('/images/easy-bg-light.jpg')] bg-contain bg-top dark:bg-[url('/images/easy-bg-dark.jpg')] dark:bg-cover" : ""}`}
+    >
+      <div className="pointer-events-none relative mx-auto w-full max-w-250 max-lg:max-w-100 max-md:max-w-30">
         <Image
           src="/images/bg-illust-1.png"
           alt=""
           width={126}
           height={126}
-          className="absolute top-45 -right-60"
+          className={`absolute top-85 -right-60 max-md:-right-43 max-md:w-23 ${isEasy ? "md:hidden" : ""}`}
         />
 
         <Image
@@ -21,7 +23,7 @@ export default async function BackGround({ children }: Readonly<{ children: Reac
           alt=""
           width={155}
           height={184}
-          className="absolute top-180 -left-60"
+          className={`absolute top-220 -left-60 max-md:-left-40 max-md:w-25 ${isEasy ? "md:hidden" : ""}`}
         />
 
         <Image
@@ -29,29 +31,14 @@ export default async function BackGround({ children }: Readonly<{ children: Reac
           alt=""
           width={98}
           height={103}
-          className="absolute top-300 -right-40"
+          className={`absolute top-340 -right-40 max-md:w-20 ${isEasy ? "md:hidden" : ""}`}
         />
       </div>
 
-      {/* ライトモード時のみ表示 */}
-      <Image
-        src="/images/bg-star.svg"
-        alt=""
-        width={2498}
-        height={2498}
-        className="pointer-events-none absolute top-[-48vw] left-[-40vw] block w-[174vw] max-w-[174vw] dark:hidden"
-      />
-
-      {/* ダークモード時のみ表示 */}
-      <Image
-        src="/images/bg-star-light.svg"
-        alt=""
-        width={2498}
-        height={2498}
-        className="pointer-events-none absolute top-[-48vw] left-[-40vw] hidden w-[174vw] max-w-[174vw] dark:block"
-      />
-      <div className={`@container relative z-1 ${isEasy ? "mx-auto max-w-125" : ""}`}>
-        {children}
+      <div className={`@container ${isEasy ? "bg-background mx-auto max-w-125" : ""}`}>
+        <div className="relative z-1 bg-[url('/images/bg-star.svg')] bg-contain bg-center @max-md:bg-[url('/images/bg-star-sp.svg')] dark:bg-[url('/images/bg-star-light.svg')] dark:@max-md:bg-[url('/images/bg-star-light-sp.svg')]">
+          {children}
+        </div>
       </div>
     </div>
   );
