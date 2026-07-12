@@ -1,10 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { isAdminUser } from "@/features/auth";
+import { isAdminUser, isEasyMode } from "@/features/auth";
 
 export default async function Footer() {
-  const isAdmin = await isAdminUser();
+  const [isAdmin, isEasy] = await Promise.all([isAdminUser(), isEasyMode()]);
 
   return (
     <footer className="border-brown-dark mt-40 border-t pt-10 pb-15 @max-md:mt-20 @max-md:pt-6 @max-md:pb-10">
@@ -15,22 +15,24 @@ export default async function Footer() {
         height={100}
         className="mx-auto @max-md:w-45"
       />
-      <nav className="mt-4 flex justify-center gap-12 @max-md:gap-7">
-        <Link href="/" className="@max-md:text-[13px]">
-          ホーム
-        </Link>
-        <Link href="/media" className="@max-md:text-[13px]">
-          写真・動画
-        </Link>
-        {isAdmin && (
-          <Link href="/care" className="@max-md:text-[13px]">
-            育児記録
+      {!isEasy && (
+        <nav className="mt-4 flex justify-center gap-12 @max-md:gap-7">
+          <Link href="/" className="@max-md:text-[13px]">
+            ホーム
           </Link>
-        )}
-        <Link href="/settings" className="@max-md:text-[13px]">
-          設定
-        </Link>
-      </nav>
+          <Link href="/media" className="@max-md:text-[13px]">
+            写真・動画
+          </Link>
+          {isAdmin && (
+            <Link href="/care" className="@max-md:text-[13px]">
+              育児記録
+            </Link>
+          )}
+          <Link href="/settings" className="@max-md:text-[13px]">
+            設定
+          </Link>
+        </nav>
+      )}
     </footer>
   );
 }

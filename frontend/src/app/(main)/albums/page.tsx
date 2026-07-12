@@ -2,10 +2,10 @@ import Container from "@/components/layout/Container";
 import PageTitle from "@/components/ui/PageTitle";
 import { AlbumsGrid, AlbumsNew } from "@/features/album";
 import { getAlbums } from "@/features/album/server";
-import { isAdminUser } from "@/features/auth";
+import { isAdminUser, isEasyMode } from "@/features/auth";
 
 export default async function AlbumsPage() {
-  const [isAdmin, albums] = await Promise.all([isAdminUser(), getAlbums()]);
+  const [isAdmin, isEasy, albums] = await Promise.all([isAdminUser(), isEasyMode(), getAlbums()]);
   return (
     <Container className="mt-20 @max-md:mt-5">
       <div className="flex items-center justify-between">
@@ -14,7 +14,7 @@ export default async function AlbumsPage() {
         </div>
         {isAdmin && <AlbumsNew />}
       </div>
-      <AlbumsGrid albums={albums} />
+      <AlbumsGrid isEasy={isEasy} albums={albums} />
     </Container>
   );
 }
