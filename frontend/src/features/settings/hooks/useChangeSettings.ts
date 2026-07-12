@@ -29,7 +29,7 @@ export const useChangeSettings = ({ currentUser }: Props) => {
   // ダークモードの状態管理
   const [isDarkMode, setIsDarkMode] = useState<boolean>(currentUser.isDarkMode);
 
-  // 簡易閲覧モードの状態管理
+  // かんたんモードの状態管理
   const [isEasyMode, setIsEasyMode] = useState<boolean>(currentUser.isEasyMode);
 
   /**
@@ -170,7 +170,7 @@ export const useChangeSettings = ({ currentUser }: Props) => {
   };
 
   /**
-   * 簡易閲覧モードの変更処理
+   * かんたんモードの変更処理
    *
    * 成功/失敗はトーストで通知
    */
@@ -180,13 +180,13 @@ export const useChangeSettings = ({ currentUser }: Props) => {
       if (updatedUser.success) {
         setUser(updatedUser.data);
         setIsEasyMode(updatedUser.data.isEasyMode);
-        toast.success(`簡易閲覧モードを${isEasyMode ? "OFF" : "ON"}にしました`);
+        toast.success(`かんたんモードを${isEasyMode ? "OFF" : "ON"}にしました`);
       } else {
-        toast.error("簡易閲覧モードの変更に失敗しました");
+        toast.error("かんたんモードの変更に失敗しました");
       }
     } catch (e) {
       console.error(e);
-      toast.error("簡易閲覧モードの変更に失敗しました");
+      toast.error("かんたんモードの変更に失敗しました");
     }
   };
 

@@ -52,10 +52,10 @@ export const DisplayMode = ({ currentUser }: Props) => {
           </label>
         </div>
         <div className="border-brown-dark/50 flex items-center justify-between border-t px-8 py-6 @max-lg:px-4 @max-md:px-5 @max-md:py-4">
-          <p className="@max-md:text-[13px]">簡易閲覧モード</p>
+          <p className="@max-md:text-[13px]">かんたんモード</p>
           <label
             className="group relative h-7 w-16 cursor-pointer @max-md:h-6 @max-md:w-13"
-            aria-label="簡易閲覧モードの切り替え"
+            aria-label="かんたんモードの切り替え"
           >
             <input
               type="checkbox"

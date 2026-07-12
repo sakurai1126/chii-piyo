@@ -62,7 +62,7 @@ export interface UserResponseDto {
    */
   isDarkMode: boolean;
   /**
-   * 簡易閲覧モードフラグ
+   * かんたんモードフラグ
    * @type {boolean}
    * @memberof UserResponseDto
    */

@@ -1784,7 +1784,7 @@ components:
           example: false
         isEasyMode:
           type: boolean
-          description: 簡易閲覧モードフラグ
+          description: かんたんモードフラグ
           example: false
         role:
           type: string
@@ -1821,7 +1821,7 @@ components:
           description: ダークモードフラグ
         isEasyMode:
           type: boolean
-          description: 簡易閲覧モードフラグ
+          description: かんたんモードフラグ
     UserUpdateIconRequestDto:
       type: object
       description: ユーザーアイコン画像更新時署名付きURL取得用リクエスト
