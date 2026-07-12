@@ -32,19 +32,19 @@ export const MultipleSettings = ({
   const { uid, isOpen, setIsOpen, selected, setSelected, handleChange, handleReset } =
     useMultipleSettings({ updateAllMetadata });
   return (
-    <div className="bg-background-accent border-brown-dark mt-15 rounded-xl border px-8 pt-6 max-md:mt-8 max-md:px-4 max-md:pt-4">
-      <div className="flex items-center gap-8 max-md:gap-2">
-        <p className="text-xl font-medium max-md:text-sm">一括設定</p>
+    <div className="bg-background-accent border-brown-dark mt-15 rounded-xl border px-8 pt-6 @max-md:mt-8 @max-md:px-4 @max-md:pt-4">
+      <div className="flex items-center gap-8 @max-md:gap-2">
+        <p className="text-xl font-medium @max-md:text-sm">一括設定</p>
         <div className="flex items-center gap-2">
           <div className="bg-note-gray h-px w-5"></div>
-          <p className="text-note-gray text-sm max-md:text-[10px]">
+          <p className="text-note-gray text-sm @max-md:text-[10px]">
             アップロードしたファイルをまとめて設定
           </p>
         </div>
       </div>
       <AccordionContent isOpen={isOpen} id={`accordion-${uid}`}>
         {/* アルバムと日付設定 */}
-        <div className="mt-8 flex gap-8 max-lg:flex-col max-md:mt-4 max-md:gap-4">
+        <div className="mt-8 flex gap-8 @max-lg:flex-col @max-md:mt-4 @max-md:gap-4">
           <AlbumSelector
             isAdmin={isAdmin}
             albums={albums}

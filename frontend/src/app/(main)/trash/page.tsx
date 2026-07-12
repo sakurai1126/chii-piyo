@@ -26,7 +26,7 @@ export default async function TrashPage({ searchParams }: Readonly<Props>) {
   const trashItems = await getTrashItems({ offset, limit });
 
   return (
-    <Container className="mt-20 max-md:mt-5">
+    <Container className="mt-20 @max-md:mt-5">
       <PageTitle text="ゴミ箱" />
       <TrashInfo trashItems={trashItems} />
       {trashItems.totalCount > 0 && (

@@ -29,7 +29,7 @@ export default async function CarePage() {
   ]);
 
   return (
-    <Container className="mt-10 max-md:mt-5">
+    <Container className="mt-10 @max-md:mt-5">
       <ChildCareNavigation currentPage="care" />
       <CareActionMenu />
       <CareCalendar initialCareRecords={careRecords} initialGrowthRecords={growthRecords} />

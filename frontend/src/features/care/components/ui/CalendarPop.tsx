@@ -43,10 +43,10 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
   let translateClass = "";
   switch (state.weekIndex) {
     case 6:
-      translateClass = "md:-translate-x-[220px]";
+      translateClass = "@md:-translate-x-[220px]";
       break;
     case 5:
-      translateClass = "md:-translate-x-[120px]";
+      translateClass = "@md:-translate-x-[120px]";
       break;
     default:
       break;
@@ -56,7 +56,7 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
     <>
       {state.isPopOpen && (state.record || state.growthRecord) && (
         <div
-          className="absolute z-50 -translate-y-[calc(100%+15px)] max-md:static max-md:translate-y-0"
+          className="absolute z-50 -translate-y-[calc(100%+15px)] @max-md:static @max-md:translate-y-0"
           ref={popRef}
           style={{
             top: state.top,
@@ -64,7 +64,7 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
           }}
         >
           <div
-            className={`border-accent-pink bg-background-normal/80 w-fit min-w-80 rounded-lg border backdrop-blur-[30px] max-md:absolute max-md:-left-2.5 max-md:w-[calc(100vw-20px)] max-md:-translate-y-[calc(100%+15px)] ${translateClass}`}
+            className={`border-accent-pink bg-background-normal/80 w-fit min-w-80 rounded-lg border backdrop-blur-[30px] @max-md:absolute @max-md:-left-2.5 @max-md:w-[calc(100vw-20px)] @max-md:-translate-y-[calc(100%+15px)] ${translateClass}`}
             style={{ top: state.top }}
           >
             <div className="relative">
@@ -392,7 +392,7 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
           <Image
             src={arrow}
             alt=""
-            className="absolute -bottom-1.5 left-6 max-md:hidden"
+            className="absolute -bottom-1.5 left-6 @max-md:hidden"
             width={25}
             height={8}
           />

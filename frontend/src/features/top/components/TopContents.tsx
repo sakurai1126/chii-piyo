@@ -26,42 +26,42 @@ export const TopContents = ({
   albums,
 }: Props) => {
   const linkButtonBaseStyle =
-    "border-brown-middle text-brown-middle bg-brown-back hover:bg-brown-light flex h-12 cursor-pointer items-center justify-center rounded-lg border text-sm font-medium transition-all duration-300 hover:text-white max-md:h-10";
+    "border-brown-middle text-brown-middle bg-brown-back hover:bg-brown-light flex h-12 cursor-pointer items-center justify-center rounded-lg border text-sm font-medium transition-all duration-300 hover:text-white @max-md:h-10";
 
   const titleLineBaseStyle =
-    "mx-auto mt-5 h-0.5 w-30 rounded-xs bg-[linear-gradient(100deg,#FFC0AB_35%,#FFF829_65%)] max-md:mt-4 max-md:h-px max-md:w-20";
+    "mx-auto mt-5 h-0.5 w-30 rounded-xs bg-[linear-gradient(100deg,#FFC0AB_35%,#FFF829_65%)] @max-md:mt-4 @max-md:h-px @max-md:w-20";
 
   return (
     <>
       {/* 記録メニュー */}
       {isAdmin && (
-        <div className="mt-20 max-md:mt-15">
-          <h2 className="font-title text-center text-4xl max-md:text-[20px]">お世話を記録する</h2>
-          <div className={`${titleLineBaseStyle} -mb-5 max-md:mb-1`}></div>
+        <div className="mt-20 @max-md:mt-15">
+          <h2 className="font-title text-center text-4xl @max-md:text-[20px]">お世話を記録する</h2>
+          <div className={`${titleLineBaseStyle} -mb-5 @max-md:mb-1`}></div>
           <CareActionMenu />
           <Link
             href="/care"
-            className={`${linkButtonBaseStyle} mx-auto mt-10 w-50 max-md:mt-6 max-md:gap-2 max-md:text-sm`}
+            className={`${linkButtonBaseStyle} mx-auto mt-10 w-50 @max-md:mt-6 @max-md:gap-2 @max-md:text-sm`}
           >
             記録一覧
           </Link>
         </div>
       )}
       {/* アルバム */}
-      <div className="mt-20 max-md:mt-15">
-        <h2 className="font-title text-center text-4xl max-md:text-[20px]">アルバム</h2>
-        <div className={`${titleLineBaseStyle} -mb-5 max-md:-mb-9`}></div>
+      <div className="mt-20 @max-md:mt-15">
+        <h2 className="font-title text-center text-4xl @max-md:text-[20px]">アルバム</h2>
+        <div className={`${titleLineBaseStyle} -mb-5 @max-md:-mb-9`}></div>
         <AlbumsGrid albums={albums} variant="top" />
         <Link
           href="/albums"
-          className={`${linkButtonBaseStyle} mx-auto mt-10 w-50 max-md:mt-6 max-md:gap-2 max-md:text-sm`}
+          className={`${linkButtonBaseStyle} mx-auto mt-10 w-50 @max-md:mt-6 @max-md:gap-2 @max-md:text-sm`}
         >
           アルバム一覧
         </Link>
       </div>
       {/* サマリー表示 */}
-      <div className="mt-20 max-md:mt-15">
-        <h2 className="font-title text-center text-4xl max-md:text-[20px]">最近の記録</h2>
+      <div className="mt-20 @max-md:mt-15">
+        <h2 className="font-title text-center text-4xl @max-md:text-[20px]">最近の記録</h2>
         <div className={`${titleLineBaseStyle}`}></div>
         <GraphSummary
           isAdmin={isAdmin}
@@ -69,14 +69,14 @@ export const TopContents = ({
           careRecords={careRecords}
           wordRecords={wordRecords}
         />
-        <div className="mt-10 flex justify-center gap-5 max-md:mt-6 max-md:gap-2">
-          <Link href="/analysis" className={`${linkButtonBaseStyle} w-40 max-md:text-xs`}>
+        <div className="mt-10 flex justify-center gap-5 @max-md:mt-6 @max-md:gap-2">
+          <Link href="/analysis" className={`${linkButtonBaseStyle} w-40 @max-md:text-xs`}>
             グラフ
           </Link>
-          <Link href="/first-records" className={`${linkButtonBaseStyle} w-40 max-md:text-xs`}>
+          <Link href="/first-records" className={`${linkButtonBaseStyle} w-40 @max-md:text-xs`}>
             はじめて
           </Link>
-          <Link href="/word-records" className={`${linkButtonBaseStyle} w-40 max-md:text-xs`}>
+          <Link href="/word-records" className={`${linkButtonBaseStyle} w-40 @max-md:text-xs`}>
             ことば
           </Link>
         </div>

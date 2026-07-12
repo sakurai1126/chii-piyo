@@ -35,15 +35,15 @@ export const MediaDetailContent = async ({ id, isModal = false }: Props) => {
 
   return (
     <div
-      className={`mx-auto max-w-280 px-5 pt-20 max-md:px-0 ${isModal ? "max-md:pt-0" : "max-md:pt-10"}`}
+      className={`mx-auto max-w-280 px-5 pt-20 @max-md:px-0 ${isModal ? "@max-md:pt-0" : "@max-md:pt-10"}`}
     >
       <p className="hidden">Media ID: {id}</p>
-      <div className="flex gap-10 max-lg:mx-auto max-lg:max-w-150 max-lg:flex-col max-lg:items-center">
+      <div className="flex gap-10 @max-lg:mx-auto @max-lg:max-w-150 @max-lg:flex-col @max-lg:items-center">
         {/* 画像、動画表示 */}
         <MediaViewer isModal={isModal} media={media} users={users} />
 
         {/* 詳細情報 */}
-        <div className={`w-full max-md:px-5 ${isModal ? "pb-20" : ""}`}>
+        <div className={`w-full @max-md:px-5 ${isModal ? "pb-20" : ""}`}>
           {/* コメント */}
           <MediaComment
             mediaId={media.id}

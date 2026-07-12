@@ -28,7 +28,7 @@ export const AddMediaAlbum = ({ tags, sharingGroups, albumId }: Props) => {
 
       {/* 遷移ボタン */}
       <AccentButton
-        className="mt-10 ml-auto max-md:mt-4"
+        className="mt-10 ml-auto @max-md:mt-4"
         variant="button"
         onClick={() => setIsOpen(true)}
       >

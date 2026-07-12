@@ -27,7 +27,7 @@ export const TagSelector = ({ tags, onTagSelect, selectedTagIds, addTag = false 
 
   return (
     <div className="mt-8">
-      <p className="max-md:mt-4 max-md:text-[13px]">タグを編集</p>
+      <p className="max-md:text-[13px] @max-md:mt-4">タグを編集</p>
 
       {/* タグ一覧 */}
       {tags.length > 0 ? (
@@ -45,13 +45,13 @@ export const TagSelector = ({ tags, onTagSelect, selectedTagIds, addTag = false 
                   onChange={(e) => handleChange(tag.id, e.target.checked)}
                   checked={selectedTagIds.includes(tag.id)}
                 />
-                <p className="max-md:text-[13px]">{tag.name}</p>
+                <p className="@max-md:text-[13px]">{tag.name}</p>
               </label>
             );
           })}
         </div>
       ) : (
-        <p className="mt-3 mr-10 text-sm max-md:text-xs">タグがありません</p>
+        <p className="mt-3 mr-10 text-sm @max-md:text-xs">タグがありません</p>
       )}
 
       {/* タグ追加フォーム */}

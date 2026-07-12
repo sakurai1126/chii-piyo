@@ -25,7 +25,7 @@ export default async function AlbumDetailPage({ params }: Readonly<Props>) {
   ]);
 
   return (
-    <Container className="mt-20 max-md:mt-5">
+    <Container className="mt-20 @max-md:mt-5">
       <PageTitle text={`アルバム - ${album.title}`} />
 
       {initialData.totalCount > 0 ? (

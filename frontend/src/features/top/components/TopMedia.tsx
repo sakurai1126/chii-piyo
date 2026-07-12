@@ -38,10 +38,10 @@ export const TopMedia = ({ favoriteData, mediaData, users }: Props) => {
   if (today.getDate() < birthday.getDate()) months--;
   return (
     (mainMedia.length > 0 || mediaData.items.length > 0) && (
-      <div className="mx-auto mt-20 w-fit max-w-310 px-5 max-md:mt-6">
-        <div className="flex justify-between gap-5 max-md:flex-col">
+      <div className="mx-auto mt-20 w-fit max-w-310 px-5 @max-md:mt-6">
+        <div className="flex justify-between gap-5 @max-md:flex-col">
           {/* お気に入り画像 */}
-          <div className="relative aspect-square h-[570px] w-[570px] shrink-0 overflow-hidden max-lg:h-100 max-lg:w-100 max-md:h-full max-md:w-full">
+          <div className="relative aspect-square h-[570px] w-[570px] shrink-0 overflow-hidden @max-lg:h-100 @max-lg:w-100 @max-md:h-full @max-md:w-full">
             {mainMedia.map((media, index) => (
               <div
                 key={`${index}-${media.id}`}
@@ -62,24 +62,24 @@ export const TopMedia = ({ favoriteData, mediaData, users }: Props) => {
           <div className="flex flex-col justify-between">
             <div>
               <p>
-                <span className="text-[40px] font-medium max-md:text-3xl">
+                <span className="text-[40px] font-medium @max-md:text-3xl">
                   {today.getFullYear()}
                 </span>
-                <span className="mr-3 ml-1 text-2xl max-md:text-lg">年</span>
-                <span className="text-[40px] font-medium max-md:text-3xl">
+                <span className="mr-3 ml-1 text-2xl @max-md:text-lg">年</span>
+                <span className="text-[40px] font-medium @max-md:text-3xl">
                   {today.getMonth() + 1}
                 </span>
-                <span className="mr-3 ml-1 text-2xl max-md:text-lg">月</span>
-                <span className="text-[40px] font-medium max-md:text-3xl">{today.getDate()}</span>
-                <span className="mr-3 ml-1 text-2xl max-md:text-lg">日</span>
+                <span className="mr-3 ml-1 text-2xl @max-md:text-lg">月</span>
+                <span className="text-[40px] font-medium @max-md:text-3xl">{today.getDate()}</span>
+                <span className="mr-3 ml-1 text-2xl @max-md:text-lg">日</span>
               </p>
               <p>
-                <span className="text-note-gray text-xl max-md:text-[16px]">{`${Math.floor(months / 12)}歳${months % 12}ヵ月`}</span>
+                <span className="text-note-gray text-xl @max-md:text-[16px]">{`${Math.floor(months / 12)}歳${months % 12}ヵ月`}</span>
                 <span className="text-note-gray ml-3 text-sm">生後{diffDays}日</span>
               </p>
             </div>
             {/* 画像表示 */}
-            <div className="grid grid-cols-3 gap-5 max-lg:gap-2 max-md:mt-3">
+            <div className="grid grid-cols-3 gap-5 @max-lg:gap-2 @max-md:mt-3">
               {mediaData.items.map((data) => (
                 <Link
                   href={`/media/${data.id}`}
@@ -91,7 +91,7 @@ export const TopMedia = ({ favoriteData, mediaData, users }: Props) => {
                     <Image
                       src={data.thumbnailPresignedUrl ?? "/images/no-thumbnail.png"}
                       alt=""
-                      className="bg-background h-full w-full object-cover transition-all duration-500 group-hover:scale-110 max-lg:h-30 max-lg:w-30"
+                      className="bg-background h-full w-full object-cover transition-all duration-500 group-hover:scale-110 @max-lg:h-30 @max-lg:w-30"
                       width={190}
                       height={190}
                     />
@@ -111,15 +111,15 @@ export const TopMedia = ({ favoriteData, mediaData, users }: Props) => {
 
                     {/* コメント */}
                     {data.commentCount ? (
-                      <div className="border-brown-dark bg-accent-orange-back absolute right-2 bottom-2 flex items-center gap-1 rounded-2xl border px-2 py-0.5 max-md:right-1 max-md:bottom-1">
+                      <div className="border-brown-dark bg-accent-orange-back absolute right-2 bottom-2 flex items-center gap-1 rounded-2xl border px-2 py-0.5 @max-md:right-1 @max-md:bottom-1">
                         <Image
                           src={commentIcon}
                           alt="comment"
                           width={11}
                           height={11}
-                          className="mt-0.5 max-md:h-4 max-md:w-4"
+                          className="mt-0.5 @max-md:h-4 @max-md:w-4"
                         />
-                        <p className="text-brown-dark text-xs max-md:text-[10px]">
+                        <p className="text-brown-dark text-xs @max-md:text-[10px]">
                           {data.commentCount}
                         </p>
                       </div>
@@ -132,7 +132,7 @@ export const TopMedia = ({ favoriteData, mediaData, users }: Props) => {
         </div>
         <Link
           href="/media"
-          className="border-brown-middle text-brown-middle bg-brown-back hover:bg-brown-light mt-10 ml-auto flex h-12 w-50 cursor-pointer items-center justify-center gap-3 rounded-lg border px-7 text-sm font-medium transition-all duration-300 hover:text-white max-md:mx-auto max-md:mt-6 max-md:h-10 max-md:gap-2 max-md:px-3 max-md:text-xs"
+          className="border-brown-middle text-brown-middle bg-brown-back hover:bg-brown-light mt-10 ml-auto flex h-12 w-50 cursor-pointer items-center justify-center gap-3 rounded-lg border px-7 text-sm font-medium transition-all duration-300 hover:text-white @max-md:mx-auto @max-md:mt-6 @max-md:h-10 @max-md:gap-2 @max-md:px-3 @max-md:text-xs"
         >
           写真・動画一覧
         </Link>

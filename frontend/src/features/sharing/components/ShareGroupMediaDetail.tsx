@@ -47,11 +47,11 @@ export const ShareGroupMediaDetail = ({ isAdmin, media, sharingGroups, users }: 
 
   return (
     <div className="mt-7">
-      <p className="max-md:text-sm">共有範囲</p>
-      <div className="mt-2.5 flex items-center justify-between max-md:flex-col max-md:items-start">
+      <p className="@max-md:text-sm">共有範囲</p>
+      <div className="mt-2.5 flex items-center justify-between @max-md:flex-col @max-md:items-start">
         {currentSharingGroup ? (
           <div className="flex items-center gap-2">
-            <p className="text-sm max-md:text-xs">{currentSharingGroup.name}</p>
+            <p className="text-sm @max-md:text-xs">{currentSharingGroup.name}</p>
             <div className="bg-line-gray h-px w-7"></div>
             {currentSharingGroup.members.map((member) => (
               <div
@@ -70,7 +70,7 @@ export const ShareGroupMediaDetail = ({ isAdmin, media, sharingGroups, users }: 
           </div>
         ) : (
           <div className="flex items-center gap-2">
-            <p className="text-sm max-md:text-xs">全員に公開</p>
+            <p className="text-sm @max-md:text-xs">全員に公開</p>
             <div className="bg-line-gray h-px w-7"></div>
             {users.map((user) => (
               <div
@@ -91,7 +91,7 @@ export const ShareGroupMediaDetail = ({ isAdmin, media, sharingGroups, users }: 
 
         {isAdmin && (
           <button
-            className="cursor-pointer text-sm underline transition-all hover:opacity-70 max-md:mt-3 max-md:ml-auto max-md:text-xs"
+            className="cursor-pointer text-sm underline transition-all hover:opacity-70 @max-md:mt-3 @max-md:ml-auto @max-md:text-xs"
             onClick={() => setIsOpen(true)}
           >
             共有範囲を変更する
@@ -110,7 +110,7 @@ export const ShareGroupMediaDetail = ({ isAdmin, media, sharingGroups, users }: 
                     selectedGroupId={selectedGroupId}
                   />
                 </div>
-                <div className="flex justify-center gap-5 max-md:mt-8">
+                <div className="flex justify-center gap-5 @max-md:mt-8">
                   <Button variant="cancel" onClick={() => setIsOpen(false)}>
                     キャンセル
                   </Button>

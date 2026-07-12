@@ -31,10 +31,10 @@ export const TagFilter = ({ tags, updateFilter, currentValue = [] }: Props) => {
     updateFilter({ key: "tagId", value: tagId.toString() });
   };
   return (
-    <div className="bg-background-accent w-full rounded-lg px-7 pt-6 pb-8 max-md:p-3 max-md:pb-4">
+    <div className="bg-background-accent w-full rounded-lg px-7 pt-6 pb-8 @max-md:p-3 @max-md:pb-4">
       <div className="flex items-center gap-1.5">
         <Image src={icon} alt="" width={32} height={32} className="h-6.5 w-6.5" />
-        <p className="max-md:text-[13px]">タグ</p>
+        <p className="@max-md:text-[13px]">タグ</p>
       </div>
       <div
         ref={ref}
@@ -45,7 +45,7 @@ export const TagFilter = ({ tags, updateFilter, currentValue = [] }: Props) => {
           <label
             key={tag.id}
             htmlFor={`${tag.id.toString()}-${uid}`}
-            className="border-line-gray has-checked:border-accent-orange has-checked:bg-accent-orange-back has-checked:text-brown-middle bg-light-dark flex cursor-pointer items-center gap-2 rounded-4xl border py-1.5 pr-5 pl-3 transition-all max-md:py-1 max-md:pr-3"
+            className="border-line-gray has-checked:border-accent-orange has-checked:bg-accent-orange-back has-checked:text-brown-middle bg-light-dark flex cursor-pointer items-center gap-2 rounded-4xl border py-1.5 pr-5 pl-3 transition-all @max-md:py-1 @max-md:pr-3"
           >
             <input
               type="checkbox"
@@ -60,7 +60,7 @@ export const TagFilter = ({ tags, updateFilter, currentValue = [] }: Props) => {
               width={14}
               height={14}
             />
-            <p className="text-sm max-md:text-xs">{tag.name}</p>
+            <p className="text-sm @max-md:text-xs">{tag.name}</p>
             <p
               className={`rounded-4xl px-1 py-px text-[10px] tracking-tighter text-white ${currentValue.includes(tag.id.toString()) ? "bg-accent-orange" : "bg-note-gray"}`}
             >
@@ -73,7 +73,7 @@ export const TagFilter = ({ tags, updateFilter, currentValue = [] }: Props) => {
         <button
           type="button"
           onClick={() => setIsOpen((prev) => !prev)}
-          className="text-brown-middle mt-2 -mb-5 flex h-5 w-full justify-center text-sm underline max-md:-mb-2"
+          className="text-brown-middle mt-2 -mb-5 flex h-5 w-full justify-center text-sm underline @max-md:-mb-2"
         >
           <Image
             src={arrow}

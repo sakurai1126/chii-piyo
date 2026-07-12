@@ -22,7 +22,7 @@ type Props = {
 
 export const SettingsTags = ({ tags }: Props) => {
   return (
-    <div className="bg-background-normal dark:bg-background-accent border-brown-dark mt-4 rounded-lg border px-7.5 py-6 max-md:mt-3 max-md:p-5">
+    <div className="bg-background-normal dark:bg-background-accent border-brown-dark mt-4 rounded-lg border px-7.5 py-6 @max-md:mt-3 @max-md:p-5">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
         {tags.map((tag) => (
           <TagItem key={tag.id} tag={tag} />
@@ -95,7 +95,7 @@ const TagItem = ({ tag }: { tag: TagResponseDto }) => {
             onChange={(e) => setNewTagName(e.target.value)}
           />
         ) : (
-          <p className="text-brown-dark text-sm max-md:text-xs">{newTagName}</p>
+          <p className="text-brown-dark text-sm @max-md:text-xs">{newTagName}</p>
         )}
 
         <p className="bg-brown-dark mr-3 ml-2 rounded-2xl px-1 text-[10px] text-white">

@@ -47,10 +47,10 @@ export const UpdateFileList = ({
   const targetVideoCount = targets.filter((item) => item.file.type.startsWith("video/")).length;
 
   return (
-    <div className="mt-15 max-md:mt-10">
+    <div className="mt-15 @max-md:mt-10">
       <div className="flex items-start justify-between">
-        <p className="text-xl font-medium max-md:text-sm">アップロードするファイル</p>
-        <p className="text-note-gray pt-0.5 text-right max-md:text-xs">
+        <p className="text-xl font-medium @max-md:text-sm">アップロードするファイル</p>
+        <p className="text-note-gray pt-0.5 text-right @max-md:text-xs">
           写真 : {totalImageCount}枚 + 動画 : {totalVideoCount}本
           <br />
           合計サイズ :{" "}

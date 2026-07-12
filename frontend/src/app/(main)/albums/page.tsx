@@ -7,7 +7,7 @@ import { isAdminUser } from "@/features/auth";
 export default async function AlbumsPage() {
   const [isAdmin, albums] = await Promise.all([isAdminUser(), getAlbums()]);
   return (
-    <Container className="mt-20 max-md:mt-5">
+    <Container className="mt-20 @max-md:mt-5">
       <div className="flex items-center justify-between">
         <div>
           <PageTitle text="アルバム一覧" />

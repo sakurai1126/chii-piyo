@@ -54,29 +54,29 @@ export const MediaFilter = ({ tags, sharingGroups }: Props) => {
   return (
     <div className="relative z-10">
       <div
-        className={`bg-background-normal border-brown-dark relative mt-10 rounded-lg border p-7 ${isOpen ? "max-md:px-4 max-md:pt-6 max-md:pb-0" : "max-md:p-0"}`}
+        className={`bg-background-normal border-brown-dark relative mt-10 rounded-lg border p-7 ${isOpen ? "max-md:pt-6 @max-md:px-4 @max-md:pb-0" : "@max-md:p-0"}`}
       >
         <Image
           src={illust}
           alt=""
           width={120}
           height={90}
-          className="absolute -top-18 right-5 max-md:-top-14 max-md:right-3 max-md:h-16.75 max-md:w-22.5"
+          className="absolute -top-18 right-5 @max-md:-top-14 @max-md:right-3 @max-md:h-16.75 @max-md:w-22.5"
         />
         <Image
           src={heart}
           alt=""
           width={92}
           height={76}
-          className="absolute -top-5 -right-24 -z-1 max-xl:top-5 max-xl:-right-15 max-md:top-2 max-md:-right-13 max-md:h-16.5 max-md:w-20"
+          className="absolute -top-5 -right-24 -z-1 @max-xl:top-5 @max-xl:-right-15 @max-md:top-2 @max-md:-right-13 @max-md:h-16.5 @max-md:w-20"
         />
         <div
-          className={`grid transition-all duration-400 ${isOpen ? "max-md:grid-rows-[1fr]" : "max-md:grid-rows-[0fr]"}`}
+          className={`grid transition-all duration-400 ${isOpen ? "@max-md:grid-rows-[1fr]" : "@max-md:grid-rows-[0fr]"}`}
         >
           <div className="overflow-hidden">
             {/* 上段 */}
 
-            <div className="flex grid-rows-[0fr] gap-5 max-md:flex-col max-md:gap-4">
+            <div className="flex grid-rows-[0fr] gap-5 @max-md:flex-col @max-md:gap-4">
               {/* 写真/動画 */}
               <MediaKindFilter
                 updateFilter={updateFilter}
@@ -92,7 +92,7 @@ export const MediaFilter = ({ tags, sharingGroups }: Props) => {
             </div>
 
             {/* 下段 */}
-            <div className="mt-5 flex gap-5 max-md:flex-col max-md:gap-4">
+            <div className="mt-5 flex gap-5 @max-md:flex-col @max-md:gap-4">
               {/* タグ */}
               <TagFilter
                 tags={tags}

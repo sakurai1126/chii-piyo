@@ -1,6 +1,10 @@
 import Image from "next/image";
 
-export default function BackGround({ children }: Readonly<{ children: React.ReactNode }>) {
+import { isEasyMode } from "@/features/auth";
+
+export default async function BackGround({ children }: Readonly<{ children: React.ReactNode }>) {
+  const isEasy = await isEasyMode();
+
   return (
     <div className="relative overflow-clip">
       <div className="pointer-events-none relative mx-auto w-full max-w-250">
@@ -46,7 +50,9 @@ export default function BackGround({ children }: Readonly<{ children: React.Reac
         height={2498}
         className="pointer-events-none absolute top-[-48vw] left-[-40vw] hidden w-[174vw] max-w-[174vw] dark:block"
       />
-      <div className="relative z-1">{children}</div>
+      <div className={`@container relative z-1 ${isEasy ? "mx-auto max-w-125" : ""}`}>
+        {children}
+      </div>
     </div>
   );
 }

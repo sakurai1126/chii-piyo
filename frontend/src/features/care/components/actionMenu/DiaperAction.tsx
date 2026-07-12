@@ -58,7 +58,7 @@ export const DiaperAction = () => {
   };
 
   return (
-    <div className="max-md:w-[calc(50%-8px)]">
+    <div className="@max-md:w-[calc(50%-8px)]">
       <CareActionModal
         title="排泄"
         isOpen={isOpen}
@@ -98,18 +98,18 @@ export const DiaperAction = () => {
       </CareActionModal>
 
       <button
-        className="border-diaper-border group bg-translucent w-full cursor-pointer rounded-lg border p-5 backdrop-blur-[7.5px] transition-all max-md:rounded-4xl max-md:p-4"
+        className="border-diaper-border group bg-translucent w-full cursor-pointer rounded-lg border p-5 backdrop-blur-[7.5px] transition-all @max-md:rounded-4xl @max-md:p-4"
         disabled={isPending}
         onClick={openModal}
       >
         <Image
           src={diaperIcon}
           alt=""
-          className="mx-auto transition-all group-hover:scale-110 max-md:h-20 max-md:w-20"
+          className="mx-auto transition-all group-hover:scale-110 @max-md:h-20 @max-md:w-20"
           width={100}
           height={100}
         />
-        <p className="text-diaper-text mt-3 text-lg font-medium max-md:text-[16px]">排泄</p>
+        <p className="text-diaper-text mt-3 text-lg font-medium @max-md:text-[16px]">排泄</p>
       </button>
     </div>
   );

@@ -210,9 +210,9 @@ export const AddMediaModal = ({
         {isOpen && (
           <Modal>
             <div className="grid h-screen w-screen place-content-center">
-              <div className="bg-background-normal border-brown-dark relative mx-auto h-[85vh] w-[calc(100vw-40px)] max-w-250 overflow-y-scroll rounded-lg border p-10 max-md:min-h-0 max-md:p-5 max-md:pb-9">
+              <div className="bg-background-normal border-brown-dark relative mx-auto h-[85vh] w-[calc(100vw-40px)] max-w-250 overflow-y-scroll rounded-lg border p-10 @max-md:min-h-0 @max-md:p-5 @max-md:pb-9">
                 <div className="flex items-center justify-between">
-                  <p className="text-xl font-medium max-md:text-[16px]">
+                  <p className="text-xl font-medium @max-md:text-[16px]">
                     {variant === "album" ? "アルバム" : "記録"}にメディアを追加する
                   </p>
                   <button
@@ -255,12 +255,12 @@ export const AddMediaModal = ({
                 </button>
 
                 <div
-                  className={`mt-7 grid transition-all duration-400 max-md:mt-4 ${isFilterOpen ? "max-md:grid-rows-[1fr]" : "max-md:grid-rows-[0fr]"}`}
+                  className={`mt-7 grid transition-all duration-400 @max-md:mt-4 ${isFilterOpen ? "@max-md:grid-rows-[1fr]" : "@max-md:grid-rows-[0fr]"}`}
                 >
                   <div className="overflow-hidden">
                     {/* 上段 */}
 
-                    <div className="flex grid-rows-[0fr] gap-5 max-md:flex-col max-md:gap-4">
+                    <div className="flex grid-rows-[0fr] gap-5 @max-md:flex-col @max-md:gap-4">
                       {/* 写真/動画 */}
                       <MediaKindFilter
                         updateFilter={updateFilter}
@@ -276,7 +276,7 @@ export const AddMediaModal = ({
                     </div>
 
                     {/* 下段 */}
-                    <div className="mt-5 flex gap-5 max-md:flex-col max-md:gap-4">
+                    <div className="mt-5 flex gap-5 @max-md:flex-col @max-md:gap-4">
                       {/* タグ */}
                       <TagFilter
                         tags={tags}
@@ -294,15 +294,15 @@ export const AddMediaModal = ({
                   </div>
                 </div>
 
-                <div className="mt-4 flex justify-between gap-4 max-md:flex-col max-md:items-center max-md:gap-0">
+                <div className="mt-4 flex justify-between gap-4 @max-md:flex-col @max-md:items-center @max-md:gap-0">
                   {isFiltersChanged && (
                     <div
-                      className={`grid transition-all duration-400 ${isFilterOpen ? "max-md:grid-rows-[1fr]" : "max-md:grid-rows-[0fr]"}`}
+                      className={`grid transition-all duration-400 ${isFilterOpen ? "@max-md:grid-rows-[1fr]" : "@max-md:grid-rows-[0fr]"}`}
                     >
                       <div className="overflow-hidden">
                         <Button
                           variant="cancel"
-                          className="w-60 max-md:mb-4"
+                          className="w-60 @max-md:mb-4"
                           onClick={() => setFilters(initialFilters)}
                           disabled={isPending}
                         >
@@ -312,7 +312,7 @@ export const AddMediaModal = ({
                     </div>
                   )}
 
-                  <div className="ml-auto flex gap-4 max-md:mr-auto">
+                  <div className="ml-auto flex gap-4 @max-md:mr-auto">
                     <Button
                       variant={variant === "album" ? "cancel" : "primary"}
                       onClick={modalClose}
@@ -329,7 +329,7 @@ export const AddMediaModal = ({
                 </div>
 
                 {/* メディアリスト */}
-                <div className="mt-4 grid grid-cols-7 gap-2 max-md:mt-2 max-md:grid-cols-3 max-md:gap-0.5">
+                <div className="mt-4 grid grid-cols-7 gap-2 @max-md:mt-2 @max-md:grid-cols-3 @max-md:gap-0.5">
                   {items.map((item) => (
                     <React.Fragment key={item.id}>
                       <label

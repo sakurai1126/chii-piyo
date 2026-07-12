@@ -18,7 +18,7 @@ export default async function AnalysisPage() {
   } = await getAndBuildGraphData(isAdmin);
 
   return (
-    <Container className="mt-10 max-md:mt-5">
+    <Container className="mt-10 @max-md:mt-5">
       <ChildCareNavigation currentPage="graph" />
       <div className="mt-10">
         <PageTitle text="グラフ" />
@@ -33,7 +33,7 @@ export default async function AnalysisPage() {
       />
 
       {/* 各種グラフ */}
-      <div className="mt-15 grid gap-10 max-md:gap-5">
+      <div className="mt-15 grid gap-10 @max-md:gap-5">
         {/* 身長データグラフ */}
         <GraphChart data={heightData} variant="height" />
 
@@ -41,7 +41,7 @@ export default async function AnalysisPage() {
         <GraphChart data={weightData} variant="weight" />
 
         {isAdmin && (
-          <div className="grid grid-cols-2 gap-10 max-md:grid-cols-1 max-md:gap-5">
+          <div className="grid grid-cols-2 gap-10 @max-md:grid-cols-1 @max-md:gap-5">
             {/* ミルクデータグラフ */}
             <GraphChart data={milkData} variant="milk" />
 

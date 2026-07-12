@@ -55,17 +55,17 @@ export const NewSharingGroupEdit = ({ users }: Props) => {
   return (
     <>
       <AccordionContent isOpen={isNewGroupEdit}>
-        <p className="mt-3 font-medium max-md:text-[13px]">新規グループの追加</p>
+        <p className="mt-3 font-medium @max-md:text-[13px]">新規グループの追加</p>
 
-        <div className="bg-background-normal border-brown-dark mt-3 rounded-lg border px-8 py-4 max-md:mt-3">
-          <p className="max-md:text-[13px]">共有グループの名前</p>
+        <div className="bg-background-normal border-brown-dark mt-3 rounded-lg border px-8 py-4 @max-md:mt-3">
+          <p className="@max-md:text-[13px]">共有グループの名前</p>
           <input
             className="border-line-gray focus:outline-brown-light bg-light-dark mt-2 block h-10 w-full max-w-90 rounded-sm border px-2.5 dark:outline-none"
             onChange={(e) => setNewGroupName(e.target.value)}
             value={newGroupName}
             disabled={isPending}
           />
-          <p className="mt-2 max-md:text-[13px]">追加するメンバー</p>
+          <p className="mt-2 @max-md:text-[13px]">追加するメンバー</p>
           <div className="mt-4 flex flex-wrap gap-6">
             {users.map((user) => (
               <label
@@ -90,7 +90,7 @@ export const NewSharingGroupEdit = ({ users }: Props) => {
                     className="aspect-square h-full w-full rounded-full object-cover"
                   />
                 </div>
-                <p className="max-md:text-xs">{user.displayName}</p>
+                <p className="@max-md:text-xs">{user.displayName}</p>
               </label>
             ))}
           </div>
@@ -106,7 +106,7 @@ export const NewSharingGroupEdit = ({ users }: Props) => {
       </AccordionContent>
       <AccordionContent isOpen={!isNewGroupEdit}>
         <Button
-          className="mt-5 ml-auto block max-md:mx-auto max-md:w-30"
+          className="mt-5 ml-auto block @max-md:mx-auto @max-md:w-30"
           onClick={() => setIsNewGroupEdit(true)}
         >
           新規追加

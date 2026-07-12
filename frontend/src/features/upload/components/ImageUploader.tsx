@@ -33,7 +33,7 @@ export const ImageUploader = ({ onFilesAdd, maxFiles, maxSize }: Props) => {
   return (
     <section
       aria-label="画像のドラッグ&ドロップエリア"
-      className={`border-brown-middle dark:border-note-gray bg-brown-back dark:bg-dark-image-back relative block rounded-4xl border-2 border-dotted pt-10 pb-15 text-center transition-all duration-500 max-md:rounded-2xl max-md:pb-5 ${isDragging ? "bg-background-normal" : ""} `}
+      className={`border-brown-middle dark:border-note-gray bg-brown-back dark:bg-dark-image-back relative block rounded-4xl border-2 border-dotted pt-10 pb-15 text-center transition-all duration-500 @max-md:rounded-2xl @max-md:pb-5 ${isDragging ? "bg-background-normal" : ""} `}
       onDrop={handleDrop}
       onDragOver={(e) => e.preventDefault()}
       onDragEnter={handleDragEnter}
@@ -41,7 +41,7 @@ export const ImageUploader = ({ onFilesAdd, maxFiles, maxSize }: Props) => {
     >
       {/* スマホタップ用ボタン */}
       <button
-        className="absolute top-0 left-0 z-1 hidden h-full w-full rounded-2xl opacity-0 max-md:block"
+        className="absolute top-0 left-0 z-1 hidden h-full w-full rounded-2xl opacity-0 @max-md:block"
         onClick={() => inputRef.current?.click()}
       />
       {/* 実態のinput要素を非表示にする */}
@@ -54,7 +54,7 @@ export const ImageUploader = ({ onFilesAdd, maxFiles, maxSize }: Props) => {
         onChange={handleChange}
       />
 
-      <p className="text-accent-pink bg-accent-pink-back absolute top-5 right-8 grid h-8 w-30 place-content-center rounded-2xl border text-xs font-medium max-md:top-2 max-md:right-2 max-md:h-5 max-md:w-22 max-md:text-[10px]">
+      <p className="text-accent-pink bg-accent-pink-back absolute top-5 right-8 grid h-8 w-30 place-content-center rounded-2xl border text-xs font-medium @max-md:top-2 @max-md:right-2 @max-md:h-5 @max-md:w-22 @max-md:text-[10px]">
         最大{maxFiles}ファイル
       </p>
       <Image
@@ -62,23 +62,23 @@ export const ImageUploader = ({ onFilesAdd, maxFiles, maxSize }: Props) => {
         alt=""
         width={46}
         height={46}
-        className="mx-auto max-md:h-8.5 max-md:w-8.5"
+        className="mx-auto @max-md:h-8.5 @max-md:w-8.5"
       />
-      <p className="mt-5 text-xl font-medium max-md:mt-2.5 max-md:text-[13px]">
+      <p className="mt-5 text-xl font-medium @max-md:mt-2.5 @max-md:text-[13px]">
         写真をアップロード
       </p>
-      <p className="text-note-gray mt-4 text-sm max-md:hidden">
+      <p className="text-note-gray mt-4 text-sm @max-md:hidden">
         複数ファイルをまとめて選択できます
         <br />
         ドラッグ＆ドロップにも対応
       </p>
       <button
-        className="bg-brown-middle border-brown-middle hover:text-brown-middle hover:bg-white-back mt-5 h-10 w-40 cursor-pointer rounded-4xl border font-medium text-white transition-all duration-500 max-md:hidden"
+        className="bg-brown-middle border-brown-middle hover:text-brown-middle hover:bg-white-back mt-5 h-10 w-40 cursor-pointer rounded-4xl border font-medium text-white transition-all duration-500 @max-md:hidden"
         onClick={() => inputRef.current?.click()}
       >
         写真を選択
       </button>
-      <p className="text-note-gray mt-4 text-xs max-md:hidden">
+      <p className="text-note-gray mt-4 text-xs @max-md:hidden">
         jpg / jpeg / png / heic - 1枚最大{maxSize}MB
       </p>
       <p className="text-note-gray mt-2 text-[10px] leading-5 md:hidden">

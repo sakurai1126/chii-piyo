@@ -26,12 +26,12 @@ type Props = {
 export const MediaViewer = ({ media, isModal, users }: Props) => {
   const [modeExpansion, setModeExpansion] = useState(false);
   return (
-    <div className="w-125 shrink-0 max-xl:w-110 max-md:w-full">
+    <div className="w-125 shrink-0 @max-xl:w-110 @max-md:w-full">
       {/* 拡大モード */}
       {modeExpansion && (
         <div className="fixed top-0 left-0 z-1000 grid h-full w-full place-content-center bg-black">
           <button
-            className="fixed top-5 right-5 cursor-pointer transition-all hover:opacity-50 max-md:hidden"
+            className="fixed top-5 right-5 cursor-pointer transition-all hover:opacity-50 @max-md:hidden"
             onClick={() => setModeExpansion(false)}
           >
             <Image src={shrink} alt="" width={25} height={25} />
@@ -64,27 +64,27 @@ export const MediaViewer = ({ media, isModal, users }: Props) => {
           (isModal ? (
             <Link
               href={`/media/${media.nextMedia.id}`}
-              className="border-line-gray absolute top-0 bottom-0 left-5 my-auto block h-fit w-fit cursor-pointer rounded-full border bg-white/40 p-1 transition-all hover:opacity-50 max-md:top-auto max-md:-bottom-13 max-md:left-3 max-md:hidden"
+              className="border-line-gray absolute top-0 bottom-0 left-5 my-auto block h-fit w-fit cursor-pointer rounded-full border bg-white/40 p-1 transition-all hover:opacity-50 @max-md:top-auto @max-md:-bottom-13 @max-md:left-3 @max-md:hidden"
             >
               <Image
                 src={leftArrow}
                 alt=""
                 width={20}
                 height={20}
-                className="max-md:h-6 max-md:w-6"
+                className="max-md:w-6 @max-md:h-6"
               />
             </Link>
           ) : (
             <a
               href={`/media/${media.nextMedia.id}`}
-              className="border-line-gray absolute top-0 bottom-0 left-5 my-auto block h-fit w-fit cursor-pointer rounded-full border bg-white/40 p-1 transition-all hover:opacity-50 max-md:top-auto max-md:-bottom-13 max-md:left-3 max-md:hidden"
+              className="border-line-gray absolute top-0 bottom-0 left-5 my-auto block h-fit w-fit cursor-pointer rounded-full border bg-white/40 p-1 transition-all hover:opacity-50 @max-md:top-auto @max-md:-bottom-13 @max-md:left-3 @max-md:hidden"
             >
               <Image
                 src={leftArrow}
                 alt=""
                 width={20}
                 height={20}
-                className="max-md:h-6 max-md:w-6"
+                className="max-md:w-6 @max-md:h-6"
               />
             </a>
           ))}
@@ -94,27 +94,27 @@ export const MediaViewer = ({ media, isModal, users }: Props) => {
           (isModal ? (
             <Link
               href={`/media/${media.previousMedia.id}`}
-              className="border-line-gray absolute top-0 right-5 bottom-0 my-auto block h-fit w-fit cursor-pointer rounded-full border bg-white/40 p-1 transition-all hover:opacity-50 max-md:top-auto max-md:-bottom-13 max-md:left-3 max-md:hidden"
+              className="border-line-gray absolute top-0 right-5 bottom-0 my-auto block h-fit w-fit cursor-pointer rounded-full border bg-white/40 p-1 transition-all hover:opacity-50 @max-md:top-auto @max-md:-bottom-13 @max-md:left-3 @max-md:hidden"
             >
               <Image
                 src={rightArrow}
                 alt=""
                 width={20}
                 height={20}
-                className="max-md:h-6 max-md:w-6"
+                className="max-md:w-6 @max-md:h-6"
               />
             </Link>
           ) : (
             <a
               href={`/media/${media.previousMedia.id}`}
-              className="border-line-gray absolute top-0 right-5 bottom-0 my-auto block h-fit w-fit cursor-pointer rounded-full border bg-white/40 p-1 transition-all hover:opacity-50 max-md:top-auto max-md:-bottom-13 max-md:left-3 max-md:hidden"
+              className="border-line-gray absolute top-0 right-5 bottom-0 my-auto block h-fit w-fit cursor-pointer rounded-full border bg-white/40 p-1 transition-all hover:opacity-50 @max-md:top-auto @max-md:-bottom-13 @max-md:left-3 @max-md:hidden"
             >
               <Image
                 src={rightArrow}
                 alt=""
                 width={20}
                 height={20}
-                className="max-md:h-6 max-md:w-6"
+                className="max-md:w-6 @max-md:h-6"
               />
             </a>
           ))}
@@ -123,7 +123,7 @@ export const MediaViewer = ({ media, isModal, users }: Props) => {
           <>
             {/* 拡大 */}
             <button
-              className="absolute top-4 right-5 cursor-pointer transition-all hover:opacity-50 max-md:hidden"
+              className="absolute top-4 right-5 cursor-pointer transition-all hover:opacity-50 @max-md:hidden"
               onClick={() => setModeExpansion(true)}
             >
               <Image src={zoom} alt="" width={20} height={20} />
@@ -132,21 +132,21 @@ export const MediaViewer = ({ media, isModal, users }: Props) => {
             <a
               href={media.presignedUrl ?? "#"}
               download
-              className="absolute right-5 bottom-4 cursor-pointer transition-all hover:opacity-50 max-md:right-3 max-md:bottom-3"
+              className="absolute right-5 bottom-4 cursor-pointer transition-all hover:opacity-50 @max-md:right-3 @max-md:bottom-3"
             >
               <Image
                 src={download}
                 alt=""
                 width={30}
                 height={30}
-                className="max-md:h-6 max-md:w-6"
+                className="max-md:w-6 @max-md:h-6"
               />
             </a>
           </>
         )}
       </div>
       {/* ナビゲーション サムネイル */}
-      <div className="mx-auto mt-5 grid w-fit grid-cols-5 gap-2.5 max-md:mt-4 max-md:gap-2">
+      <div className="mx-auto mt-5 grid w-fit grid-cols-5 gap-2.5 @max-md:mt-4 @max-md:gap-2">
         {/* 2つ先のメディア */}
         {media.secondNextMedia ? (
           <NavigationThumbnail media={media.secondNextMedia} isModal={isModal} />
@@ -165,7 +165,7 @@ export const MediaViewer = ({ media, isModal, users }: Props) => {
           alt="現在のメディア"
           width={70}
           height={70}
-          className="aspect-square h-17.5 w-17.5 object-cover opacity-100 max-md:h-12 max-md:w-12"
+          className="aspect-square h-17.5 w-17.5 object-cover opacity-100 @max-md:h-12 @max-md:w-12"
         />
         {/* 前のメディア */}
         {media.previousMedia ? (
@@ -180,23 +180,23 @@ export const MediaViewer = ({ media, isModal, users }: Props) => {
           <div></div>
         )}
       </div>
-      <div className="max-md:mt-5 max-md:flex max-md:items-center max-md:justify-between max-md:px-5">
+      <div className="max-md:flex @max-md:mt-5 @max-md:items-center @max-md:justify-between @max-md:px-5">
         {isModal ? (
           <a
             href={"/media"}
-            className="border-line-gray bg-cancel-back hover:bg-cancel-hover text-black-text mx-auto mt-10 grid h-10 w-35 place-content-center rounded-lg border transition-all max-md:m-0 max-md:h-9 max-md:w-30 max-md:text-xs"
+            className="border-line-gray bg-cancel-back hover:bg-cancel-hover text-black-text mx-auto mt-10 grid h-10 w-35 place-content-center rounded-lg border transition-all @max-md:m-0 @max-md:h-9 @max-md:w-30 @max-md:text-xs"
           >
             メディア一覧
           </a>
         ) : (
           <Link
             href="/media"
-            className="border-line-gray bg-cancel-back hover:bg-cancel-hover text-black-text mx-auto mt-10 grid h-10 w-35 place-content-center rounded-lg border transition-all max-md:m-0 max-md:h-9 max-md:w-30 max-md:text-xs"
+            className="border-line-gray bg-cancel-back hover:bg-cancel-hover text-black-text mx-auto mt-10 grid h-10 w-35 place-content-center rounded-lg border transition-all @max-md:m-0 @max-md:h-9 @max-md:w-30 @max-md:text-xs"
           >
             メディア一覧
           </Link>
         )}
-        <div className="md:hidden">
+        <div className="@md:hidden">
           <FavoriteMediaDetail media={media} users={users} />
         </div>
       </div>
@@ -218,7 +218,7 @@ const NavigationThumbnail = ({
         alt=""
         width={70}
         height={70}
-        className="aspect-square h-17.5 w-17.5 object-cover opacity-70 max-md:h-12 max-md:w-12"
+        className="aspect-square h-17.5 w-17.5 object-cover opacity-70 @max-md:h-12 @max-md:w-12"
       />
     </Link>
   ) : (
@@ -228,7 +228,7 @@ const NavigationThumbnail = ({
         alt=""
         width={70}
         height={70}
-        className="aspect-square h-17.5 w-17.5 object-cover opacity-70 max-md:h-12 max-md:w-12"
+        className="aspect-square h-17.5 w-17.5 object-cover opacity-70 @max-md:h-12 @max-md:w-12"
       />
     </a>
   );

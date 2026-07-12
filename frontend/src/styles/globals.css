@@ -128,6 +128,13 @@
 
   /* アニメーション */
   --animate-fade-slideshow: fade-slideshow 30s infinite;
+
+  /* コンテナクエリのブレークポイントを画面幅のブレークポイントと統一する */
+  --container-sm: 40rem; /* 640px */
+  --container-md: 48rem; /* 768px */
+  --container-lg: 64rem; /* 1024px */
+  --container-xl: 80rem; /* 1280px */
+  --container-2xl: 96rem; /* 1536px */
 }
 
 html {

@@ -16,7 +16,7 @@ export default async function WordRecordsPage() {
   ]);
 
   return (
-    <Container className="mt-10 max-md:mt-5">
+    <Container className="mt-10 @max-md:mt-5">
       <ChildCareNavigation currentPage="word" />
       <div className="mt-10">
         <PageTitle text="ことばの記録" />
@@ -29,7 +29,7 @@ export default async function WordRecordsPage() {
           </div>
           {isAdmin && <NewRecords tags={tags} sharingGroups={sharingGroups} variant="word" />}
         </div>
-        <div className="mt-10 max-md:mt-5">
+        <div className="mt-10 @max-md:mt-5">
           {wordRecords?.map((item, index) => (
             <RecordItem
               isAdmin={isAdmin}

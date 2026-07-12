@@ -33,8 +33,8 @@ export const ConfirmModal = ({
           <Modal>
             <ActionDialog onClose={isPending ? undefined : closeAction}>
               <div className="flex h-full flex-col justify-center">
-                <p className="text-center text-xl font-medium max-md:text-sm">確認</p>
-                <p className="mt-5 mb-10 text-center max-md:mt-2 max-md:mb-6 max-md:text-xs">
+                <p className="text-center text-xl font-medium @max-md:text-sm">確認</p>
+                <p className="mt-5 mb-10 text-center @max-md:mt-2 @max-md:mb-6 @max-md:text-xs">
                   {message}
                   <br />
                   本当によろしいですか？

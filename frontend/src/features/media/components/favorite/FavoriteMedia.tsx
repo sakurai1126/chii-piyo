@@ -32,7 +32,7 @@ export const FavoriteMedia = ({ initialData, users }: Props) => {
   return (
     <>
       {/* メディアリスト */}
-      <div className="mt-15 grid grid-cols-4 gap-2 max-md:mt-2 max-md:ml-0 max-md:grid-cols-3 max-md:gap-0.5">
+      <div className="mt-15 grid grid-cols-4 gap-2 @max-md:mt-2 @max-md:ml-0 @max-md:grid-cols-3 @max-md:gap-0.5">
         {flatItems.map((item) => (
           <MediaListItem key={item.id} data={item} users={users} />
         ))}

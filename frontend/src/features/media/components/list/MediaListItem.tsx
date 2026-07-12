@@ -60,7 +60,7 @@ export const MediaListItem = ({
           id={uid}
           aria-label="選択"
           type="checkbox"
-          className="accent-accent-pink absolute top-2 left-2 z-1 h-5 w-5 max-md:top-1 max-md:left-1 max-md:h-4 max-md:w-4"
+          className="accent-accent-pink absolute top-2 left-2 z-1 h-5 w-5 @max-md:top-1 @max-md:left-1 @max-md:h-4 @max-md:w-4"
           checked={selectedMedia?.includes(data.id)}
           onChange={handleChange}
         />
@@ -71,15 +71,15 @@ export const MediaListItem = ({
 
       {/* コメント */}
       {data.commentCount ? (
-        <div className="border-brown-dark bg-accent-orange-back absolute right-2 bottom-2 flex items-center gap-1 rounded-2xl border px-2 py-0.5 max-md:right-1 max-md:bottom-1">
+        <div className="border-brown-dark bg-accent-orange-back absolute right-2 bottom-2 flex items-center gap-1 rounded-2xl border px-2 py-0.5 @max-md:right-1 @max-md:bottom-1">
           <Image
             src={comment}
             alt="comment"
             width={11}
             height={11}
-            className="mt-0.5 max-md:h-4 max-md:w-4"
+            className="mt-0.5 @max-md:h-4 @max-md:w-4"
           />
-          <p className="text-brown-dark text-xs max-md:text-[10px]">{data.commentCount}</p>
+          <p className="text-brown-dark text-xs @max-md:text-[10px]">{data.commentCount}</p>
         </div>
       ) : null}
     </div>

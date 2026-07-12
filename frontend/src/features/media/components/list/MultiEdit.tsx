@@ -102,16 +102,16 @@ export const MultiEdit = ({
   return (
     <>
       <Button
-        className="-mt-10 flex items-center justify-center gap-2 max-md:w-30"
+        className="-mt-10 flex items-center justify-center gap-2 @max-md:w-30"
         onClick={toggleMenu}
         variant={isOpen ? "cancel" : "primary"}
       >
         {!isOpen && <Image src="/images/select-start-check.svg" alt="" width={18} height={18} />}
-        <p className="max-md:text-xs">{isOpen ? "閉じる" : "選択を開始"}</p>
+        <p className="@max-md:text-xs">{isOpen ? "閉じる" : "選択を開始"}</p>
       </Button>
       <AccordionContent isOpen={isOpen}>
-        <div className="bg-background-accent border-brown-dark mt-8 rounded-xl border px-8 py-6 max-md:mt-4 max-md:px-4 max-md:pt-4">
-          <p className="border-line-gray w-fit border-b pb-2 text-xl font-medium max-md:text-sm">
+        <div className="bg-background-accent border-brown-dark mt-8 rounded-xl border px-8 py-6 @max-md:mt-4 @max-md:px-4 @max-md:pt-4">
+          <p className="border-line-gray w-fit border-b pb-2 text-xl font-medium @max-md:text-sm">
             選択したメディアを一括で編集する
           </p>
           <div className="mt-6 flex items-center gap-4">
@@ -123,7 +123,7 @@ export const MultiEdit = ({
                 checked={editType === "all"}
                 onChange={() => setEditType("all")}
               />
-              <p className="max-md:text-[13px]">両方編集する</p>
+              <p className="@max-md:text-[13px]">両方編集する</p>
             </label>
             <label htmlFor="editTypeTag" className="flex items-center gap-2">
               <input
@@ -133,7 +133,7 @@ export const MultiEdit = ({
                 checked={editType === "tag"}
                 onChange={() => setEditType("tag")}
               />
-              <p className="max-md:text-[13px]">タグのみ</p>
+              <p className="@max-md:text-[13px]">タグのみ</p>
             </label>
             <label htmlFor="editTypeSharing" className="flex items-center gap-2">
               <input
@@ -143,7 +143,7 @@ export const MultiEdit = ({
                 checked={editType === "sharing"}
                 onChange={() => setEditType("sharing")}
               />
-              <p className="max-md:text-[13px]">共有範囲のみ</p>
+              <p className="@max-md:text-[13px]">共有範囲のみ</p>
             </label>
           </div>
           {/* タグを編集 */}
@@ -165,12 +165,12 @@ export const MultiEdit = ({
           )}
 
           {/* ボタン */}
-          <div className="mt-8 flex items-end justify-between gap-5 max-md:flex-col max-md:items-start">
+          <div className="mt-8 flex items-end justify-between gap-5 @max-md:flex-col @max-md:items-start">
             <Button variant="primary" disabled={isPending} onClick={updateConfirm}>
               変更する
             </Button>
             <button
-              className="text-warning cursor-pointer text-xs underline max-md:ml-auto dark:font-medium"
+              className="text-warning cursor-pointer text-xs underline @max-md:ml-auto dark:font-medium"
               disabled={isPending}
               onClick={() => setIsDeleteConfirmOpen(true)}
             >

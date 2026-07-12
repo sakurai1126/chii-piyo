@@ -86,13 +86,13 @@ export const MediaComment = ({ mediaId, comments, currentUser, users }: Props) =
 
   return (
     <>
-      <p className="max-md:text-sm">コメント</p>
+      <p className="@max-md:text-sm">コメント</p>
       {comments.length !== 0 || isCommentMode ? (
         <>
           <div className="border-brown-dark bg-translucent mt-2 rounded-lg border px-4 py-6 backdrop-blur-[7.5px]">
             <div className="grid gap-6">
               {comments.map((comment) => (
-                <div className="flex items-start justify-between max-md:flex-col" key={comment.id}>
+                <div className="flex items-start justify-between @max-md:flex-col" key={comment.id}>
                   <div className="flex items-start gap-4">
                     <div className="h-8 w-8 shrink-0 rounded-full bg-[linear-gradient(100deg,#FFC0AB_35%,#FFF829_65%)] p-px">
                       <Image
@@ -107,17 +107,17 @@ export const MediaComment = ({ mediaId, comments, currentUser, users }: Props) =
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <p className="text-sm max-md:text-[13px]">{comment.displayName}</p>
-                        <p className="text-xs text-gray-500 max-md:text-[11px]">
+                        <p className="text-sm @max-md:text-[13px]">{comment.displayName}</p>
+                        <p className="text-xs text-gray-500 @max-md:text-[11px]">
                           {formatJapaneseDate(comment.createdAt)}
                         </p>
                       </div>
-                      <p className="mt-2 text-sm max-md:mt-1 max-md:text-xs">{comment.content}</p>
+                      <p className="mt-2 text-sm @max-md:mt-1 @max-md:text-xs">{comment.content}</p>
                     </div>
                   </div>
                   {comment.userId === currentUser.id && (
                     <button
-                      className="text-warning cursor-pointer text-xs underline transition-all hover:opacity-70 max-md:mt-2 max-md:ml-auto max-md:text-[10px] dark:font-medium"
+                      className="text-warning cursor-pointer text-xs underline transition-all hover:opacity-70 @max-md:mt-2 @max-md:ml-auto @max-md:text-[10px] dark:font-medium"
                       onClick={() => openDeleteModal(comment.id)}
                       disabled={isPending}
                     >
@@ -140,13 +140,13 @@ export const MediaComment = ({ mediaId, comments, currentUser, users }: Props) =
               </div>
               <textarea
                 placeholder="コメントを入力してください"
-                className="border-line-gray focus:outline-brown-light bg-light-dark min-h-20 w-full rounded-sm border p-2 text-sm max-md:text-xs dark:outline-none"
+                className="border-line-gray focus:outline-brown-light bg-light-dark min-h-20 w-full rounded-sm border p-2 text-sm @max-md:text-xs dark:outline-none"
                 value={inputComment}
                 onChange={(e) => setInputComment(e.target.value)}
               ></textarea>
             </div>
             <Button
-              className="mt-4 ml-auto block w-43 max-md:h-9 max-md:w-36 max-md:text-xs"
+              className="mt-4 ml-auto block w-43 @max-md:h-9 @max-md:w-36 @max-md:text-xs"
               onClick={addComment}
               disabled={isPending}
             >
@@ -166,7 +166,7 @@ export const MediaComment = ({ mediaId, comments, currentUser, users }: Props) =
         </>
       ) : (
         <Button
-          className="mt-4 block max-md:h-9 max-md:w-28 max-md:text-xs"
+          className="mt-4 block @max-md:h-9 @max-md:w-28 @max-md:text-xs"
           onClick={() => setIsCommentMode(true)}
         >
           コメントする

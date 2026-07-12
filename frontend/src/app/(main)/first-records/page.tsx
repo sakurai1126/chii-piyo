@@ -16,7 +16,7 @@ export default async function FirstRecordsPage() {
   ]);
 
   return (
-    <Container className="mt-10 max-md:mt-5">
+    <Container className="mt-10 @max-md:mt-5">
       <ChildCareNavigation currentPage="first" />
       <div className="mt-10">
         <PageTitle text="はじめて記録" />
@@ -26,7 +26,7 @@ export default async function FirstRecordsPage() {
           </div>
         )}
 
-        <div className="mt-10 max-md:mt-5">
+        <div className="mt-10 @max-md:mt-5">
           {firstRecords?.map((item, index) => (
             <RecordItem
               isAdmin={isAdmin}

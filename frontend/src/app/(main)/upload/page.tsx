@@ -14,7 +14,7 @@ export default async function UploadPage() {
     getTags(),
   ]);
   return (
-    <Container className="mt-20 max-md:mt-5">
+    <Container className="mt-20 @max-md:mt-5">
       <PageTitle text="アップロード" />
       <UploadPageContents
         isAdmin={isAdmin}

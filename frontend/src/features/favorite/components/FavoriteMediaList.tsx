@@ -41,12 +41,12 @@ export const FavoriteMediaList = ({ media, users }: Props) => {
   };
 
   return (
-    <div className="absolute top-2 right-2 flex items-center gap-0.5 max-md:top-1 max-md:right-1">
+    <div className="absolute top-2 right-2 flex items-center gap-0.5 @max-md:top-1 @max-md:right-1">
       <div className="flex -space-x-2">
         {media.addFavoriteUserIds?.map((id) => (
           <div
             key={id}
-            className="h-5 w-5 rounded-full bg-[linear-gradient(100deg,#FFC0AB_35%,#FFF829_65%)] p-px max-md:h-4 max-md:w-4"
+            className="h-5 w-5 rounded-full bg-[linear-gradient(100deg,#FFC0AB_35%,#FFF829_65%)] p-px @max-md:h-4 @max-md:w-4"
           >
             <Image
               src={users.find((user) => user.id === id)?.presignedIconUrl || "/images/no-image.svg"}

@@ -31,7 +31,7 @@ export const UploadPageContents = ({ isAdmin, albums, sharingGroups, tags }: Rea
 
   return (
     <>
-      <div className="mt-15 grid grid-cols-2 items-start gap-10 max-lg:gap-3 max-md:mt-6">
+      <div className="mt-15 grid grid-cols-2 items-start gap-10 @max-lg:gap-3 @max-md:mt-6">
         <ImageUploader
           onFilesAdd={setImageAndUrl}
           maxFiles={limits.MAX_UPLOAD_IMAGE_LIMIT}

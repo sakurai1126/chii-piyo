@@ -41,8 +41,8 @@ export const AlbumMediaDetail = ({ isAdmin, album, media }: Props) => {
 
   return (
     <div className="mt-7">
-      <p className="max-md:text-sm">アルバム</p>
-      <div className="border-brown-dark bg-translucent mt-2 flex justify-between rounded-lg border p-4 backdrop-blur-[7.5px] max-md:flex-col">
+      <p className="@max-md:text-sm">アルバム</p>
+      <div className="border-brown-dark bg-translucent mt-2 flex justify-between rounded-lg border p-4 backdrop-blur-[7.5px] @max-md:flex-col">
         <div className="flex gap-3">
           <Image
             src={album.coverMediaUrls[0] ?? "/images/no-image.svg"}
@@ -52,18 +52,18 @@ export const AlbumMediaDetail = ({ isAdmin, album, media }: Props) => {
             className="aspect-square h-20 w-20 rounded-sm object-cover"
           />
           <div>
-            <p className="text-sm max-md:text-[13px]">{album.title}</p>
-            <p className="mt-1 text-xs max-md:text-[11px]">画像：{album.photoCount}枚</p>
-            <p className="mt-1 text-xs max-md:text-[11px]">動画：{album.videoCount}本</p>
+            <p className="text-sm @max-md:text-[13px]">{album.title}</p>
+            <p className="mt-1 text-xs @max-md:text-[11px]">画像：{album.photoCount}枚</p>
+            <p className="mt-1 text-xs @max-md:text-[11px]">動画：{album.videoCount}本</p>
           </div>
         </div>
-        <div className="flex flex-col items-end justify-between max-md:mt-3 max-md:flex-row max-md:items-center">
+        <div className="flex flex-col items-end justify-between @max-md:mt-3 @max-md:flex-row @max-md:items-center">
           <a href={`/albums/${album.id}`}>
-            <Button className="w-32 max-md:h-8 max-md:w-30">アルバムを見る</Button>
+            <Button className="w-32 @max-md:h-8 @max-md:w-30">アルバムを見る</Button>
           </a>
           {isAdmin && (
             <button
-              className="text-warning cursor-pointer text-xs underline transition-all hover:opacity-70 max-md:text-[10px] dark:font-medium"
+              className="text-warning cursor-pointer text-xs underline transition-all hover:opacity-70 @max-md:text-[10px] dark:font-medium"
               onClick={() => setIsOpen(true)}
             >
               アルバムから削除する

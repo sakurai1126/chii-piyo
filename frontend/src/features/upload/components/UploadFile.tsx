@@ -56,7 +56,7 @@ export const UploadFile = ({
 
   return (
     <div className="bg-background-normal border-brown-dark rounded-xl border px-5 pt-5">
-      <div className="flex items-start gap-8 max-md:gap-3">
+      <div className="flex items-start gap-8 @max-md:gap-3">
         {isVideo ? (
           <video
             src={`${item.previewUrl}#t=0.1`}
@@ -76,10 +76,10 @@ export const UploadFile = ({
           />
         )}
         <div className="w-full">
-          <div className="flex h-30 items-start justify-between max-md:flex-col">
+          <div className="flex h-30 items-start justify-between @max-md:flex-col">
             <div>
-              <p className="max-md:text-[13px]">{item.file.name}</p>
-              <p className="mt-2 text-[13px] max-md:text-[11px]">
+              <p className="@max-md:text-[13px]">{item.file.name}</p>
+              <p className="mt-2 text-[13px] @max-md:text-[11px]">
                 {sizeInKB > 1024 ? `${sizeInMB.toFixed(1)}MB` : `${sizeInKB.toFixed(0)}KB`}{" "}
                 {item.width && item.height && `${item.width} × ${item.height}`}
               </p>
@@ -105,7 +105,7 @@ export const UploadFile = ({
             {/* 削除ボタン - アップロード中は非表示 */}
             {!isLocked && (
               <button
-                className="text-warning cursor-pointer text-xs underline transition-all hover:opacity-70 max-md:ml-auto dark:font-medium"
+                className="text-warning cursor-pointer text-xs underline transition-all hover:opacity-70 @max-md:ml-auto dark:font-medium"
                 onClick={onRemove}
                 type="button"
               >
@@ -127,17 +127,17 @@ export const UploadFile = ({
 
       {/* メタデータ更新メニュー */}
       <AccordionContent isOpen={isOpen} id={`accordion-${uid}`}>
-        <div className="border-t-line-gray ml-37.5 border-t border-dashed pb-3 max-md:mt-5 max-md:ml-0">
+        <div className="border-t-line-gray ml-37.5 border-t border-dashed pb-3 @max-md:mt-5 @max-md:ml-0">
           {/* コメント */}
-          <p className="mt-6 max-md:text-[13px]">コメント</p>
+          <p className="mt-6 @max-md:text-[13px]">コメント</p>
           <textarea
             name={`comment-${uid}`}
-            className="border-line-gray focus:outline-brown-light bg-light-dark mt-2 h-20 w-full max-w-172.5 rounded-sm border p-3 max-md:h-18 dark:outline-none"
+            className="border-line-gray focus:outline-brown-light bg-light-dark mt-2 h-20 w-full max-w-172.5 rounded-sm border p-3 @max-md:h-18 dark:outline-none"
             disabled={isLocked}
             onChange={(e) => handleMetadataChange({ comment: e.target.value })}
           />
           {/* アルバムと日付設定 */}
-          <div className="mt-8 flex gap-8 max-lg:flex-col max-md:mt-4 max-md:gap-4">
+          <div className="mt-8 flex gap-8 @max-lg:flex-col @max-md:mt-4 @max-md:gap-4">
             <AlbumSelector
               isAdmin={isAdmin}
               albums={albums}

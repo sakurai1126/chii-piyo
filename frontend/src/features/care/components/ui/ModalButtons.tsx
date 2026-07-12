@@ -8,7 +8,7 @@ type Props = {
 
 export const ModalButtons = ({ onCancel, saveAction, isPending }: Props) => {
   return (
-    <div className="mt-10 flex h-full flex-col justify-between max-md:mt-6">
+    <div className="mt-10 flex h-full flex-col justify-between @max-md:mt-6">
       <div className="flex justify-center gap-5">
         <Button variant="cancel" onClick={onCancel} disabled={isPending}>
           キャンセル

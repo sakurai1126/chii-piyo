@@ -11,7 +11,7 @@ export default async function FavoritesPage() {
   ]);
 
   return (
-    <Container className="mt-20 max-md:mt-5">
+    <Container className="mt-20 @max-md:mt-5">
       <PageTitle text="お気に入り" />
 
       {/* お気に入りメディアグリッド */}

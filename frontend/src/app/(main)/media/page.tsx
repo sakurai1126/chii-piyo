@@ -20,21 +20,21 @@ export default async function MediaPage() {
   ]);
 
   return (
-    <Container className="mt-20 max-md:mt-5">
+    <Container className="mt-20 @max-md:mt-5">
       <PageTitle text="写真・動画一覧" />
 
       {/* 絞り込みUI */}
       <MediaFilter tags={tags} sharingGroups={sharingGroups} />
 
       {/* 遷移ボタン */}
-      <AccentButton href="/upload" className="mt-10 ml-auto max-md:mt-4" variant="link">
+      <AccentButton href="/upload" className="mt-10 ml-auto @max-md:mt-4" variant="link">
         <p>新規アップロード</p>
         <Image
           src="/images/upload.svg"
           alt=""
           width={22}
           height={22}
-          className="max-md:h-4 max-md:w-4"
+          className="max-md:w-4 @max-md:h-4"
         />
       </AccentButton>
 

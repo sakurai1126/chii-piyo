@@ -28,8 +28,8 @@ export default async function SettingsPage() {
   const sharingGroups = isAdmin ? await getAllSharingGroups() : undefined;
 
   return (
-    <Container className="mt-20 max-md:mt-5">
-      <div className="relative flex items-start gap-10 max-lg:gap-5 max-md:flex-col">
+    <Container className="mt-20 @max-md:mt-5">
+      <div className="relative flex items-start gap-10 @max-lg:gap-5 @max-md:flex-col">
         {/* サイドバー */}
         <Sidebar isAdmin={isAdmin} />
         <div className="w-full">
