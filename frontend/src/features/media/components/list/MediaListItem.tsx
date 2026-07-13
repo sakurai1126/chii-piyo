@@ -9,6 +9,7 @@ import comment from "../../assets/comment.svg";
 import videoIcon from "../../assets/video-icon.svg";
 
 type Props = {
+  isEasy: boolean;
   data: MediaResponseDto;
   isSelectionMode?: boolean;
   users: UserResponseDto[];
@@ -17,6 +18,7 @@ type Props = {
 };
 
 export const MediaListItem = ({
+  isEasy,
   data,
   isSelectionMode,
   users,
@@ -66,22 +68,26 @@ export const MediaListItem = ({
         />
       )}
 
-      {/* お気に入り */}
-      <FavoriteMediaList media={data} users={users} />
+      {!isEasy && (
+        <>
+          {/* お気に入り */}
+          <FavoriteMediaList media={data} users={users} />
 
-      {/* コメント */}
-      {data.commentCount ? (
-        <div className="border-brown-dark bg-accent-orange-back absolute right-2 bottom-2 flex items-center gap-1 rounded-2xl border px-2 py-0.5 @max-md:right-1 @max-md:bottom-1">
-          <Image
-            src={comment}
-            alt="comment"
-            width={11}
-            height={11}
-            className="mt-0.5 @max-md:h-4 @max-md:w-4"
-          />
-          <p className="text-brown-dark text-xs @max-md:text-[10px]">{data.commentCount}</p>
-        </div>
-      ) : null}
+          {/* コメント */}
+          {data.commentCount ? (
+            <div className="border-brown-dark bg-accent-orange-back absolute right-2 bottom-2 flex items-center gap-1 rounded-2xl border px-2 py-0.5 @max-md:right-1 @max-md:bottom-1">
+              <Image
+                src={comment}
+                alt="comment"
+                width={11}
+                height={11}
+                className="mt-0.5 @max-md:h-4 @max-md:w-4"
+              />
+              <p className="text-brown-dark text-xs @max-md:text-[10px]">{data.commentCount}</p>
+            </div>
+          ) : null}
+        </>
+      )}
     </div>
   );
 

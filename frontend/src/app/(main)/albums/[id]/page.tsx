@@ -40,6 +40,7 @@ export default async function AlbumDetailPage({ params }: Readonly<Props>) {
           {/* 一括編集UI+メディアグリッド */}
           <MediaListSection
             isAdmin={isAdmin}
+            isEasy={isEasy}
             initialData={initialData}
             users={users}
             tags={tags}

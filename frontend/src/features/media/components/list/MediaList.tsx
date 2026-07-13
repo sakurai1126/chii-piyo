@@ -11,6 +11,7 @@ import { useInfiniteMediaList, UseInfiniteMediaListParams } from "../../hooks/us
 import { MediaListItem } from "./MediaListItem";
 
 type MediaListProps = {
+  isEasy: boolean;
   initialData: MediaListResponseDto;
   isSelectionMode?: boolean;
   params?: UseInfiniteMediaListParams;
@@ -20,6 +21,7 @@ type MediaListProps = {
 };
 
 export const MediaList = ({
+  isEasy,
   initialData,
   isSelectionMode,
   params,
@@ -56,17 +58,23 @@ export const MediaList = ({
   return (
     <>
       {grouped.map(({ label, items }) => (
-        <div key={label}>
+        <div key={label} className={isEasy ? "mt-15" : ""}>
           {/* 年月表示 */}
-          <div className="mt-10 flex items-center gap-10">
-            <p className="text-note-gray shrink-0 text-2xl font-light @max-md:text-sm">{label}</p>
-            <div className="bg-line-gray h-px w-full @max-md:hidden"></div>
-          </div>
+          {!isEasy && (
+            <div className="mt-10 flex items-center gap-10">
+              <p className="text-note-gray shrink-0 text-2xl font-light @max-md:text-sm">{label}</p>
+              <div className="bg-line-gray h-px w-full @max-md:hidden"></div>
+            </div>
+          )}
+
           {/* メディアリスト */}
-          <div className="mt-4 ml-7 grid grid-cols-4 gap-2 @max-md:mt-2 @max-md:ml-0 @max-md:grid-cols-3 @max-md:gap-0.5">
+          <div
+            className={`mt-4 ml-7 grid @max-md:mt-2 @max-md:ml-0 ${isEasy ? "grid-cols-2 gap-1" : "grid-cols-4 gap-2 @max-md:grid-cols-3 @max-md:gap-0.5"}`}
+          >
             {items.map((item) => (
               <MediaListItem
                 key={item.id}
+                isEasy={isEasy}
                 data={item}
                 isSelectionMode={isSelectionMode}
                 users={users}

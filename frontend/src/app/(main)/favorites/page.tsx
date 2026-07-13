@@ -17,7 +17,7 @@ export default async function FavoritesPage() {
       <PageTitle isEasy={isEasy} text="お気に入り" />
 
       {/* お気に入りメディアグリッド */}
-      <FavoriteMedia initialData={initialData} users={users} />
+      <FavoriteMedia isEasy={isEasy} initialData={initialData} users={users} />
     </Container>
   );
 }
