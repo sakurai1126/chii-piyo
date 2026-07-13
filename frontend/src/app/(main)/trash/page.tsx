@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 
 import Container from "@/components/layout/Container";
 import PageTitle from "@/components/ui/PageTitle";
-import { isAdminUser } from "@/features/auth";
+import { isAdminUser, isEasyMode } from "@/features/auth";
 import { TrashAllDelete, TrashContent, TrashInfo, TrashPagination } from "@/features/trash";
 import { getTrashItems } from "@/features/trash/server";
 
@@ -12,10 +12,10 @@ type Props = {
 
 export default async function TrashPage({ searchParams }: Readonly<Props>) {
   // 管理者チェック及びパラメータからページ数を取得
-  const [isAdmin, params] = await Promise.all([isAdminUser(), searchParams]);
+  const [isAdmin, isEasy, params] = await Promise.all([isAdminUser(), isEasyMode(), searchParams]);
 
-  // 管理者でなければ404表示
-  if (!isAdmin) notFound();
+  // 管理者以外 or かんたんモードであれば04表示
+  if (!isAdmin || isEasy) notFound();
 
   // ページ数を指定（不正な値は1に）
   const page = Math.max(1, Number(params.page) || 1);
