@@ -15,7 +15,7 @@ export const DisplayDebug = ({ currentUser }: Props) => {
   });
 
   return (
-    <div className="bg-background border-brown-dark fixed top-3 right-3 z-1000 w-50 rounded-lg border px-2 py-3">
+    <div className="bg-background border-brown-dark fixed right-3 bottom-5 z-1000 w-50 rounded-lg border px-2 py-3">
       <p className="text-sm font-medium">表示モード</p>
       {/* ダークモード */}
       <div className="mt-2 flex items-center justify-between">
