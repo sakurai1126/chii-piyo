@@ -16,6 +16,7 @@ import { UploadMedia, UploadMetadata, UploadStatus } from "../types";
 
 type Props = {
   isAdmin: boolean;
+  isEasy: boolean;
   item: UploadMedia;
   onRemove: () => void;
   tags: TagResponseDto[];
@@ -26,6 +27,7 @@ type Props = {
 
 export const UploadFile = ({
   isAdmin,
+  isEasy,
   item,
   onRemove,
   tags,
@@ -57,11 +59,16 @@ export const UploadFile = ({
 
   return (
     <div className="bg-background-normal border-brown-dark rounded-xl border px-5 pt-5">
-      <div className="flex items-start gap-8 @max-md:gap-3">
+      <div
+        className={cn(
+          "flex items-start gap-8 @max-md:gap-3",
+          isEasy && "items-center @max-md:flex-col",
+        )}
+      >
         {isVideo ? (
           <video
             src={`${item.previewUrl}#t=0.1`}
-            className="h-30 w-30 rounded-lg object-cover"
+            className={cn("h-30 w-30 rounded-lg object-cover", isEasy && "h-50 w-50")}
             muted
             playsInline
             preload="metadata"
@@ -72,13 +79,18 @@ export const UploadFile = ({
             alt=""
             width={120}
             height={120}
-            className="h-30 w-30 rounded-lg object-cover"
+            className={cn("h-30 w-30 rounded-lg object-cover", isEasy && "h-50 w-50")}
             unoptimized
           />
         )}
         <div className="w-full">
-          <div className="flex h-30 items-start justify-between @max-md:flex-col">
-            <div>
+          <div
+            className={cn(
+              "flex h-30 items-start justify-between @max-md:flex-col",
+              isEasy && "h-auto",
+            )}
+          >
+            <div hidden={isEasy}>
               <p className="@max-md:text-[13px]">{item.file.name}</p>
               <p className="mt-2 text-[13px] @max-md:text-[11px]">
                 {sizeInKB > 1024 ? `${sizeInMB.toFixed(1)}MB` : `${sizeInKB.toFixed(0)}KB`}{" "}
@@ -109,7 +121,10 @@ export const UploadFile = ({
             {/* 削除ボタン - アップロード中は非表示 */}
             {!isLocked && (
               <button
-                className="text-warning cursor-pointer text-xs underline transition-all hover:opacity-70 @max-md:ml-auto dark:font-medium"
+                className={cn(
+                  "text-warning cursor-pointer text-xs underline transition-all hover:opacity-70 @max-md:ml-auto dark:font-medium",
+                  isEasy && "text-[13px] @max-md:mx-auto",
+                )}
                 onClick={onRemove}
                 type="button"
               >
@@ -133,10 +148,17 @@ export const UploadFile = ({
       <AccordionContent isOpen={isOpen} id={`accordion-${uid}`}>
         <div className="border-t-line-gray ml-37.5 border-t border-dashed pb-3 @max-md:mt-5 @max-md:ml-0">
           {/* コメント */}
-          <p className="mt-6 @max-md:text-[13px]">コメント</p>
+          <p
+            className={cn("mt-6 @max-md:text-[13px]", isEasy && "font-medium @max-md:text-[16px]")}
+          >
+            コメント
+          </p>
           <textarea
             name={`comment-${uid}`}
-            className="border-line-gray focus:outline-brown-light bg-light-dark mt-2 h-20 w-full max-w-172.5 rounded-sm border p-3 @max-md:h-18 dark:outline-none"
+            className={cn(
+              "border-line-gray focus:outline-brown-light bg-light-dark mt-2 h-20 w-full max-w-172.5 rounded-sm border p-3 @max-md:h-18 dark:outline-none",
+              isEasy && "@max-md:h-25",
+            )}
             disabled={isLocked}
             onChange={(e) => handleMetadataChange({ comment: e.target.value })}
           />
@@ -144,6 +166,7 @@ export const UploadFile = ({
           <div className="mt-8 flex gap-8 @max-lg:flex-col @max-md:mt-4 @max-md:gap-4">
             <AlbumSelector
               isAdmin={isAdmin}
+              isEasy={isEasy}
               albums={albums}
               onAlbumSelect={(albumId) =>
                 handleMetadataChange({ albumId: albumId ? Number(albumId) : undefined })
@@ -152,23 +175,28 @@ export const UploadFile = ({
             />
 
             <DatePicker
+              isEasy={isEasy}
               value={item.metadata.takenAt}
               onChange={(date) => handleMetadataChange({ takenAt: date })}
             />
           </div>
-          {/* タグを編集 */}
-          <TagSelector
-            tags={tags}
-            selectedTagIds={item.metadata.tagIds ?? []}
-            onTagSelect={(tagIds) => handleMetadataChange({ tagIds })}
-            addTag={isAdmin}
-          />
-          {/* 共有範囲を編集 */}
-          <SharingGroupsSelector
-            sharingGroups={sharingGroups}
-            onSharingGroupSelect={(sharingGroupId) => handleMetadataChange({ sharingGroupId })}
-            selectedGroupId={item.metadata.sharingGroupId}
-          />
+          {!isEasy && (
+            <>
+              {/* タグを編集 */}
+              <TagSelector
+                tags={tags}
+                selectedTagIds={item.metadata.tagIds ?? []}
+                onTagSelect={(tagIds) => handleMetadataChange({ tagIds })}
+                addTag={isAdmin}
+              />
+              {/* 共有範囲を編集 */}
+              <SharingGroupsSelector
+                sharingGroups={sharingGroups}
+                onSharingGroupSelect={(sharingGroupId) => handleMetadataChange({ sharingGroupId })}
+                selectedGroupId={item.metadata.sharingGroupId}
+              />{" "}
+            </>
+          )}
         </div>
       </AccordionContent>
 

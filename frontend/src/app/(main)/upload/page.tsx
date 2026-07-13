@@ -5,6 +5,7 @@ import { isAdminUser, isEasyMode } from "@/features/auth";
 import { getSharingGroups } from "@/features/sharing/server";
 import { getTags } from "@/features/tag/server";
 import { UploadPageContents } from "@/features/upload";
+import { cn } from "@/utils/cn";
 
 export default async function UploadPage() {
   const [isAdmin, isEasy, albums, sharingGroups, tags] = await Promise.all([
@@ -15,10 +16,11 @@ export default async function UploadPage() {
     getTags(),
   ]);
   return (
-    <Container className="mt-20 @max-md:mt-5">
+    <Container className={cn("mt-20 @max-md:mt-5", isEasy && "px-5")}>
       <PageTitle isEasy={isEasy} text="アップロード" />
       <UploadPageContents
         isAdmin={isAdmin}
+        isEasy={isEasy}
         albums={albums}
         sharingGroups={sharingGroups}
         tags={tags}

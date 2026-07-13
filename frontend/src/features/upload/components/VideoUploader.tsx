@@ -9,12 +9,13 @@ import icon from "../assets/video-icon.svg";
 import { useDragAndDrop } from "../hooks/useDragAndDrop";
 
 type Props = {
+  isEasy: boolean;
   onFilesAdd: (files: File[]) => void;
   maxFiles: number;
   maxSize: number;
 };
 
-export const VideoUploader = ({ onFilesAdd, maxFiles, maxSize }: Props) => {
+export const VideoUploader = ({ isEasy, onFilesAdd, maxFiles, maxSize }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const { isDragging, handleDrop, handleDragEnter, handleDragLeave } = useDragAndDrop({
     onFilesAdd,
@@ -38,6 +39,7 @@ export const VideoUploader = ({ onFilesAdd, maxFiles, maxSize }: Props) => {
       className={cn(
         "bg-green-back border-green-accent dark:bg-dark-video-back dark:border-green-accent relative block rounded-4xl border-2 border-dotted pt-10 pb-15 text-center @max-md:rounded-2xl @max-md:pb-5",
         isDragging && "bg-background-normal",
+        isEasy && "pt-5",
       )}
       onDrop={handleDrop}
       onDragOver={(e) => e.preventDefault()}
@@ -58,18 +60,24 @@ export const VideoUploader = ({ onFilesAdd, maxFiles, maxSize }: Props) => {
         className="hidden"
         onChange={handleChange}
       />
-
-      <p className="text-brown-middle bg-accent-brown-back absolute top-5 right-8 grid h-8 w-30 place-content-center rounded-2xl border text-xs font-medium @max-md:top-2 @max-md:right-2 @max-md:h-5 @max-md:w-22 @max-md:text-[10px]">
-        最大{maxFiles}ファイル
-      </p>
+      {!isEasy && (
+        <p className="text-brown-middle bg-accent-brown-back absolute top-5 right-8 grid h-8 w-30 place-content-center rounded-2xl border text-xs font-medium @max-md:top-2 @max-md:right-2 @max-md:h-5 @max-md:w-22 @max-md:text-[10px]">
+          最大{maxFiles}ファイル
+        </p>
+      )}
       <Image
         src={icon}
         alt=""
         width={46}
         height={46}
-        className="mx-auto @max-md:h-8.5 @max-md:w-8.5"
+        className={cn("mx-auto @max-md:h-8.5 @max-md:w-8.5", isEasy && "@max-md:h-10 @max-md:w-10")}
       />
-      <p className="mt-5 text-xl font-medium @max-md:mt-2.5 @max-md:text-[13px]">
+      <p
+        className={cn(
+          "mt-5 text-xl font-medium @max-md:mt-2.5 @max-md:text-[13px]",
+          isEasy && "@max-md:text-[16px]",
+        )}
+      >
         動画をアップロード
       </p>
       <p className="text-note-gray mt-4 text-sm @max-md:hidden">
@@ -84,10 +92,17 @@ export const VideoUploader = ({ onFilesAdd, maxFiles, maxSize }: Props) => {
         動画を選択
       </button>
       <p className="text-note-gray mt-4 text-xs @max-md:hidden">mp4 / mov - 1 本最大{maxSize}MB</p>
-      <p className="text-note-gray mt-2 text-[10px] leading-5 md:hidden">
+      <p
+        className={cn(
+          "text-note-gray mt-2 text-[10px] leading-5 md:hidden",
+          isEasy && "text-[13px]",
+        )}
+      >
         まとめて選択できます
-        <br />
-        1本最大{maxSize}MB
+        <span hidden={isEasy}>
+          <br />
+          1本最大{maxSize}MB
+        </span>
       </p>
     </section>
   );

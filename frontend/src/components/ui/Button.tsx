@@ -10,12 +10,14 @@ const variantStyles = {
 };
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  isEasy?: boolean;
   variant?: keyof typeof variantStyles;
   className?: string;
   disabledStyle?: boolean;
 };
 
 export const Button = ({
+  isEasy = false,
   variant = "primary",
   disabledStyle = false,
   children,
@@ -28,6 +30,7 @@ export const Button = ({
         variantStyles[variant],
         disabledStyle &&
           "border-disabled-text bg-disabled-back text-disabled-text pointer-events-none cursor-not-allowed",
+        isEasy && variant === "primary" && "bg-brown-light text-white",
         props.className,
       )}
     >
