@@ -5,6 +5,7 @@ import { useId, useState } from "react";
 
 import { useFlexWrapOverflow } from "@/hooks/useFlexWrapOverflow";
 import { TagResponseDto } from "@/lib/api-client/gen";
+import { cn } from "@/utils/cn";
 
 import arrow from "../assets/brown-arrow.svg";
 import checked from "../assets/checked.svg";
@@ -38,7 +39,7 @@ export const TagFilter = ({ tags, updateFilter, currentValue = [] }: Props) => {
       </div>
       <div
         ref={ref}
-        className={`mt-3 flex flex-wrap gap-2 overflow-hidden transition-all`}
+        className="mt-3 flex flex-wrap gap-2 overflow-hidden transition-all"
         style={{ maxHeight: isOpen ? fullHeight : closedHeight }}
       >
         {tags.map((tag) => (
@@ -62,7 +63,10 @@ export const TagFilter = ({ tags, updateFilter, currentValue = [] }: Props) => {
             />
             <p className="text-sm @max-md:text-xs">{tag.name}</p>
             <p
-              className={`rounded-4xl px-1 py-px text-[10px] tracking-tighter text-white ${currentValue.includes(tag.id.toString()) ? "bg-accent-orange" : "bg-note-gray"}`}
+              className={cn(
+                "rounded-4xl px-1 py-px text-[10px] tracking-tighter text-white",
+                currentValue.includes(tag.id.toString()) ? "bg-accent-orange" : "bg-note-gray",
+              )}
             >
               {tag.mediaCount}
             </p>
@@ -80,7 +84,7 @@ export const TagFilter = ({ tags, updateFilter, currentValue = [] }: Props) => {
             alt=""
             width={13}
             height={7}
-            className={`${isOpen ? "rotate-180" : ""} transition-all`}
+            className={cn("transition-all", isOpen && "rotate-180")}
           />
         </button>
       )}

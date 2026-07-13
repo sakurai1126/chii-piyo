@@ -2,6 +2,7 @@
 import Image from "next/image";
 
 import { UserResponseDto } from "@/lib/api-client/gen";
+import { cn } from "@/utils/cn";
 
 import icon from "../assets/display-mode.svg";
 import whiteIcon from "../assets/white/display-mode.svg";
@@ -34,7 +35,7 @@ export const DisplayMode = ({ isEasy, currentUser }: Props) => {
           height={30}
           className="hidden @max-md:h-6 @max-md:w-6 dark:block"
         />
-        <p className={`font-medium ${isEasy ? "text-[18px]" : "@max-md:text-[13px]"}`}>
+        <p className={cn("font-medium", isEasy ? "text-[18px]" : "@max-md:text-[13px]")}>
           表示モード
         </p>
       </div>

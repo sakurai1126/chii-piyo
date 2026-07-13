@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { toast } from "@/components/ui/Toast";
 import { type MediaCommentResponseDto, UserResponseDto } from "@/lib/api-client/gen";
+import { cn } from "@/utils/cn";
 import { formatJapaneseDate } from "@/utils/date";
 
 import { createCommentAction } from "../../actions/createCommentAction";
@@ -128,7 +129,7 @@ export const MediaComment = ({ mediaId, comments, currentUser, users }: Props) =
               ))}
             </div>
             {/* 新規コメント */}
-            <div className={`flex items-start gap-4 ${isCommentMode ? "" : "mt-10"}`}>
+            <div className={cn("flex items-start gap-4", !isCommentMode && "mt-10")}>
               <div className="h-8 w-8 shrink-0 rounded-full bg-[linear-gradient(100deg,#FFC0AB_35%,#FFF829_65%)] p-px">
                 <Image
                   src={currentUser.presignedIconUrl || "/images/no-image.svg"}

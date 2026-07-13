@@ -9,6 +9,7 @@ import { AlbumSelector } from "@/features/album";
 import { SharingGroupsSelector } from "@/features/sharing";
 import { TagSelector } from "@/features/tag";
 import { AlbumResponseDto, SharingGroupResponseDto, TagResponseDto } from "@/lib/api-client/gen";
+import { cn } from "@/utils/cn";
 
 import boxArrow from "../assets/brown-arrow.svg";
 import { useMultipleSettings } from "../hooks/useMultipleSettings";
@@ -93,7 +94,7 @@ export const MultipleSettings = ({
           alt=""
           width={13}
           height={7}
-          className={`${isOpen ? "rotate-180" : ""} transition-transform duration-300`}
+          className={cn("transition-transform duration-300", isOpen && "rotate-180")}
         />
       </button>
     </div>

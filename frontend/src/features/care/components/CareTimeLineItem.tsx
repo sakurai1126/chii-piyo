@@ -6,6 +6,7 @@ import { useId, useState, useTransition } from "react";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { toast } from "@/components/ui/Toast";
 import { CareRecordResponseDto, GrowthRecordResponseDto } from "@/lib/api-client/gen";
+import { cn } from "@/utils/cn";
 import { formatJapaneseDateBasic, formatJapaneseDateTimeOnly } from "@/utils/date";
 
 import { deleteCareRecordAction } from "../actions/deleteCareRecordAction";
@@ -145,10 +146,14 @@ export const CareTimeLineItem = ({ index, careItem, growthItem }: Props) => {
   return (
     <div className="relative flex items-center gap-10 py-2.5 @max-md:gap-6 @max-md:py-2">
       <div
-        className={`bg-brown-dark h-2 w-2 shrink-0 rounded-full ${growthItem ? "opacity-0" : ""}`}
+        className={cn("bg-brown-dark h-2 w-2 shrink-0 rounded-full", growthItem && "opacity-0")}
       ></div>
       <div
-        className={`bg-brown-dark absolute left-1 h-full w-px ${index === 0 ? "top-[50%]" : ""} ${growthItem ? "opacity-0" : ""}`}
+        className={cn(
+          "bg-brown-dark absolute left-1 h-full w-px",
+          index === 0 && "top-[50%]",
+          growthItem && "opacity-0",
+        )}
       ></div>
       <div className="bg-background-normal dark:bg-background-accent border-brown-dark w-full gap-5 rounded-lg border px-6 py-3 @max-md:p-3">
         <div className="flex items-start gap-5">

@@ -6,6 +6,7 @@ import { NewRecords, RecordItem } from "@/features/record";
 import { getWordRecords } from "@/features/record/api/getWordRecords";
 import { getSharingGroups } from "@/features/sharing/server";
 import { getTags } from "@/features/tag/server";
+import { cn } from "@/utils/cn";
 
 export default async function WordRecordsPage() {
   const [isAdmin, isEasy, tags, sharingGroups, wordRecords] = await Promise.all([
@@ -23,7 +24,10 @@ export default async function WordRecordsPage() {
         <PageTitle isEasy={isEasy} text="ことばの記録" />
         <div className="mt-15 flex items-center gap-10">
           <div
-            className={`bg-background-normal dark:bg-background-accent border-brown-dark grid h-39 shrink-0 place-content-center rounded-lg border text-center ${isAdmin ? "w-55" : "mx-auto w-80"}`}
+            className={cn(
+              "bg-background-normal dark:bg-background-accent border-brown-dark grid h-39 w-80 shrink-0 place-content-center rounded-lg border text-center",
+              isAdmin ? "w-55" : "mx-auto",
+            )}
           >
             <p className="text-6xl font-medium">{wordRecords.length}</p>
             <p className="mt-2">おぼえたことばの数</p>

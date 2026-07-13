@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { CareRecordListResponseDto, GrowthRecordResponseDto } from "@/lib/api-client/gen";
+import { cn } from "@/utils/cn";
 import { formatJapaneseDateBasic } from "@/utils/date";
 
 import diaperIcon from "../assets/diaper.svg";
@@ -93,7 +94,13 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
           <div className="grid w-full grid-cols-7 @max-md:grid-cols-1">
             {Array.from({ length: 7 }, (_, index) => (
               <div
-                className={`border-brown-dark/50 flex h-10 items-center justify-between border-l px-5 @max-lg:justify-center @max-lg:px-0 @max-md:justify-between @max-md:px-5 ${index === currentDay.getDay() ? "" : "@max-md:hidden"} ${isTodayWeek && index === today.getDay() ? "@md:bg-brown-middle md:font-medium md:text-white" : ""}`}
+                className={cn(
+                  "border-brown-dark/50 flex h-10 items-center justify-between border-l px-5 @max-lg:justify-center @max-lg:px-0 @max-md:justify-between @max-md:px-5",
+                  index !== currentDay.getDay() && "@max-md:hidden",
+                  isTodayWeek &&
+                    index === today.getDay() &&
+                    "@md:bg-brown-middle md:font-medium md:text-white",
+                )}
                 key={weeklyDates[index].toISOString()}
               >
                 {/* 前日へ移動(モバイルのみ) */}
@@ -145,7 +152,10 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
           <div className="grid w-full grid-cols-7 @max-md:grid-cols-1">
             {Array.from({ length: 7 }, (_, dayIndex) => (
               <div
-                className={`border-brown-dark/50 flex h-10 items-center gap-1 overflow-scroll border-l px-2 ${dayIndex === currentDay.getDay() ? "" : "@max-md:hidden"}`}
+                className={cn(
+                  "border-brown-dark/50 flex h-10 items-center gap-1 overflow-scroll border-l px-2",
+                  dayIndex !== currentDay.getDay() && "@max-md:hidden",
+                )}
                 key={weeklyDates[dayIndex].toISOString()}
               >
                 {growthRecords
@@ -183,7 +193,10 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
             <div className="grid w-full grid-cols-7 @max-md:grid-cols-1">
               {Array.from({ length: 7 }, (_, dayIndex) => (
                 <div
-                  className={`border-brown-dark/50 flex h-10 items-center gap-1 overflow-scroll border-l px-2 ${dayIndex === currentDay.getDay() ? "" : "@max-md:hidden"}`}
+                  className={cn(
+                    "border-brown-dark/50 flex h-10 items-center gap-1 overflow-scroll border-l px-2",
+                    dayIndex !== currentDay.getDay() && "@max-md:hidden",
+                  )}
                   key={weeklyDates[dayIndex].toISOString()}
                 >
                   {careRecords?.items

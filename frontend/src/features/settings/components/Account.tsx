@@ -2,6 +2,7 @@ import Image from "next/image";
 
 import { Button } from "@/components/ui/Button";
 import { logoutAction } from "@/features/auth/actions/logout";
+import { cn } from "@/utils/cn";
 
 import icon from "../assets/account.svg";
 import whiteIcon from "../assets/white/account.svg";
@@ -28,13 +29,13 @@ export const Account = ({ isEasy }: Props) => {
           height={30}
           className="hidden @max-md:h-6 @max-md:w-6 dark:block"
         />
-        <p className={`font-medium ${isEasy ? "text-[18px]" : "@max-md:text-[13px]"}`}>
+        <p className={cn("font-medium", isEasy ? "text-[18px]" : "@max-md:text-[13px]")}>
           アカウント
         </p>
       </div>
       <div className="bg-background-normal dark:bg-background-accent border-brown-dark mt-4 rounded-lg border @max-md:mt-3">
         <div className="flex items-center justify-between px-8 py-4 @max-lg:px-4 @max-md:px-5 @max-md:py-2.5">
-          <p className={isEasy ? "font-medium" : "@max-md:text-[13px]"}>ログアウト</p>
+          <p className={cn("@max-md:text-[13px]", isEasy && "font-medium")}>ログアウト</p>
           <Button variant="cancel" className="max-md:w-30 @max-md:h-9" onClick={logoutAction}>
             ログアウト
           </Button>

@@ -15,6 +15,7 @@ import {
 } from "@/features/settings";
 import { getAllSharingGroups } from "@/features/sharing/server";
 import { getTags } from "@/features/tag/server";
+import { cn } from "@/utils/cn";
 
 export default async function SettingsPage() {
   const [isAdmin, isEasy, currentUser, users, tags, albums] = await Promise.all([
@@ -29,7 +30,7 @@ export default async function SettingsPage() {
   const sharingGroups = isAdmin ? await getAllSharingGroups() : undefined;
 
   return (
-    <Container className={`mt-20 @max-md:mt-5 ${isEasy ? "px-5" : ""}`}>
+    <Container className={cn("mt-20 @max-md:mt-5", isEasy && "px-5")}>
       <div className="relative flex items-start gap-10 @max-lg:gap-5 @max-md:flex-col">
         {/* サイドバー */}
         {!isEasy && <Sidebar isAdmin={isAdmin} />}

@@ -2,13 +2,17 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { isAdminUser, isEasyMode } from "@/features/auth";
+import { cn } from "@/utils/cn";
 
 export default async function Footer() {
   const [isAdmin, isEasy] = await Promise.all([isAdminUser(), isEasyMode()]);
 
   return (
     <footer
-      className={`border-brown-dark mt-40 border-t pt-10 max-md:pb-20 @max-md:mt-20 @max-md:pt-6 ${isEasy ? "pb-10" : "pb-15"}`}
+      className={cn(
+        "border-brown-dark mt-40 border-t pt-10 pb-15 max-md:pb-20 @max-md:mt-20 @max-md:pt-6",
+        isEasy && "pb-10",
+      )}
     >
       <Image
         src="/images/logo.png"

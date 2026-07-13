@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { FavoriteMediaList } from "@/features/favorite/components/FavoriteMediaList";
 import { MediaListResponseDto, UserResponseDto } from "@/lib/api-client/gen";
+import { cn } from "@/utils/cn";
 
 import commentIcon from "../assets/comment.svg";
 import videoIcon from "../assets/video-icon.svg";
@@ -39,11 +40,16 @@ export const TopMedia = ({ isEasy, favoriteData, mediaData, users }: Props) => {
   if (today.getDate() < birthday.getDate()) months--;
   return (
     (mainMedia.length > 0 || mediaData.items.length > 0) && (
-      <div className={`mx-auto mt-20 @max-md:mt-6 ${isEasy ? "" : "max-w-310 px-5"}`}>
-        <div className={`flex justify-between @max-md:flex-col ${isEasy ? "gap-3" : "gap-5"}`}>
+      <div className={cn("mx-auto mt-20 @max-md:mt-6", !isEasy && "max-w-310 px-5")}>
+        <div className={cn("flex justify-between gap-5 @max-md:flex-col", isEasy && "gap-3")}>
           {/* お気に入り画像 */}
           <div
-            className={`relative aspect-square shrink-0 overflow-hidden ${isEasy ? "h-full w-full" : "h-[570px] w-[570px] @max-lg:h-100 @max-lg:w-100 @max-md:h-full @max-md:w-full"}`}
+            className={cn(
+              "relative aspect-square h-[570px] w-[570px] shrink-0 overflow-hidden",
+              isEasy
+                ? "h-full w-full"
+                : "@max-lg:h-100 @max-lg:w-100 @max-md:h-full @max-md:w-full",
+            )}
           >
             {mainMedia.map((media, index) => (
               <div
@@ -88,7 +94,10 @@ export const TopMedia = ({ isEasy, favoriteData, mediaData, users }: Props) => {
 
             {/* 画像表示 */}
             <div
-              className={`grid w-full gap-5 @max-lg:gap-2 ${isEasy ? "grid-cols-2" : "grid-cols-3 @max-md:mt-3"}`}
+              className={cn(
+                "grid w-full grid-cols-3 gap-5 @max-lg:gap-2",
+                isEasy ? "grid-cols-2" : "@max-md:mt-3",
+              )}
             >
               {mediaData.items.map((data) => (
                 <Link
@@ -145,7 +154,12 @@ export const TopMedia = ({ isEasy, favoriteData, mediaData, users }: Props) => {
         </div>
         <Link
           href="/media"
-          className={`mt-10 ml-auto flex h-12 w-50 cursor-pointer items-center justify-center gap-3 rounded-lg border px-7 font-medium transition-all duration-300 @max-md:mx-auto @max-md:mt-6 @max-md:gap-2 @max-md:px-3 ${isEasy ? "border-brown-dark bg-brown-light text-[16px] text-white" : "border-brown-middle text-brown-middle bg-brown-back hover:bg-brown-light text-sm hover:text-white @max-md:h-10 @max-md:text-xs"}`}
+          className={cn(
+            "border-brown-middle bg-brown-back text-brown-middle mt-10 ml-auto flex h-12 w-50 cursor-pointer items-center justify-center gap-3 rounded-lg border px-7 font-medium transition-all duration-300 @max-md:mx-auto @max-md:mt-6 @max-md:gap-2 @max-md:px-3",
+            isEasy
+              ? "border-brown-dark bg-brown-light text-[16px] text-white"
+              : "hover:bg-brown-light text-sm hover:text-white @max-md:h-10 @max-md:text-xs",
+          )}
         >
           写真・動画一覧
         </Link>

@@ -8,6 +8,7 @@ import { MediaFilter, MediaListSection, MediaTitle } from "@/features/media";
 import { getMediaList } from "@/features/media/server";
 import { getSharingGroups } from "@/features/sharing/server";
 import { getTags } from "@/features/tag/server";
+import { cn } from "@/utils/cn";
 
 export default async function MediaPage() {
   const [isAdmin, isEasy, initialData, users, tags, sharingGroups] = await Promise.all([
@@ -29,7 +30,10 @@ export default async function MediaPage() {
       {/* 遷移ボタン */}
       <AccentButton
         href="/upload"
-        className={`mt-10 ${isEasy ? "mx-auto px-6! text-[15px]!" : "ml-auto @max-md:mt-4"}`}
+        className={cn(
+          "mt-10 ml-auto",
+          isEasy ? "mx-auto @max-md:px-6 @max-md:text-[15px]" : "@max-md:mt-4",
+        )}
         variant="link"
       >
         <p>新規アップロード</p>

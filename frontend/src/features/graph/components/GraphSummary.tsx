@@ -3,6 +3,7 @@ import {
   GrowthRecordResponseDto,
   WordRecordResponseDto,
 } from "@/lib/api-client/gen";
+import { cn } from "@/utils/cn";
 import { formatJapaneseDateNonTime } from "@/utils/date";
 
 type Props = {
@@ -22,7 +23,10 @@ export const GraphSummary = ({
 }: Props) => {
   return (
     <div
-      className={`mt-10 grid gap-3 @max-md:mt-6 @max-md:gap-1.5 ${isAdmin ? "grid-cols-11 @max-md:grid-cols-2" : "grid-cols-6 @max-md:grid-cols-2"}`}
+      className={cn(
+        "mt-10 grid grid-cols-6 gap-3 @max-md:mt-6 @max-md:grid-cols-2 @max-md:gap-1.5",
+        isAdmin && "grid-cols-11",
+      )}
     >
       <GrowthGraphSummary growthRecords={growthRecords} />
       {isAdmin && !isEasy && (
@@ -218,7 +222,10 @@ const WordGraphSummary = ({
 }) => {
   return (
     <div
-      className={`border-graph-border-word bg-translucent col-span-2 flex h-40 flex-col items-center justify-center rounded-lg border text-center backdrop-blur-[7.5px] @max-md:h-30 ${isAdmin && !isEasy ? "@max-md:col-span-1" : ""}`}
+      className={cn(
+        "border-graph-border-word bg-translucent col-span-2 flex h-40 flex-col items-center justify-center rounded-lg border text-center backdrop-blur-[7.5px] @max-md:h-30",
+        isAdmin && !isEasy && "@max-md:col-span-1",
+      )}
     >
       <p className="text-sm @max-md:text-xs">覚えた言葉の数</p>
       <div className="mt-2 flex items-end gap-1 @max-md:mt-1">

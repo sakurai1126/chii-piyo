@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { toast } from "@/components/ui/Toast";
 import { AlbumResponseDto } from "@/lib/api-client/gen";
+import { cn } from "@/utils/cn";
 import { formatJapaneseDateNonTime } from "@/utils/date";
 
 import { deleteAlbumAction } from "../../actions/deleteAlbumAction";
@@ -72,7 +73,10 @@ export const SettingsAlbumListItem = ({ album, index }: Props) => {
   return (
     <>
       <div
-        className={`px-8 py-4 @max-lg:px-4 @max-md:px-5 ${index > 0 ? "border-brown-dark/50 border-t" : ""}`}
+        className={cn(
+          "px-8 py-4 @max-lg:px-4 @max-md:px-5",
+          index > 0 && "border-brown-dark/50 border-t",
+        )}
       >
         <div className="flex items-center justify-between @max-md:flex-col @max-md:items-start">
           <div className="flex w-full items-center justify-between @max-md:flex-col @max-md:items-start">

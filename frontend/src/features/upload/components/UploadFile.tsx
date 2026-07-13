@@ -9,6 +9,7 @@ import { AlbumSelector } from "@/features/album";
 import { SharingGroupsSelector } from "@/features/sharing";
 import { TagSelector } from "@/features/tag";
 import { AlbumResponseDto, SharingGroupResponseDto, TagResponseDto } from "@/lib/api-client/gen";
+import { cn } from "@/utils/cn";
 
 import boxArrow from "../assets/brown-arrow.svg";
 import { UploadMedia, UploadMetadata, UploadStatus } from "../types";
@@ -87,7 +88,10 @@ export const UploadFile = ({
               {item.status !== "idle" && (
                 <div className="mt-2 flex items-center gap-2">
                   <span
-                    className={`inline-block rounded-2xl px-3 py-0.5 text-xs ${STATUS_BADGE_CLASS[item.status]}`}
+                    className={cn(
+                      "inline-block rounded-2xl px-3 py-0.5 text-xs",
+                      STATUS_BADGE_CLASS[item.status],
+                    )}
                   >
                     {STATUS_LABEL[item.status]}
                   </span>
@@ -181,7 +185,7 @@ export const UploadFile = ({
           alt=""
           width={13}
           height={7}
-          className={`${isOpen ? "rotate-180" : ""} transition-transform duration-300`}
+          className={cn("transition-transform duration-300", isOpen && "rotate-180")}
         />
       </button>
     </div>

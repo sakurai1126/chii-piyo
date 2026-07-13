@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { SharingGroupFilter } from "@/features/sharing";
 import { TagFilter } from "@/features/tag";
 import { SharingGroupResponseDto, TagResponseDto } from "@/lib/api-client/gen";
+import { cn } from "@/utils/cn";
 
 import heart from "../../assets/heart.png";
 import illust from "../../assets/illust.png";
@@ -54,7 +55,10 @@ export const MediaFilter = ({ tags, sharingGroups }: Props) => {
   return (
     <div className="relative z-10">
       <div
-        className={`bg-background-normal border-brown-dark relative mt-10 rounded-lg border p-7 ${isOpen ? "max-md:pt-6 @max-md:px-4 @max-md:pb-0" : "@max-md:p-0"}`}
+        className={cn(
+          "bg-background-normal border-brown-dark relative mt-10 rounded-lg border p-7 @max-md:p-0",
+          isOpen && "max-md:pt-6 @max-md:px-4 @max-md:pb-0",
+        )}
       >
         <Image
           src={illust}
@@ -71,7 +75,10 @@ export const MediaFilter = ({ tags, sharingGroups }: Props) => {
           className="absolute -top-5 -right-24 -z-1 @max-xl:top-5 @max-xl:-right-15 @max-md:top-2 @max-md:-right-13 @max-md:h-16.5 @max-md:w-20"
         />
         <div
-          className={`grid transition-all duration-400 ${isOpen ? "@max-md:grid-rows-[1fr]" : "@max-md:grid-rows-[0fr]"}`}
+          className={cn(
+            "grid transition-all duration-400",
+            isOpen ? "@max-md:grid-rows-[1fr]" : "@max-md:grid-rows-[0fr]",
+          )}
         >
           <div className="overflow-hidden">
             {/* 上段 */}

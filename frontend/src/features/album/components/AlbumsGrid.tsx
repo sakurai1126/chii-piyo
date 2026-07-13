@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { AlbumResponseDto } from "@/lib/api-client/gen";
+import { cn } from "@/utils/cn";
 
 import media from "../assets/media.svg";
 import video from "../assets/video.svg";
@@ -23,10 +24,18 @@ export const AlbumsGrid = ({ isEasy, albums, variant = "page" }: Props) => {
       {displayAlbums.map((album) => (
         <div className="relative" key={album.id}>
           <div
-            className={`pointer-events-none absolute z-10 max-w-full min-w-40 py-1 ${isEasy ? "bg-warning-back right-0 bottom-3 left-0 mx-auto w-[calc(100%-24px)] rounded-sm px-1 text-center" : "bottom-5 -left-1 bg-[linear-gradient(90deg,rgba(185,0,0,0.8)_0%,rgba(185,0,0,0.64)_65%,rgba(185,0,0,0)_100%)] pr-5 pl-4 backdrop-blur-[7.5px]"}`}
+            className={cn(
+              "pointer-events-none absolute z-10 max-w-full min-w-40 py-1",
+              isEasy
+                ? "bg-warning-back right-0 bottom-3 left-0 mx-auto w-[calc(100%-24px)] rounded-sm px-1 text-center"
+                : "bottom-5 -left-1 bg-[linear-gradient(90deg,rgba(185,0,0,0.8)_0%,rgba(185,0,0,0.64)_65%,rgba(185,0,0,0)_100%)] pr-5 pl-4 backdrop-blur-[7.5px]",
+            )}
           >
             <p
-              className={`line-clamp-3 break-all text-white ${isEasy ? "text-[13px] font-medium" : "text-xs @max-md:text-[10px]"}`}
+              className={cn(
+                "line-clamp-3 text-xs break-all text-white",
+                isEasy ? "text-[13px] font-medium" : "@max-md:text-[10px]",
+              )}
             >
               {album.title}
             </p>

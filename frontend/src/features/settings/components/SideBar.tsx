@@ -2,6 +2,8 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
+import { cn } from "@/utils/cn";
+
 import account from "../assets/sidebar/account.svg";
 import albums from "../assets/sidebar/albums.svg";
 import arrow from "../assets/sidebar/arrow.svg";
@@ -75,7 +77,10 @@ export const Sidebar = ({ isAdmin }: Props) => {
             <a
               key={item.id}
               href={`#${item.id}`}
-              className={`group hover:bg-background-accent relative flex h-11 cursor-pointer items-center gap-2 rounded-lg px-5 transition-all @max-lg:px-2 @max-md:h-9 @max-md:shrink-0 @max-md:gap-1 @max-md:rounded-none @max-md:px-3 ${isActive ? "bg-background-accent" : ""}`}
+              className={cn(
+                "group hover:bg-background-accent relative flex h-11 cursor-pointer items-center gap-2 rounded-lg px-5 transition-all @max-lg:px-2 @max-md:h-9 @max-md:shrink-0 @max-md:gap-1 @max-md:rounded-none @max-md:px-3",
+                isActive && "bg-background-accent",
+              )}
             >
               <Image
                 src={item.icon}
@@ -99,14 +104,20 @@ export const Sidebar = ({ isAdmin }: Props) => {
                 alt=""
                 width={4}
                 height={8}
-                className={`absolute top-0 right-3 bottom-0 my-auto transition-all group-hover:opacity-100 @max-md:hidden dark:hidden ${isActive ? "opacity-100" : "opacity-0"}`}
+                className={cn(
+                  "absolute top-0 right-3 bottom-0 my-auto transition-all group-hover:opacity-100 @max-md:hidden dark:hidden",
+                  isActive ? "opacity-100" : "opacity-0",
+                )}
               />
               <Image
                 src={whiteArrow}
                 alt=""
                 width={4}
                 height={8}
-                className={`absolute top-0 right-3 bottom-0 my-auto hidden transition-all group-hover:opacity-100 @max-md:hidden dark:block ${isActive ? "opacity-100" : "opacity-0"}`}
+                className={cn(
+                  "absolute top-0 right-3 bottom-0 my-auto hidden transition-all group-hover:opacity-100 @max-md:hidden dark:block",
+                  isActive ? "opacity-100" : "opacity-0",
+                )}
               />
             </a>
           );

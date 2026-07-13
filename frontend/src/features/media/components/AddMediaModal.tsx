@@ -22,6 +22,7 @@ import {
   SharingGroupResponseDto,
   TagResponseDto,
 } from "@/lib/api-client/gen";
+import { cn } from "@/utils/cn";
 
 import videoIcon from "../assets/video-icon.svg";
 
@@ -255,7 +256,10 @@ export const AddMediaModal = ({
                 </button>
 
                 <div
-                  className={`mt-7 grid transition-all duration-400 @max-md:mt-4 ${isFilterOpen ? "@max-md:grid-rows-[1fr]" : "@max-md:grid-rows-[0fr]"}`}
+                  className={cn(
+                    "mt-7 grid transition-all duration-400 @max-md:mt-4",
+                    isFilterOpen ? "@max-md:grid-rows-[1fr]" : "@max-md:grid-rows-[0fr]",
+                  )}
                 >
                   <div className="overflow-hidden">
                     {/* 上段 */}
@@ -297,7 +301,10 @@ export const AddMediaModal = ({
                 <div className="mt-4 flex justify-between gap-4 @max-md:flex-col @max-md:items-center @max-md:gap-0">
                   {isFiltersChanged && (
                     <div
-                      className={`grid transition-all duration-400 ${isFilterOpen ? "@max-md:grid-rows-[1fr]" : "@max-md:grid-rows-[0fr]"}`}
+                      className={cn(
+                        "grid transition-all duration-400",
+                        isFilterOpen ? "@max-md:grid-rows-[1fr]" : "@max-md:grid-rows-[0fr]",
+                      )}
                     >
                       <div className="overflow-hidden">
                         <Button

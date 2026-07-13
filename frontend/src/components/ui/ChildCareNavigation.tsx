@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { isAdminUser } from "@/features/auth";
+import { cn } from "@/utils/cn";
 
 type Props = {
   currentPage: "care" | "graph" | "first" | "word";
@@ -20,7 +21,11 @@ export const ChildCareNavigation = async ({ currentPage }: Props) => {
         {isAdmin && (
           <Link
             href="/care"
-            className={`grid h-12 w-40 place-content-center rounded-lg font-medium @max-md:h-10 @max-md:px-2 dark:text-white ${currentPage === "care" ? variantStyles["current"] : variantStyles["other"]} @max-md:w-auto @max-md:text-xs`}
+            className={cn(
+              "grid h-12 w-40 place-content-center rounded-lg font-medium @max-md:h-10 @max-md:px-2 dark:text-white",
+              currentPage === "care" ? variantStyles["current"] : variantStyles["other"],
+              "@max-md:w-auto @max-md:text-xs",
+            )}
           >
             記録
           </Link>
@@ -28,19 +33,31 @@ export const ChildCareNavigation = async ({ currentPage }: Props) => {
 
         <Link
           href="/analysis"
-          className={`grid h-12 w-40 place-content-center rounded-lg font-medium @max-md:h-10 @max-md:px-2 dark:text-white ${currentPage === "graph" ? variantStyles["current"] : variantStyles["other"]} @max-md:w-auto @max-md:text-xs`}
+          className={cn(
+            "grid h-12 w-40 place-content-center rounded-lg font-medium @max-md:h-10 @max-md:px-2 dark:text-white",
+            currentPage === "graph" ? variantStyles["current"] : variantStyles["other"],
+            "@max-md:w-auto @max-md:text-xs",
+          )}
         >
           グラフ
         </Link>
         <Link
           href="/first-records"
-          className={`grid h-12 w-40 place-content-center rounded-lg font-medium @max-md:h-10 @max-md:px-2 dark:text-white ${currentPage === "first" ? variantStyles["current"] : variantStyles["other"]} @max-md:w-auto @max-md:text-xs`}
+          className={cn(
+            "grid h-12 w-40 place-content-center rounded-lg font-medium @max-md:h-10 @max-md:px-2 dark:text-white",
+            currentPage === "first" ? variantStyles["current"] : variantStyles["other"],
+            "@max-md:w-auto @max-md:text-xs",
+          )}
         >
           はじめて
         </Link>
         <Link
           href="/word-records"
-          className={`grid h-12 w-40 place-content-center rounded-lg font-medium @max-md:h-10 @max-md:px-2 dark:text-white ${currentPage === "word" ? variantStyles["current"] : variantStyles["other"]} @max-md:w-auto @max-md:text-xs`}
+          className={cn(
+            "grid h-12 w-40 place-content-center rounded-lg font-medium @max-md:h-10 @max-md:px-2 dark:text-white",
+            currentPage === "word" ? variantStyles["current"] : variantStyles["other"],
+            "@max-md:w-auto @max-md:text-xs",
+          )}
         >
           ことば
         </Link>

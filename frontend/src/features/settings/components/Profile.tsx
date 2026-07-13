@@ -4,6 +4,7 @@ import Image from "next/image";
 
 import { Button } from "@/components/ui/Button";
 import { UserResponseDto } from "@/lib/api-client/gen";
+import { cn } from "@/utils/cn";
 
 import icon from "../assets/profile.svg";
 import whiteIcon from "../assets/white/profile.svg";
@@ -46,7 +47,7 @@ export const Profile = ({ isEasy, currentUser }: Props) => {
           height={30}
           className="hidden @max-md:h-6 @max-md:w-6 dark:block"
         />
-        <p className={`font-medium ${isEasy ? "text-[18px]" : "@max-md:text-[13px]"}`}>
+        <p className={cn("font-medium", isEasy ? "text-[18px]" : "@max-md:text-[13px]")}>
           プロフィール
         </p>
       </div>
@@ -54,7 +55,10 @@ export const Profile = ({ isEasy, currentUser }: Props) => {
         <div className="flex gap-5 @max-md:flex-col @max-md:items-center">
           <div className="w-fit">
             <div
-              className={`mx-auto shrink-0 rounded-full bg-[linear-gradient(100deg,#FFC0AB_35%,#FFF829_65%)] p-px ${isEasy ? "h-30 w-30" : "h-20 w-20"}`}
+              className={cn(
+                "mx-auto shrink-0 rounded-full bg-[linear-gradient(100deg,#FFC0AB_35%,#FFF829_65%)] p-px",
+                isEasy ? "h-30 w-30" : "h-20 w-20",
+              )}
             >
               <div className="rounded-full bg-white">
                 <Image
@@ -67,7 +71,10 @@ export const Profile = ({ isEasy, currentUser }: Props) => {
               </div>
             </div>
             <button
-              className={`mt-2 cursor-pointer text-nowrap underline transition-all hover:opacity-70 ${isEasy ? "text-[13px] font-medium" : "text-xs @max-md:text-[10px]"}`}
+              className={cn(
+                "mt-2 cursor-pointer text-nowrap underline transition-all hover:opacity-70",
+                isEasy ? "text-[13px] font-medium" : "text-xs @max-md:text-[10px]",
+              )}
               onClick={() => iconInputRef.current?.click()}
             >
               アイコンを編集する
@@ -75,12 +82,15 @@ export const Profile = ({ isEasy, currentUser }: Props) => {
           </div>
           <div className="w-full">
             <div>
-              <div className={`flex ${isEasy ? "flex-col" : "items-center gap-6 @max-md:gap-4"}`}>
-                <p className={isEasy ? "text-[18px] font-medium" : "@max-md:text-[13px]"}>
+              <div className={cn("flex", isEasy ? "flex-col" : "items-center gap-6 @max-md:gap-4")}>
+                <p className={cn("text-[18px] font-medium", !isEasy && "@max-md:text-[13px]")}>
                   表示名：{user.displayName}
                 </p>
                 <button
-                  className={`cursor-pointer text-xs underline transition-all hover:opacity-70 ${isEasy ? "mt-2 w-fit text-[13px]" : "@max-md:text-[10px]"}`}
+                  className={cn(
+                    "cursor-pointer text-xs underline transition-all hover:opacity-70",
+                    isEasy ? "mt-2 w-fit text-[13px]" : "@max-md:text-[10px]",
+                  )}
                   onClick={() => setIsNameChangeMode(true)}
                 >
                   編集する
@@ -108,21 +118,27 @@ export const Profile = ({ isEasy, currentUser }: Props) => {
             </div>
 
             <p
-              className={`mt-2 break-all ${isEasy ? "text-[16px] font-medium" : "@max-md:mt-1 @max-md:text-[13px]"}`}
+              className={cn(
+                "mt-2 break-all",
+                isEasy ? "text-[16px] font-medium" : "@max-md:mt-1 @max-md:text-[13px]",
+              )}
             >
               メールアドレス：
               <br hidden={!isEasy} />
               {user.email}
             </p>
             <p
-              className={`mt-8 ml-auto text-right text-xs @max-md:ml-0 @max-md:text-left ${isEasy ? "text-[11px] font-medium" : "@max-md:mt-4 @max-md:text-[10px]"}`}
+              className={cn(
+                "mt-8 ml-auto text-right text-xs @max-md:ml-0 @max-md:text-left",
+                isEasy ? "text-[11px] font-medium" : "@max-md:mt-4 @max-md:text-[10px]",
+              )}
             >
               メールアドレス、パスワードの変更は連絡してください
             </p>
           </div>
         </div>
 
-        <div className={`mt-8 ${previewUrl ? "" : "hidden"}`}>
+        <div className={cn("mt-8", !previewUrl && "hidden")}>
           <p className="text-sm font-medium">アップロードするアイコン</p>
           <div className="mt-4 flex items-center gap-2">
             {previewUrl && (

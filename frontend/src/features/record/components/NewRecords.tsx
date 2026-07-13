@@ -5,6 +5,7 @@ import { useState } from "react";
 
 import { AccordionContent } from "@/components/ui/AccordionContent";
 import { SharingGroupResponseDto, TagResponseDto } from "@/lib/api-client/gen";
+import { cn } from "@/utils/cn";
 
 import arrow from "../assets/arrow.svg";
 import plusIcon from "../assets/plus.svg";
@@ -26,7 +27,10 @@ export const NewRecords = ({ tags, sharingGroups, variant }: Props) => {
       {/* 開くボタン */}
       <AccordionContent isOpen={!isMenuOpen}>
         <button
-          className={`hover:bg-background-normal bg-green-back dark:bg-background-accent flex w-full cursor-pointer items-center justify-center gap-3 rounded-lg transition-all ${variant === "word" ? "h-30" : "h-20"}`}
+          className={cn(
+            "hover:bg-background-normal bg-green-back dark:bg-background-accent flex h-20 w-full cursor-pointer items-center justify-center gap-3 rounded-lg transition-all",
+            variant === "word" && "h-30",
+          )}
           onClick={() => setIsMenuOpen(true)}
         >
           <p className="text-brown-light font-medium @max-md:text-[13px]">

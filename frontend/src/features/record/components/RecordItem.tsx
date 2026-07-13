@@ -11,6 +11,7 @@ import {
   TagResponseDto,
   WordRecordResponseDto,
 } from "@/lib/api-client/gen";
+import { cn } from "@/utils/cn";
 import {
   calculateDaysSinceBirth,
   formatJapaneseDateBasic,
@@ -57,7 +58,10 @@ export const RecordItem = ({ isAdmin, item, index, tags, sharingGroups, variant 
         <>
           <div className="bg-brown-dark h-[9px] w-[9px] shrink-0 rounded-full"></div>
           <div
-            className={`bg-brown-dark absolute left-1 w-px ${index === 0 ? "top-[50%] h-[50%]" : "h-full"}`}
+            className={cn(
+              "bg-brown-dark absolute left-1 h-full w-px",
+              index === 0 && "top-[50%] h-[50%]",
+            )}
           ></div>
         </>
       )}

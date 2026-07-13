@@ -6,6 +6,7 @@ import { ShareGroupMediaDetail } from "@/features/sharing";
 import { getSharingGroups } from "@/features/sharing/server";
 import { TagMediaDetail } from "@/features/tag";
 import { getTags } from "@/features/tag/server";
+import { cn } from "@/utils/cn";
 
 import { getMedia } from "../../api/getMedia";
 import { getMediaComments } from "../../api/getMediaComments";
@@ -35,7 +36,10 @@ export const MediaDetailContent = async ({ id, isModal = false }: Props) => {
 
   return (
     <div
-      className={`mx-auto max-w-280 px-5 pt-20 @max-md:px-0 ${isModal ? "@max-md:pt-0" : "@max-md:pt-10"}`}
+      className={cn(
+        "mx-auto max-w-280 px-5 pt-20 @max-md:px-0 @max-md:pt-10",
+        isModal && "@max-md:pt-0",
+      )}
     >
       <p className="hidden">Media ID: {id}</p>
       <div className="flex gap-10 @max-lg:mx-auto @max-lg:max-w-150 @max-lg:flex-col @max-lg:items-center">
@@ -43,7 +47,7 @@ export const MediaDetailContent = async ({ id, isModal = false }: Props) => {
         <MediaViewer isModal={isModal} media={media} users={users} />
 
         {/* 詳細情報 */}
-        <div className={`w-full @max-md:px-5 ${isModal ? "pb-20" : ""}`}>
+        <div className={cn("w-full @max-md:px-5", isModal && "pb-20")}>
           {/* コメント */}
           <MediaComment
             mediaId={media.id}

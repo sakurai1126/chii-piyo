@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Dispatch, SetStateAction } from "react";
 
 import { CareRecordResponseDto, GrowthRecordResponseDto } from "@/lib/api-client/gen";
+import { cn } from "@/utils/cn";
 import { formatJapaneseDateTimeOnly } from "@/utils/date";
 
 import growthIcon from "../../assets/growth.svg";
@@ -64,7 +65,10 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
           }}
         >
           <div
-            className={`border-accent-pink bg-background-normal/80 w-fit min-w-80 rounded-lg border backdrop-blur-[30px] @max-md:absolute @max-md:-left-2.5 @max-md:w-[calc(100vw-20px)] @max-md:-translate-y-[calc(100%+15px)] ${translateClass}`}
+            className={cn(
+              "border-accent-pink bg-background-normal/80 w-fit min-w-80 rounded-lg border backdrop-blur-[30px] @max-md:absolute @max-md:-left-2.5 @max-md:w-[calc(100vw-20px)] @max-md:-translate-y-[calc(100%+15px)]",
+              translateClass,
+            )}
             style={{ top: state.top }}
           >
             <div className="relative">
@@ -87,7 +91,10 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
                     height={55}
                   />
                   <p
-                    className={`mt-2 text-[13px] font-medium ${state.record ? dataMap[state.record.recordType].color : "text-growth-text"}`}
+                    className={cn(
+                      "mt-2 text-[13px] font-medium",
+                      state.record ? dataMap[state.record.recordType].color : "text-growth-text",
+                    )}
                   >
                     {state.record ? dataMap[state.record.recordType].label : "身長・体重"}
                   </p>

@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import { SharingGroupResponseDto, UserResponseDto } from "@/lib/api-client/gen";
+import { cn } from "@/utils/cn";
 
 import icon from "../assets/members.svg";
 import whiteIcon from "../assets/white/members.svg";
@@ -42,7 +43,10 @@ export const Members = async ({ isAdmin, currentUser, users, sharingGroups }: Pr
       <div className="bg-background-normal dark:bg-background-accent border-brown-dark mt-4 rounded-lg border @max-md:mt-3">
         {users.map((user, index) => (
           <div
-            className={`py-4 pr-5 pl-7 @max-md:p-5 ${index > 0 ? "border-brown-dark/50 border-t" : ""}`}
+            className={cn(
+              "py-4 pr-5 pl-7 @max-md:p-5",
+              index > 0 && "border-brown-dark/50 border-t",
+            )}
             key={user.id}
           >
             <div className="flex justify-between">

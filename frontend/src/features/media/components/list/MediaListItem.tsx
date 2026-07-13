@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction, useId } from "react";
 
 import { FavoriteMediaList } from "@/features/favorite/components/FavoriteMediaList";
 import { MediaResponseDto, UserResponseDto } from "@/lib/api-client/gen";
+import { cn } from "@/utils/cn";
 
 import comment from "../../assets/comment.svg";
 import videoIcon from "../../assets/video-icon.svg";
@@ -43,7 +44,10 @@ export const MediaListItem = ({
         alt=""
         width={230}
         height={230}
-        className={`absolute h-full w-full object-cover transition-all duration-500 ${isSelectionMode ? "" : "group-hover:scale-110"}`}
+        className={cn(
+          "absolute h-full w-full object-cover transition-all duration-500",
+          !isSelectionMode && "group-hover:scale-110",
+        )}
       />
 
       {data.mediaType === "VIDEO" && (

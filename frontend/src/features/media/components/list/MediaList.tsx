@@ -5,6 +5,7 @@ import { Dispatch, SetStateAction } from "react";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { MediaResponseDto, UserResponseDto } from "@/lib/api-client/gen";
 import { MediaListResponseDto } from "@/lib/api-client/gen/models/MediaListResponseDto";
+import { cn } from "@/utils/cn";
 
 import { useInfiniteMediaList, UseInfiniteMediaListParams } from "../../hooks/useInfiniteMediaList";
 
@@ -58,7 +59,7 @@ export const MediaList = ({
   return (
     <>
       {grouped.map(({ label, items }) => (
-        <div key={label} className={isEasy ? "mt-15" : ""}>
+        <div key={label} className={cn(isEasy && "mt-15")}>
           {/* 年月表示 */}
           {!isEasy && (
             <div className="mt-10 flex items-center gap-10">
@@ -69,7 +70,12 @@ export const MediaList = ({
 
           {/* メディアリスト */}
           <div
-            className={`mt-4 ml-7 grid @max-md:mt-2 @max-md:ml-0 ${isEasy ? "grid-cols-2 gap-1" : "grid-cols-4 gap-2 @max-md:grid-cols-3 @max-md:gap-0.5"}`}
+            className={cn(
+              "mt-4 ml-7 grid @max-md:mt-2 @max-md:ml-0",
+              isEasy
+                ? "grid-cols-2 gap-1"
+                : "grid-cols-4 gap-2 @max-md:grid-cols-3 @max-md:gap-0.5",
+            )}
           >
             {items.map((item) => (
               <MediaListItem

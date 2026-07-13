@@ -4,6 +4,7 @@ import { useId, useState } from "react";
 
 import { useFlexWrapOverflow } from "@/hooks/useFlexWrapOverflow";
 import { SharingGroupResponseDto } from "@/lib/api-client/gen";
+import { cn } from "@/utils/cn";
 
 import arrow from "../assets/brown-arrow.svg";
 import icon from "../assets/icon.svg";
@@ -34,7 +35,7 @@ export const SharingGroupFilter = ({ sharingGroups, updateFilter, currentValue =
       </div>
       <div
         ref={ref}
-        className={`mt-3 flex flex-wrap gap-2 overflow-hidden transition-all`}
+        className="mt-3 flex flex-wrap gap-2 overflow-hidden transition-all"
         style={{ maxHeight: isOpen ? fullHeight : closedHeight }}
       >
         <label
@@ -101,7 +102,7 @@ export const SharingGroupFilter = ({ sharingGroups, updateFilter, currentValue =
             alt=""
             width={13}
             height={7}
-            className={`${isOpen ? "rotate-180" : ""} transition-all`}
+            className={cn("transition-all", isOpen && "rotate-180")}
           />
         </button>
       )}
