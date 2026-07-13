@@ -3,6 +3,7 @@ import { ChildCareNavigation } from "@/components/ui/ChildCareNavigation";
 import { PageTitle } from "@/components/ui/PageTitle";
 import { isAdminUser, isEasyMode } from "@/features/auth";
 import { getAndBuildGraphData, GraphChart, GraphSummary } from "@/features/graph";
+import { cn } from "@/utils/cn";
 
 export default async function AnalysisPage() {
   const [isAdmin, isEasy] = await Promise.all([isAdminUser(), isEasyMode()]);
@@ -18,7 +19,7 @@ export default async function AnalysisPage() {
   } = await getAndBuildGraphData(isAdmin);
 
   return (
-    <Container className="mt-10 @max-md:mt-5">
+    <Container className={cn("mt-10 @max-md:mt-5", isEasy && "px-5")}>
       <ChildCareNavigation currentPage="graph" />
       <div className="mt-10">
         <PageTitle isEasy={isEasy} text="グラフ" />

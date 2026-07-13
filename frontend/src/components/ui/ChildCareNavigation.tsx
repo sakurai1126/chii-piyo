@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { isAdminUser } from "@/features/auth";
+import { isAdminUser, isEasyMode } from "@/features/auth";
 import { cn } from "@/utils/cn";
 
 type Props = {
@@ -13,18 +13,22 @@ const variantStyles = {
 };
 
 export const ChildCareNavigation = async ({ currentPage }: Props) => {
-  const isAdmin = await isAdminUser();
+  const [isAdmin, isEasy] = await Promise.all([isAdminUser(), isEasyMode()]);
 
   return (
     <div className="bg-background-accent dark:border-brown-dark mx-auto w-fit rounded-lg p-2 @max-md:py-1 dark:border">
-      <div className="flex gap-2 @max-md:grid @max-md:grid-cols-4">
-        {isAdmin && (
+      <div
+        className={cn(
+          "flex gap-2 @max-md:grid @max-md:grid-cols-3",
+          isAdmin && !isEasy && "@max-md:grid-cols-4",
+        )}
+      >
+        {isAdmin && !isEasy && (
           <Link
             href="/care"
             className={cn(
-              "grid h-12 w-40 place-content-center rounded-lg font-medium @max-md:h-10 @max-md:px-2 dark:text-white",
+              "grid h-12 w-40 place-content-center rounded-lg font-medium @max-md:h-10 @max-md:w-auto @max-md:px-2 @max-md:text-xs dark:text-white",
               currentPage === "care" ? variantStyles["current"] : variantStyles["other"],
-              "@max-md:w-auto @max-md:text-xs",
             )}
           >
             記録
@@ -34,9 +38,9 @@ export const ChildCareNavigation = async ({ currentPage }: Props) => {
         <Link
           href="/analysis"
           className={cn(
-            "grid h-12 w-40 place-content-center rounded-lg font-medium @max-md:h-10 @max-md:px-2 dark:text-white",
+            "grid h-12 w-40 place-content-center rounded-lg font-medium @max-md:h-10 @max-md:w-auto @max-md:px-2 @max-md:text-xs dark:text-white",
             currentPage === "graph" ? variantStyles["current"] : variantStyles["other"],
-            "@max-md:w-auto @max-md:text-xs",
+            isEasy && "@max-md:text-sm",
           )}
         >
           グラフ
@@ -44,9 +48,9 @@ export const ChildCareNavigation = async ({ currentPage }: Props) => {
         <Link
           href="/first-records"
           className={cn(
-            "grid h-12 w-40 place-content-center rounded-lg font-medium @max-md:h-10 @max-md:px-2 dark:text-white",
+            "grid h-12 w-40 place-content-center rounded-lg font-medium @max-md:h-10 @max-md:w-auto @max-md:px-2 @max-md:text-xs dark:text-white",
             currentPage === "first" ? variantStyles["current"] : variantStyles["other"],
-            "@max-md:w-auto @max-md:text-xs",
+            isEasy && "@max-md:text-sm",
           )}
         >
           はじめて
@@ -54,9 +58,9 @@ export const ChildCareNavigation = async ({ currentPage }: Props) => {
         <Link
           href="/word-records"
           className={cn(
-            "grid h-12 w-40 place-content-center rounded-lg font-medium @max-md:h-10 @max-md:px-2 dark:text-white",
+            "grid h-12 w-40 place-content-center rounded-lg font-medium @max-md:h-10 @max-md:w-auto @max-md:px-2 @max-md:text-xs dark:text-white",
             currentPage === "word" ? variantStyles["current"] : variantStyles["other"],
-            "@max-md:w-auto @max-md:text-xs",
+            isEasy && "@max-md:text-sm",
           )}
         >
           ことば

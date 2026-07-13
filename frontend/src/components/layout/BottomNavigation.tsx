@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { cn } from "@/utils/cn";
+
 type Props = {
   isAdmin: boolean;
   isEasy: boolean;
@@ -10,7 +12,12 @@ type Props = {
 
 export const BottomNavigation = ({ isAdmin, isEasy }: Readonly<Props>) => {
   return (
-    <nav className="fixed bottom-0 z-10 grid h-16 w-full grid-cols-5 bg-[#FFFFEF] shadow-[0_-4px_10px_rgba(21,12,0,0.1)] transition-all duration-400 md:hidden">
+    <nav
+      className={cn(
+        "fixed bottom-0 z-10 grid h-16 w-full grid-cols-5 bg-[#FFFFEF] shadow-[0_-4px_10px_rgba(21,12,0,0.1)] transition-all duration-400 md:hidden",
+        isEasy && "max-w-125",
+      )}
+    >
       {isEasy ? <EasyModeMenu /> : <NormalModeMenu isAdmin={isAdmin} />}
     </nav>
   );

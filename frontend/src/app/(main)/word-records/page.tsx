@@ -18,26 +18,29 @@ export default async function WordRecordsPage() {
   ]);
 
   return (
-    <Container className="mt-10 @max-md:mt-5">
+    <Container className={cn("mt-10 @max-md:mt-5", isEasy && "px-5")}>
       <ChildCareNavigation currentPage="word" />
       <div className="mt-10">
         <PageTitle isEasy={isEasy} text="ことばの記録" />
-        <div className="mt-15 flex items-center gap-10">
+        <div className="mt-15 flex items-center gap-10 @max-md:mt-5 @max-md:flex-col @max-md:gap-5">
           <div
             className={cn(
-              "bg-background-normal dark:bg-background-accent border-brown-dark grid h-39 w-80 shrink-0 place-content-center rounded-lg border text-center",
+              "bg-background-normal dark:bg-background-accent border-brown-dark grid h-39 w-80 shrink-0 place-content-center rounded-lg border text-center max-md:h-30",
               isAdmin ? "w-55" : "mx-auto",
             )}
           >
-            <p className="text-6xl font-medium">{wordRecords.length}</p>
+            <p className="text-6xl font-medium max-md:text-4xl">{wordRecords.length}</p>
             <p className="mt-2">おぼえたことばの数</p>
           </div>
-          {isAdmin && <NewRecords tags={tags} sharingGroups={sharingGroups} variant="word" />}
+          {isAdmin && !isEasy && (
+            <NewRecords tags={tags} sharingGroups={sharingGroups} variant="word" />
+          )}
         </div>
         <div className="mt-10 @max-md:mt-5">
           {wordRecords?.map((item, index) => (
             <RecordItem
               isAdmin={isAdmin}
+              isEasy={isEasy}
               tags={tags}
               sharingGroups={sharingGroups}
               key={item.id}

@@ -29,6 +29,7 @@ const birthday = new Date("2025-08-06");
 
 type Props = {
   isAdmin: boolean;
+  isEasy: boolean;
   index: number;
   tags: TagResponseDto[];
   sharingGroups: SharingGroupResponseDto[];
@@ -37,7 +38,15 @@ type Props = {
   | { variant: "word"; item: WordRecordResponseDto }
 );
 
-export const RecordItem = ({ isAdmin, item, index, tags, sharingGroups, variant }: Props) => {
+export const RecordItem = ({
+  isAdmin,
+  isEasy,
+  item,
+  index,
+  tags,
+  sharingGroups,
+  variant,
+}: Props) => {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
 
   // 編集時の初期値データ
@@ -70,6 +79,7 @@ export const RecordItem = ({ isAdmin, item, index, tags, sharingGroups, variant 
         {!isEditMode && (
           <RecordItemDisplayMode
             isAdmin={isAdmin}
+            isEasy={isEasy}
             item={item}
             setIsEditMode={setIsEditMode}
             variant={variant}
@@ -94,11 +104,13 @@ export const RecordItem = ({ isAdmin, item, index, tags, sharingGroups, variant 
  */
 const RecordItemDisplayMode = ({
   isAdmin,
+  isEasy,
   item,
   variant,
   setIsEditMode,
 }: {
   isAdmin: boolean;
+  isEasy: boolean;
   item: FirstRecordResponseDto | WordRecordResponseDto;
   variant: "first" | "word";
   setIsEditMode: Dispatch<SetStateAction<boolean>>;
@@ -158,14 +170,17 @@ const RecordItemDisplayMode = ({
             <Image
               src={media.thumbnailPresignedUrl ?? "/images/no-thumbnail.png"}
               alt=""
-              className="rounded-sm @max-md:h-12 @max-md:w-12"
+              className={cn(
+                "rounded-sm @max-md:h-12 @max-md:w-12",
+                isEasy && "@max-md:h-20 @max-md:w-20",
+              )}
               width={80}
               height={80}
             />
           </Link>
         ))}
       </div>
-      {isAdmin && (
+      {isAdmin && !isEasy && (
         <div className="mt-3 ml-auto flex w-fit gap-3">
           <button
             className="cursor-pointer underline transition-all hover:opacity-70 @max-md:text-xs"

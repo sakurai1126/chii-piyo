@@ -23,7 +23,12 @@ export const NewRecords = ({ tags, sharingGroups, variant }: Props) => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   return (
-    <div className="border-brown-dark bg-background-normal w-full rounded-lg border border-dashed @max-md:mt-6">
+    <div
+      className={cn(
+        "border-brown-dark bg-background-normal w-full rounded-lg border border-dashed",
+        variant === "first" && "@max-md:mt-6",
+      )}
+    >
       {/* 開くボタン */}
       <AccordionContent isOpen={!isMenuOpen}>
         <button

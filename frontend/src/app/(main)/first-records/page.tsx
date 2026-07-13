@@ -6,6 +6,7 @@ import { NewRecords, RecordItem } from "@/features/record";
 import { getFirstRecords } from "@/features/record/api/getFirstRecords";
 import { getSharingGroups } from "@/features/sharing/server";
 import { getTags } from "@/features/tag/server";
+import { cn } from "@/utils/cn";
 
 export default async function FirstRecordsPage() {
   const [isAdmin, isEasy, tags, sharingGroups, firstRecords] = await Promise.all([
@@ -17,20 +18,21 @@ export default async function FirstRecordsPage() {
   ]);
 
   return (
-    <Container className="mt-10 @max-md:mt-5">
+    <Container className={cn("mt-10 @max-md:mt-5", isEasy && "px-5")}>
       <ChildCareNavigation currentPage="first" />
       <div className="mt-10">
         <PageTitle isEasy={isEasy} text="はじめて記録" />
-        {isAdmin && (
+        {isAdmin && !isEasy && (
           <div className="mt-12">
             <NewRecords tags={tags} sharingGroups={sharingGroups} variant="first" />
           </div>
         )}
 
-        <div className="mt-10 @max-md:mt-5">
+        <div className={cn("mt-10", isAdmin && !isEasy && "@max-md:mt-5")}>
           {firstRecords?.map((item, index) => (
             <RecordItem
               isAdmin={isAdmin}
+              isEasy={isEasy}
               tags={tags}
               sharingGroups={sharingGroups}
               key={item.id}
