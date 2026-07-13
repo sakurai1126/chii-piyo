@@ -5,13 +5,15 @@ import { useState } from "react";
 import { AccentButton } from "@/components/ui/AccentButton";
 import { AddMediaModal } from "@/features/media";
 import { SharingGroupResponseDto, TagResponseDto } from "@/lib/api-client/gen";
+import { cn } from "@/utils/cn";
 
 type Props = {
+  isEasy: boolean;
   tags: TagResponseDto[];
   sharingGroups: SharingGroupResponseDto[];
   albumId: number;
 };
-export const AddMediaAlbum = ({ tags, sharingGroups, albumId }: Props) => {
+export const AddMediaAlbum = ({ isEasy, tags, sharingGroups, albumId }: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   return (
@@ -28,7 +30,7 @@ export const AddMediaAlbum = ({ tags, sharingGroups, albumId }: Props) => {
 
       {/* 遷移ボタン */}
       <AccentButton
-        className="mt-10 ml-auto @max-md:mt-4"
+        className={cn("mt-10 ml-auto @max-md:mt-4", isEasy && "mx-auto")}
         variant="button"
         onClick={() => setIsOpen(true)}
       >

@@ -25,7 +25,7 @@ export default async function MediaPage() {
       <MediaTitle isEasy={isEasy} />
 
       {/* 絞り込みUI */}
-      {!isEasy && <MediaFilter tags={tags} sharingGroups={sharingGroups} />}
+      <MediaFilter isEasy={isEasy} tags={tags} sharingGroups={sharingGroups} />
 
       {/* 遷移ボタン */}
       <AccentButton

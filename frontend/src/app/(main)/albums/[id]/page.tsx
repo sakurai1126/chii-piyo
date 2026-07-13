@@ -32,10 +32,15 @@ export default async function AlbumDetailPage({ params }: Readonly<Props>) {
       {initialData.totalCount > 0 ? (
         <>
           {/* 絞り込みUI */}
-          <MediaFilter tags={tags} sharingGroups={sharingGroups} />
+          <MediaFilter isEasy={isEasy} tags={tags} sharingGroups={sharingGroups} />
 
           {/* メディア追加UI */}
-          <AddMediaAlbum tags={tags} sharingGroups={sharingGroups} albumId={Number(id)} />
+          <AddMediaAlbum
+            isEasy={isEasy}
+            tags={tags}
+            sharingGroups={sharingGroups}
+            albumId={Number(id)}
+          />
 
           {/* 一括編集UI+メディアグリッド */}
           <MediaListSection
@@ -51,7 +56,12 @@ export default async function AlbumDetailPage({ params }: Readonly<Props>) {
       ) : (
         <>
           {/* メディア追加UI */}
-          <AddMediaAlbum tags={tags} sharingGroups={sharingGroups} albumId={Number(id)} />
+          <AddMediaAlbum
+            isEasy={isEasy}
+            tags={tags}
+            sharingGroups={sharingGroups}
+            albumId={Number(id)}
+          />
           <p className="py-20 text-center font-medium">アルバムにメディアが追加されていません</p>
         </>
       )}
