@@ -7,7 +7,9 @@ export default async function Footer() {
   const [isAdmin, isEasy] = await Promise.all([isAdminUser(), isEasyMode()]);
 
   return (
-    <footer className="border-brown-dark mt-40 border-t pt-10 pb-15 @max-md:mt-20 @max-md:pt-6 @max-md:pb-10">
+    <footer
+      className={`border-brown-dark mt-40 border-t pt-10 max-md:pb-20 @max-md:mt-20 @max-md:pt-6 ${isEasy ? "pb-10" : "pb-15"}`}
+    >
       <Image
         src="/images/logo.png"
         alt="Chii-Piyo"
@@ -16,21 +18,11 @@ export default async function Footer() {
         className="mx-auto @max-md:w-45"
       />
       {!isEasy && (
-        <nav className="mt-4 flex justify-center gap-12 @max-md:gap-7">
-          <Link href="/" className="@max-md:text-[13px]">
-            ホーム
-          </Link>
-          <Link href="/media" className="@max-md:text-[13px]">
-            写真・動画
-          </Link>
-          {isAdmin && (
-            <Link href="/care" className="@max-md:text-[13px]">
-              育児記録
-            </Link>
-          )}
-          <Link href="/settings" className="@max-md:text-[13px]">
-            設定
-          </Link>
+        <nav className="mt-4 flex justify-center gap-12 @max-md:hidden">
+          <Link href="/">ホーム</Link>
+          <Link href="/media">写真・動画</Link>
+          {isAdmin && <Link href="/care">育児記録</Link>}
+          <Link href="/settings">設定</Link>
         </nav>
       )}
     </footer>

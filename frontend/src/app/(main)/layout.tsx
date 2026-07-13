@@ -1,8 +1,8 @@
 import BackGround from "@/components/layout/BackGround";
-import BottomNavigation from "@/components/layout/BottomNavigation";
+import { BottomNavigation } from "@/components/layout/BottomNavigation";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
-import { isAdminUser } from "@/features/auth";
+import { isAdminUser, isEasyMode } from "@/features/auth";
 
 type Props = {
   children: React.ReactNode;
@@ -10,14 +10,14 @@ type Props = {
 };
 
 export default async function MainLayout({ children, modal }: Readonly<Props>) {
-  const isAdmin = await isAdminUser();
+  const [isAdmin, isEasy] = await Promise.all([isAdminUser(), isEasyMode()]);
 
   return (
     <BackGround>
       <Header />
       {children}
       {modal}
-      <BottomNavigation isAdmin={isAdmin} />
+      <BottomNavigation isAdmin={isAdmin} isEasy={isEasy} />
       <Footer />
     </BackGround>
   );
