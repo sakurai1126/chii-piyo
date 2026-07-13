@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
 import Container from "@/components/layout/Container";
-import PageTitle from "@/components/ui/PageTitle";
+import { PageTitle } from "@/components/ui/PageTitle";
 import { isAdminUser, isEasyMode } from "@/features/auth";
 import { TrashAllDelete, TrashContent, TrashInfo, TrashPagination } from "@/features/trash";
 import { getTrashItems } from "@/features/trash/server";
@@ -27,7 +27,7 @@ export default async function TrashPage({ searchParams }: Readonly<Props>) {
 
   return (
     <Container className="mt-20 @max-md:mt-5">
-      <PageTitle text="ゴミ箱" />
+      <PageTitle isEasy={isEasy} text="ゴミ箱" />
       <TrashInfo trashItems={trashItems} />
       {trashItems.totalCount > 0 && (
         <>

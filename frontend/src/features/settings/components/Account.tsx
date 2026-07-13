@@ -6,7 +6,11 @@ import { logoutAction } from "@/features/auth/actions/logout";
 import icon from "../assets/account.svg";
 import whiteIcon from "../assets/white/account.svg";
 
-export const Account = () => {
+type Props = {
+  isEasy: boolean;
+};
+
+export const Account = ({ isEasy }: Props) => {
   return (
     <div className="mt-10 @max-md:mt-8" id="account">
       <div className="flex items-center gap-2">
@@ -24,11 +28,13 @@ export const Account = () => {
           height={30}
           className="hidden @max-md:h-6 @max-md:w-6 dark:block"
         />
-        <p className="font-medium @max-md:text-[13px]">アカウント</p>
+        <p className={`font-medium ${isEasy ? "text-[18px]" : "@max-md:text-[13px]"}`}>
+          アカウント
+        </p>
       </div>
       <div className="bg-background-normal dark:bg-background-accent border-brown-dark mt-4 rounded-lg border @max-md:mt-3">
         <div className="flex items-center justify-between px-8 py-4 @max-lg:px-4 @max-md:px-5 @max-md:py-2.5">
-          <p className="@max-md:text-[13px]">ログアウト</p>
+          <p className={isEasy ? "font-medium" : "@max-md:text-[13px]"}>ログアウト</p>
           <Button variant="cancel" className="max-md:w-30 @max-md:h-9" onClick={logoutAction}>
             ログアウト
           </Button>

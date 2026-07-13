@@ -2,8 +2,8 @@ import Image from "next/image";
 
 import Container from "@/components/layout/Container";
 import { AccentButton } from "@/components/ui/AccentButton";
-import PageTitle from "@/components/ui/PageTitle";
-import { isAdminUser } from "@/features/auth";
+import { PageTitle } from "@/components/ui/PageTitle";
+import { isAdminUser, isEasyMode } from "@/features/auth";
 import { getUsers } from "@/features/auth/actions/getUsers";
 import { MediaFilter, MediaListSection } from "@/features/media";
 import { getMediaList } from "@/features/media/server";
@@ -11,8 +11,9 @@ import { getSharingGroups } from "@/features/sharing/server";
 import { getTags } from "@/features/tag/server";
 
 export default async function MediaPage() {
-  const [isAdmin, initialData, users, tags, sharingGroups] = await Promise.all([
+  const [isAdmin, isEasy, initialData, users, tags, sharingGroups] = await Promise.all([
     isAdminUser(),
+    isEasyMode(),
     getMediaList({ offset: 0, limit: 12 }),
     getUsers(),
     getTags(),
@@ -21,7 +22,7 @@ export default async function MediaPage() {
 
   return (
     <Container className="mt-20 @max-md:mt-5">
-      <PageTitle text="写真・動画一覧" />
+      <PageTitle isEasy={isEasy} text="写真・動画一覧" />
 
       {/* 絞り込みUI */}
       <MediaFilter tags={tags} sharingGroups={sharingGroups} />
