@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.6</version>
+        <version>4.1.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -36,14 +36,14 @@
 
     <properties>
         <java.version>25</java.version>
-        <openapi-generator-maven-plugin.version>7.22.0</openapi-generator-maven-plugin.version>
+        <openapi-generator-maven-plugin.version>7.23.0</openapi-generator-maven-plugin.version>
         <jackson-databind-nullable.version>0.2.10</jackson-databind-nullable.version>
-        <swagger-annotations.version>2.2.49</swagger-annotations.version>
-        <postgresql.version>42.7.11</postgresql.version>
+        <swagger-annotations.version>2.2.52</swagger-annotations.version>
+        <postgresql.version>42.7.13</postgresql.version>
         <mybatis-spring-boot-starter.version>4.0.1</mybatis-spring-boot-starter.version>
         <mybatis-generator-maven-plugin.version>2.0.0</mybatis-generator-maven-plugin.version>
         <mybatis-dynamic-sql.version>2.0.0</mybatis-dynamic-sql.version>
-        <software.amazon.awssdk.version>2.44.0</software.amazon.awssdk.version>
+        <software.amazon.awssdk.version>2.48.0</software.amazon.awssdk.version>
         <thumbnailator.version>0.4.21</thumbnailator.version>
     </properties>
 
