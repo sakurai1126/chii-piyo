@@ -20,7 +20,10 @@ export const DisplayDebug = ({ currentUser }: Props) => {
       {/* ダークモード */}
       <div className="mt-2 flex items-center justify-between">
         <p className="text-xs">ダークモード</p>
-        <label className="group relative h-7 w-16 cursor-pointer @max-md:h-6 @max-md:w-13">
+        <label
+          className="group relative h-7 w-16 cursor-pointer @max-md:h-6 @max-md:w-13"
+          aria-label="ダークモードの切り替え"
+        >
           <input
             type="checkbox"
             className="peer hidden"
@@ -34,7 +37,10 @@ export const DisplayDebug = ({ currentUser }: Props) => {
       {/* かんたんモード */}
       <div className="mt-2 flex items-center justify-between">
         <p className="text-xs">かんたんモード</p>
-        <label className="group relative h-7 w-16 cursor-pointer @max-md:h-6 @max-md:w-13">
+        <label
+          className="group relative h-7 w-16 cursor-pointer @max-md:h-6 @max-md:w-13"
+          aria-label="かんたんモードの切り替え"
+        >
           <input
             type="checkbox"
             className="peer hidden"

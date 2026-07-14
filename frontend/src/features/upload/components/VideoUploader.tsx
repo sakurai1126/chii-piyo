@@ -98,7 +98,7 @@ export const VideoUploader = ({ isEasy, onFilesAdd, maxFiles, maxSize }: Props) 
           isEasy && "text-[13px]",
         )}
       >
-        まとめて選択できます
+        {"まとめて選択できます"}
         <span hidden={isEasy}>
           <br />
           1本最大{maxSize}MB

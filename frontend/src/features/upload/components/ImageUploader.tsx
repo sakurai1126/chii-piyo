@@ -101,7 +101,7 @@ export const ImageUploader = ({ isEasy, onFilesAdd, maxFiles, maxSize }: Props) 
           isEasy && "text-[13px]",
         )}
       >
-        まとめて選択できます
+        {"まとめて選択できます"}
         <span hidden={isEasy}>
           <br />
           1枚最大{maxSize}MB
