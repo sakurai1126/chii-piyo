@@ -18,12 +18,13 @@ import shrink from "../../assets/shrink.svg";
 import zoom from "../../assets/zoom.svg";
 
 type Props = {
+  isEasy: boolean;
   media: MediaResponseDto;
   isModal?: boolean;
   users: UserResponseDto[];
 };
 
-export const MediaViewer = ({ media, isModal, users }: Props) => {
+export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
   const [modeExpansion, setModeExpansion] = useState(false);
   return (
     <div className="w-125 shrink-0 @max-xl:w-110 @max-md:w-full">
@@ -61,6 +62,7 @@ export const MediaViewer = ({ media, isModal, users }: Props) => {
         )}
         {/* 左矢印 */}
         {media.nextMedia &&
+          !isEasy &&
           (isModal ? (
             <Link
               href={`/media/${media.nextMedia.id}`}
@@ -91,6 +93,7 @@ export const MediaViewer = ({ media, isModal, users }: Props) => {
 
         {/* 右矢印 */}
         {media.previousMedia &&
+          !isEasy &&
           (isModal ? (
             <Link
               href={`/media/${media.previousMedia.id}`}
@@ -146,41 +149,43 @@ export const MediaViewer = ({ media, isModal, users }: Props) => {
         )}
       </div>
       {/* ナビゲーション サムネイル */}
-      <div className="mx-auto mt-5 grid w-fit grid-cols-5 gap-2.5 @max-md:mt-4 @max-md:gap-2">
-        {/* 2つ先のメディア */}
-        {media.secondNextMedia ? (
-          <NavigationThumbnail media={media.secondNextMedia} isModal={isModal} />
-        ) : (
-          <div></div>
-        )}
-        {/* 次のメディア */}
-        {media.nextMedia ? (
-          <NavigationThumbnail media={media.nextMedia} isModal={isModal} />
-        ) : (
-          <div></div>
-        )}
-        {/* 現在のメディア */}
-        <Image
-          src={media.thumbnailPresignedUrl ?? "/images/no-thumbnail.png"}
-          alt="現在のメディア"
-          width={70}
-          height={70}
-          className="aspect-square h-17.5 w-17.5 object-cover opacity-100 @max-md:h-12 @max-md:w-12"
-        />
-        {/* 前のメディア */}
-        {media.previousMedia ? (
-          <NavigationThumbnail media={media.previousMedia} isModal={isModal} />
-        ) : (
-          <div></div>
-        )}
-        {/* 2つ前のメディア */}
-        {media.secondPreviousMedia ? (
-          <NavigationThumbnail media={media.secondPreviousMedia} isModal={isModal} />
-        ) : (
-          <div></div>
-        )}
-      </div>
-      <div className="max-md:flex @max-md:mt-5 @max-md:items-center @max-md:justify-between @max-md:px-5">
+      {!isEasy && (
+        <div className="mx-auto mt-5 grid w-fit grid-cols-5 gap-2.5 @max-md:mt-4 @max-md:gap-2">
+          {/* 2つ先のメディア */}
+          {media.secondNextMedia ? (
+            <NavigationThumbnail media={media.secondNextMedia} isModal={isModal} />
+          ) : (
+            <div></div>
+          )}
+          {/* 次のメディア */}
+          {media.nextMedia ? (
+            <NavigationThumbnail media={media.nextMedia} isModal={isModal} />
+          ) : (
+            <div></div>
+          )}
+          {/* 現在のメディア */}
+          <Image
+            src={media.thumbnailPresignedUrl ?? "/images/no-thumbnail.png"}
+            alt="現在のメディア"
+            width={70}
+            height={70}
+            className="aspect-square h-17.5 w-17.5 object-cover opacity-100 @max-md:h-12 @max-md:w-12"
+          />
+          {/* 前のメディア */}
+          {media.previousMedia ? (
+            <NavigationThumbnail media={media.previousMedia} isModal={isModal} />
+          ) : (
+            <div></div>
+          )}
+          {/* 2つ前のメディア */}
+          {media.secondPreviousMedia ? (
+            <NavigationThumbnail media={media.secondPreviousMedia} isModal={isModal} />
+          ) : (
+            <div></div>
+          )}
+        </div>
+      )}
+      <div className="@max-md:mt-5 @max-md:flex @max-md:items-center @max-md:justify-between @max-md:px-5">
         {isModal ? (
           <a
             href={"/media"}

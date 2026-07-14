@@ -31,8 +31,8 @@ export const HeaderBtn = ({ isEasy, children }: Props) => {
   return (
     <div
       className={cn(
-        "fixed top-11 z-100 max-md:left-5 @max-md:top-6 @max-md:right-auto @max-md:h-7 @max-md:w-7",
-        isEasy ? "left-[calc(50%-170px)]" : "right-10",
+        "fixed top-11 z-100 @max-md:top-6 @max-md:right-auto @max-md:h-7 @max-md:w-7",
+        isEasy ? "left-[calc(50%-230px)] max-[500px]:left-5" : "right-10 max-md:left-5",
       )}
     >
       <div>
