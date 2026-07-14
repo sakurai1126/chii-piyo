@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { CareRecordListResponseDto, GrowthRecordResponseDto } from "@/lib/api-client/gen";
+import { cn } from "@/utils/cn";
 import { formatJapaneseDateBasic } from "@/utils/date";
 
 import diaperIcon from "../assets/diaper.svg";
@@ -55,30 +56,30 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
   return (
     <>
       {/* 年月表示 */}
-      <div className="mt-20 flex items-center justify-center gap-10 max-md:mt-10 max-md:justify-between max-md:gap-0">
+      <div className="mt-20 flex items-center justify-center gap-10 @max-md:mt-10 @max-md:justify-between @max-md:gap-0">
         <button
-          className="cursor-pointer pt-1 text-sm transition-all hover:opacity-70 max-md:text-xs"
+          className="cursor-pointer pt-1 text-sm transition-all hover:opacity-70 @max-md:text-xs"
           onClick={() => changeWeek(-7)}
         >
           &lt; 前の週
         </button>
         <div className="flex items-center">
-          <span className="text-[26px] font-medium max-md:text-xl">{startDay.getFullYear()}</span>
-          <span className="ml-1 pt-1 text-lg max-md:text-sm">年</span>
-          <span className="ml-3 text-[26px] font-medium max-md:text-xl">
+          <span className="text-[26px] font-medium @max-md:text-xl">{startDay.getFullYear()}</span>
+          <span className="ml-1 pt-1 text-lg @max-md:text-sm">年</span>
+          <span className="ml-3 text-[26px] font-medium @max-md:text-xl">
             {startDay.getMonth() + 1}
           </span>
-          <span className="ml-1 pt-1 text-lg max-md:text-sm">月</span>
+          <span className="ml-1 pt-1 text-lg @max-md:text-sm">月</span>
         </div>
         <button
-          className="cursor-pointer pt-1 text-sm transition-all hover:opacity-70 max-md:text-xs"
+          className="cursor-pointer pt-1 text-sm transition-all hover:opacity-70 @max-md:text-xs"
           onClick={() => changeWeek(7)}
         >
           次の週 &gt;
         </button>
       </div>
       {/* カレンダー表示 */}
-      <div className="border-brown-dark bg-translucent dark:bg-dark-calender relative mt-4 w-full rounded-xl border-2 backdrop-blur-[7.5px] max-md:h-auto">
+      <div className="border-brown-dark bg-translucent dark:bg-dark-calender relative mt-4 w-full rounded-xl border-2 backdrop-blur-[7.5px] @max-md:h-auto">
         {pop.isPopOpen && (
           <CalendarPop
             state={pop}
@@ -90,10 +91,16 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
         {/* 日付・曜日表示行 */}
         <div className="bg-calender-head border-line-gray flex h-10 rounded-t-xl border-b">
           <span className="w-10 shrink-0"></span>
-          <div className="grid w-full grid-cols-7 max-md:grid-cols-1">
+          <div className="grid w-full grid-cols-7 @max-md:grid-cols-1">
             {Array.from({ length: 7 }, (_, index) => (
               <div
-                className={`border-brown-dark/50 flex h-10 items-center justify-between border-l px-5 max-lg:justify-center max-lg:px-0 max-md:justify-between max-md:px-5 ${index === currentDay.getDay() ? "" : "max-md:hidden"} ${isTodayWeek && index === today.getDay() ? "md:bg-brown-middle md:font-medium md:text-white" : ""}`}
+                className={cn(
+                  "border-brown-dark/50 flex h-10 items-center justify-between border-l px-5 @max-lg:justify-center @max-lg:px-0 @max-md:justify-between @max-md:px-5",
+                  index !== currentDay.getDay() && "@max-md:hidden",
+                  isTodayWeek &&
+                    index === today.getDay() &&
+                    "@md:bg-brown-middle md:font-medium md:text-white",
+                )}
                 key={weeklyDates[index].toISOString()}
               >
                 {/* 前日へ移動(モバイルのみ) */}
@@ -105,7 +112,7 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
                 </button>
                 <div className="flex items-center gap-2">
                   {/* 日付・曜日表示 */}
-                  <p className="text-sm max-lg:text-xs">
+                  <p className="text-sm @max-lg:text-xs">
                     {weeklyDates[index].getMonth() + 1}月{weeklyDates[index].getDate()}(
                     {weeklyText[index]})
                   </p>
@@ -142,10 +149,13 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
               height={15}
             />
           </div>
-          <div className="grid w-full grid-cols-7 max-md:grid-cols-1">
+          <div className="grid w-full grid-cols-7 @max-md:grid-cols-1">
             {Array.from({ length: 7 }, (_, dayIndex) => (
               <div
-                className={`border-brown-dark/50 flex h-10 items-center gap-1 overflow-scroll border-l px-2 ${dayIndex === currentDay.getDay() ? "" : "max-md:hidden"}`}
+                className={cn(
+                  "border-brown-dark/50 flex h-10 items-center gap-1 overflow-scroll border-l px-2",
+                  dayIndex !== currentDay.getDay() && "@max-md:hidden",
+                )}
                 key={weeklyDates[dayIndex].toISOString()}
               >
                 {growthRecords
@@ -180,10 +190,13 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
             className="border-line-gray flex h-10 border-t border-dashed"
           >
             <p className="grid h-10 w-10 shrink-0 place-content-center text-sm">{timeIndex}</p>
-            <div className="grid w-full grid-cols-7 max-md:grid-cols-1">
+            <div className="grid w-full grid-cols-7 @max-md:grid-cols-1">
               {Array.from({ length: 7 }, (_, dayIndex) => (
                 <div
-                  className={`border-brown-dark/50 flex h-10 items-center gap-1 overflow-scroll border-l px-2 ${dayIndex === currentDay.getDay() ? "" : "max-md:hidden"}`}
+                  className={cn(
+                    "border-brown-dark/50 flex h-10 items-center gap-1 overflow-scroll border-l px-2",
+                    dayIndex !== currentDay.getDay() && "@max-md:hidden",
+                  )}
                   key={weeklyDates[dayIndex].toISOString()}
                 >
                   {careRecords?.items

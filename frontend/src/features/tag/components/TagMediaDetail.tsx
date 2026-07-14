@@ -56,25 +56,25 @@ export const TagMediaDetail = ({ isAdmin, mediaId, mediaTags, tags }: Props) => 
   };
 
   return (
-    <div className="mt-7 max-md:mt-4">
-      <p className="max-md:text-sm">タグ</p>
+    <div className="mt-7 @max-md:mt-4">
+      <p className="@max-md:text-sm">タグ</p>
 
       <div className="mt-3 flex flex-wrap gap-3">
         {mediaTags?.map((tag) => (
           <p
             key={tag.id}
-            className="bg-accent-orange-back border-brown-middle text-brown-middle grid place-content-center rounded-2xl border px-4 py-1 text-sm max-md:px-3 max-md:text-xs"
+            className="bg-accent-orange-back border-brown-middle text-brown-middle grid place-content-center rounded-2xl border px-4 py-1 text-sm @max-md:px-3 @max-md:text-xs"
           >
             {tag.name}
           </p>
         ))}
         {isAdmin && (
           <button
-            className="border-line-gray text-note-gray hover:bg-line-gray flex cursor-pointer items-center gap-1 rounded-2xl border border-dashed bg-white px-3 py-1 text-sm transition-all hover:text-white max-md:text-xs"
+            className="border-line-gray text-note-gray hover:bg-line-gray flex cursor-pointer items-center gap-1 rounded-2xl border border-dashed bg-white px-3 py-1 text-sm transition-all hover:text-white @max-md:text-xs"
             onClick={() => setIsOpen(true)}
             disabled={isPending}
           >
-            <Image src={plus} alt="" width={14} height={14} className="max-md:h-3 max-md:w-3" />
+            <Image src={plus} alt="" width={14} height={14} className="max-md:w-3 @max-md:h-3" />
             <p>編集</p>
           </button>
         )}
@@ -91,7 +91,7 @@ export const TagMediaDetail = ({ isAdmin, mediaId, mediaTags, tags }: Props) => 
                     onTagSelect={(tagIds) => setSelectedTagIds(tagIds)}
                   />
                 </div>
-                <div className="flex justify-center gap-5 max-md:mt-8">
+                <div className="flex justify-center gap-5 @max-md:mt-8">
                   <Button variant="cancel" onClick={editCancel} disabled={isPending}>
                     キャンセル
                   </Button>

@@ -2,15 +2,15 @@ import { notFound } from "next/navigation";
 
 import Container from "@/components/layout/Container";
 import { ChildCareNavigation } from "@/components/ui/ChildCareNavigation";
-import { isAdminUser } from "@/features/auth";
+import { isAdminUser, isEasyMode } from "@/features/auth";
 import { CareActionMenu, CareCalendar } from "@/features/care";
 import { getCareRecords } from "@/features/care/api/getCareRecords";
 import { getGrowthRecords } from "@/features/care/api/getGrowthRecords";
 
 export default async function CarePage() {
-  // 管理者でなければ404表示
-  const isAdmin = await isAdminUser();
-  if (!isAdmin) notFound();
+  // 管理者以外 or かんたんモードであれば04表示
+  const [isAdmin, isEasy] = await Promise.all([isAdminUser(), isEasyMode()]);
+  if (!isAdmin || isEasy) notFound();
 
   // 今日の日付を取得
   const today = new Date();
@@ -29,7 +29,7 @@ export default async function CarePage() {
   ]);
 
   return (
-    <Container className="mt-10 max-md:mt-5">
+    <Container className="mt-10 @max-md:mt-5">
       <ChildCareNavigation currentPage="care" />
       <CareActionMenu />
       <CareCalendar initialCareRecords={careRecords} initialGrowthRecords={growthRecords} />

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { AlbumResponseDto } from "@/lib/api-client/gen";
+import { cn } from "@/utils/cn";
 
 type Props = {
   album: AlbumResponseDto;
@@ -50,9 +51,10 @@ export const AlbumsGridSlide = ({ album }: Props) => {
         <Image
           src={url ?? "/images/no-thumbnail.png"}
           alt=""
-          className={`absolute top-0 right-0 bottom-0 left-0 aspect-square transition-all duration-700 group-hover:scale-110 ${
-            index === activeIndex ? "opacity-100" : "opacity-0"
-          }`}
+          className={cn(
+            "absolute top-0 right-0 bottom-0 left-0 aspect-square transition-all duration-700 group-hover:scale-110",
+            index !== activeIndex && "opacity-0",
+          )}
           width={245}
           height={245}
           key={url}

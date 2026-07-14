@@ -95,12 +95,12 @@ export const SharingGroupListItem = ({ users, sharingGroup }: Props) => {
   };
 
   return (
-    <div className="border-brown-dark/50 border-t px-8 py-4 max-lg:px-4 max-md:flex-col max-md:items-start max-md:px-5">
+    <div className="border-brown-dark/50 border-t px-8 py-4 @max-lg:px-4 @max-md:flex-col @max-md:items-start @max-md:px-5">
       <div>
         <div className="flex items-center justify-between">
-          <div className="flex items-center max-md:flex-col max-md:items-start">
-            <p className="w-25 shrink-0 max-md:text-[13px]">{sharingGroup.name}</p>
-            <div className="ml-8 flex flex-wrap gap-x-6 gap-y-2 max-md:mt-3 max-md:ml-0 max-md:gap-x-3">
+          <div className="flex items-center @max-md:flex-col @max-md:items-start">
+            <p className="w-25 shrink-0 @max-md:text-[13px]">{sharingGroup.name}</p>
+            <div className="ml-8 flex flex-wrap gap-x-6 gap-y-2 @max-md:mt-3 @max-md:ml-0 @max-md:gap-x-3">
               {sharingGroup.members.map((member) => (
                 <div className="flex items-center gap-2" key={member.userId}>
                   <div className="h-10 w-10 shrink-0 rounded-full bg-[linear-gradient(100deg,#FFC0AB_35%,#FFF829_65%)] p-px">
@@ -112,15 +112,15 @@ export const SharingGroupListItem = ({ users, sharingGroup }: Props) => {
                       className="aspect-square h-full w-full rounded-full object-cover"
                     />
                   </div>
-                  <p className="max-md:text-[13px]">{member.displayName}</p>
+                  <p className="@max-md:text-[13px]">{member.displayName}</p>
                 </div>
               ))}
             </div>
           </div>
-          <div className="flex shrink-0 gap-5 max-md:mt-3 max-md:ml-auto">
+          <div className="flex shrink-0 gap-5 @max-md:mt-3 @max-md:ml-auto">
             {!isOpen && (
               <button
-                className="cursor-pointer text-sm underline transition-all hover:opacity-70 max-md:text-[10px]"
+                className="cursor-pointer text-sm underline transition-all hover:opacity-70 @max-md:text-[10px]"
                 onClick={() => setIsOpen(true)}
                 disabled={isPending}
               >
@@ -129,7 +129,7 @@ export const SharingGroupListItem = ({ users, sharingGroup }: Props) => {
             )}
 
             <button
-              className="text-warning cursor-pointer text-sm underline transition-all hover:opacity-70 max-md:text-[10px] dark:font-medium"
+              className="text-warning cursor-pointer text-sm underline transition-all hover:opacity-70 @max-md:text-[10px] dark:font-medium"
               onClick={() => setIsDeleteConfirm(true)}
               disabled={isPending}
             >
@@ -170,7 +170,7 @@ export const SharingGroupListItem = ({ users, sharingGroup }: Props) => {
                     className="aspect-square h-full w-full rounded-full object-cover"
                   />
                 </div>
-                <p className="max-md:text-xs">{user.displayName}</p>
+                <p className="@max-md:text-xs">{user.displayName}</p>
               </label>
             ))}
           </div>

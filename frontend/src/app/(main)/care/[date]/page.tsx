@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 
-import { isAdminUser } from "@/features/auth";
+import { isAdminUser, isEasyMode } from "@/features/auth";
 import { CareTimeLine } from "@/features/care/components/CareTimeLine";
 
 type Props = {
@@ -8,10 +8,10 @@ type Props = {
 };
 
 export default async function CareDatePage({ params }: Readonly<Props>) {
-  const [isAdmin, paramsData] = await Promise.all([isAdminUser(), params]);
+  const [isAdmin, isEasy, paramsData] = await Promise.all([isAdminUser(), isEasyMode(), params]);
 
-  // 管理者でなければ404表示
-  if (!isAdmin) notFound();
+  // 管理者以外 or かんたんモードであれば04表示
+  if (!isAdmin || isEasy) notFound();
 
   const date = paramsData.date;
 

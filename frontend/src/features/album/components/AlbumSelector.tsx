@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import { AlbumResponseDto } from "@/lib/api-client/gen";
+import { cn } from "@/utils/cn";
 
 import arrow from "../assets/arrow.svg";
 
@@ -8,24 +9,38 @@ import { AlbumAddForm } from "./AlbumAddForm";
 
 type Props = {
   isAdmin: boolean;
-  // 表示するアルバム一覧
+  isEasy: boolean;
   albums: AlbumResponseDto[];
-  // アルバム選択時のコールバック
   onAlbumSelect: (albumId: number) => void;
-  // 現在選択されているアルバムID
   selectedAlbumId?: number;
 };
 
-export const AlbumSelector = ({ isAdmin, albums, onAlbumSelect, selectedAlbumId }: Props) => {
+export const AlbumSelector = ({
+  isAdmin,
+  isEasy,
+  albums,
+  onAlbumSelect,
+  selectedAlbumId,
+}: Props) => {
   return (
     <div>
-      <p className="max-md:text-[13px]">アルバム</p>
+      <p className={cn("@max-md:text-[13px]", isEasy && "font-medium @max-md:text-[16px]")}>
+        アルバム
+      </p>
 
       {/* アルバム選択 */}
       {albums.length > 0 ? (
-        <div className="border-line-gray bg-light-dark relative mt-2 h-12 w-115 max-w-full rounded-sm border max-md:h-9">
+        <div
+          className={cn(
+            "border-line-gray bg-light-dark relative mt-2 h-12 w-115 max-w-full rounded-sm border @max-md:h-9",
+            isEasy && "@max-md:h-12",
+          )}
+        >
           <select
-            className="focus:outline-brown-light bg-light-dark h-full w-full appearance-none px-4 max-md:px-3 max-md:text-[13px] dark:outline-none"
+            className={cn(
+              "focus:outline-brown-light bg-light-dark h-full w-full appearance-none px-4 @max-md:px-3 @max-md:text-[13px] dark:outline-none",
+              isEasy && "font-medium @max-md:text-[16px]",
+            )}
             onChange={(e) => onAlbumSelect(Number(e.target.value))}
             value={selectedAlbumId ?? ""}
           >
@@ -45,10 +60,10 @@ export const AlbumSelector = ({ isAdmin, albums, onAlbumSelect, selectedAlbumId 
           />
         </div>
       ) : (
-        <p className="mt-5 mr-10 text-sm max-md:mt-3 max-md:text-xs">アルバムがありません</p>
+        <p className="mt-5 mr-10 text-sm @max-md:mt-3 @max-md:text-xs">アルバムがありません</p>
       )}
 
-      {isAdmin && <AlbumAddForm />}
+      {isAdmin && !isEasy && <AlbumAddForm />}
     </div>
   );
 };

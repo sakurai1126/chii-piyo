@@ -37,10 +37,10 @@ export const NewAlbumEdit = () => {
   return (
     <>
       <AccordionContent isOpen={isAlbumEdit}>
-        <p className="mt-3 font-medium max-md:text-[13px]">新規アルバムの追加</p>
+        <p className="mt-3 font-medium @max-md:text-[13px]">新規アルバムの追加</p>
 
-        <div className="bg-background-normal border-brown-dark mt-3 rounded-lg border px-8 py-4 max-md:mt-3">
-          <p className="max-md:text-[13px]">アルバムの名前</p>
+        <div className="bg-background-normal border-brown-dark mt-3 rounded-lg border px-8 py-4 @max-md:mt-3">
+          <p className="@max-md:text-[13px]">アルバムの名前</p>
           <input
             className="border-line-gray focus:outline-brown-light bg-light-dark mt-2 block h-10 w-full max-w-90 rounded-sm border px-2.5 dark:outline-none"
             onChange={(e) => setNewAlbumName(e.target.value)}
@@ -60,7 +60,7 @@ export const NewAlbumEdit = () => {
       </AccordionContent>
       <AccordionContent isOpen={!isAlbumEdit}>
         <Button
-          className="mt-5 ml-auto block max-md:mx-auto max-md:w-30"
+          className="mt-5 ml-auto block @max-md:mx-auto @max-md:w-30"
           onClick={() => setIsAlbumEdit(true)}
         >
           新規追加

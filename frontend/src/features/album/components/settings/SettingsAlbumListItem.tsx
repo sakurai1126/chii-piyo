@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { toast } from "@/components/ui/Toast";
 import { AlbumResponseDto } from "@/lib/api-client/gen";
+import { cn } from "@/utils/cn";
 import { formatJapaneseDateNonTime } from "@/utils/date";
 
 import { deleteAlbumAction } from "../../actions/deleteAlbumAction";
@@ -72,11 +73,14 @@ export const SettingsAlbumListItem = ({ album, index }: Props) => {
   return (
     <>
       <div
-        className={`px-8 py-4 max-lg:px-4 max-md:px-5 ${index > 0 ? "border-brown-dark/50 border-t" : ""}`}
+        className={cn(
+          "px-8 py-4 @max-lg:px-4 @max-md:px-5",
+          index > 0 && "border-brown-dark/50 border-t",
+        )}
       >
-        <div className="flex items-center justify-between max-md:flex-col max-md:items-start">
-          <div className="flex w-full items-center justify-between max-md:flex-col max-md:items-start">
-            <div className="flex items-start gap-8 max-md:gap-4">
+        <div className="flex items-center justify-between @max-md:flex-col @max-md:items-start">
+          <div className="flex w-full items-center justify-between @max-md:flex-col @max-md:items-start">
+            <div className="flex items-start gap-8 @max-md:gap-4">
               <Image
                 src={album.coverMediaUrls[0] ?? "/images/no-image.svg"}
                 alt=""
@@ -85,20 +89,20 @@ export const SettingsAlbumListItem = ({ album, index }: Props) => {
                 className="aspect-square object-cover"
               />
               <div className="grid gap-1">
-                <p className="max-md:text-[13px]">アルバム名 : {album.title}</p>
-                <p className="text-sm max-md:text-[10px]">
+                <p className="@max-md:text-[13px]">アルバム名 : {album.title}</p>
+                <p className="text-sm @max-md:text-[10px]">
                   作成日 : {formatJapaneseDateNonTime(album.createdAt)}
                 </p>
                 <div className="flex gap-2">
-                  <p className="text-sm max-md:text-[10px]">写真 : {album.photoCount}</p>
-                  <p className="text-sm max-md:text-[10px]">動画 : {album.videoCount}</p>
+                  <p className="text-sm @max-md:text-[10px]">写真 : {album.photoCount}</p>
+                  <p className="text-sm @max-md:text-[10px]">動画 : {album.videoCount}</p>
                 </div>
               </div>
             </div>
-            <div className="flex shrink-0 gap-5 max-md:ml-auto">
+            <div className="flex shrink-0 gap-5 @max-md:ml-auto">
               {!isEditAreaOpen && (
                 <button
-                  className="cursor-pointer text-sm underline transition-all hover:opacity-70 max-md:text-[10px]"
+                  className="cursor-pointer text-sm underline transition-all hover:opacity-70 @max-md:text-[10px]"
                   onClick={() => setIsEditAreaOpen(true)}
                   disabled={isPending}
                 >
@@ -107,7 +111,7 @@ export const SettingsAlbumListItem = ({ album, index }: Props) => {
               )}
 
               <button
-                className="text-warning cursor-pointer text-sm underline transition-all hover:opacity-70 max-md:text-[10px] dark:font-medium"
+                className="text-warning cursor-pointer text-sm underline transition-all hover:opacity-70 @max-md:text-[10px] dark:font-medium"
                 onClick={() => setIsDeleteConfirm(true)}
                 disabled={isPending}
               >

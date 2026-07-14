@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { createContext, useCallback, useEffect, useState } from "react";
 import { RemoveScroll } from "react-remove-scroll";
 
+import { cn } from "@/utils/cn";
+
 // 子コンポーネントから「閉じる」を呼ぶためのContext
 const ModalCloseContext = createContext<() => void>(() => {});
 
@@ -34,7 +36,11 @@ export const Modal = ({ children, className }: Readonly<Props>) => {
           transition={{ duration: 0.3 }}
         >
           <div
-            className={`${isReturning ? "animate-fade-out" : "animate-fade-in"} bg-modal-back fixed top-0 left-0 z-100 h-full w-full overflow-y-auto backdrop-blur-[7.5px] ${className}`}
+            className={cn(
+              "bg-modal-back fixed top-0 left-0 z-100 h-full w-full overflow-y-auto backdrop-blur-[7.5px]",
+              isReturning ? "animate-fade-out" : "animate-fade-in",
+              className,
+            )}
           >
             {children}
           </div>

@@ -47,7 +47,7 @@
 | email | VARCHAR(255) | NO | - | UK | メールアドレス |
 | user_icon_key | VARCHAR(500) | YES | NULL | | プロフィール画像URL |
 | is_dark_mode | BOOLEAN | NO | FALSE | | ダークモードフラグ |
-| is_easy_mode | BOOLEAN | NO | FALSE | | 簡易閲覧モードフラグ |
+| is_easy_mode | BOOLEAN | NO | FALSE | | かんたんモードフラグ |
 | role | VARCHAR(20) | NO | 'VIEWER' | | 権限ロール ADMIN:管理者 VIEWER:閲覧者 |
 | created_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 作成日時 |
 | updated_at | TIMESTAMPTZ | NO | CURRENT_TIMESTAMP | | 更新日時 |

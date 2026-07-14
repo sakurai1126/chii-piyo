@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+import { cn } from "@/utils/cn";
+
 // トーストの種別
 export type ToastType = "success" | "error";
 
@@ -78,7 +80,12 @@ export default function Toast() {
         return (
           <div
             key={item.id}
-            className={`flex items-center gap-3 rounded-xl px-4 py-3 shadow-lg transition-all duration-400 max-md:min-w-60 ${item.closing ? "translate-y-2 opacity-0" : "translate-y-0 opacity-100"} ${item.type === "success" ? "bg-success" : ""} ${item.type === "error" ? "bg-warning-back" : ""}`}
+            className={cn(
+              "flex translate-y-0 items-center gap-3 rounded-xl px-4 py-3 opacity-100 shadow-lg transition-all duration-400 max-md:min-w-60",
+              item.closing && "translate-y-2 opacity-0",
+              item.type === "success" && "bg-success",
+              item.type === "error" && "bg-warning-back",
+            )}
           >
             {/* メッセージ */}
             <p className="text-sm text-white">{item.message}</p>

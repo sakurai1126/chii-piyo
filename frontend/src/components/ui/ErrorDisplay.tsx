@@ -1,14 +1,19 @@
 import Image from "next/image";
 
+import { cn } from "@/utils/cn";
+
 type Props = {
   variant: "layout" | "main";
 };
 
 export const ErrorDisplay = ({ variant }: Props) => {
   return (
-    <div className={`${variant === "layout" ? "grid h-screen place-content-center" : ""}`}>
+    <div className={cn(variant === "layout" && "grid h-screen place-content-center")}>
       <div
-        className={`flex items-center justify-center gap-10 max-md:flex-col-reverse max-md:gap-3 ${variant === "main" ? "mt-8 max-md:mt-15" : ""}`}
+        className={cn(
+          "flex items-center justify-center gap-10 max-md:flex-col-reverse max-md:gap-3",
+          variant === "main" && "mt-8 max-md:mt-15",
+        )}
       >
         <h1 className="mt-7 text-6xl font-medium max-md:mt-0 max-md:text-[40px]">500</h1>
         <Image src="/images/error.png" alt="" width={230} height={146} className="max-md:w-38" />

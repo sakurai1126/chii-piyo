@@ -1,8 +1,8 @@
 import Container from "@/components/layout/Container";
-import PageTitle from "@/components/ui/PageTitle";
+import { PageTitle } from "@/components/ui/PageTitle";
 import { AddMediaAlbum } from "@/features/album/components/AddMediaAlbum";
 import { getAlbum } from "@/features/album/server";
-import { isAdminUser } from "@/features/auth";
+import { isAdminUser, isEasyMode } from "@/features/auth";
 import { getUsers } from "@/features/auth/actions/getUsers";
 import { MediaFilter, MediaListSection } from "@/features/media";
 import { getMediaList } from "@/features/media/server";
@@ -15,8 +15,9 @@ type Props = {
 
 export default async function AlbumDetailPage({ params }: Readonly<Props>) {
   const { id } = await params;
-  const [isAdmin, initialData, users, tags, sharingGroups, album] = await Promise.all([
+  const [isAdmin, isEasy, initialData, users, tags, sharingGroups, album] = await Promise.all([
     isAdminUser(),
+    isEasyMode(),
     getMediaList({ offset: 0, limit: 12, albumId: Number(id) }),
     getUsers(),
     getTags(),
@@ -25,20 +26,26 @@ export default async function AlbumDetailPage({ params }: Readonly<Props>) {
   ]);
 
   return (
-    <Container className="mt-20 max-md:mt-5">
-      <PageTitle text={`アルバム - ${album.title}`} />
+    <Container className="mt-20 @max-md:mt-5">
+      <PageTitle isEasy={isEasy} text={`アルバム - ${album.title}`} />
 
       {initialData.totalCount > 0 ? (
         <>
           {/* 絞り込みUI */}
-          <MediaFilter tags={tags} sharingGroups={sharingGroups} />
+          <MediaFilter isEasy={isEasy} tags={tags} sharingGroups={sharingGroups} />
 
           {/* メディア追加UI */}
-          <AddMediaAlbum tags={tags} sharingGroups={sharingGroups} albumId={Number(id)} />
+          <AddMediaAlbum
+            isEasy={isEasy}
+            tags={tags}
+            sharingGroups={sharingGroups}
+            albumId={Number(id)}
+          />
 
           {/* 一括編集UI+メディアグリッド */}
           <MediaListSection
             isAdmin={isAdmin}
+            isEasy={isEasy}
             initialData={initialData}
             users={users}
             tags={tags}
@@ -49,7 +56,12 @@ export default async function AlbumDetailPage({ params }: Readonly<Props>) {
       ) : (
         <>
           {/* メディア追加UI */}
-          <AddMediaAlbum tags={tags} sharingGroups={sharingGroups} albumId={Number(id)} />
+          <AddMediaAlbum
+            isEasy={isEasy}
+            tags={tags}
+            sharingGroups={sharingGroups}
+            albumId={Number(id)}
+          />
           <p className="py-20 text-center font-medium">アルバムにメディアが追加されていません</p>
         </>
       )}

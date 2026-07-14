@@ -126,8 +126,43 @@
   --color-dark-video-back: #121b1f;
   --color-dark-calender: #090a2b40;
 
+  /* かんたんモード */
+  --color-menu-home-bg: #fff3e0;
+  --color-menu-home-border: #db9c26;
+
+  --color-menu-image-bg: #eef9fc;
+  --color-menu-image-border: #26b5db;
+
+  --color-menu-video-bg: #f1fcee;
+  --color-menu-video-border: #4adb26;
+
+  --color-menu-album-bg: #fdf3dc;
+  --color-menu-album-border: #6f4000;
+
+  --color-menu-favorite-bg: #fcf0ee;
+  --color-menu-favorite-border: #db5926;
+
+  --color-menu-graph-bg: #fffdcf;
+  --color-menu-graph-border: #d1cb32;
+
+  --color-menu-first-bg: #d2f3d5;
+  --color-menu-first-border: #759c68;
+
+  --color-menu-word-bg: #cceff7;
+  --color-menu-word-border: #026f8c;
+
+  --color-menu-settings-bg: #eeeeee;
+  --color-menu-settings-border: #555555;
+
   /* アニメーション */
   --animate-fade-slideshow: fade-slideshow 30s infinite;
+
+  /* コンテナクエリのブレークポイントを画面幅のブレークポイントと統一する */
+  --container-sm: 40rem; /* 640px */
+  --container-md: 48rem; /* 768px */
+  --container-lg: 64rem; /* 1024px */
+  --container-xl: 80rem; /* 1280px */
+  --container-2xl: 96rem; /* 1536px */
 }
 
 html {

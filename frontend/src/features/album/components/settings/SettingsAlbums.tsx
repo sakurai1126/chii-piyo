@@ -10,7 +10,7 @@ type Props = {
 export const SettingsAlbums = ({ albums }: Props) => {
   return (
     <>
-      <div className="bg-background-normal dark:bg-background-accent border-brown-dark mt-4 rounded-lg border py-2 max-md:mt-3">
+      <div className="bg-background-normal dark:bg-background-accent border-brown-dark mt-4 rounded-lg border py-2 @max-md:mt-3">
         {albums.length > 0 ? (
           albums.map((album, index) => (
             <SettingsAlbumListItem album={album} index={index} key={album.id} />

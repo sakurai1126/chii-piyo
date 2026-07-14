@@ -1,7 +1,7 @@
 import Container from "@/components/layout/Container";
-import PageTitle from "@/components/ui/PageTitle";
+import { PageTitle } from "@/components/ui/PageTitle";
 import { getAlbums } from "@/features/album/server";
-import { getCurrentUser, isAdminUser } from "@/features/auth";
+import { getCurrentUser, isAdminUser, isEasyMode } from "@/features/auth";
 import { getUsers } from "@/features/auth/actions/getUsers";
 import {
   Account,
@@ -15,10 +15,12 @@ import {
 } from "@/features/settings";
 import { getAllSharingGroups } from "@/features/sharing/server";
 import { getTags } from "@/features/tag/server";
+import { cn } from "@/utils/cn";
 
 export default async function SettingsPage() {
-  const [isAdmin, currentUser, users, tags, albums] = await Promise.all([
+  const [isAdmin, isEasy, currentUser, users, tags, albums] = await Promise.all([
     isAdminUser(),
+    isEasyMode(),
     getCurrentUser(),
     getUsers(),
     getTags(),
@@ -28,23 +30,27 @@ export default async function SettingsPage() {
   const sharingGroups = isAdmin ? await getAllSharingGroups() : undefined;
 
   return (
-    <Container className="mt-20 max-md:mt-5">
-      <div className="relative flex items-start gap-10 max-lg:gap-5 max-md:flex-col">
+    <Container className={cn("mt-20 @max-md:mt-5", isEasy && "px-5")}>
+      <div className="relative flex items-start gap-10 @max-lg:gap-5 @max-md:flex-col">
         {/* サイドバー */}
-        <Sidebar isAdmin={isAdmin} />
+        {!isEasy && <Sidebar isAdmin={isAdmin} />}
+
         <div className="w-full">
           {/* タイトル */}
-          <PageTitle text="設定" />
+          <PageTitle isEasy={isEasy} text="設定" />
           {/* プロフィール */}
-          <Profile currentUser={currentUser} />
+          <Profile isEasy={isEasy} currentUser={currentUser} />
           {/* メンバー一覧 */}
-          <Members
-            isAdmin={isAdmin}
-            currentUser={currentUser}
-            users={users}
-            sharingGroups={sharingGroups}
-          />
-          {isAdmin && (
+          {!isEasy && (
+            <Members
+              isAdmin={isAdmin}
+              currentUser={currentUser}
+              users={users}
+              sharingGroups={sharingGroups}
+            />
+          )}
+
+          {isAdmin && !isEasy && (
             <>
               {/* タグ */}
               <Tags tags={tags} />
@@ -56,9 +62,9 @@ export default async function SettingsPage() {
           )}
 
           {/* 表示モード */}
-          <DisplayMode currentUser={currentUser} />
+          <DisplayMode isEasy={isEasy} currentUser={currentUser} />
           {/* アカウント */}
-          <Account />
+          <Account isEasy={isEasy} />
         </div>
       </div>
     </Container>

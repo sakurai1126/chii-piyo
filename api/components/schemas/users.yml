@@ -50,7 +50,7 @@ UserResponseDto:
       example: false
     isEasyMode:
       type: boolean
-      description: 簡易閲覧モードフラグ
+      description: かんたんモードフラグ
       example: false
     role:
       type: string
@@ -89,7 +89,7 @@ UserUpdateRequestDto:
       description: ダークモードフラグ
     isEasyMode:
       type: boolean
-      description: 簡易閲覧モードフラグ
+      description: かんたんモードフラグ
 
 # ユーザー権限更新スキーマ（管理者限定で権限操作）
 UserRoleUpdateRequestDto:

@@ -79,7 +79,7 @@ export const MilkAction = () => {
   };
 
   return (
-    <div className="max-md:w-[calc(50%-8px)]">
+    <div className="@max-md:w-[calc(50%-8px)]">
       <CareActionModal
         title="ミルク"
         isOpen={isOpen}
@@ -94,7 +94,7 @@ export const MilkAction = () => {
         saveAction={saveAction}
         isPending={isPending}
       >
-        <div className="mt-4 flex items-center gap-4 max-md:justify-center">
+        <div className="mt-4 flex items-center gap-4 @max-md:justify-center">
           <button
             className="cursor-pointer transition-all hover:opacity-70"
             onClick={milkMinus}
@@ -114,10 +114,10 @@ export const MilkAction = () => {
             <Image src={plus} alt="" width={26} height={26} />
           </button>
         </div>
-        <div className="my-5 flex gap-3 max-md:gap-2">
+        <div className="my-5 flex gap-3 @max-md:gap-2">
           {amountMlsSelect.map((value) => (
             <button
-              className="bg-accent-orange/10 border-brown-dark text-brown-dark h-8 w-20 cursor-pointer rounded-sm border font-medium transition-all hover:opacity-70 max-md:text-sm"
+              className="bg-accent-orange/10 border-brown-dark text-brown-dark h-8 w-20 cursor-pointer rounded-sm border font-medium transition-all hover:opacity-70 @max-md:text-sm"
               onClick={() => setAmountMl(value)}
               disabled={isPending}
               key={value}
@@ -129,18 +129,18 @@ export const MilkAction = () => {
       </CareActionModal>
 
       <button
-        className="border-milk-border group bg-translucent w-full cursor-pointer rounded-lg border p-5 backdrop-blur-[7.5px] transition-all max-md:rounded-4xl max-md:p-4"
+        className="border-milk-border group bg-translucent w-full cursor-pointer rounded-lg border p-5 backdrop-blur-[7.5px] transition-all @max-md:rounded-4xl @max-md:p-4"
         onClick={openModal}
         disabled={isPending}
       >
         <Image
           src={milkIcon}
           alt=""
-          className="mx-auto transition-all group-hover:scale-110 max-md:h-20 max-md:w-20"
+          className="mx-auto transition-all group-hover:scale-110 @max-md:h-20 @max-md:w-20"
           width={100}
           height={100}
         />
-        <p className="text-milk-text mt-3 text-lg font-medium max-md:text-[16px]">ミルク</p>
+        <p className="text-milk-text mt-3 text-lg font-medium @max-md:text-[16px]">ミルク</p>
       </button>
     </div>
   );

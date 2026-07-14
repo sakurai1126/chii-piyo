@@ -5,6 +5,7 @@ import "@/styles/globals.css";
 import ThemeCookieSetter from "@/components/layout/ThemeCookieSetter";
 import Providers from "@/components/layout/providers";
 import Toast from "@/components/ui/Toast";
+import { cn } from "@/utils/cn";
 import { getTheme } from "@/utils/getTheme";
 
 // 本文フォントとして使用
@@ -39,7 +40,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   return (
     <html
       lang="ja"
-      className={`${mPlusRounded1c.variable} ${zenMaruGothic.variable} ${isDarkMode ? "dark" : ""}`}
+      className={cn(mPlusRounded1c.variable, zenMaruGothic.variable, isDarkMode && "dark")}
     >
       <body>
         {/* ユーザーログイン済かつCookieが消えていた場合、Cookieを再セット */}

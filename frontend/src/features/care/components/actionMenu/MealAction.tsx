@@ -57,7 +57,7 @@ export const MealAction = () => {
   };
 
   return (
-    <div className="max-md:w-[calc(50%-8px)]">
+    <div className="@max-md:w-[calc(50%-8px)]">
       <CareActionModal
         title="食事"
         isOpen={isOpen}
@@ -74,18 +74,18 @@ export const MealAction = () => {
       />
 
       <button
-        className="border-meal-border group bg-translucent w-full cursor-pointer rounded-lg border p-5 backdrop-blur-[7.5px] transition-all max-md:rounded-4xl max-md:p-4"
+        className="border-meal-border group bg-translucent w-full cursor-pointer rounded-lg border p-5 backdrop-blur-[7.5px] transition-all @max-md:rounded-4xl @max-md:p-4"
         onClick={openModal}
         disabled={isPending}
       >
         <Image
           src={mealIcon}
           alt=""
-          className="mx-auto transition-all group-hover:scale-110 max-md:h-20 max-md:w-20"
+          className="mx-auto transition-all group-hover:scale-110 @max-md:h-20 @max-md:w-20"
           width={100}
           height={100}
         />
-        <p className="text-meal-text mt-3 text-lg font-medium max-md:text-[16px]">食事</p>
+        <p className="text-meal-text mt-3 text-lg font-medium @max-md:text-[16px]">食事</p>
       </button>
     </div>
   );

@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { cn } from "@/utils/cn";
+
 type Props = {
   totalCount: number;
   currentPage: number;
@@ -19,7 +21,7 @@ export const TrashPagination = ({ totalCount, currentPage, limit }: Props) => {
 
       {/* ページ番号リンク */}
       {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-        <Link key={page} href={`?page=${page}`} className={page === currentPage ? "underline" : ""}>
+        <Link key={page} href={`?page=${page}`} className={cn(page === currentPage && "underline")}>
           {page}
         </Link>
       ))}

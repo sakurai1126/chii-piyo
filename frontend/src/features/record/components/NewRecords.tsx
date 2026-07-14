@@ -5,6 +5,7 @@ import { useState } from "react";
 
 import { AccordionContent } from "@/components/ui/AccordionContent";
 import { SharingGroupResponseDto, TagResponseDto } from "@/lib/api-client/gen";
+import { cn } from "@/utils/cn";
 
 import arrow from "../assets/arrow.svg";
 import plusIcon from "../assets/plus.svg";
@@ -22,14 +23,22 @@ export const NewRecords = ({ tags, sharingGroups, variant }: Props) => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   return (
-    <div className="border-brown-dark bg-background-normal w-full rounded-lg border border-dashed max-md:mt-6">
+    <div
+      className={cn(
+        "border-brown-dark bg-background-normal w-full rounded-lg border border-dashed",
+        variant === "first" && "@max-md:mt-6",
+      )}
+    >
       {/* 開くボタン */}
       <AccordionContent isOpen={!isMenuOpen}>
         <button
-          className={`hover:bg-background-normal bg-green-back dark:bg-background-accent flex w-full cursor-pointer items-center justify-center gap-3 rounded-lg transition-all ${variant === "word" ? "h-30" : "h-20"}`}
+          className={cn(
+            "hover:bg-background-normal bg-green-back dark:bg-background-accent flex h-20 w-full cursor-pointer items-center justify-center gap-3 rounded-lg transition-all",
+            variant === "word" && "h-30",
+          )}
           onClick={() => setIsMenuOpen(true)}
         >
-          <p className="text-brown-light font-medium max-md:text-[13px]">
+          <p className="text-brown-light font-medium @max-md:text-[13px]">
             {variant === "first" && <>新しいはじめてを記録する</>}
             {variant === "word" && <>新しいことばを記録する</>}
           </p>
@@ -39,7 +48,7 @@ export const NewRecords = ({ tags, sharingGroups, variant }: Props) => {
 
       {/* 新規追加UI */}
       <AccordionContent isOpen={isMenuOpen}>
-        <div className="px-7 pt-7 max-md:px-4 max-md:pt-5">
+        <div className="px-7 pt-7 @max-md:px-4 @max-md:pt-5">
           <RecordEditMenu
             tags={tags}
             sharingGroups={sharingGroups}

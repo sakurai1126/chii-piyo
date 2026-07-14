@@ -2,16 +2,18 @@
 
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { MediaListResponseDto, UserResponseDto } from "@/lib/api-client/gen";
+import { cn } from "@/utils/cn";
 
 import { useInfiniteMediaList } from "../../hooks/useInfiniteMediaList";
 import { MediaListItem } from "../list/MediaListItem";
 
 type Props = {
+  isEasy: boolean;
   initialData: MediaListResponseDto;
   users: UserResponseDto[];
 };
 
-export const FavoriteMedia = ({ initialData, users }: Props) => {
+export const FavoriteMedia = ({ isEasy, initialData, users }: Props) => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isError, error } =
     useInfiniteMediaList({
       params: { isFavorite: true },
@@ -32,9 +34,14 @@ export const FavoriteMedia = ({ initialData, users }: Props) => {
   return (
     <>
       {/* メディアリスト */}
-      <div className="mt-15 grid grid-cols-4 gap-2 max-md:mt-2 max-md:ml-0 max-md:grid-cols-3 max-md:gap-0.5">
+      <div
+        className={cn(
+          "mt-15 grid grid-cols-4 gap-2 @max-md:mt-2 @max-md:ml-0 @max-md:grid-cols-3 @max-md:gap-0.5",
+          isEasy && "@max-md:mt-10 @max-md:grid-cols-2 @max-md:gap-2",
+        )}
+      >
         {flatItems.map((item) => (
-          <MediaListItem key={item.id} data={item} users={users} />
+          <MediaListItem key={item.id} isEasy={isEasy} data={item} users={users} />
         ))}
       </div>
 

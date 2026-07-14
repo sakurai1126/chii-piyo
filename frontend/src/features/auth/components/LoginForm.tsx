@@ -15,7 +15,7 @@ export const LoginForm = ({ logoutMessage }: Readonly<Props>) => {
 
   return (
     <form action={formAction} className="mx-auto max-w-135">
-      <label htmlFor="email" className="text-sm max-md:text-xs">
+      <label htmlFor="email" className="text-sm @max-md:text-xs">
         メールアドレス
       </label>
       <input
@@ -24,9 +24,9 @@ export const LoginForm = ({ logoutMessage }: Readonly<Props>) => {
         name="email"
         required
         autoComplete="email"
-        className="focus:outline-brown-light bg-login-form border-line-gray mt-1 mb-5 block h-12 w-full rounded-sm border px-3 autofill:shadow-[inset_0_0_0_30px_var(--color-login-form)] max-md:mb-4 max-md:h-10 dark:outline-none"
+        className="focus:outline-brown-light bg-login-form border-line-gray mt-1 mb-5 block h-12 w-full rounded-sm border px-3 autofill:shadow-[inset_0_0_0_30px_var(--color-login-form)] @max-md:mb-4 @max-md:h-10 dark:outline-none"
       />
-      <label htmlFor="password" className="text-sm max-md:text-xs">
+      <label htmlFor="password" className="text-sm @max-md:text-xs">
         パスワード
       </label>
       <input
@@ -35,12 +35,12 @@ export const LoginForm = ({ logoutMessage }: Readonly<Props>) => {
         name="password"
         required
         autoComplete="current-password"
-        className="focus:outline-brown-light bg-login-form border-line-gray mt-1 block h-12 w-full rounded-sm border px-3 autofill:shadow-[inset_0_0_0_30px_var(--color-login-form)] max-md:h-10 dark:outline-none"
+        className="focus:outline-brown-light bg-login-form border-line-gray mt-1 block h-12 w-full rounded-sm border px-3 autofill:shadow-[inset_0_0_0_30px_var(--color-login-form)] @max-md:h-10 dark:outline-none"
       />
       <button
         type="submit"
         disabled={isPending}
-        className="bg-brown-light border-brown-middle hover:text-brown-middle hover:bg-white-back mx-auto mt-10 block h-12 w-60 cursor-pointer rounded-lg border text-white transition max-md:mt-8 max-md:h-9 max-md:w-45 max-md:text-sm"
+        className="bg-brown-light border-brown-middle hover:text-brown-middle hover:bg-white-back mx-auto mt-10 block h-12 w-60 cursor-pointer rounded-lg border text-white transition @max-md:mt-8 @max-md:h-9 @max-md:w-45 @max-md:text-sm"
       >
         {isPending ? "ログイン中..." : "ログイン"}
       </button>

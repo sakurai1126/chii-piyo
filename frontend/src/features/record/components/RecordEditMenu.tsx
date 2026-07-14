@@ -48,24 +48,24 @@ export const RecordEditMenu = ({
   return (
     <>
       {/* 記録タイトルと日付入力 */}
-      <div className="flex gap-7 max-md:flex-col max-md:gap-4">
+      <div className="flex gap-7 @max-md:flex-col @max-md:gap-4">
         <div className="grid gap-2">
-          <p className="max-md:text-[13px]">
+          <p className="@max-md:text-[13px]">
             {(variant === "newWordRecord" || variant === "editWordRecord") && <>おぼえたことば</>}
             {(variant === "newFirstRecord" || variant === "editFirstRecord") && <>記録内容</>}
           </p>
           <input
             type="text"
-            className="focus:outline-brown-light border-line-gray bg-light-dark h-12 w-100 rounded-sm border px-2 max-md:h-9 max-md:w-full max-md:max-w-100 max-md:text-[13px] dark:outline-none"
+            className="focus:outline-brown-light border-line-gray bg-light-dark h-12 w-100 rounded-sm border px-2 @max-md:h-9 @max-md:w-full @max-md:max-w-100 @max-md:text-[13px] dark:outline-none"
             value={data.title}
             onChange={(e) => setData({ ...data, title: e.target.value })}
           />
         </div>
         <div className="grid gap-2">
-          <p className="max-md:text-[13px]">日付</p>
+          <p className="@max-md:text-[13px]">日付</p>
           <input
             type="date"
-            className="focus:outline-brown-light border-line-gray bg-light-dark h-12 w-40 rounded-sm border px-2 max-md:h-9 max-md:text-[13px] dark:outline-none"
+            className="focus:outline-brown-light border-line-gray bg-light-dark h-12 w-40 rounded-sm border px-2 @max-md:h-9 @max-md:text-[13px] dark:outline-none"
             value={data.recordedDate}
             onChange={(e) => setData({ ...data, recordedDate: e.target.value })}
           />
@@ -73,15 +73,15 @@ export const RecordEditMenu = ({
       </div>
 
       {/* コメント入力 */}
-      <p className="mt-5 max-md:text-[13px]">コメント</p>
+      <p className="mt-5 @max-md:text-[13px]">コメント</p>
       <textarea
-        className="focus:outline-brown-light border-line-gray bg-light-dark mt-2 h-25 w-full rounded-sm border p-2 max-md:h-20 max-md:text-[13px] dark:outline-none"
+        className="focus:outline-brown-light border-line-gray bg-light-dark mt-2 h-25 w-full rounded-sm border p-2 @max-md:h-20 @max-md:text-[13px] dark:outline-none"
         value={data.comment}
         onChange={(e) => setData({ ...data, comment: e.target.value })}
       ></textarea>
 
       {/* メディア追加 */}
-      <div className="mt-7 flex gap-5 max-md:mt-5 max-md:flex-col">
+      <div className="mt-7 flex gap-5 @max-md:mt-5 @max-md:flex-col">
         <AccentButton
           variant="button"
           className="shrink-0"
@@ -96,7 +96,7 @@ export const RecordEditMenu = ({
               <Image
                 src={item.url}
                 alt=""
-                className="rounded-sm max-md:h-12 max-md:w-12"
+                className="rounded-sm @max-md:h-12 @max-md:w-12"
                 width={80}
                 height={80}
               />
@@ -112,7 +112,7 @@ export const RecordEditMenu = ({
       </div>
 
       {/* ボタン */}
-      <div className="mt-5 ml-auto flex w-fit gap-5 max-md:mt-7">
+      <div className="mt-5 ml-auto flex w-fit gap-5 @max-md:mt-7">
         <Button variant="cancel" onClick={cancelEdit}>
           キャンセル
         </Button>

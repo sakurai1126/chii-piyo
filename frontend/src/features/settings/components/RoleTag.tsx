@@ -6,6 +6,7 @@ import { useState, useTransition } from "react";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { toast } from "@/components/ui/Toast";
 import { UserResponseDto, UserRoleUpdateRequestDtoRoleEnum } from "@/lib/api-client/gen";
+import { cn } from "@/utils/cn";
 
 import { updateUserRoleAction } from "../actions/updateUserRoleAction";
 import roleChangeIcon from "../assets/role-change.svg";
@@ -51,14 +52,18 @@ export const RoleTag = ({ isAdmin, currentUser, user }: Props) => {
         <>
           {/* 自分の場合変更不可にして表示のみ */}
           {user.role === "ADMIN" && currentUser.id === user.id && (
-            <p className={`text-accent-pink bg-accent-pink-back ${baseClass}`}>管理者</p>
+            <p className={cn("text-accent-pink bg-accent-pink-back", baseClass)}>管理者</p>
           )}
 
           {/* 他の管理者の場合変更可能 */}
           {user.role === "ADMIN" && currentUser.id !== user.id && (
             <div>
               <button
-                className={`text-accent-pink border-accent-pink bg-accent-pink-back hover:bg-warning ${baseClass} ${buttonClass}`}
+                className={cn(
+                  "text-accent-pink border-accent-pink bg-accent-pink-back hover:bg-warning",
+                  baseClass,
+                  buttonClass,
+                )}
                 onClick={() => setIsConfirmOpen(true)}
                 disabled={isPending}
               >
@@ -87,7 +92,11 @@ export const RoleTag = ({ isAdmin, currentUser, user }: Props) => {
           {user.role === "VIEWER" && (
             <div>
               <button
-                className={`text-brown-middle border-brown-middle bg-accent-orange-back hover:bg-brown-dark ${baseClass} ${buttonClass}`}
+                className={cn(
+                  "text-brown-middle border-brown-middle bg-accent-orange-back hover:bg-brown-dark",
+                  baseClass,
+                  buttonClass,
+                )}
                 onClick={() => setIsConfirmOpen(true)}
                 disabled={isPending}
               >
@@ -118,11 +127,11 @@ export const RoleTag = ({ isAdmin, currentUser, user }: Props) => {
       {!isAdmin && (
         <>
           {user.role === "ADMIN" && (
-            <p className={`text-accent-pink bg-accent-pink-back ${baseClass}`}>管理者</p>
+            <p className={cn("text-accent-pink bg-accent-pink-back", baseClass)}>管理者</p>
           )}
 
           {user.role === "VIEWER" && (
-            <p className={`text-brown-middle bg-accent-orange-back ${baseClass}`}>閲覧者</p>
+            <p className={cn("text-brown-middle bg-accent-orange-back", baseClass)}>閲覧者</p>
           )}
         </>
       )}

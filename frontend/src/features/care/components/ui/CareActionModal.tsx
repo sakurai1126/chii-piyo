@@ -44,10 +44,10 @@ export const CareActionModal = ({
         {isOpen && (
           <Modal>
             <ActionDialog onClose={isPending ? undefined : onCancel}>
-              <div className="flex items-start gap-10 max-md:flex-col max-md:gap-4">
-                <Image src={icon} alt="" className="max-md:mx-auto" width={100} height={100} />
-                <div className="w-full pr-10 max-md:pr-0">
-                  <p className="font-medium max-md:text-center">{title}</p>
+              <div className="flex items-start gap-10 @max-md:flex-col @max-md:gap-4">
+                <Image src={icon} alt="" className="@max-md:mx-auto" width={100} height={100} />
+                <div className="w-full pr-10 @max-md:pr-0">
+                  <p className="font-medium @max-md:text-center">{title}</p>
                   {children}
                   <input
                     type="text"

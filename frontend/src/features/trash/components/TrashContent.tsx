@@ -75,18 +75,18 @@ export const TrashContent = ({ trashItems }: Props) => {
 
   return (
     <>
-      <div className="mt-10 flex gap-10 max-md:mt-8 max-md:flex-col-reverse max-md:gap-6">
+      <div className="mt-10 flex gap-10 @max-md:mt-8 @max-md:flex-col-reverse @max-md:gap-6">
         <label htmlFor="allCheck" className="flex cursor-pointer items-center gap-3">
           <input
             type="checkbox"
             id="allCheck"
-            className="accent-accent-pink h-4.5 w-4.5 max-md:h-4 max-md:w-4"
+            className="accent-accent-pink h-4.5 w-4.5 @max-md:h-4 @max-md:w-4"
             checked={allChecked}
             onChange={(e) => (e.target.checked ? allCheck() : allClear())}
           />
-          <p className="text-lg max-md:text-[13px]">すべて選択</p>
+          <p className="text-lg @max-md:text-[13px]">すべて選択</p>
         </label>
-        <div className="flex gap-3 max-md:flex-col">
+        <div className="flex gap-3 @max-md:flex-col">
           <Button variant="cancel" className="w-fit px-4" onClick={restoreConfirmOpen}>
             選択したメディアを復元
           </Button>
@@ -95,7 +95,7 @@ export const TrashContent = ({ trashItems }: Props) => {
           </Button>
         </div>
       </div>
-      <div className="mt-10 grid gap-5 max-md:mt-8">
+      <div className="mt-10 grid gap-5 @max-md:mt-8">
         {trashItems.items.map((trashItem) => (
           <TrashItem
             key={trashItem.id}

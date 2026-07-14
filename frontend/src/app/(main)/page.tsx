@@ -1,6 +1,6 @@
 import Container from "@/components/layout/Container";
 import { getAlbums } from "@/features/album/server";
-import { isAdminUser } from "@/features/auth";
+import { isAdminUser, isEasyMode } from "@/features/auth";
 import { getUsers } from "@/features/auth/actions/getUsers";
 import { getAndBuildGraphData } from "@/features/graph";
 import { getMediaList } from "@/features/media/server";
@@ -8,23 +8,31 @@ import { TopContents, TopMedia } from "@/features/top";
 
 export default async function TopPage() {
   const isAdmin = await isAdminUser();
-  const [favoriteData, mediaData, users, { careRecords, growthRecords, wordRecords }, albums] =
-    await Promise.all([
-      getMediaList({ offset: 0, limit: 6, isFavorite: true }),
-      getMediaList({ offset: 0, limit: 6 }),
-      getUsers(),
-      getAndBuildGraphData(isAdmin),
-      getAlbums(),
-    ]);
+  const [
+    isEasy,
+    favoriteData,
+    mediaData,
+    users,
+    { careRecords, growthRecords, wordRecords },
+    albums,
+  ] = await Promise.all([
+    isEasyMode(),
+    getMediaList({ offset: 0, limit: 6, isFavorite: true }),
+    getMediaList({ offset: 0, limit: 6 }),
+    getUsers(),
+    getAndBuildGraphData(isAdmin),
+    getAlbums(),
+  ]);
 
   return (
     <>
       {/* メディア */}
-      <TopMedia favoriteData={favoriteData} mediaData={mediaData} users={users} />
+      <TopMedia isEasy={isEasy} favoriteData={favoriteData} mediaData={mediaData} users={users} />
 
       <Container>
         <TopContents
           isAdmin={isAdmin}
+          isEasy={isEasy}
           careRecords={careRecords}
           growthRecords={growthRecords}
           wordRecords={wordRecords}

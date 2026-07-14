@@ -4,11 +4,13 @@ import { Dispatch, SetStateAction, useId } from "react";
 
 import { FavoriteMediaList } from "@/features/favorite/components/FavoriteMediaList";
 import { MediaResponseDto, UserResponseDto } from "@/lib/api-client/gen";
+import { cn } from "@/utils/cn";
 
 import comment from "../../assets/comment.svg";
 import videoIcon from "../../assets/video-icon.svg";
 
 type Props = {
+  isEasy: boolean;
   data: MediaResponseDto;
   isSelectionMode?: boolean;
   users: UserResponseDto[];
@@ -17,6 +19,7 @@ type Props = {
 };
 
 export const MediaListItem = ({
+  isEasy,
   data,
   isSelectionMode,
   users,
@@ -41,7 +44,10 @@ export const MediaListItem = ({
         alt=""
         width={230}
         height={230}
-        className={`absolute h-full w-full object-cover transition-all duration-500 ${isSelectionMode ? "" : "group-hover:scale-110"}`}
+        className={cn(
+          "absolute h-full w-full object-cover transition-all duration-500",
+          !isSelectionMode && "group-hover:scale-110",
+        )}
       />
 
       {data.mediaType === "VIDEO" && (
@@ -60,28 +66,32 @@ export const MediaListItem = ({
           id={uid}
           aria-label="選択"
           type="checkbox"
-          className="accent-accent-pink absolute top-2 left-2 z-1 h-5 w-5 max-md:top-1 max-md:left-1 max-md:h-4 max-md:w-4"
+          className="accent-accent-pink absolute top-2 left-2 z-1 h-5 w-5 @max-md:top-1 @max-md:left-1 @max-md:h-4 @max-md:w-4"
           checked={selectedMedia?.includes(data.id)}
           onChange={handleChange}
         />
       )}
 
-      {/* お気に入り */}
-      <FavoriteMediaList media={data} users={users} />
+      {!isEasy && (
+        <>
+          {/* お気に入り */}
+          <FavoriteMediaList media={data} users={users} />
 
-      {/* コメント */}
-      {data.commentCount ? (
-        <div className="border-brown-dark bg-accent-orange-back absolute right-2 bottom-2 flex items-center gap-1 rounded-2xl border px-2 py-0.5 max-md:right-1 max-md:bottom-1">
-          <Image
-            src={comment}
-            alt="comment"
-            width={11}
-            height={11}
-            className="mt-0.5 max-md:h-4 max-md:w-4"
-          />
-          <p className="text-brown-dark text-xs max-md:text-[10px]">{data.commentCount}</p>
-        </div>
-      ) : null}
+          {/* コメント */}
+          {data.commentCount ? (
+            <div className="border-brown-dark bg-accent-orange-back absolute right-2 bottom-2 flex items-center gap-1 rounded-2xl border px-2 py-0.5 @max-md:right-1 @max-md:bottom-1">
+              <Image
+                src={comment}
+                alt="comment"
+                width={11}
+                height={11}
+                className="mt-0.5 @max-md:h-4 @max-md:w-4"
+              />
+              <p className="text-brown-dark text-xs @max-md:text-[10px]">{data.commentCount}</p>
+            </div>
+          ) : null}
+        </>
+      )}
     </div>
   );
 

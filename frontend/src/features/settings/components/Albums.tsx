@@ -12,23 +12,23 @@ type Props = {
 
 export const Albums = ({ albums }: Props) => {
   return (
-    <div className="mt-10 max-md:mt-8" id="albums">
+    <div className="mt-10 @max-md:mt-8" id="albums">
       <div className="flex items-center gap-2">
         <Image
           src={icon}
           alt=""
           width={30}
           height={30}
-          className="max-md:h-6 max-md:w-6 dark:hidden"
+          className="max-md:w-6 @max-md:h-6 dark:hidden"
         />
         <Image
           src={whiteIcon}
           alt=""
           width={30}
           height={30}
-          className="hidden max-md:h-6 max-md:w-6 dark:block"
+          className="hidden @max-md:h-6 @max-md:w-6 dark:block"
         />
-        <p className="font-medium max-md:text-[13px]">アルバムの設定</p>
+        <p className="font-medium @max-md:text-[13px]">アルバムの設定</p>
       </div>
       <SettingsAlbums albums={albums} />
     </div>

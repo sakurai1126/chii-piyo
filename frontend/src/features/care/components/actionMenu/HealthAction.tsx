@@ -63,7 +63,7 @@ export const HealthAction = () => {
   };
 
   return (
-    <div className="max-md:w-[calc(50%-8px)]">
+    <div className="@max-md:w-[calc(50%-8px)]">
       <CareActionModal
         title="体調"
         isOpen={isOpen}
@@ -78,14 +78,14 @@ export const HealthAction = () => {
         saveAction={saveAction}
         isPending={isPending}
       >
-        <div className="my-4 flex items-end gap-2 max-md:justify-center">
+        <div className="my-4 flex items-end gap-2 @max-md:justify-center">
           <span className="">体温</span>
           <input
             type="number"
             min={34}
             max={42}
             step={0.1}
-            className="border-line-gray bg-light-dark h-10 rounded-sm border pl-2 text-2xl font-medium max-md:text-xl"
+            className="border-line-gray bg-light-dark h-10 rounded-sm border pl-2 text-2xl font-medium @max-md:text-xl"
             value={temperature}
             onChange={(e) => setTemperature(Number(e.target.value))}
             disabled={isPending}
@@ -94,18 +94,18 @@ export const HealthAction = () => {
         </div>
       </CareActionModal>
       <button
-        className="border-health-border group bg-translucent w-full cursor-pointer rounded-lg border p-5 backdrop-blur-[7.5px] transition-all max-md:rounded-4xl max-md:p-4"
+        className="border-health-border group bg-translucent w-full cursor-pointer rounded-lg border p-5 backdrop-blur-[7.5px] transition-all @max-md:rounded-4xl @max-md:p-4"
         onClick={openModal}
         disabled={isPending}
       >
         <Image
           src={healthIcon}
           alt=""
-          className="mx-auto transition-all group-hover:scale-110 max-md:h-20 max-md:w-20"
+          className="mx-auto transition-all group-hover:scale-110 @max-md:h-20 @max-md:w-20"
           width={100}
           height={100}
         />
-        <p className="text-health-text mt-3 text-lg font-medium max-md:text-[16px]">体調</p>
+        <p className="text-health-text mt-3 text-lg font-medium @max-md:text-[16px]">体調</p>
       </button>
     </div>
   );

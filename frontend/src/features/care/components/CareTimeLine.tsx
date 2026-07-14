@@ -35,12 +35,12 @@ export const CareTimeLine = async ({ date }: Props) => {
   const growthRecords = await getGrowthRecords({ startDate, endDate });
 
   return (
-    <Container className="pt-20 pb-30 max-md:pt-10 max-md:pb-20">
-      <div className="pl-11 max-md:pl-8">
-        <p className="mb-1 text-lg font-medium max-md:text-sm">
+    <Container className="pt-20 pb-30 @max-md:pt-10 @max-md:pb-20">
+      <div className="pl-11 @max-md:pl-8">
+        <p className="mb-1 text-lg font-medium @max-md:text-sm">
           {formatJapaneseDateNonTime(startDate)}のタイムライン
         </p>
-        <a href={"/care"} className="ml-auto text-sm underline max-md:text-xs">
+        <a href={"/care"} className="ml-auto text-sm underline @max-md:text-xs">
           一覧に戻る
         </a>
       </div>

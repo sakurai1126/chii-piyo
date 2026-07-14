@@ -21,11 +21,11 @@ export const SharingGroupsSelector = ({
 
   return (
     <>
-      <p className="mt-8 max-md:mt-4 max-md:text-[13px]">共有範囲を編集</p>
+      <p className="mt-8 @max-md:mt-4 @max-md:text-[13px]">共有範囲を編集</p>
 
       {/* 共有グループ0件の表示 */}
       {sharingGroups.length === 0 && (
-        <p className="mt-3 mr-10 text-sm max-md:text-xs">共有グループがありません</p>
+        <p className="mt-3 mr-10 text-sm @max-md:text-xs">共有グループがありません</p>
       )}
 
       {/* 共有グループ選択 */}
@@ -40,7 +40,7 @@ export const SharingGroupsSelector = ({
             onChange={() => onSharingGroupSelect(undefined)}
             checked={selectedGroupId === undefined}
           />
-          <p className="max-md:text-[13px]">全員に公開</p>
+          <p className="@max-md:text-[13px]">全員に公開</p>
         </label>
         {/* 登録されている共有グループ */}
         {sharingGroups?.map((group, index) => (
@@ -53,7 +53,7 @@ export const SharingGroupsSelector = ({
               onChange={() => onSharingGroupSelect(group.id)}
               checked={selectedGroupId === group.id}
             />
-            <p className="max-md:text-[13px]">{group.name}</p>
+            <p className="@max-md:text-[13px]">{group.name}</p>
           </label>
         ))}
       </div>

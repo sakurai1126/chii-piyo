@@ -18,6 +18,7 @@ import { MultiEdit } from "./MultiEdit";
 
 type Props = {
   isAdmin: boolean;
+  isEasy: boolean;
   initialData: MediaListResponseDto;
   users: UserResponseDto[];
   tags: TagResponseDto[];
@@ -27,6 +28,7 @@ type Props = {
 
 export const MediaListSection = ({
   isAdmin,
+  isEasy,
   initialData,
   users,
   tags,
@@ -76,7 +78,7 @@ export const MediaListSection = ({
   return (
     <>
       {/* 一括編集UI */}
-      {isAdmin && (
+      {isAdmin && !isEasy && (
         <MultiEdit
           isOpen={isSelectionMode}
           setIsOpen={setIsSelectionMode}
@@ -99,6 +101,7 @@ export const MediaListSection = ({
 
       {/* メディア一覧 */}
       <MediaList
+        isEasy={isEasy}
         initialData={initialData}
         isSelectionMode={isSelectionMode}
         params={params}

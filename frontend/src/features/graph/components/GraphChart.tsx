@@ -36,13 +36,13 @@ export const GraphChart = ({ data, variant }: Props) => {
   };
 
   return (
-    <div className="border-brown-dark bg-translucent rounded-lg border px-6 py-5 backdrop-blur-[7.5px] max-md:overflow-hidden max-md:px-0 max-md:py-3">
-      <h3 className="mb-4 text-sm max-md:mb-2 max-md:pl-3 max-md:text-xs">
+    <div className="border-brown-dark bg-translucent rounded-lg border px-6 py-5 backdrop-blur-[7.5px] @max-md:overflow-hidden @max-md:px-0 @max-md:py-3">
+      <h3 className="mb-4 text-sm @max-md:mb-2 @max-md:pl-3 @max-md:text-xs">
         {displayInfo[variant].title}
       </h3>
-      <div className="w-full max-md:overflow-x-scroll max-md:px-3">
+      <div className="w-full @max-md:overflow-x-scroll @max-md:px-3">
         <div
-          className="w-full **:outline-none! max-md:min-w-200"
+          className="w-full **:outline-none! @max-md:min-w-200"
           style={{ height: displayInfo[variant].graphHeight }}
         >
           {/* 親要素の大きさに合わせてグラフを自動リサイズ */}

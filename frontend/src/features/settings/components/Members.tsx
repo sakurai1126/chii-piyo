@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import { SharingGroupResponseDto, UserResponseDto } from "@/lib/api-client/gen";
+import { cn } from "@/utils/cn";
 
 import icon from "../assets/members.svg";
 import whiteIcon from "../assets/white/members.svg";
@@ -21,28 +22,31 @@ export const Members = async ({ isAdmin, currentUser, users, sharingGroups }: Pr
   });
 
   return (
-    <div className="mt-10 max-md:mt-8" id="members">
+    <div className="mt-10 @max-md:mt-8" id="members">
       <div className="flex items-center gap-2">
         <Image
           src={icon}
           alt=""
           width={30}
           height={30}
-          className="max-md:h-6 max-md:w-6 dark:hidden"
+          className="max-md:w-6 @max-md:h-6 dark:hidden"
         />
         <Image
           src={whiteIcon}
           alt=""
           width={30}
           height={30}
-          className="hidden max-md:h-6 max-md:w-6 dark:block"
+          className="hidden @max-md:h-6 @max-md:w-6 dark:block"
         />
-        <p className="font-medium max-md:text-[13px]">メンバー一覧</p>
+        <p className="font-medium @max-md:text-[13px]">メンバー一覧</p>
       </div>
-      <div className="bg-background-normal dark:bg-background-accent border-brown-dark mt-4 rounded-lg border max-md:mt-3">
+      <div className="bg-background-normal dark:bg-background-accent border-brown-dark mt-4 rounded-lg border @max-md:mt-3">
         {users.map((user, index) => (
           <div
-            className={`py-4 pr-5 pl-7 max-md:p-5 ${index > 0 ? "border-brown-dark/50 border-t" : ""}`}
+            className={cn(
+              "py-4 pr-5 pl-7 @max-md:p-5",
+              index > 0 && "border-brown-dark/50 border-t",
+            )}
             key={user.id}
           >
             <div className="flex justify-between">
@@ -59,14 +63,14 @@ export const Members = async ({ isAdmin, currentUser, users, sharingGroups }: Pr
                   </div>
                 </div>
                 <div className="grid gap-1">
-                  <p className="text-sm max-md:text-[13px]">
+                  <p className="text-sm @max-md:text-[13px]">
                     表示名：
-                    <br className="md:hidden" />
+                    <br className="@md:hidden" />
                     {user.displayName}
                   </p>
-                  <p className="text-sm max-md:hidden">メールアドレス：{user.email}</p>
+                  <p className="text-sm @max-md:hidden">メールアドレス：{user.email}</p>
                   {isAdmin && (
-                    <p className="text-sm max-md:hidden">
+                    <p className="text-sm @max-md:hidden">
                       閲覧可能な共有範囲：
                       {user.scopeSharingGroups.map((sharingGroupId, index) => {
                         return (

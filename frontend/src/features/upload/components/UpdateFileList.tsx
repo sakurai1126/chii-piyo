@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/Button";
 import { AlbumResponseDto, SharingGroupResponseDto, TagResponseDto } from "@/lib/api-client/gen";
+import { cn } from "@/utils/cn";
 
 import { UploadMedia, UploadMetadata } from "../types";
 
@@ -9,6 +10,7 @@ import { UploadFile } from "./UploadFile";
 
 type Props = {
   isAdmin: boolean;
+  isEasy: boolean;
   items: UploadMedia[];
   onRemove: (index: number) => void;
   onRemoveAll: () => void;
@@ -22,6 +24,7 @@ type Props = {
 
 export const UpdateFileList = ({
   isAdmin,
+  isEasy,
   items,
   onRemove,
   onRemoveAll,
@@ -47,14 +50,27 @@ export const UpdateFileList = ({
   const targetVideoCount = targets.filter((item) => item.file.type.startsWith("video/")).length;
 
   return (
-    <div className="mt-15 max-md:mt-10">
-      <div className="flex items-start justify-between">
-        <p className="text-xl font-medium max-md:text-sm">アップロードするファイル</p>
-        <p className="text-note-gray pt-0.5 text-right max-md:text-xs">
+    <div className="mt-15 @max-md:mt-10">
+      <div
+        className={cn("flex items-start justify-between", isEasy && "flex-col items-center gap-3")}
+      >
+        <p className={cn("text-xl font-medium @max-md:text-sm", isEasy && "@max-md:text-[18px]")}>
+          アップロードするファイル
+        </p>
+        <p
+          className={cn(
+            "pt-0.5 text-right @max-md:text-xs",
+            isEasy ? "@max-md:text-[16px]" : "text-note-gray",
+          )}
+        >
           写真 : {totalImageCount}枚 + 動画 : {totalVideoCount}本
-          <br />
-          合計サイズ :{" "}
-          {totalSizeInKB > 1024 ? `${totalSizeInMB.toFixed(1)}MB` : `${totalSizeInKB.toFixed(0)}KB`}
+          <span hidden={isEasy}>
+            <br />
+            合計サイズ :{" "}
+            {totalSizeInKB > 1024
+              ? `${totalSizeInMB.toFixed(1)}MB`
+              : `${totalSizeInKB.toFixed(0)}KB`}
+          </span>
         </p>
       </div>
       <div className="mt-5 grid gap-5">
@@ -63,6 +79,7 @@ export const UpdateFileList = ({
           <UploadFile
             key={item.id}
             isAdmin={isAdmin}
+            isEasy={isEasy}
             item={item}
             onRemove={() => onRemove(index)}
             tags={tags}
@@ -72,7 +89,12 @@ export const UpdateFileList = ({
           />
         ))}
       </div>
-      <div className="border-t-line-gray mt-15 flex items-center justify-between border-t pt-10">
+      <div
+        className={cn(
+          "border-t-line-gray mt-15 flex items-center justify-between border-t pt-10 @max-md:flex-col @max-md:gap-6",
+          isEasy && "font-medium",
+        )}
+      >
         <p>
           {targetImageCount > 0 &&
             targetVideoCount > 0 &&
@@ -89,6 +111,7 @@ export const UpdateFileList = ({
           )}
 
           <Button
+            isEasy={isEasy}
             variant="primary"
             onClick={onUpload}
             disabled={isUploading || targets.length === 0}
