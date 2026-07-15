@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { FavoriteMediaDetail } from "@/features/favorite";
@@ -25,6 +26,7 @@ type Props = {
 };
 
 export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
+  const router = useRouter();
   const [modeExpansion, setModeExpansion] = useState(false);
   return (
     <div className="w-125 shrink-0 @max-xl:w-110 @max-md:w-full">
@@ -43,6 +45,7 @@ export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
             width={media.width ?? 500}
             height={media.height ?? 500}
             className="h-screen w-full object-contain"
+            priority
           />
         </div>
       )}
@@ -52,9 +55,10 @@ export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
           <Image
             src={media.presignedUrl || "/images/media-error.png"}
             alt={media.originalFilename ?? ""}
-            width={media.width ?? 500}
-            height={media.height ?? 500}
+            width={500}
+            height={media.height && media.width ? (media.height / media.width) * 500 : 500}
             className="h-auto w-full"
+            priority
           />
         )}
         {media.mediaType == "VIDEO" && (
@@ -66,7 +70,9 @@ export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
           (isModal ? (
             <Link
               href={`/media/${media.nextMedia.id}`}
-              className="border-line-gray absolute top-0 bottom-0 left-5 my-auto block h-fit w-fit cursor-pointer rounded-full border bg-white/40 p-1 transition-all hover:opacity-50 @max-md:top-auto @max-md:-bottom-13 @max-md:left-3 @max-md:hidden"
+              className="border-brown-middle bg-brown-back absolute top-0 bottom-0 left-5 my-auto block h-fit w-fit cursor-pointer rounded-full border p-1 transition-all hover:opacity-50 @max-md:top-auto @max-md:-bottom-13 @max-md:left-3 @max-md:hidden"
+              replace={true}
+              scroll={false}
             >
               <Image
                 src={leftArrow}
@@ -77,9 +83,10 @@ export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
               />
             </Link>
           ) : (
+            // モーダル表示状態じゃない場合現在の詳細の上にモーダル表示されるためフルロードで遷移
             <a
               href={`/media/${media.nextMedia.id}`}
-              className="border-line-gray absolute top-0 bottom-0 left-5 my-auto block h-fit w-fit cursor-pointer rounded-full border bg-white/40 p-1 transition-all hover:opacity-50 @max-md:top-auto @max-md:-bottom-13 @max-md:left-3 @max-md:hidden"
+              className="border-brown-middle bg-brown-back absolute top-0 bottom-0 left-5 my-auto block h-fit w-fit cursor-pointer rounded-full border p-1 transition-all hover:opacity-50 @max-md:top-auto @max-md:-bottom-13 @max-md:left-3 @max-md:hidden"
             >
               <Image
                 src={leftArrow}
@@ -97,7 +104,9 @@ export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
           (isModal ? (
             <Link
               href={`/media/${media.previousMedia.id}`}
-              className="border-line-gray absolute top-0 right-5 bottom-0 my-auto block h-fit w-fit cursor-pointer rounded-full border bg-white/40 p-1 transition-all hover:opacity-50 @max-md:top-auto @max-md:-bottom-13 @max-md:left-3 @max-md:hidden"
+              className="border-brown-middle bg-brown-back absolute top-0 right-5 bottom-0 my-auto block h-fit w-fit cursor-pointer rounded-full border p-1 transition-all hover:opacity-50 @max-md:top-auto @max-md:-bottom-13 @max-md:left-3 @max-md:hidden"
+              replace={true}
+              scroll={false}
             >
               <Image
                 src={rightArrow}
@@ -108,9 +117,10 @@ export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
               />
             </Link>
           ) : (
+            // モーダル表示状態じゃない場合現在の詳細の上にモーダル表示されるためフルロードで遷移
             <a
               href={`/media/${media.previousMedia.id}`}
-              className="border-line-gray absolute top-0 right-5 bottom-0 my-auto block h-fit w-fit cursor-pointer rounded-full border bg-white/40 p-1 transition-all hover:opacity-50 @max-md:top-auto @max-md:-bottom-13 @max-md:left-3 @max-md:hidden"
+              className="border-brown-middle bg-brown-back absolute top-0 right-5 bottom-0 my-auto block h-fit w-fit cursor-pointer rounded-full border p-1 transition-all hover:opacity-50 @max-md:top-auto @max-md:-bottom-13 @max-md:left-3 @max-md:hidden"
             >
               <Image
                 src={rightArrow}
@@ -187,12 +197,12 @@ export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
       )}
       <div className="@max-md:mt-5 @max-md:flex @max-md:items-center @max-md:justify-between @max-md:px-5">
         {isModal ? (
-          <a
-            href={"/media"}
+          <button
+            onClick={() => router.back()}
             className="border-line-gray bg-cancel-back hover:bg-cancel-hover text-black-text mx-auto mt-10 grid h-10 w-35 place-content-center rounded-lg border transition-all @max-md:m-0 @max-md:h-9 @max-md:w-30 @max-md:text-xs"
           >
-            メディア一覧
-          </a>
+            戻る
+          </button>
         ) : (
           <Link
             href="/media"
