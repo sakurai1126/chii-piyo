@@ -1,7 +1,7 @@
 import { cn } from "@/utils/cn";
 
 type Props = {
-  isEasy: boolean;
+  isEasy?: boolean;
   onChange: (date: string) => void;
   value?: string;
 };
