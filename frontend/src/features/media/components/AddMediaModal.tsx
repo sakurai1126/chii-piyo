@@ -3,7 +3,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { AnimatePresence } from "motion/react";
 import Image from "next/image";
-import React, { Dispatch, SetStateAction, useId, useState, useTransition } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useId, useState, useTransition } from "react";
 
 import { Modal } from "@/components/layout/Modal";
 import { Button } from "@/components/ui/Button";
@@ -122,6 +122,11 @@ export const AddMediaModal = ({
       initialData: undefined,
     });
 
+  useEffect(() => {
+    if (isError) {
+      toast.error(error?.message ?? "読み込みに失敗しました");
+    }
+  }, [isError, error?.message]);
   // フェッチされた全ページのデータからitemsのみを抜き取って1つの配列にまとめる
   const items = data?.pages.flatMap((page) => page.items) ?? [];
 
@@ -383,13 +388,6 @@ export const AddMediaModal = ({
                   <div ref={loadMoreRef} className="h-1" />
                   {isFetchingNextPage && (
                     <p className="text-note-gray py-4 text-center text-sm">読み込み中...</p>
-                  )}
-
-                  {/* エラーメッセージ */}
-                  {isError && (
-                    <p className="text-warning py-4 text-center text-sm dark:font-medium">
-                      {error?.message ?? "読み込みに失敗しました"}
-                    </p>
                   )}
                 </div>
               </div>
