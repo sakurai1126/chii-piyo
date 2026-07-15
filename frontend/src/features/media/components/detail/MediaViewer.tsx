@@ -126,16 +126,16 @@ export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
           <>
             {/* 拡大 */}
             <button
-              className="absolute top-4 right-5 cursor-pointer transition-all hover:opacity-50 @max-md:hidden"
+              className="absolute top-4 right-5 cursor-pointer transition-all hover:opacity-70 @max-md:hidden"
               onClick={() => setModeExpansion(true)}
             >
-              <Image src={zoom} alt="" width={20} height={20} />
+              <Image src={zoom} alt="" width={30} height={30} />
             </button>
             {/* ダウンロード */}
             <a
               href={media.presignedUrl ?? "#"}
               download
-              className="absolute right-5 bottom-4 cursor-pointer transition-all hover:opacity-50 @max-md:right-3 @max-md:bottom-3"
+              className="absolute right-5 bottom-4 cursor-pointer transition-all hover:opacity-70 @max-md:right-3 @max-md:bottom-3"
             >
               <Image
                 src={download}
