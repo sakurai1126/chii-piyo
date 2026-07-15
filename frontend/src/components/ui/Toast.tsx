@@ -5,10 +5,10 @@ import { useEffect, useState } from "react";
 import { cn } from "@/utils/cn";
 
 // トーストの種別
-export type ToastType = "success" | "error";
+type ToastType = "success" | "error";
 
 // トーストのデータ型
-export type ToastItem = {
+type ToastItem = {
   id: string;
   type: ToastType;
   message: string;
