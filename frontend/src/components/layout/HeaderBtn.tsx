@@ -31,7 +31,15 @@ export const HeaderBtn = ({ isEasy, children }: Props) => {
   return (
     <>
       {/* 画面外クリックで閉じる処理 ▼ */}
-      {isOpen && <div className="fixed inset-0 z-90" onClick={() => setIsOpen(false)} />}
+      {isOpen && (
+        <button
+          type="button"
+          className="fixed inset-0 z-99 h-full w-full cursor-default bg-transparent"
+          onClick={() => setIsOpen(false)}
+          aria-label="メニューを閉じる"
+          tabIndex={-1}
+        />
+      )}
 
       <div
         className={cn(
