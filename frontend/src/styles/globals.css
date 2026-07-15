@@ -8,12 +8,12 @@
 
 /* 全体の変数定義 */
 :root {
-  --background: #ffffe7;
+  --background: #ffffef;
   --foreground: #333333;
   --translucent: #ffffff80;
   --background-normal: #ffffef;
   --background-accent: #fdf3dc;
-  --modal-back: #ffffffcc;
+  --modal-back: #ffffefcc;
   --light-dark: #ffffff;
   --line-gray: #cccccc;
   --cancel-back: #ffffff;
