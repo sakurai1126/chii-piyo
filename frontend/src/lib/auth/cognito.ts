@@ -1,5 +1,3 @@
-import { createHmac } from "node:crypto";
-
 import {
   CognitoIdentityProviderClient,
   InitiateAuthCommand,
@@ -21,23 +19,27 @@ const cognitoClient = new CognitoIdentityProviderClient({ region });
  * @param value ユーザーネームやユーザーIDなど、ハッシュ化の元となる値
  * @returns valueとクライアントIDを元にハッシュ化された値
  */
-export const calculateSecretHash = (value: string): string =>
-  createHmac("sha256", clientSecret)
-    .update(value + clientId)
-    .digest("base64");
+export const calculateSecretHash = async (value: string): Promise<string> => {
+  const encoder = new TextEncoder();
+  const keyData = encoder.encode(clientSecret);
+  const messageData = encoder.encode(value + clientId);
+  const cryptoKey = await crypto.subtle.importKey(
+    "raw",
+    keyData,
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const signature = await crypto.subtle.sign("HMAC", cryptoKey, messageData);
+  return btoa(String.fromCharCode(...new Uint8Array(signature)));
+};
 
-/**
- * ユーザー名・パスワードでCognitoに認証リクエストを送る
- * @param username ユーザーネーム
- * @param password パスワード
- * @returns Cognitoからの取得したトークン情報
- */
 export const signIn = async (
   username: string,
   password: string,
 ): Promise<InitiateAuthCommandOutput> => {
   try {
-    const secretHash = calculateSecretHash(username);
+    const secretHash = await calculateSecretHash(username);
 
     // Cognitoに送信するコマンドを作成
     const command = new InitiateAuthCommand({
@@ -70,7 +72,7 @@ export const refreshToken = async (
   sub: string,
 ): Promise<InitiateAuthCommandOutput> => {
   try {
-    const secretHash = calculateSecretHash(sub);
+    const secretHash = await calculateSecretHash(sub);
     const command = new InitiateAuthCommand({
       // リフレッシュトークンを使った認証方式を設定
       AuthFlow: AuthFlowType.REFRESH_TOKEN_AUTH,
@@ -78,6 +80,11 @@ export const refreshToken = async (
       AuthParameters: {
         REFRESH_TOKEN: refreshTokenValue,
         SECRET_HASH: secretHash,
+      },
+
+      // Next.jsのfetchキャッシュバグを回避するためのキャッシュバストパラメータ
+      ClientMetadata: {
+        timestamp: Date.now().toString(),
       },
     });
 

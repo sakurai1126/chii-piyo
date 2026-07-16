@@ -28,28 +28,12 @@ type Tokens = {
 export const setAuthCookies = async (tokens: Tokens): Promise<void> => {
   const cookieStore = await cookies();
 
-  // IDトークンの有効期限に合わせてCookieを管理
-  const decoded = decodeJwt(tokens.idToken);
+  // IDトークンとリフレッシュトークンの有効期限を30日間に設定
+  const maxAge = 60 * 60 * 24 * 30;
 
-  // Cognitoはexpを持つがdecoded.expは number | undefined なので、型ガードでnumberを保証する
-  if (!decoded.exp) throw new Error("JWTにexpクレームがありません");
-
-  // decoded.exp から現在時刻の秒数を引くことで、トークンが今から何秒後に切れるかを計算
-  const maxAge = decoded.exp - Math.floor(Date.now() / 1000);
-
-  // maxAge が 0 以下の場合はエラーにする
-  if (maxAge <= 0) throw new Error("IDトークンはすでに期限切れです");
-
-  cookieStore.set(ID_TOKEN_COOKIE, tokens.idToken, {
-    ...COOKIE_OPTIONS,
-    maxAge,
-  });
-
-  // リフレッシュトークンはCognitoの設定に合わせて30日に設定
-  cookieStore.set(REFRESH_TOKEN_COOKIE, tokens.refreshToken, {
-    ...COOKIE_OPTIONS,
-    maxAge: 60 * 60 * 24 * 30,
-  });
+  // IDトークンとリフレッシュトークンをCookieに保存
+  cookieStore.set(ID_TOKEN_COOKIE, tokens.idToken, { ...COOKIE_OPTIONS, maxAge });
+  cookieStore.set(REFRESH_TOKEN_COOKIE, tokens.refreshToken, { ...COOKIE_OPTIONS, maxAge });
 };
 
 /**
