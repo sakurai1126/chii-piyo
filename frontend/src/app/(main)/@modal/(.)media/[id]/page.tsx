@@ -1,4 +1,3 @@
-import { Modal } from "@/components/layout/Modal";
 import { MediaDetailContent } from "@/features/media/server";
 
 type Props = {
@@ -9,9 +8,5 @@ export default async function MediaDetailModal({ params }: Readonly<Props>) {
   const paramsData = await params;
   const id = paramsData.id;
 
-  return Number.isNaN(Number(id)) ? null : (
-    <Modal>
-      <MediaDetailContent id={id} isModal={true} />
-    </Modal>
-  );
+  return Number.isNaN(Number(id)) ? null : <MediaDetailContent id={id} isModal={true} />;
 }

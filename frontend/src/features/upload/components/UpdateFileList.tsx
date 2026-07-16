@@ -1,5 +1,6 @@
 "use client";
 
+import { AccentButton } from "@/components/ui/AccentButton";
 import { Button } from "@/components/ui/Button";
 import { AlbumResponseDto, SharingGroupResponseDto, TagResponseDto } from "@/lib/api-client/gen";
 import { cn } from "@/utils/cn";
@@ -106,19 +107,25 @@ export const UpdateFileList = ({
         <div className="flex gap-5">
           {!isUploading && (
             <Button variant="cancel" onClick={onRemoveAll}>
-              キャンセル
+              {targets.length > 0 ? "キャンセル" : "ファイルをクリア"}
             </Button>
           )}
-
-          <Button
-            isEasy={isEasy}
-            variant="primary"
-            onClick={onUpload}
-            disabled={isUploading || targets.length === 0}
-            disabledStyle={isUploading || targets.length === 0}
-          >
-            {isUploading ? "アップロード中..." : "アップロード"}
-          </Button>
+          {(isUploading || targets.length > 0) && (
+            <Button
+              isEasy={isEasy}
+              variant="primary"
+              onClick={onUpload}
+              disabled={isUploading || targets.length === 0}
+              disabledStyle={isUploading || targets.length === 0}
+            >
+              {isUploading ? "アップロード中..." : "アップロード"}
+            </Button>
+          )}
+          {!isUploading && targets.length === 0 && (
+            <AccentButton variant="link" href="/media">
+              メディア一覧
+            </AccentButton>
+          )}
         </div>
       </div>
     </div>

@@ -9,7 +9,7 @@ import { AlbumAddForm } from "./AlbumAddForm";
 
 type Props = {
   isAdmin: boolean;
-  isEasy: boolean;
+  isEasy?: boolean;
   albums: AlbumResponseDto[];
   onAlbumSelect: (albumId: number) => void;
   selectedAlbumId?: number;

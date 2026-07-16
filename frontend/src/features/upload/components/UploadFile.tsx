@@ -1,10 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 
 import { AccordionContent } from "@/components/ui/AccordionContent";
 import { DatePicker } from "@/components/ui/DatePicker";
+import { toast } from "@/components/ui/Toast";
 import { AlbumSelector } from "@/features/album";
 import { SharingGroupsSelector } from "@/features/sharing";
 import { TagSelector } from "@/features/tag";
@@ -56,6 +57,13 @@ export const UploadFile = ({
 
   // 動画かどうかの判定
   const isVideo = item.file.type.startsWith("video/");
+
+  // エラーメッセージの通知
+  useEffect(() => {
+    if (item.errorMessage) {
+      toast.error(item.errorMessage);
+    }
+  }, [item.errorMessage]);
 
   return (
     <div className="bg-background-normal border-brown-dark rounded-xl border px-5 pt-5">
@@ -112,10 +120,6 @@ export const UploadFile = ({
                   )}
                 </div>
               )}
-              {/* エラーメッセージ */}
-              {item.errorMessage && (
-                <p className="text-warning mt-1 text-xs dark:font-medium">{item.errorMessage}</p>
-              )}{" "}
             </div>
 
             {/* 削除ボタン - アップロード中は非表示 */}

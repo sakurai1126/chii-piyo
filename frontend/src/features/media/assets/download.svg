@@ -1,11 +1,7 @@
 <svg width="30" height="30" viewBox="0 0 30 30" fill="none"
   xmlns="http://www.w3.org/2000/svg">
-  <mask id="mask0_1199_23" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="30" height="30">
-    <rect width="30" height="30" fill="#D9D9D9"/>
-  </mask>
-  <g mask="url(#mask0_1199_23)">
-    <path d="M24.9999 14.8457V21.2762C25.0029 21.5954 24.9431 21.9121 24.8237 22.2081C24.7044 22.5042 24.5279 22.7739 24.3043 23.0017C24.0807 23.2296 23.8145 23.4111 23.5207 23.5361C23.227 23.661 22.9115 23.7269 22.5923 23.7299H7.40837C7.08587 23.727 6.76719 23.6599 6.47088 23.5325C6.17458 23.4052 5.90658 23.2201 5.68251 22.9882C5.45843 22.7562 5.28275 22.482 5.16571 22.1815C5.04867 21.8809 4.9926 21.5601 5.00078 21.2377V14.8457" stroke="#555555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M15 18.4225V6" stroke="#555555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M11.1621 14.8074L15.0004 18.4611L18.8387 14.8074" stroke="#555555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-  </g>
+  <path d="M8 0.5H22C26.1421 0.5 29.5 3.85786 29.5 8V22C29.5 26.1421 26.1421 29.5 22 29.5H8C3.85786 29.5 0.5 26.1421 0.5 22V8C0.5 3.85786 3.85786 0.5 8 0.5Z" fill="#D07800" stroke="#6F4000"/>
+  <path d="M22.9999 15.0767V20.2211C23.0023 20.4764 22.9545 20.7298 22.859 20.9666C22.7635 21.2035 22.6223 21.4192 22.4434 21.6015C22.2646 21.7838 22.0516 21.929 21.8166 22.029C21.5816 22.1289 21.3292 22.1816 21.0738 22.184H8.9267C8.6687 22.1817 8.41375 22.128 8.1767 22.0261C7.93966 21.9243 7.72527 21.7762 7.54601 21.5907C7.36675 21.4051 7.2262 21.1857 7.13257 20.9453C7.03894 20.7048 6.99408 20.4482 7.00063 20.1903V15.0767" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M15 17.938V8" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M11.9297 15.0457L15.0003 17.9686L18.071 15.0457" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

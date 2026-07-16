@@ -46,7 +46,7 @@ export default async function BackGround({ children }: Readonly<{ children: Reac
       </div>
 
       <div className={cn("@container", isEasy && "bg-background mx-auto max-w-125")}>
-        <div className="relative z-1 bg-[url('/images/bg-star.svg')] bg-contain bg-center @max-md:bg-[url('/images/bg-star-sp.svg')] dark:bg-[url('/images/bg-star-light.svg')] dark:@max-md:bg-[url('/images/bg-star-light-sp.svg')]">
+        <div className="relative z-1 bg-[url('/images/bg-star.svg')] bg-contain bg-top @max-md:bg-[url('/images/bg-star-sp.svg')] dark:bg-[url('/images/bg-star-light.svg')] dark:@max-md:bg-[url('/images/bg-star-light-sp.svg')]">
           {children}
         </div>
       </div>

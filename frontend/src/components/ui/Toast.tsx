@@ -5,10 +5,10 @@ import { useEffect, useState } from "react";
 import { cn } from "@/utils/cn";
 
 // トーストの種別
-export type ToastType = "success" | "error";
+type ToastType = "success" | "error";
 
 // トーストのデータ型
-export type ToastItem = {
+type ToastItem = {
   id: string;
   type: ToastType;
   message: string;
@@ -81,7 +81,7 @@ export default function Toast() {
           <div
             key={item.id}
             className={cn(
-              "flex translate-y-0 items-center gap-3 rounded-xl px-4 py-3 opacity-100 shadow-lg transition-all duration-400 max-md:min-w-60",
+              "mx-auto flex w-fit translate-y-0 items-center justify-center gap-3 rounded-xl px-4 py-3 opacity-100 shadow-lg transition-all duration-400 max-md:min-w-60",
               item.closing && "translate-y-2 opacity-0",
               item.type === "success" && "bg-success",
               item.type === "error" && "bg-warning-back",

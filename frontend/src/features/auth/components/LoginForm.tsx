@@ -1,6 +1,9 @@
 "use client";
 
-import { useActionState } from "react";
+import { useRouter } from "next/navigation";
+import { useActionState, useEffect } from "react";
+
+import { toast } from "@/components/ui/Toast";
 
 import { loginAction, type LoginState } from "../actions/login";
 
@@ -12,6 +15,22 @@ type Props = {
 
 export const LoginForm = ({ logoutMessage }: Readonly<Props>) => {
   const [state, formAction, isPending] = useActionState(loginAction, initialState);
+  const router = useRouter();
+
+  // ログアウト時トーストを表示
+  // リロード時に表示が繰り返されないようにURLから?logout=successを削除
+  useEffect(() => {
+    if (logoutMessage) {
+      toast.success("ログアウトしました");
+      router.replace("/login", { scroll: false });
+    }
+  }, [logoutMessage, router]);
+
+  useEffect(() => {
+    if (state.error) {
+      toast.error(state.error);
+    }
+  }, [state.error]);
 
   return (
     <form action={formAction} className="mx-auto max-w-135">
@@ -44,12 +63,6 @@ export const LoginForm = ({ logoutMessage }: Readonly<Props>) => {
       >
         {isPending ? "ログイン中..." : "ログイン"}
       </button>
-
-      {logoutMessage && <p className="text-success mt-4 text-center text-sm">ログアウトしました</p>}
-
-      {state.error && (
-        <p className="text-warning mt-4 text-center text-sm dark:font-medium">{state.error}</p>
-      )}
     </form>
   );
 };

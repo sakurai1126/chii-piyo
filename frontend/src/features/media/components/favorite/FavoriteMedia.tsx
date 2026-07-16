@@ -1,5 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
+
+import { toast } from "@/components/ui/Toast";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { MediaListResponseDto, UserResponseDto } from "@/lib/api-client/gen";
 import { cn } from "@/utils/cn";
@@ -19,6 +22,12 @@ export const FavoriteMedia = ({ isEasy, initialData, users }: Props) => {
       params: { isFavorite: true },
       initialData,
     });
+
+  useEffect(() => {
+    if (isError) {
+      toast.error(error?.message ?? "読み込みに失敗しました");
+    }
+  }, [isError, error?.message]);
 
   // スクロール時追加読み込みカスタムフック、発火位置に指定するrefを受け取る
   const loadMoreRef = useIntersectionObserver({
@@ -55,13 +64,6 @@ export const FavoriteMedia = ({ isEasy, initialData, users }: Props) => {
       <div ref={loadMoreRef} className="h-1" />
       {isFetchingNextPage && (
         <p className="text-note-gray py-4 text-center text-sm">読み込み中...</p>
-      )}
-
-      {/* エラーメッセージ */}
-      {isError && (
-        <p className="text-warning py-4 text-center text-sm dark:font-medium">
-          {error?.message ?? "読み込みに失敗しました"}
-        </p>
       )}
     </>
   );
