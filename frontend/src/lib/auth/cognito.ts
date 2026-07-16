@@ -31,7 +31,7 @@ export const calculateSecretHash = async (value: string): Promise<string> => {
     ["sign"],
   );
   const signature = await crypto.subtle.sign("HMAC", cryptoKey, messageData);
-  return btoa(String.fromCharCode(...new Uint8Array(signature)));
+  return btoa(String.fromCodePoint(...new Uint8Array(signature)));
 };
 
 export const signIn = async (
