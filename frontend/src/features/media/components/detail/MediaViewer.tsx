@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { AccentButton } from "@/components/ui/AccentButton";
+import { Button } from "@/components/ui/Button";
 import { FavoriteMediaDetail } from "@/features/favorite";
 import {
   MediaNavigationResponseDto,
@@ -197,19 +199,22 @@ export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
       )}
       <div className="@max-md:mt-5 @max-md:flex @max-md:items-center @max-md:justify-between @max-md:px-5">
         {isModal ? (
-          <button
+          <Button
+            variant="cancel"
             onClick={() => router.back()}
-            className="border-line-gray bg-cancel-back hover:bg-cancel-hover text-black-text mx-auto mt-10 grid h-10 w-35 place-content-center rounded-lg border transition-all @max-md:m-0 @max-md:h-9 @max-md:w-30 @max-md:text-xs"
+            className="mx-auto mt-10 block @max-md:m-0"
           >
             戻る
-          </button>
+          </Button>
         ) : (
-          <Link
+          <AccentButton
+            variant="link"
+            styleVariant="cancel"
             href="/media"
-            className="border-line-gray bg-cancel-back hover:bg-cancel-hover text-black-text mx-auto mt-10 grid h-10 w-35 place-content-center rounded-lg border transition-all @max-md:m-0 @max-md:h-9 @max-md:w-30 @max-md:text-xs"
+            className="mt-10 @max-md:m-0"
           >
             メディア一覧
-          </Link>
+          </AccentButton>
         )}
         <div className="@md:hidden">
           <FavoriteMediaDetail media={media} users={users} />

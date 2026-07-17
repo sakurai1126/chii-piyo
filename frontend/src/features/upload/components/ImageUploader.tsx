@@ -87,7 +87,7 @@ export const ImageUploader = ({ isEasy, onFilesAdd, maxFiles, maxSize }: Props) 
         ドラッグ＆ドロップにも対応
       </p>
       <button
-        className="bg-brown-middle border-brown-middle hover:text-brown-middle hover:bg-white-back mt-5 h-10 w-40 cursor-pointer rounded-4xl border font-medium text-white transition-all duration-500 @max-md:hidden"
+        className="bg-brown-middle dark:bg-brown-light border-brown-middle hover:text-brown-middle hover:bg-white-back mt-5 h-10 w-40 cursor-pointer rounded-4xl border font-medium text-white transition-all duration-500 @max-md:hidden"
         onClick={() => inputRef.current?.click()}
       >
         写真を選択

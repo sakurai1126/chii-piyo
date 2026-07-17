@@ -59,7 +59,7 @@ export const LoginForm = ({ logoutMessage }: Readonly<Props>) => {
       <button
         type="submit"
         disabled={isPending}
-        className="bg-brown-light border-brown-middle hover:text-brown-middle hover:bg-white-back mx-auto mt-10 block h-12 w-60 cursor-pointer rounded-lg border text-white transition @max-md:mt-8 @max-md:h-9 @max-md:w-45 @max-md:text-sm"
+        className="bg-brown-light border-brown-middle hover:text-brown-middle hover:bg-white-back mx-auto mt-10 block h-12 w-60 cursor-pointer rounded-lg border font-medium text-white transition @max-md:mt-8 @max-md:h-9 @max-md:w-45 @max-md:text-sm"
       >
         {isPending ? "ログイン中..." : "ログイン"}
       </button>
