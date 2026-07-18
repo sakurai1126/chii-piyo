@@ -35,7 +35,7 @@ export const NewRecords = ({ tags, sharingGroups, variant }: Props) => {
           type="button"
           className={cn(
             "hover:bg-background-normal bg-green-back dark:bg-background-accent flex h-20 w-full cursor-pointer items-center justify-center gap-3 rounded-lg transition-all",
-            variant === "word" && "h-30",
+            variant === "word" && "h-30 @max-md:h-20",
           )}
           onClick={() => setIsMenuOpen(true)}
         >
