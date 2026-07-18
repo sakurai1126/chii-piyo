@@ -1,7 +1,6 @@
 import Image from "next/image";
 
-import { getCurrentUser, isEasyMode } from "@/features/auth";
-import { DisplayDebug } from "@/features/settings/components/DisplayDebug";
+import { isEasyMode } from "@/features/auth";
 import { cn } from "@/utils/cn";
 
 export default async function BackGround({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -50,7 +49,6 @@ export default async function BackGround({ children }: Readonly<{ children: Reac
         <div className="relative z-1 bg-[url('/images/bg-star.svg')] bg-contain bg-top @max-md:bg-[url('/images/bg-star-sp.svg')] dark:bg-[url('/images/bg-star-light.svg')] dark:@max-md:bg-[url('/images/bg-star-light-sp.svg')]">
           {children}
         </div>
-        <DisplayDebug currentUser={await getCurrentUser()} />
       </div>
     </div>
   );
