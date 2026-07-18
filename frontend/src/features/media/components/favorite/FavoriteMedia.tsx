@@ -55,7 +55,7 @@ export const FavoriteMedia = ({ isEasy, initialData, users }: Props) => {
       </div>
 
       {flatItems.length === 0 && !isFetchingNextPage && (
-        <p className="text-note-gray py-20 text-center text-sm">
+        <p className="my-15 text-center @max-md:text-sm">
           お気に入りに追加したメディアはありません
         </p>
       )}

@@ -49,6 +49,11 @@ public class SharingGroupService {
         // ユーザーの所属する共有グループのIDリストを取得
         List<Long> userSharingScopeIds = getUserSharingScopes(userId);
 
+        // リストが空の場合は空のリストを返す
+        if (userSharingScopeIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         // IDを元に共有グループを取得して返却
         return sharingGroupRepository.findByIdsOrderById(userSharingScopeIds);
     }

@@ -60,7 +60,9 @@ export const AlbumSelector = ({
           />
         </div>
       ) : (
-        <p className="mt-5 mr-10 text-sm @max-md:mt-3 @max-md:text-xs">アルバムがありません</p>
+        <p className="mt-5 mr-10 text-sm @max-md:mt-3 @max-md:text-xs">
+          アルバムは作成されていません
+        </p>
       )}
 
       {isAdmin && !isEasy && <AlbumAddForm />}
