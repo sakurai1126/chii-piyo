@@ -19,9 +19,10 @@ type Props = {
   isEasy: boolean;
   tags: TagResponseDto[];
   sharingGroups: SharingGroupResponseDto[];
+  showMediaCount?: boolean;
 };
 
-export const MediaFilter = ({ isEasy, tags, sharingGroups }: Props) => {
+export const MediaFilter = ({ isEasy, tags, sharingGroups, showMediaCount = false }: Props) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -115,6 +116,7 @@ export const MediaFilter = ({ isEasy, tags, sharingGroups }: Props) => {
                     tags={tags}
                     updateFilter={updateFilter}
                     currentValue={searchParams.getAll("tagId") ?? ""}
+                    showMediaCount={showMediaCount}
                   />
 
                   {/* 期間 */}
