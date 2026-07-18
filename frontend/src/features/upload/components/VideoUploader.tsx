@@ -48,6 +48,7 @@ export const VideoUploader = ({ isEasy, onFilesAdd, maxFiles, maxSize }: Props) 
     >
       {/* スマホタップ用ボタン */}
       <button
+        type="button"
         className="absolute top-0 left-0 z-1 hidden h-full w-full rounded-2xl opacity-0 @max-md:block"
         onClick={() => inputRef.current?.click()}
       />
@@ -86,6 +87,7 @@ export const VideoUploader = ({ isEasy, onFilesAdd, maxFiles, maxSize }: Props) 
         ドラッグ＆ドロップにも対応
       </p>
       <button
+        type="button"
         className="bg-green-accent hover:text-green-accent border-green-accent hover:bg-white-back mt-5 h-10 w-40 cursor-pointer rounded-4xl border font-medium text-white transition-all duration-500 @max-md:hidden"
         onClick={() => inputRef.current?.click()}
       >
@@ -94,7 +96,7 @@ export const VideoUploader = ({ isEasy, onFilesAdd, maxFiles, maxSize }: Props) 
       <p className="text-note-gray mt-4 text-xs @max-md:hidden">mp4 / mov - 1 本最大{maxSize}MB</p>
       <p
         className={cn(
-          "text-note-gray mt-2 text-[10px] leading-5 md:hidden",
+          "text-note-gray mt-2 text-[10px] leading-5 @md:hidden",
           isEasy && "text-[13px]",
         )}
       >

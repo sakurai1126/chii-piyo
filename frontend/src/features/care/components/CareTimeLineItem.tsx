@@ -162,7 +162,7 @@ export const CareTimeLineItem = ({ index, careItem, growthItem }: Props) => {
             <Image
               src={dataMap[careItem.recordType].icon}
               alt=""
-              className="max-md:w-12 @max-md:h-12"
+              className="@max-md:h-12 @max-md:w-12"
               width={60}
               height={60}
             />
@@ -171,7 +171,7 @@ export const CareTimeLineItem = ({ index, careItem, growthItem }: Props) => {
             <Image
               src={growthIcon}
               alt=""
-              className="max-md:w-12 @max-md:h-12"
+              className="@max-md:h-12 @max-md:w-12"
               width={60}
               height={60}
             />
@@ -388,6 +388,7 @@ export const CareTimeLineItem = ({ index, careItem, growthItem }: Props) => {
           {!isEditMode && (
             <>
               <button
+                type="button"
                 className="cursor-pointer text-sm underline transition-all hover:opacity-70 @max-md:text-[10px]"
                 disabled={isPending}
                 onClick={() => setIsEditMode(true)}
@@ -395,6 +396,7 @@ export const CareTimeLineItem = ({ index, careItem, growthItem }: Props) => {
                 編集
               </button>
               <button
+                type="button"
                 className="text-warning cursor-pointer text-sm underline transition-all hover:opacity-70 @max-md:text-[10px] dark:font-medium"
                 onClick={() => setIsDeleteConfirmOpen(true)}
                 disabled={isPending}
@@ -407,6 +409,7 @@ export const CareTimeLineItem = ({ index, careItem, growthItem }: Props) => {
           {isEditMode && (
             <>
               <button
+                type="button"
                 className="cursor-pointer text-sm underline transition-all hover:opacity-70 @max-md:text-[10px]"
                 disabled={isPending}
                 onClick={() => setIsEditMode(false)}
@@ -414,6 +417,7 @@ export const CareTimeLineItem = ({ index, careItem, growthItem }: Props) => {
                 戻る
               </button>
               <button
+                type="button"
                 className="text-success cursor-pointer text-sm underline transition-all hover:opacity-70 @max-md:text-[10px]"
                 onClick={() => setIsSaveConfirmOpen(true)}
                 disabled={isPending}

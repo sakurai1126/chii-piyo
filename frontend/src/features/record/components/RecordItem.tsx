@@ -183,12 +183,14 @@ const RecordItemDisplayMode = ({
       {isAdmin && !isEasy && (
         <div className="mt-3 ml-auto flex w-fit gap-3">
           <button
+            type="button"
             className="cursor-pointer underline transition-all hover:opacity-70 @max-md:text-xs"
             onClick={() => setIsEditMode(true)}
           >
             編集
           </button>
           <button
+            type="button"
             className="text-warning cursor-pointer underline transition-all hover:opacity-70 @max-md:text-xs dark:font-medium"
             onClick={() => setIsDeleteConfirmOpen(true)}
           >

@@ -48,6 +48,7 @@ export const ImageUploader = ({ isEasy, onFilesAdd, maxFiles, maxSize }: Props) 
     >
       {/* スマホタップ用ボタン */}
       <button
+        type="button"
         className="absolute top-0 left-0 z-1 hidden h-full w-full rounded-2xl opacity-0 @max-md:block"
         onClick={() => inputRef.current?.click()}
       />
@@ -87,7 +88,8 @@ export const ImageUploader = ({ isEasy, onFilesAdd, maxFiles, maxSize }: Props) 
         ドラッグ＆ドロップにも対応
       </p>
       <button
-        className="bg-brown-middle border-brown-middle hover:text-brown-middle hover:bg-white-back mt-5 h-10 w-40 cursor-pointer rounded-4xl border font-medium text-white transition-all duration-500 @max-md:hidden"
+        type="button"
+        className="bg-brown-middle dark:bg-brown-light border-brown-middle hover:text-brown-middle hover:bg-white-back mt-5 h-10 w-40 cursor-pointer rounded-4xl border font-medium text-white transition-all duration-500 @max-md:hidden"
         onClick={() => inputRef.current?.click()}
       >
         写真を選択
@@ -97,7 +99,7 @@ export const ImageUploader = ({ isEasy, onFilesAdd, maxFiles, maxSize }: Props) 
       </p>
       <p
         className={cn(
-          "text-note-gray mt-2 text-[10px] leading-5 md:hidden",
+          "text-note-gray mt-2 text-[10px] leading-5 @md:hidden",
           isEasy && "text-[13px]",
         )}
       >

@@ -3,6 +3,8 @@ import Link from "next/link";
 
 import { isAdminUser, isEasyMode } from "@/features/auth";
 
+import { HeaderMenuLink } from "../ui/HeaderMenuLink";
+
 export const HeaderMenu = async () => {
   const [isAdmin, isEasy] = await Promise.all([isAdminUser(), isEasyMode()]);
   return <>{isEasy ? <EasyModeMenu /> : <NormalModeMenu isAdmin={isAdmin} />}</>;
@@ -86,44 +88,25 @@ const NormalModeMenu = ({ isAdmin }: { isAdmin: boolean }) => {
       <div className="relative">
         <Image
           src="/images/menu-illust.png"
-          width={185}
-          height={139}
+          width={150}
+          height={113}
           alt="ひよこのイラスト"
-          className="pointer-events-none absolute bottom-4 left-1.5 z-51 @max-md:right-4 @max-md:bottom-5 @max-md:left-auto @max-md:w-22"
+          className="pointer-events-none absolute bottom-5 left-3 z-51 @max-md:right-4 @max-md:bottom-5 @max-md:left-auto @max-md:w-26"
         />
         <div className="border-brown-dark bg-translucent flex gap-15 rounded-lg border-2 py-7 pr-13 pl-20 backdrop-blur-[15px] @max-md:w-70 @max-md:flex-col @max-md:gap-6 @max-md:border @max-md:p-5 @max-md:pb-16">
-          <div className="max-md:gap-19.5 @max-md:flex">
-            <Link href="/" className="block w-fit font-medium @max-md:text-[13px]">
-              ホーム
-            </Link>
-            <Link
-              href="/settings"
-              className="mt-5 block w-fit font-medium @max-md:mt-0 @max-md:text-[13px]"
-            >
-              設定
-            </Link>
+          <div className="flex flex-col gap-5 @max-md:flex-row @max-md:gap-19.5">
+            <HeaderMenuLink href="/" text="ホーム" variant="parent" />
+            <HeaderMenuLink href="/settings" text="設定" variant="parent" />
           </div>
           <div className="flex gap-15 @max-md:gap-10">
             <div>
               <p className="block w-fit font-medium @max-md:text-[13px]">写真/動画</p>
               <div className="mt-4 grid gap-2.5">
-                <Link href="/media" className="block w-fit text-sm @max-md:text-xs">
-                  写真/動画一覧
-                </Link>
-                <Link href="/upload" className="block w-fit text-sm @max-md:text-xs">
-                  アップロード
-                </Link>
-                <Link href="/albums" className="block w-fit text-sm @max-md:text-xs">
-                  アルバム
-                </Link>
-                <Link href="/favorites" className="block w-fit text-sm @max-md:text-xs">
-                  お気に入り
-                </Link>
-                {isAdmin && (
-                  <Link href="/trash" className="block w-fit text-sm @max-md:text-xs">
-                    ゴミ箱
-                  </Link>
-                )}
+                <HeaderMenuLink href="/media" text="写真/動画一覧" />
+                <HeaderMenuLink href="/upload" text="アップロード" />
+                <HeaderMenuLink href="/albums" text="アルバム" />
+                <HeaderMenuLink href="/favorites" text="お気に入り" />
+                {isAdmin && <HeaderMenuLink href="/trash" text="ゴミ箱" />}
               </div>
             </div>
             <div>
@@ -131,21 +114,13 @@ const NormalModeMenu = ({ isAdmin }: { isAdmin: boolean }) => {
               <div className="mt-4 grid gap-2.5">
                 {isAdmin && (
                   <>
-                    <Link href="/care" className="block w-fit text-sm @max-md:text-xs">
-                      日々の記録
-                    </Link>
-                    <Link href="/analysis" className="block w-fit text-sm @max-md:text-xs">
-                      グラフ
-                    </Link>
+                    <HeaderMenuLink href="/care" text="日々の記録" />
+                    <HeaderMenuLink href="/analysis" text="グラフ" />
                   </>
                 )}
 
-                <Link href="/first-records" className="block w-fit text-sm @max-md:text-xs">
-                  はじめて記録
-                </Link>
-                <Link href="/word-records" className="block w-fit text-sm @max-md:text-xs">
-                  ことばの記録
-                </Link>
+                <HeaderMenuLink href="/first-records" text="はじめて記録" />
+                <HeaderMenuLink href="/word-records" text="ことばの記録" />
               </div>
             </div>
           </div>

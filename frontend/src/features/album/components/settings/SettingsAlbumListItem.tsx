@@ -102,6 +102,7 @@ export const SettingsAlbumListItem = ({ album, index }: Props) => {
             <div className="flex shrink-0 gap-5 @max-md:ml-auto">
               {!isEditAreaOpen && (
                 <button
+                  type="button"
                   className="cursor-pointer text-sm underline transition-all hover:opacity-70 @max-md:text-[10px]"
                   onClick={() => setIsEditAreaOpen(true)}
                   disabled={isPending}
@@ -111,6 +112,7 @@ export const SettingsAlbumListItem = ({ album, index }: Props) => {
               )}
 
               <button
+                type="button"
                 className="text-warning cursor-pointer text-sm underline transition-all hover:opacity-70 @max-md:text-[10px] dark:font-medium"
                 onClick={() => setIsDeleteConfirm(true)}
                 disabled={isPending}

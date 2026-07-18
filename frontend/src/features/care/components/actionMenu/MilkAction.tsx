@@ -96,7 +96,8 @@ export const MilkAction = () => {
       >
         <div className="mt-4 flex items-center gap-4 @max-md:justify-center">
           <button
-            className="cursor-pointer transition-all hover:opacity-70"
+            type="button"
+            className="dark:bg-white-back cursor-pointer rounded-full transition-all hover:opacity-70"
             onClick={milkMinus}
             disabled={isPending}
           >
@@ -107,7 +108,8 @@ export const MilkAction = () => {
             <span className="ml-1 text-lg">ml</span>
           </div>
           <button
-            className="cursor-pointer transition-all hover:opacity-70"
+            type="button"
+            className="dark:bg-white-back cursor-pointer rounded-full transition-all hover:opacity-70"
             onClick={milkPlus}
             disabled={isPending}
           >
@@ -117,7 +119,8 @@ export const MilkAction = () => {
         <div className="my-5 flex gap-3 @max-md:gap-2">
           {amountMlsSelect.map((value) => (
             <button
-              className="bg-accent-orange/10 border-brown-dark text-brown-dark h-8 w-20 cursor-pointer rounded-sm border font-medium transition-all hover:opacity-70 @max-md:text-sm"
+              type="button"
+              className="bg-accent-orange/10 dark:bg-white-back dark:border-brown-middle dark:text-brown-middle border-brown-dark text-brown-dark h-8 w-20 cursor-pointer rounded-sm border font-medium transition-all hover:opacity-70 @max-md:text-sm"
               onClick={() => setAmountMl(value)}
               disabled={isPending}
               key={value}
@@ -129,6 +132,7 @@ export const MilkAction = () => {
       </CareActionModal>
 
       <button
+        type="button"
         className="border-milk-border group bg-translucent w-full cursor-pointer rounded-lg border p-5 backdrop-blur-[7.5px] transition-all @max-md:rounded-4xl @max-md:p-4"
         onClick={openModal}
         disabled={isPending}

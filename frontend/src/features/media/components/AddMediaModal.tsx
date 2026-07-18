@@ -222,6 +222,7 @@ export const AddMediaModal = ({
                     {variant === "album" ? "アルバム" : "記録"}にメディアを追加する
                   </p>
                   <button
+                    type="button"
                     className="block w-fit cursor-pointer transition-all hover:opacity-70"
                     onClick={modalClose}
                     disabled={isPending}
@@ -230,8 +231,9 @@ export const AddMediaModal = ({
                   </button>
                 </div>
                 <button
+                  type="button"
                   onClick={() => setIsFilterOpen(!isFilterOpen)}
-                  className="text-brown-dark border-brown-dark bg-background-accent mt-7 flex w-full items-center justify-center gap-2 rounded-lg border py-5 text-[13px] outline-0 md:hidden"
+                  className="text-brown-dark border-brown-dark bg-background-accent mt-7 flex w-full items-center justify-center gap-2 rounded-lg border py-5 text-[13px] outline-0 @md:hidden"
                 >
                   <p>{isFilterOpen ? "絞込検索を閉じる" : "絞込検索"}</p>
 

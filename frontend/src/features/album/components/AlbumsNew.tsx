@@ -49,7 +49,7 @@ export const AlbumsNew = () => {
             <Modal>
               <ActionDialog onClose={cancel}>
                 <div>
-                  <p className="max-md:text-[13px] @max-md:mt-4">アルバムを新規作成</p>
+                  <p className="@max-md:mt-4 @max-md:text-[13px]">アルバムを新規作成</p>
                   <div className="mx-auto mt-7 w-full max-w-110">
                     <p className="text-sm">アルバム名</p>
                     <input

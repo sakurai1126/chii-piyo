@@ -104,6 +104,7 @@ const TagItem = ({ tag }: { tag: TagResponseDto }) => {
         {isEditMode ? (
           <>
             <button
+              type="button"
               className="border-brown-middle/30 hover:bg-brown-dark/10 grid aspect-square h-8 cursor-pointer place-content-center border-x transition-all duration-400"
               onClick={cancelEdit}
               disabled={isPending}
@@ -111,6 +112,7 @@ const TagItem = ({ tag }: { tag: TagResponseDto }) => {
               <Image src={backIcon} alt="" width={11} height={11} />
             </button>
             <button
+              type="button"
               className="hover:bg-warning/10 grid aspect-square h-8 cursor-pointer place-content-center rounded-r-2xl transition-all duration-400"
               onClick={saveUpdateAction}
               disabled={isPending}
@@ -121,6 +123,7 @@ const TagItem = ({ tag }: { tag: TagResponseDto }) => {
         ) : (
           <>
             <button
+              type="button"
               className="border-brown-middle/30 hover:bg-brown-dark/10 grid aspect-square h-8 cursor-pointer place-content-center border-x transition-all duration-400"
               onClick={() => setIsEditMode(true)}
               disabled={isPending}
@@ -128,6 +131,7 @@ const TagItem = ({ tag }: { tag: TagResponseDto }) => {
               <Image src={editIcon} alt="" width={11} height={11} />
             </button>
             <button
+              type="button"
               className="hover:bg-warning/10 grid aspect-square h-8 cursor-pointer place-content-center rounded-r-2xl transition-all duration-400"
               onClick={() => setIsDeleteConfirm(true)}
               disabled={isPending}
@@ -191,6 +195,7 @@ const NewTag = () => {
         onChange={(e) => setNewTagName(e.target.value)}
       />
       <button
+        type="button"
         className="border-brown-middle/30 hover:bg-brown-dark/10 grid aspect-square h-8 cursor-pointer place-content-center border-x transition-all duration-400"
         onClick={cancelEdit}
         disabled={isPending}
@@ -198,6 +203,7 @@ const NewTag = () => {
         <Image src={backIcon} alt="" width={11} height={11} />
       </button>
       <button
+        type="button"
         className="hover:bg-warning/10 grid aspect-square h-8 cursor-pointer place-content-center rounded-r-2xl transition-all duration-400"
         disabled={isPending}
         onClick={createAction}
@@ -207,6 +213,7 @@ const NewTag = () => {
     </div>
   ) : (
     <button
+      type="button"
       className="border-line-gray hover:bg-line-gray/30 bg-light-dark flex h-8 cursor-pointer items-center gap-1.5 rounded-3xl border border-dashed px-4 transition-all hover:border-solid"
       onClick={() => setIsEditMode(true)}
       disabled={isPending}

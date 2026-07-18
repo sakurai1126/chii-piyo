@@ -25,11 +25,11 @@ export default async function WordRecordsPage() {
         <div className="mt-15 flex items-center gap-10 @max-md:mt-5 @max-md:flex-col @max-md:gap-5">
           <div
             className={cn(
-              "bg-background-normal dark:bg-background-accent border-brown-dark grid h-39 w-80 shrink-0 place-content-center rounded-lg border text-center max-md:h-30",
+              "bg-background-normal dark:bg-background-accent border-brown-dark grid h-39 w-80 shrink-0 place-content-center rounded-lg border text-center @max-md:h-30",
               isAdmin ? "w-55" : "mx-auto",
             )}
           >
-            <p className="text-6xl font-medium max-md:text-4xl">{wordRecords.length}</p>
+            <p className="text-6xl font-medium @max-md:text-4xl">{wordRecords.length}</p>
             <p className="mt-2">おぼえたことばの数</p>
           </div>
           {isAdmin && !isEasy && (

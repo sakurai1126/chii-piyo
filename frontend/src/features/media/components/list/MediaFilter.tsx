@@ -58,7 +58,7 @@ export const MediaFilter = ({ isEasy, tags, sharingGroups }: Props) => {
       <div
         className={cn(
           "bg-background-normal border-brown-dark relative mt-10 rounded-lg border p-7 @max-md:p-0",
-          isOpen && "max-md:pt-6 @max-md:px-4 @max-md:pb-0",
+          isOpen && "@max-md:px-4 @max-md:pt-6 @max-md:pb-0",
           isEasy && "border-none",
         )}
       >
@@ -128,8 +128,9 @@ export const MediaFilter = ({ isEasy, tags, sharingGroups }: Props) => {
             </div>
 
             <button
+              type="button"
               onClick={() => setIsOpen(!isOpen)}
-              className="text-brown-dark flex w-full items-center justify-center gap-2 py-5 text-[13px] outline-0 md:hidden"
+              className="text-brown-dark flex w-full items-center justify-center gap-2 py-5 text-[13px] outline-0 @md:hidden"
             >
               <p>{isOpen ? "閉じる" : "絞込検索"}</p>
 

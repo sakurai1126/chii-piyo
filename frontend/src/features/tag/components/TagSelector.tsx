@@ -27,7 +27,7 @@ export const TagSelector = ({ tags, onTagSelect, selectedTagIds, addTag = false 
 
   return (
     <div className="mt-8">
-      <p className="max-md:text-[13px] @max-md:mt-4">タグを編集</p>
+      <p className="@max-md:mt-4 @max-md:text-[13px]">タグを編集</p>
 
       {/* タグ一覧 */}
       {tags.length > 0 ? (

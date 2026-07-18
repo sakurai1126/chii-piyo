@@ -33,7 +33,7 @@ export const MultipleSettings = ({
   const { uid, isOpen, setIsOpen, selected, setSelected, handleChange, handleReset } =
     useMultipleSettings({ updateAllMetadata });
   return (
-    <div className="bg-background-accent border-brown-dark mt-15 rounded-xl border px-8 pt-6 @max-md:mt-8 @max-md:px-4 @max-md:pt-4">
+    <div className="bg-white-back dark:bg-background-accent border-brown-dark mt-15 rounded-xl border px-8 pt-6 @max-md:mt-8 @max-md:px-4 @max-md:pt-4">
       <div className="flex items-center gap-8 @max-md:gap-2">
         <p className="text-xl font-medium @max-md:text-sm">一括設定</p>
         <div className="flex items-center gap-2">
@@ -84,6 +84,7 @@ export const MultipleSettings = ({
         </div>
       </AccordionContent>
       <button
+        type="button"
         className="mx-auto grid h-10 w-full cursor-pointer place-content-center"
         aria-expanded={isOpen}
         aria-controls={`accordion-${uid}`}

@@ -29,7 +29,7 @@ export const Members = async ({ isAdmin, currentUser, users, sharingGroups }: Pr
           alt=""
           width={30}
           height={30}
-          className="max-md:w-6 @max-md:h-6 dark:hidden"
+          className="@max-md:h-6 @max-md:w-6 dark:hidden"
         />
         <Image
           src={whiteIcon}
@@ -86,7 +86,7 @@ export const Members = async ({ isAdmin, currentUser, users, sharingGroups }: Pr
               </div>
               <RoleTag isAdmin={isAdmin} currentUser={currentUser} user={user} />
             </div>
-            <div className="mt-2 grid gap-1 md:hidden">
+            <div className="mt-2 grid gap-1 @md:hidden">
               <p className="text-xs">メールアドレス：{user.email}</p>
               {isAdmin && (
                 <p className="text-xs">

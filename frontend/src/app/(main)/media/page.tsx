@@ -42,7 +42,7 @@ export default async function MediaPage() {
           alt=""
           width={22}
           height={22}
-          className="max-md:w-4 @max-md:h-4"
+          className="@max-md:h-4 @max-md:w-4"
         />
       </AccentButton>
 

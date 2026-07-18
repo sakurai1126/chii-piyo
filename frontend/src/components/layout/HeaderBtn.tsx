@@ -44,13 +44,14 @@ export const HeaderBtn = ({ isEasy, children }: Props) => {
       <div
         className={cn(
           "fixed top-11 z-100 @max-md:top-6 @max-md:right-auto @max-md:h-7 @max-md:w-7",
-          isEasy ? "left-[calc(50%-230px)] max-[500px]:left-5" : "right-10 max-md:left-5",
+          isEasy ? "left-[calc(50%-230px)] max-[500px]:left-5" : "right-10 @max-md:left-5",
         )}
       >
         <div>
           {/* ハンバーガーボタン */}
           {/* ボタンがクリックされたとき、現在のパスが開いているパスと同じならnullにして閉じ、相違している場合そのパスをセットする */}
           <button
+            type="button"
             onClick={() => setIsOpen(!isOpen)}
             className="bg-brown-light border-brown-dark flex h-10 w-10 cursor-pointer flex-col items-center justify-center gap-1.5 rounded-sm border @max-md:h-7 @max-md:w-7 @max-md:gap-1"
           >

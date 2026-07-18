@@ -58,6 +58,7 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
       {/* 年月表示 */}
       <div className="mt-20 flex items-center justify-center gap-10 @max-md:mt-10 @max-md:justify-between @max-md:gap-0">
         <button
+          type="button"
           className="cursor-pointer pt-1 text-sm transition-all hover:opacity-70 @max-md:text-xs"
           onClick={() => changeWeek(-7)}
         >
@@ -72,6 +73,7 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
           <span className="ml-1 pt-1 text-lg @max-md:text-sm">月</span>
         </div>
         <button
+          type="button"
           className="cursor-pointer pt-1 text-sm transition-all hover:opacity-70 @max-md:text-xs"
           onClick={() => changeWeek(7)}
         >
@@ -89,7 +91,7 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
         )}
 
         {/* 日付・曜日表示行 */}
-        <div className="bg-calender-head border-line-gray flex h-10 rounded-t-xl border-b">
+        <div className="bg-calender-head border-line-gray flex h-10 overflow-hidden rounded-t-xl border-b">
           <span className="w-10 shrink-0"></span>
           <div className="grid w-full grid-cols-7 @max-md:grid-cols-1">
             {Array.from({ length: 7 }, (_, index) => (
@@ -99,13 +101,14 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
                   index !== currentDay.getDay() && "@max-md:hidden",
                   isTodayWeek &&
                     index === today.getDay() &&
-                    "@md:bg-brown-middle md:font-medium md:text-white",
+                    "@md:bg-brown-light @md:font-medium @md:text-white",
                 )}
                 key={weeklyDates[index].toISOString()}
               >
                 {/* 前日へ移動(モバイルのみ) */}
                 <button
-                  className="text-brown-dark text-xs outline-0 md:hidden"
+                  type="button"
+                  className="text-brown-dark text-xs outline-0 @md:hidden"
                   onClick={() => changeDays(-1)}
                 >
                   &lt;
@@ -127,7 +130,8 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
                 </div>
                 {/* 翌日へ移動(モバイルのみ) */}
                 <button
-                  className="text-brown-dark text-xs outline-0 md:hidden"
+                  type="button"
+                  className="text-brown-dark text-xs outline-0 @md:hidden"
                   onClick={() => changeDays(1)}
                 >
                   &gt;
@@ -172,6 +176,7 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
                   .map((item) => (
                     <button
                       key={item.id}
+                      type="button"
                       className="border-accent-pink cursor-pointer rounded-full border"
                       onClick={growthItemTapAction(item, dayIndex)}
                     >
@@ -214,6 +219,7 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
                     .map((item) => (
                       <button
                         key={item.id}
+                        type="button"
                         className="border-accent-pink cursor-pointer rounded-full border"
                         onClick={careItemTapAction(item, dayIndex)}
                       >

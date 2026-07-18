@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { AccentButton } from "@/components/ui/AccentButton";
+import { Button } from "@/components/ui/Button";
 import { FavoriteMediaDetail } from "@/features/favorite";
 import {
   MediaNavigationResponseDto,
@@ -34,6 +36,7 @@ export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
       {modeExpansion && (
         <div className="fixed top-0 left-0 z-1000 grid h-full w-full place-content-center bg-black">
           <button
+            type="button"
             className="fixed top-5 right-5 cursor-pointer transition-all hover:opacity-50 @max-md:hidden"
             onClick={() => setModeExpansion(false)}
           >
@@ -79,7 +82,7 @@ export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
                 alt=""
                 width={20}
                 height={20}
-                className="max-md:w-6 @max-md:h-6"
+                className="@max-md:h-6 @max-md:w-6"
               />
             </Link>
           ) : (
@@ -93,7 +96,7 @@ export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
                 alt=""
                 width={20}
                 height={20}
-                className="max-md:w-6 @max-md:h-6"
+                className="@max-md:h-6 @max-md:w-6"
               />
             </a>
           ))}
@@ -113,7 +116,7 @@ export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
                 alt=""
                 width={20}
                 height={20}
-                className="max-md:w-6 @max-md:h-6"
+                className="@max-md:h-6 @max-md:w-6"
               />
             </Link>
           ) : (
@@ -127,7 +130,7 @@ export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
                 alt=""
                 width={20}
                 height={20}
-                className="max-md:w-6 @max-md:h-6"
+                className="@max-md:h-6 @max-md:w-6"
               />
             </a>
           ))}
@@ -136,6 +139,7 @@ export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
           <>
             {/* 拡大 */}
             <button
+              type="button"
               className="absolute top-4 right-5 cursor-pointer transition-all hover:opacity-70 @max-md:hidden"
               onClick={() => setModeExpansion(true)}
             >
@@ -152,7 +156,7 @@ export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
                 alt=""
                 width={30}
                 height={30}
-                className="max-md:w-6 @max-md:h-6"
+                className="@max-md:h-6 @max-md:w-6"
               />
             </a>
           </>
@@ -197,19 +201,22 @@ export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
       )}
       <div className="@max-md:mt-5 @max-md:flex @max-md:items-center @max-md:justify-between @max-md:px-5">
         {isModal ? (
-          <button
+          <Button
+            variant="cancel"
             onClick={() => router.back()}
-            className="border-line-gray bg-cancel-back hover:bg-cancel-hover text-black-text mx-auto mt-10 grid h-10 w-35 place-content-center rounded-lg border transition-all @max-md:m-0 @max-md:h-9 @max-md:w-30 @max-md:text-xs"
+            className="mx-auto mt-10 block @max-md:m-0"
           >
             戻る
-          </button>
+          </Button>
         ) : (
-          <Link
+          <AccentButton
+            variant="link"
+            styleVariant="cancel"
             href="/media"
-            className="border-line-gray bg-cancel-back hover:bg-cancel-hover text-black-text mx-auto mt-10 grid h-10 w-35 place-content-center rounded-lg border transition-all @max-md:m-0 @max-md:h-9 @max-md:w-30 @max-md:text-xs"
+            className="mt-10 @max-md:m-0"
           >
             メディア一覧
-          </Link>
+          </AccentButton>
         )}
         <div className="@md:hidden">
           <FavoriteMediaDetail media={media} users={users} />

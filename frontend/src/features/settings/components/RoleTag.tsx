@@ -59,6 +59,7 @@ export const RoleTag = ({ isAdmin, currentUser, user }: Props) => {
           {user.role === "ADMIN" && currentUser.id !== user.id && (
             <div>
               <button
+                type="button"
                 className={cn(
                   "text-accent-pink border-accent-pink bg-accent-pink-back hover:bg-warning",
                   baseClass,
@@ -92,6 +93,7 @@ export const RoleTag = ({ isAdmin, currentUser, user }: Props) => {
           {user.role === "VIEWER" && (
             <div>
               <button
+                type="button"
                 className={cn(
                   "text-brown-middle border-brown-middle bg-accent-orange-back hover:bg-brown-dark",
                   baseClass,

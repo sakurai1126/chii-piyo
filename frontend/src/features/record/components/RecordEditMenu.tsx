@@ -101,6 +101,7 @@ export const RecordEditMenu = ({
                 height={80}
               />
               <button
+                type="button"
                 className="bg-warning absolute -top-0.5 -right-0.5 hidden h-4 w-4 cursor-pointer place-content-center rounded-2xl group-hover:grid"
                 onClick={() => removeMedia(item.id)}
               >

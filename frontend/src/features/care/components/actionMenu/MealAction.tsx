@@ -74,6 +74,7 @@ export const MealAction = () => {
       />
 
       <button
+        type="button"
         className="border-meal-border group bg-translucent w-full cursor-pointer rounded-lg border p-5 backdrop-blur-[7.5px] transition-all @max-md:rounded-4xl @max-md:p-4"
         onClick={openModal}
         disabled={isPending}

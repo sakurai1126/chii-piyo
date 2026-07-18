@@ -66,7 +66,7 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
         >
           <div
             className={cn(
-              "border-accent-pink bg-background-normal/80 w-fit min-w-80 rounded-lg border backdrop-blur-[30px] @max-md:absolute @max-md:-left-2.5 @max-md:w-[calc(100vw-20px)] @max-md:-translate-y-[calc(100%+15px)]",
+              "border-accent-pink bg-background-normal/80 w-fit min-w-80 rounded-lg border @max-md:absolute @max-md:-left-2.5 @max-md:w-[calc(100vw-20px)] @max-md:-translate-y-[calc(100%+15px)]",
               translateClass,
             )}
             style={{ top: state.top }}
@@ -74,13 +74,14 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
             <div className="relative">
               {/* 閉じるボタン */}
               <button
-                className="absolute top-2 right-2 cursor-pointer transition-all hover:opacity-70"
+                type="button"
+                className="absolute top-2 right-2 z-10 cursor-pointer transition-all hover:opacity-70"
                 onClick={popCloseAction}
                 disabled={isPending}
               >
                 <Image src="/images/modal-close.svg" alt="" width={10} height={10} />
               </button>
-              <div className="flex gap-3 px-6 py-3">
+              <div className="flex gap-3 rounded-lg px-6 py-3 backdrop-blur-sm">
                 {/* アイコンと種別 */}
                 <div className="shrink-0 text-center">
                   <Image
@@ -345,6 +346,7 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
                     {!isEditMode && (
                       <>
                         <button
+                          type="button"
                           className="cursor-pointer text-xs underline transition-all hover:opacity-70"
                           onClick={editModeOpen}
                           disabled={isPending}
@@ -352,6 +354,7 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
                           編集
                         </button>
                         <button
+                          type="button"
                           className="text-warning cursor-pointer text-xs underline transition-all hover:opacity-70 dark:font-medium"
                           onClick={() => setIsDeleteConfirmOpen(true)}
                           disabled={isPending}
@@ -364,6 +367,7 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
                     {isEditMode && (
                       <>
                         <button
+                          type="button"
                           className="cursor-pointer text-xs underline transition-all hover:opacity-70"
                           onClick={() => setIsEditMode(false)}
                           disabled={isPending}
@@ -372,6 +376,7 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
                         </button>
                         {state.record && (
                           <button
+                            type="button"
                             className="text-success cursor-pointer text-xs underline transition-all hover:opacity-70"
                             onClick={saveCareRecordAction}
                             disabled={isPending}
@@ -381,6 +386,7 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
                         )}
                         {state.growthRecord && (
                           <button
+                            type="button"
                             className="text-success cursor-pointer text-xs underline transition-all hover:opacity-70"
                             onClick={saveGrowthRecordAction}
                             disabled={isPending}
@@ -406,7 +412,7 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
           <Image
             src={arrow}
             alt=""
-            className="absolute -bottom-1.5 left-6 md:hidden"
+            className="absolute -bottom-1.5 left-6 @md:hidden"
             width={25}
             height={8}
             style={{
