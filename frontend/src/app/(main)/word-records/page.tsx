@@ -29,7 +29,7 @@ export default async function WordRecordsPage() {
               isAdmin ? "w-55" : "mx-auto",
             )}
           >
-            <p className="text-6xl font-medium max-md:text-4xl">{wordRecords.length}</p>
+            <p className="text-6xl font-medium @max-md:text-4xl">{wordRecords.length}</p>
             <p className="mt-2">おぼえたことばの数</p>
           </div>
           {isAdmin && !isEasy && (

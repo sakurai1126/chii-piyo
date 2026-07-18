@@ -16,7 +16,7 @@ export default async function Header() {
         isEasy && "relative max-w-125",
       )}
     >
-      <Link href="/" className="max-md:top-2.5 @max-md:mx-auto @max-md:w-fit">
+      <Link href="/" className="@max-md:top-2.5 @max-md:mx-auto @max-md:w-fit">
         <Image
           src="/images/logo.png"
           alt="Chii-Piyo"

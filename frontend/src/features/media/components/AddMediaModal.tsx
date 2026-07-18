@@ -231,7 +231,7 @@ export const AddMediaModal = ({
                 </div>
                 <button
                   onClick={() => setIsFilterOpen(!isFilterOpen)}
-                  className="text-brown-dark border-brown-dark bg-background-accent mt-7 flex w-full items-center justify-center gap-2 rounded-lg border py-5 text-[13px] outline-0 md:hidden"
+                  className="text-brown-dark border-brown-dark bg-background-accent mt-7 flex w-full items-center justify-center gap-2 rounded-lg border py-5 text-[13px] outline-0 @md:hidden"
                 >
                   <p>{isFilterOpen ? "絞込検索を閉じる" : "絞込検索"}</p>
 

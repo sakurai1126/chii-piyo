@@ -119,7 +119,7 @@ const GrowthGraphSummary = ({
           <p
             className={cn(
               "text-3xl font-medium",
-              isEasy ? "max-md:text-[32px]" : "@max-lg:text-2xl @max-md:text-[28px]",
+              isEasy ? "@max-md:text-[32px]" : "@max-lg:text-2xl @max-md:text-[28px]",
             )}
           >
             {latestHeightRecord?.height ? latestHeightRecord.height.toFixed(1) : "--"}
@@ -147,7 +147,7 @@ const GrowthGraphSummary = ({
           <p
             className={cn(
               "text-3xl font-medium",
-              isEasy ? "max-md:text-[32px]" : "@max-lg:text-2xl @max-md:text-[28px]",
+              isEasy ? "@max-md:text-[32px]" : "@max-lg:text-2xl @max-md:text-[28px]",
             )}
           >
             {latestWeightRecord?.weight ? latestWeightRecord.weight.toFixed(1) : "--"}

@@ -10,7 +10,7 @@ export default async function Footer() {
   return (
     <footer
       className={cn(
-        "border-brown-dark mt-40 border-t pt-10 pb-15 max-md:pb-20 @max-md:mt-20 @max-md:pt-6",
+        "border-brown-dark mt-40 border-t pt-10 pb-15 @max-md:mt-20 @max-md:pt-6 @max-md:pb-20",
         isEasy && "pb-10",
       )}
     >

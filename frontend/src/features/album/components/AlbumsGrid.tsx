@@ -50,7 +50,7 @@ export const AlbumsGrid = ({ isEasy, albums, variant = "page" }: Props) => {
                     alt=""
                     width={12}
                     height={12}
-                    className="max-md:w-[10px] @max-md:h-[10px]"
+                    className="@max-md:h-[10px] @max-md:w-[10px]"
                   />
                   <p className="text-brown-dark text-xs @max-md:text-[10px]">{album.photoCount}</p>
                 </div>
@@ -62,7 +62,7 @@ export const AlbumsGrid = ({ isEasy, albums, variant = "page" }: Props) => {
                     alt=""
                     width={16}
                     height={16}
-                    className="max-md:w-[14px] @max-md:h-[14px]"
+                    className="@max-md:h-[14px] @max-md:w-[14px]"
                   />
                   <p className="text-brown-dark text-xs @max-md:text-[10px]">{album.videoCount}</p>
                 </div>

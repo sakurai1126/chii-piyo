@@ -97,7 +97,7 @@ export const ImageUploader = ({ isEasy, onFilesAdd, maxFiles, maxSize }: Props) 
       </p>
       <p
         className={cn(
-          "text-note-gray mt-2 text-[10px] leading-5 md:hidden",
+          "text-note-gray mt-2 text-[10px] leading-5 @md:hidden",
           isEasy && "text-[13px]",
         )}
       >

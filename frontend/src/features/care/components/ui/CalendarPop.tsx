@@ -406,7 +406,7 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
           <Image
             src={arrow}
             alt=""
-            className="absolute -bottom-1.5 left-6 md:hidden"
+            className="absolute -bottom-1.5 left-6 @md:hidden"
             width={25}
             height={8}
             style={{

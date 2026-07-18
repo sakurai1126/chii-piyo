@@ -20,7 +20,7 @@ export const Account = ({ isEasy }: Props) => {
           alt=""
           width={30}
           height={30}
-          className="max-md:w-6 @max-md:h-6 dark:hidden"
+          className="@max-md:h-6 @max-md:w-6 dark:hidden"
         />
         <Image
           src={whiteIcon}
@@ -36,7 +36,7 @@ export const Account = ({ isEasy }: Props) => {
       <div className="bg-background-normal dark:bg-background-accent border-brown-dark mt-4 rounded-lg border @max-md:mt-3">
         <div className="flex items-center justify-between px-8 py-4 @max-lg:px-4 @max-md:px-5 @max-md:py-2.5">
           <p className={cn("@max-md:text-[13px]", isEasy && "font-medium")}>ログアウト</p>
-          <Button variant="cancel" className="max-md:w-30 @max-md:h-9" onClick={logoutAction}>
+          <Button variant="cancel" className="@max-md:h-9 @max-md:w-30" onClick={logoutAction}>
             ログアウト
           </Button>
         </div>

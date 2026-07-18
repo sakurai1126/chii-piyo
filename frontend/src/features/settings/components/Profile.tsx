@@ -38,7 +38,7 @@ export const Profile = ({ isEasy, currentUser }: Props) => {
           alt=""
           width={30}
           height={30}
-          className="max-md:w-6 @max-md:h-6 dark:hidden"
+          className="@max-md:h-6 @max-md:w-6 dark:hidden"
         />
         <Image
           src={whiteIcon}

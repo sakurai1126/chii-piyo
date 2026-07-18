@@ -99,13 +99,13 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
                   index !== currentDay.getDay() && "@max-md:hidden",
                   isTodayWeek &&
                     index === today.getDay() &&
-                    "@md:bg-brown-middle md:font-medium md:text-white",
+                    "@md:bg-brown-light @md:font-medium @md:text-white",
                 )}
                 key={weeklyDates[index].toISOString()}
               >
                 {/* 前日へ移動(モバイルのみ) */}
                 <button
-                  className="text-brown-dark text-xs outline-0 md:hidden"
+                  className="text-brown-dark text-xs outline-0 @md:hidden"
                   onClick={() => changeDays(-1)}
                 >
                   &lt;
@@ -127,7 +127,7 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
                 </div>
                 {/* 翌日へ移動(モバイルのみ) */}
                 <button
-                  className="text-brown-dark text-xs outline-0 md:hidden"
+                  className="text-brown-dark text-xs outline-0 @md:hidden"
                   onClick={() => changeDays(1)}
                 >
                   &gt;

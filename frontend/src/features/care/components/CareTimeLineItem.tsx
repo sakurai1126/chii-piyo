@@ -162,7 +162,7 @@ export const CareTimeLineItem = ({ index, careItem, growthItem }: Props) => {
             <Image
               src={dataMap[careItem.recordType].icon}
               alt=""
-              className="max-md:w-12 @max-md:h-12"
+              className="@max-md:h-12 @max-md:w-12"
               width={60}
               height={60}
             />
@@ -171,7 +171,7 @@ export const CareTimeLineItem = ({ index, careItem, growthItem }: Props) => {
             <Image
               src={growthIcon}
               alt=""
-              className="max-md:w-12 @max-md:h-12"
+              className="@max-md:h-12 @max-md:w-12"
               width={60}
               height={60}
             />

@@ -74,7 +74,7 @@ export const TagMediaDetail = ({ isAdmin, mediaId, mediaTags, tags }: Props) => 
             onClick={() => setIsOpen(true)}
             disabled={isPending}
           >
-            <Image src={plus} alt="" width={14} height={14} className="max-md:w-3 @max-md:h-3" />
+            <Image src={plus} alt="" width={14} height={14} className="@max-md:h-3 @max-md:w-3" />
             <p>編集</p>
           </button>
         )}

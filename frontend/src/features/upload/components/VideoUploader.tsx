@@ -94,7 +94,7 @@ export const VideoUploader = ({ isEasy, onFilesAdd, maxFiles, maxSize }: Props) 
       <p className="text-note-gray mt-4 text-xs @max-md:hidden">mp4 / mov - 1 本最大{maxSize}MB</p>
       <p
         className={cn(
-          "text-note-gray mt-2 text-[10px] leading-5 md:hidden",
+          "text-note-gray mt-2 text-[10px] leading-5 @md:hidden",
           isEasy && "text-[13px]",
         )}
       >

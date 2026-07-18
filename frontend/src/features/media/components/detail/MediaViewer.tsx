@@ -81,7 +81,7 @@ export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
                 alt=""
                 width={20}
                 height={20}
-                className="max-md:w-6 @max-md:h-6"
+                className="@max-md:h-6 @max-md:w-6"
               />
             </Link>
           ) : (
@@ -95,7 +95,7 @@ export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
                 alt=""
                 width={20}
                 height={20}
-                className="max-md:w-6 @max-md:h-6"
+                className="@max-md:h-6 @max-md:w-6"
               />
             </a>
           ))}
@@ -115,7 +115,7 @@ export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
                 alt=""
                 width={20}
                 height={20}
-                className="max-md:w-6 @max-md:h-6"
+                className="@max-md:h-6 @max-md:w-6"
               />
             </Link>
           ) : (
@@ -129,7 +129,7 @@ export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
                 alt=""
                 width={20}
                 height={20}
-                className="max-md:w-6 @max-md:h-6"
+                className="@max-md:h-6 @max-md:w-6"
               />
             </a>
           ))}
@@ -154,7 +154,7 @@ export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
                 alt=""
                 width={30}
                 height={30}
-                className="max-md:w-6 @max-md:h-6"
+                className="@max-md:h-6 @max-md:w-6"
               />
             </a>
           </>
