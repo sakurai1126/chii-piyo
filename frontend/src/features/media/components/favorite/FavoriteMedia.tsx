@@ -45,7 +45,7 @@ export const FavoriteMedia = ({ isEasy, initialData, users }: Props) => {
       {/* メディアリスト */}
       <div
         className={cn(
-          "mt-15 grid grid-cols-4 gap-2 @max-md:mt-2 @max-md:ml-0 @max-md:grid-cols-3 @max-md:gap-0.5",
+          "mt-15 grid grid-cols-4 gap-2 @max-md:mt-5 @max-md:ml-0 @max-md:grid-cols-3 @max-md:gap-0.5",
           isEasy && "@max-md:mt-10 @max-md:grid-cols-2 @max-md:gap-2",
         )}
       >

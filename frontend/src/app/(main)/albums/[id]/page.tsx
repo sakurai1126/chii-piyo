@@ -62,7 +62,9 @@ export default async function AlbumDetailPage({ params }: Readonly<Props>) {
             sharingGroups={sharingGroups}
             albumId={Number(id)}
           />
-          <p className="py-20 text-center font-medium">アルバムにメディアが追加されていません</p>
+          <p className="py-20 text-center font-medium @max-md:text-sm">
+            アルバムにメディアが追加されていません
+          </p>
         </>
       )}
     </Container>

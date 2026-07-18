@@ -28,6 +28,7 @@ import videoIcon from "../assets/video-icon.svg";
 
 // 共通のProps
 type CommonProps = {
+  isEasy?: boolean;
   tags: TagResponseDto[];
   sharingGroups: SharingGroupResponseDto[];
   isOpen: boolean;
@@ -54,6 +55,7 @@ type RecordProps = {
 type Props = CommonProps & (AlbumProps | RecordProps);
 
 export const AddMediaModal = ({
+  isEasy = false,
   tags,
   sharingGroups,
   isOpen,
@@ -230,37 +232,39 @@ export const AddMediaModal = ({
                     <Image src="/images/modal-close.svg" alt="" width={12} height={12} />
                   </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setIsFilterOpen(!isFilterOpen)}
-                  className="text-brown-dark border-brown-dark dark:text-brown-light bg-background-accent mt-7 flex w-full items-center justify-center gap-2 rounded-lg border py-5 text-[13px] outline-0 @md:hidden"
-                >
-                  <p>{isFilterOpen ? "絞込検索を閉じる" : "絞込検索"}</p>
-
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 12 12"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
+                {!isEasy && (
+                  <button
+                    type="button"
+                    onClick={() => setIsFilterOpen(!isFilterOpen)}
+                    className="text-brown-dark border-brown-dark dark:text-brown-light bg-background-accent mt-7 flex w-full items-center justify-center gap-2 rounded-lg border py-5 text-[13px] outline-0 @md:hidden"
                   >
-                    <rect width="12" height="12" rx="6" fill="#6F4000" />
-                    <path
-                      d="M3.19995 5.99992H8.79995"
-                      stroke="white"
-                      strokeMiterlimit="10"
-                      strokeLinecap="round"
-                    />
-                    {!isFilterOpen && (
+                    <p>{isFilterOpen ? "絞込検索を閉じる" : "絞込検索"}</p>
+
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 12 12"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <rect width="12" height="12" rx="6" fill="#6F4000" />
                       <path
-                        d="M6 3.20004V8.80004"
+                        d="M3.19995 5.99992H8.79995"
                         stroke="white"
                         strokeMiterlimit="10"
                         strokeLinecap="round"
                       />
-                    )}
-                  </svg>
-                </button>
+                      {!isFilterOpen && (
+                        <path
+                          d="M6 3.20004V8.80004"
+                          stroke="white"
+                          strokeMiterlimit="10"
+                          strokeLinecap="round"
+                        />
+                      )}
+                    </svg>
+                  </button>
+                )}
 
                 <div
                   className={cn(
