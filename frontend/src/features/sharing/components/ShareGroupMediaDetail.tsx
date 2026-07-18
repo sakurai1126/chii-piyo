@@ -91,6 +91,7 @@ export const ShareGroupMediaDetail = ({ isAdmin, media, sharingGroups, users }: 
 
         {isAdmin && (
           <button
+            type="button"
             className="cursor-pointer text-sm underline transition-all hover:opacity-70 @max-md:mt-3 @max-md:ml-auto @max-md:text-xs"
             onClick={() => setIsOpen(true)}
           >

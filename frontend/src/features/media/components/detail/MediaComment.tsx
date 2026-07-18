@@ -144,6 +144,7 @@ export const MediaComment = ({ mediaId, isEasy, comments, currentUser, users }: 
                   </div>
                   {comment.userId === currentUser.id && (
                     <button
+                      type="button"
                       className="text-warning cursor-pointer text-xs underline transition-all hover:opacity-70 @max-md:mt-2 @max-md:ml-auto @max-md:text-[10px] dark:font-medium"
                       onClick={() => openDeleteModal(comment.id)}
                       disabled={isPending}

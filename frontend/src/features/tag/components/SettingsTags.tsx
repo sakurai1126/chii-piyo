@@ -104,6 +104,7 @@ const TagItem = ({ tag }: { tag: TagResponseDto }) => {
         {isEditMode ? (
           <>
             <button
+              type="button"
               className="border-brown-middle/30 hover:bg-brown-dark/10 grid aspect-square h-8 cursor-pointer place-content-center border-x transition-all duration-400"
               onClick={cancelEdit}
               disabled={isPending}
@@ -111,6 +112,7 @@ const TagItem = ({ tag }: { tag: TagResponseDto }) => {
               <Image src={backIcon} alt="" width={11} height={11} />
             </button>
             <button
+              type="button"
               className="hover:bg-warning/10 grid aspect-square h-8 cursor-pointer place-content-center rounded-r-2xl transition-all duration-400"
               onClick={saveUpdateAction}
               disabled={isPending}
@@ -121,6 +123,7 @@ const TagItem = ({ tag }: { tag: TagResponseDto }) => {
         ) : (
           <>
             <button
+              type="button"
               className="border-brown-middle/30 hover:bg-brown-dark/10 grid aspect-square h-8 cursor-pointer place-content-center border-x transition-all duration-400"
               onClick={() => setIsEditMode(true)}
               disabled={isPending}
@@ -128,6 +131,7 @@ const TagItem = ({ tag }: { tag: TagResponseDto }) => {
               <Image src={editIcon} alt="" width={11} height={11} />
             </button>
             <button
+              type="button"
               className="hover:bg-warning/10 grid aspect-square h-8 cursor-pointer place-content-center rounded-r-2xl transition-all duration-400"
               onClick={() => setIsDeleteConfirm(true)}
               disabled={isPending}

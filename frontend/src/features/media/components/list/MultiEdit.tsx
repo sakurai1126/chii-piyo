@@ -170,6 +170,7 @@ export const MultiEdit = ({
               変更する
             </Button>
             <button
+              type="button"
               className="text-warning cursor-pointer text-xs underline @max-md:ml-auto dark:font-medium"
               disabled={isPending}
               onClick={() => setIsDeleteConfirmOpen(true)}

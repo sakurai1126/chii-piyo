@@ -71,6 +71,7 @@ export const Profile = ({ isEasy, currentUser }: Props) => {
               </div>
             </div>
             <button
+              type="button"
               className={cn(
                 "mt-2 cursor-pointer text-nowrap underline transition-all hover:opacity-70",
                 isEasy ? "text-[13px] font-medium" : "text-xs @max-md:text-[10px]",
@@ -87,6 +88,7 @@ export const Profile = ({ isEasy, currentUser }: Props) => {
                   表示名：{user.displayName}
                 </p>
                 <button
+                  type="button"
                   className={cn(
                     "cursor-pointer text-xs underline transition-all hover:opacity-70",
                     isEasy ? "mt-2 w-fit text-[13px]" : "@max-md:text-[10px]",

@@ -39,7 +39,7 @@ export const AccentButton = ({ styleVariant = "primary", ...props }: Props) => {
   if (props.variant === "button") {
     const { children, className, ...buttonProps } = props;
     return (
-      <button {...buttonProps} className={cn(variantStyles[styleVariant], className)}>
+      <button {...buttonProps} type="button" className={cn(variantStyles[styleVariant], className)}>
         {children}
       </button>
     );

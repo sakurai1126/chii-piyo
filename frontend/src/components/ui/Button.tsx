@@ -26,6 +26,7 @@ export const Button = ({
   return (
     <button
       {...props}
+      type="button"
       className={cn(
         variantStyles[variant],
         disabledStyle &&

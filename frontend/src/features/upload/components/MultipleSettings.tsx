@@ -84,6 +84,7 @@ export const MultipleSettings = ({
         </div>
       </AccordionContent>
       <button
+        type="button"
         className="mx-auto grid h-10 w-full cursor-pointer place-content-center"
         aria-expanded={isOpen}
         aria-controls={`accordion-${uid}`}

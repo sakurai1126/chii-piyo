@@ -36,6 +36,7 @@ export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
       {modeExpansion && (
         <div className="fixed top-0 left-0 z-1000 grid h-full w-full place-content-center bg-black">
           <button
+            type="button"
             className="fixed top-5 right-5 cursor-pointer transition-all hover:opacity-50 @max-md:hidden"
             onClick={() => setModeExpansion(false)}
           >
@@ -138,6 +139,7 @@ export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
           <>
             {/* 拡大 */}
             <button
+              type="button"
               className="absolute top-4 right-5 cursor-pointer transition-all hover:opacity-70 @max-md:hidden"
               onClick={() => setModeExpansion(true)}
             >

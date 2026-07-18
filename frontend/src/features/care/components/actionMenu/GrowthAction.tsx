@@ -129,6 +129,7 @@ export const GrowthAction = () => {
       </CareActionModal>
 
       <button
+        type="button"
         className="border-growth-border group bg-translucent w-full cursor-pointer rounded-lg border p-5 backdrop-blur-[7.5px] transition-all @max-md:flex @max-md:items-center @max-md:justify-center @max-md:gap-3 @max-md:rounded-4xl @max-md:p-4"
         onClick={openModal}
         disabled={isPending}

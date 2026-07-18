@@ -32,6 +32,7 @@ export const NewRecords = ({ tags, sharingGroups, variant }: Props) => {
       {/* 開くボタン */}
       <AccordionContent isOpen={!isMenuOpen}>
         <button
+          type="button"
           className={cn(
             "hover:bg-background-normal bg-green-back dark:bg-background-accent flex h-20 w-full cursor-pointer items-center justify-center gap-3 rounded-lg transition-all",
             variant === "word" && "h-30",
@@ -58,6 +59,7 @@ export const NewRecords = ({ tags, sharingGroups, variant }: Props) => {
         </div>
         {/* 閉じるボタン */}
         <button
+          type="button"
           className="mt-3 grid w-full cursor-pointer place-content-center p-3 pb-5"
           onClick={() => setIsMenuOpen(false)}
         >

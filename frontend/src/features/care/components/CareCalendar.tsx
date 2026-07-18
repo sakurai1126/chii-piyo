@@ -58,6 +58,7 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
       {/* 年月表示 */}
       <div className="mt-20 flex items-center justify-center gap-10 @max-md:mt-10 @max-md:justify-between @max-md:gap-0">
         <button
+          type="button"
           className="cursor-pointer pt-1 text-sm transition-all hover:opacity-70 @max-md:text-xs"
           onClick={() => changeWeek(-7)}
         >
@@ -105,6 +106,7 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
               >
                 {/* 前日へ移動(モバイルのみ) */}
                 <button
+                  type="button"
                   className="text-brown-dark text-xs outline-0 @md:hidden"
                   onClick={() => changeDays(-1)}
                 >
@@ -127,6 +129,7 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
                 </div>
                 {/* 翌日へ移動(モバイルのみ) */}
                 <button
+                  type="button"
                   className="text-brown-dark text-xs outline-0 @md:hidden"
                   onClick={() => changeDays(1)}
                 >
@@ -172,6 +175,7 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
                   .map((item) => (
                     <button
                       key={item.id}
+                      type="button"
                       className="border-accent-pink cursor-pointer rounded-full border"
                       onClick={growthItemTapAction(item, dayIndex)}
                     >
@@ -214,6 +218,7 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
                     .map((item) => (
                       <button
                         key={item.id}
+                        type="button"
                         className="border-accent-pink cursor-pointer rounded-full border"
                         onClick={careItemTapAction(item, dayIndex)}
                       >

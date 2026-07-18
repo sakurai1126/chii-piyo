@@ -128,6 +128,7 @@ export const MediaFilter = ({ isEasy, tags, sharingGroups }: Props) => {
             </div>
 
             <button
+              type="button"
               onClick={() => setIsOpen(!isOpen)}
               className="text-brown-dark flex w-full items-center justify-center gap-2 py-5 text-[13px] outline-0 @md:hidden"
             >

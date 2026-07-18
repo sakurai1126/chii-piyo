@@ -56,6 +56,7 @@ export const DisplayDebug = ({ currentUser }: Props) => {
       <div className="mt-2 flex items-center justify-between">
         <p className="text-xs">ログアウト</p>
         <button
+          type="button"
           onClick={logoutAction}
           className="text-black-text border-line-gray rounded-sm border bg-white px-3 py-2 text-xs"
         >

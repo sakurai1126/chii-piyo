@@ -70,6 +70,7 @@ export const TagMediaDetail = ({ isAdmin, mediaId, mediaTags, tags }: Props) => 
         ))}
         {isAdmin && (
           <button
+            type="button"
             className="border-line-gray text-note-gray hover:bg-line-gray flex cursor-pointer items-center gap-1 rounded-2xl border border-dashed bg-white px-3 py-1 text-sm transition-all hover:text-white @max-md:text-xs"
             onClick={() => setIsOpen(true)}
             disabled={isPending}

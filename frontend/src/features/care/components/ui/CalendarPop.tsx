@@ -74,6 +74,7 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
             <div className="relative">
               {/* 閉じるボタン */}
               <button
+                type="button"
                 className="absolute top-2 right-2 cursor-pointer transition-all hover:opacity-70"
                 onClick={popCloseAction}
                 disabled={isPending}
@@ -345,6 +346,7 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
                     {!isEditMode && (
                       <>
                         <button
+                          type="button"
                           className="cursor-pointer text-xs underline transition-all hover:opacity-70"
                           onClick={editModeOpen}
                           disabled={isPending}
@@ -352,6 +354,7 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
                           編集
                         </button>
                         <button
+                          type="button"
                           className="text-warning cursor-pointer text-xs underline transition-all hover:opacity-70 dark:font-medium"
                           onClick={() => setIsDeleteConfirmOpen(true)}
                           disabled={isPending}
@@ -364,6 +367,7 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
                     {isEditMode && (
                       <>
                         <button
+                          type="button"
                           className="cursor-pointer text-xs underline transition-all hover:opacity-70"
                           onClick={() => setIsEditMode(false)}
                           disabled={isPending}
@@ -372,6 +376,7 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
                         </button>
                         {state.record && (
                           <button
+                            type="button"
                             className="text-success cursor-pointer text-xs underline transition-all hover:opacity-70"
                             onClick={saveCareRecordAction}
                             disabled={isPending}
@@ -381,6 +386,7 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
                         )}
                         {state.growthRecord && (
                           <button
+                            type="button"
                             className="text-success cursor-pointer text-xs underline transition-all hover:opacity-70"
                             onClick={saveGrowthRecordAction}
                             disabled={isPending}
