@@ -91,7 +91,7 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
         )}
 
         {/* 日付・曜日表示行 */}
-        <div className="bg-calender-head border-line-gray flex h-10 rounded-t-xl border-b">
+        <div className="bg-calender-head border-line-gray flex h-10 overflow-hidden rounded-t-xl border-b">
           <span className="w-10 shrink-0"></span>
           <div className="grid w-full grid-cols-7 @max-md:grid-cols-1">
             {Array.from({ length: 7 }, (_, index) => (
