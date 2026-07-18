@@ -73,8 +73,8 @@ export const FavoriteMediaList = ({ media, users }: Props) => {
             className={cn(
               "stroke-brown-dark transition-all",
               media.isFavorite
-                ? "fill-accent-pink group-hover/favorite:fill-accent-pink/80"
-                : "group-hover/favorite:fill-accent-pink/20 fill-white",
+                ? "fill-accent-light-pink group-hover/favorite:fill-accent-light-pink/80"
+                : "group-hover/favorite:fill-accent-light-pink/20 fill-white",
             )}
           />
         </svg>

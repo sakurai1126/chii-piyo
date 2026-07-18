@@ -233,7 +233,7 @@ export const AddMediaModal = ({
                 <button
                   type="button"
                   onClick={() => setIsFilterOpen(!isFilterOpen)}
-                  className="text-brown-dark border-brown-dark bg-background-accent mt-7 flex w-full items-center justify-center gap-2 rounded-lg border py-5 text-[13px] outline-0 @md:hidden"
+                  className="text-brown-dark border-brown-dark dark:text-brown-light bg-background-accent mt-7 flex w-full items-center justify-center gap-2 rounded-lg border py-5 text-[13px] outline-0 @md:hidden"
                 >
                   <p>{isFilterOpen ? "絞込検索を閉じる" : "絞込検索"}</p>
 
@@ -343,7 +343,7 @@ export const AddMediaModal = ({
                 </div>
 
                 {/* メディアリスト */}
-                <div className="mt-4 grid grid-cols-7 gap-2 @max-md:mt-2 @max-md:grid-cols-3 @max-md:gap-0.5">
+                <div className="mt-4 grid grid-cols-7 gap-2 @max-md:mt-10 @max-md:grid-cols-3 @max-md:gap-0.5">
                   {items.map((item) => (
                     <React.Fragment key={item.id}>
                       <label
