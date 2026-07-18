@@ -97,7 +97,7 @@ export const MilkAction = () => {
         <div className="mt-4 flex items-center gap-4 @max-md:justify-center">
           <button
             type="button"
-            className="cursor-pointer transition-all hover:opacity-70"
+            className="dark:bg-white-back cursor-pointer rounded-full transition-all hover:opacity-70"
             onClick={milkMinus}
             disabled={isPending}
           >
@@ -109,7 +109,7 @@ export const MilkAction = () => {
           </div>
           <button
             type="button"
-            className="cursor-pointer transition-all hover:opacity-70"
+            className="dark:bg-white-back cursor-pointer rounded-full transition-all hover:opacity-70"
             onClick={milkPlus}
             disabled={isPending}
           >
@@ -120,7 +120,7 @@ export const MilkAction = () => {
           {amountMlsSelect.map((value) => (
             <button
               type="button"
-              className="bg-accent-orange/10 border-brown-dark text-brown-dark h-8 w-20 cursor-pointer rounded-sm border font-medium transition-all hover:opacity-70 @max-md:text-sm"
+              className="bg-accent-orange/10 dark:bg-white-back dark:border-brown-middle dark:text-brown-middle border-brown-dark text-brown-dark h-8 w-20 cursor-pointer rounded-sm border font-medium transition-all hover:opacity-70 @max-md:text-sm"
               onClick={() => setAmountMl(value)}
               disabled={isPending}
               key={value}
