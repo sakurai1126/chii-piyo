@@ -114,7 +114,7 @@ export const MultiEdit = ({
           <p className="border-line-gray w-fit border-b pb-2 text-xl font-medium @max-md:text-sm">
             選択したメディアを一括で編集する
           </p>
-          <div className="mt-6 flex items-center gap-4">
+          <div className="mt-6 flex flex-wrap items-center gap-4">
             <label htmlFor="editTypeAll" className="flex items-center gap-2">
               <input
                 type="radio"
@@ -171,7 +171,7 @@ export const MultiEdit = ({
             </Button>
             <button
               type="button"
-              className="text-warning cursor-pointer text-xs underline @max-md:ml-auto dark:font-medium"
+              className="text-warning cursor-pointer text-xs underline transition-all hover:opacity-70 @max-md:ml-auto dark:font-medium"
               disabled={isPending}
               onClick={() => setIsDeleteConfirmOpen(true)}
             >
