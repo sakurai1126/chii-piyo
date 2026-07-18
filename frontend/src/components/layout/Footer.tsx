@@ -25,7 +25,9 @@ export default async function Footer() {
         <nav className="mt-4 flex justify-center gap-12 @max-md:hidden">
           <Link href="/">ホーム</Link>
           <Link href="/media">写真・動画</Link>
-          {isAdmin && <Link href="/care">育児記録</Link>}
+          <Link href="/albums">アルバム</Link>
+          <Link href="/favorites">お気に入り</Link>
+          <Link href={isAdmin ? "/care" : "/analysis"}>育児記録</Link>
           <Link href="/settings">設定</Link>
         </nav>
       )}

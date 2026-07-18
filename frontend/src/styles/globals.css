@@ -22,6 +22,7 @@
   --accent-orange-radio: #e87116;
   --accent-pink: #ff4f4f;
   --calender-head: #fffc9f;
+  --warning: #900521;
 }
 
 .dark {
@@ -41,6 +42,7 @@
   --accent-orange-radio: #8e0303;
   --accent-pink: #aa0707;
   --calender-head: #0a0e55;
+  --warning: #bc1435;
 }
 
 /* tailwind用の変数定義 */
@@ -71,7 +73,7 @@
   --color-brown-light: #d07800;
   --color-brown-middle: #a56f0c;
   --color-brown-dark: #6f4000;
-  --color-warning: #900521;
+  --color-warning: var(--warning);
   --color-warning-hover: #ff365e;
   --color-warning-back: #d80000;
 
@@ -83,6 +85,7 @@
   --color-note-gray: #888888;
 
   --color-accent-pink: var(--accent-pink);
+  --color-accent-light-pink: #ff4f4f;
   --color-accent-pink-back: #ffd5c7;
 
   --color-accent-brown-back: #fef0b5;

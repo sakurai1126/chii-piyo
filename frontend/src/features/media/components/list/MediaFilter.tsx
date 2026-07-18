@@ -19,9 +19,10 @@ type Props = {
   isEasy: boolean;
   tags: TagResponseDto[];
   sharingGroups: SharingGroupResponseDto[];
+  showMediaCount?: boolean;
 };
 
-export const MediaFilter = ({ isEasy, tags, sharingGroups }: Props) => {
+export const MediaFilter = ({ isEasy, tags, sharingGroups, showMediaCount = false }: Props) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -115,6 +116,7 @@ export const MediaFilter = ({ isEasy, tags, sharingGroups }: Props) => {
                     tags={tags}
                     updateFilter={updateFilter}
                     currentValue={searchParams.getAll("tagId") ?? ""}
+                    showMediaCount={showMediaCount}
                   />
 
                   {/* 期間 */}
@@ -130,7 +132,7 @@ export const MediaFilter = ({ isEasy, tags, sharingGroups }: Props) => {
             <button
               type="button"
               onClick={() => setIsOpen(!isOpen)}
-              className="text-brown-dark flex w-full items-center justify-center gap-2 py-5 text-[13px] outline-0 @md:hidden"
+              className="text-brown-dark dark:text-brown-light flex w-full items-center justify-center gap-2 py-5 text-[13px] outline-0 @md:hidden"
             >
               <p>{isOpen ? "閉じる" : "絞込検索"}</p>
 

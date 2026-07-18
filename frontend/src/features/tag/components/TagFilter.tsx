@@ -16,9 +16,15 @@ type Props = {
   tags: TagResponseDto[];
   updateFilter: ({ key, value }: { key: string; value: string }) => void;
   currentValue?: string | string[];
+  showMediaCount?: boolean;
 };
 
-export const TagFilter = ({ tags, updateFilter, currentValue = [] }: Props) => {
+export const TagFilter = ({
+  tags,
+  updateFilter,
+  currentValue = [],
+  showMediaCount = false,
+}: Props) => {
   const uid = useId();
   // 折り返し展開フラグ
   const [isOpen, setIsOpen] = useState(false);
@@ -62,14 +68,16 @@ export const TagFilter = ({ tags, updateFilter, currentValue = [] }: Props) => {
               height={14}
             />
             <p className="text-sm @max-md:text-xs">{tag.name}</p>
-            <p
-              className={cn(
-                "rounded-4xl px-1 py-px text-[10px] tracking-tighter text-white",
-                currentValue.includes(tag.id.toString()) ? "bg-accent-orange" : "bg-note-gray",
-              )}
-            >
-              {tag.mediaCount}
-            </p>
+            {showMediaCount && (
+              <p
+                className={cn(
+                  "rounded-4xl px-1 py-px text-[10px] tracking-tighter text-white",
+                  currentValue.includes(tag.id.toString()) ? "bg-accent-orange" : "bg-note-gray",
+                )}
+              >
+                {tag.mediaCount}
+              </p>
+            )}
           </label>
         ))}
       </div>

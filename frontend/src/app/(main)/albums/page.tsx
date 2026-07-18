@@ -15,7 +15,12 @@ export default async function AlbumsPage() {
         </div>
         {isAdmin && !isEasy && <AlbumsNew />}
       </div>
-      <AlbumsGrid isEasy={isEasy} albums={albums} />
+
+      {albums.length ? (
+        <AlbumsGrid isEasy={isEasy} albums={albums} />
+      ) : (
+        <p className="my-15 text-center @max-md:text-sm">アルバムは作成されていません</p>
+      )}
     </Container>
   );
 }

@@ -63,7 +63,12 @@ export const TopContents = ({
           アルバム
         </h2>
         <div className={cn(titleLineBaseStyle, "-mb-5 @max-md:-mb-9")}></div>
-        <AlbumsGrid isEasy={isEasy} albums={albums} variant="top" />
+        {albums.length ? (
+          <AlbumsGrid isEasy={isEasy} albums={albums} variant="top" />
+        ) : (
+          <p className="mt-20 mb-15 text-center @max-md:text-sm">アルバムは作成されていません</p>
+        )}
+
         <Link
           href="/albums"
           className={cn(

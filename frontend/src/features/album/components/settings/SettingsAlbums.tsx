@@ -16,7 +16,7 @@ export const SettingsAlbums = ({ albums }: Props) => {
             <SettingsAlbumListItem album={album} index={index} key={album.id} />
           ))
         ) : (
-          <p className="py-4 text-center">アルバムは作成されていません</p>
+          <p className="py-4 text-center text-sm">アルバムは作成されていません</p>
         )}
       </div>
       <NewAlbumEdit />

@@ -20,6 +20,7 @@ export const AddMediaAlbum = ({ isEasy, tags, sharingGroups, albumId }: Props) =
     <>
       {/* モーダル */}
       <AddMediaModal
+        isEasy={isEasy}
         tags={tags}
         sharingGroups={sharingGroups}
         isOpen={isOpen}
@@ -30,7 +31,7 @@ export const AddMediaAlbum = ({ isEasy, tags, sharingGroups, albumId }: Props) =
 
       {/* 遷移ボタン */}
       <AccentButton
-        className={cn("mt-10 ml-auto @max-md:mt-4", isEasy && "mx-auto")}
+        className={cn("mt-10 ml-auto @max-md:mt-4", isEasy && "mx-auto @max-md:mt-8")}
         variant="button"
         onClick={() => setIsOpen(true)}
       >

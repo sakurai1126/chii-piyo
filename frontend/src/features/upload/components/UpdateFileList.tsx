@@ -122,7 +122,7 @@ export const UpdateFileList = ({
             </Button>
           )}
           {!isUploading && targets.length === 0 && (
-            <AccentButton variant="link" href="/media">
+            <AccentButton variant="link" href="/media" className="@max-md:w-35">
               メディア一覧
             </AccentButton>
           )}

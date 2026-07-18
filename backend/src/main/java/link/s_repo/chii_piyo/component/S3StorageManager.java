@@ -92,7 +92,12 @@ public class S3StorageManager {
             .key(s3Key);
 
         if (fileName != null) {
-            requestBuilder.responseContentDisposition("attachment; filename=\"" + fileName + "\"");
+            // 日本語ファイル名でも文字化けしないようエンコードしてダウンロード用ヘッダーを設定
+            String contentDisposition = org.springframework.http.ContentDisposition.attachment()
+                .filename(fileName, java.nio.charset.StandardCharsets.UTF_8)
+                .build()
+                .toString();
+            requestBuilder.responseContentDisposition(contentDisposition);
         }
 
         // GetObjectRequestを元に、署名付きURLを生成するためのGetObjectPresignRequestを作成

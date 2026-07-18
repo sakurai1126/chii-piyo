@@ -87,19 +87,26 @@ export const UploadFile = ({
             alt=""
             width={120}
             height={120}
-            className={cn("h-30 w-30 rounded-lg object-cover", isEasy && "h-50 w-50")}
+            className={cn(
+              "h-30 w-30 rounded-lg object-cover @max-md:h-20 @max-md:w-20",
+              isEasy && "@max-md:h-50 @max-md:w-50",
+            )}
             unoptimized
           />
         )}
         <div className="w-full">
           <div
             className={cn(
-              "flex h-30 items-start justify-between @max-md:flex-col",
+              "flex h-30 items-start justify-between gap-5 @max-md:flex-col",
               isEasy && "h-auto",
             )}
           >
             <div hidden={isEasy}>
-              <p className="@max-md:text-[13px]">{item.file.name}</p>
+              <p className="break-all @max-md:text-[13px]">
+                {item.file.name.length > 100
+                  ? `${item.file.name.slice(0, 100)}...`
+                  : item.file.name}
+              </p>
               <p className="mt-2 text-[13px] @max-md:text-[11px]">
                 {sizeInKB > 1024 ? `${sizeInMB.toFixed(1)}MB` : `${sizeInKB.toFixed(0)}KB`}{" "}
                 {item.width && item.height && `${item.width} × ${item.height}`}
@@ -126,7 +133,7 @@ export const UploadFile = ({
             {!isLocked && (
               <button
                 className={cn(
-                  "text-warning cursor-pointer text-xs underline transition-all hover:opacity-70 @max-md:ml-auto dark:font-medium",
+                  "text-warning shrink-0 cursor-pointer text-xs underline transition-all hover:opacity-70 @max-md:ml-auto dark:font-medium",
                   isEasy && "text-[13px] @max-md:mx-auto",
                 )}
                 onClick={onRemove}
