@@ -88,10 +88,10 @@ const NormalModeMenu = ({ isAdmin }: { isAdmin: boolean }) => {
       <div className="relative">
         <Image
           src="/images/menu-illust.png"
-          width={170}
-          height={128}
+          width={150}
+          height={113}
           alt="ひよこのイラスト"
-          className="pointer-events-none absolute bottom-4 left-1.5 z-51 @max-md:right-4 @max-md:bottom-5 @max-md:left-auto @max-md:w-22"
+          className="pointer-events-none absolute bottom-5 left-3 z-51 @max-md:right-4 @max-md:bottom-5 @max-md:left-auto @max-md:w-26"
         />
         <div className="border-brown-dark bg-translucent flex gap-15 rounded-lg border-2 py-7 pr-13 pl-20 backdrop-blur-[15px] @max-md:w-70 @max-md:flex-col @max-md:gap-6 @max-md:border @max-md:p-5 @max-md:pb-16">
           <div className="flex flex-col gap-5 @max-md:flex-row @max-md:gap-19.5">
