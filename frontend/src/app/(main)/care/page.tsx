@@ -4,8 +4,7 @@ import Container from "@/components/layout/Container";
 import { ChildCareNavigation } from "@/components/ui/ChildCareNavigation";
 import { isAdminUser, isEasyMode } from "@/features/auth";
 import { CareActionMenu, CareCalendar } from "@/features/care";
-import { getCareRecords } from "@/features/care/api/getCareRecords";
-import { getGrowthRecords } from "@/features/care/api/getGrowthRecords";
+import { getCareRecords, getGrowthRecords } from "@/features/care/server";
 
 export default async function CarePage() {
   // 管理者以外 or かんたんモードであれば04表示

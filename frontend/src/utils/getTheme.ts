@@ -2,7 +2,7 @@ import "server-only";
 
 import { cookies } from "next/headers";
 
-import { getCurrentUser } from "@/features/auth/actions/getCurrentUser";
+import { getCurrentUser } from "@/features/auth/server";
 
 export const getTheme = async () => {
   // Cookieからテーマ設定を読み取る

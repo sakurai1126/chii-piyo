@@ -1,7 +1,7 @@
 import Container from "@/components/layout/Container";
 import { PageTitle } from "@/components/ui/PageTitle";
 import { isEasyMode } from "@/features/auth";
-import { getUsers } from "@/features/auth/actions/getUsers";
+import { getUsers } from "@/features/auth/server";
 import { FavoriteMedia } from "@/features/media";
 import { getMediaList } from "@/features/media/server";
 

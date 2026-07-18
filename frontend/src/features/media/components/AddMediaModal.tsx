@@ -9,10 +9,7 @@ import { Modal } from "@/components/layout/Modal";
 import { Button } from "@/components/ui/Button";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { toast } from "@/components/ui/Toast";
-import { addAlbumMediaAction } from "@/features/album/";
-import { DateRangeFilter } from "@/features/media/components/list/DateRangeFilter";
-import { MediaKindFilter } from "@/features/media/components/list/MediaKindFilter";
-import { useInfiniteMediaList } from "@/features/media/hooks/useInfiniteMediaList";
+import { addAlbumMediaAction } from "@/features/album";
 import { SelectedMediaData } from "@/features/record/types";
 import { SharingGroupFilter } from "@/features/sharing";
 import { TagFilter } from "@/features/tag";
@@ -25,6 +22,10 @@ import {
 import { cn } from "@/utils/cn";
 
 import videoIcon from "../assets/video-icon.svg";
+import { useInfiniteMediaList } from "../hooks/useInfiniteMediaList";
+
+import { DateRangeFilter } from "./list/DateRangeFilter";
+import { MediaKindFilter } from "./list/MediaKindFilter";
 
 // 共通のProps
 type CommonProps = {

@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import { SettingsAlbums } from "@/features/album/components/settings/SettingsAlbums";
+import { SettingsAlbums } from "@/features/album";
 import { AlbumResponseDto } from "@/lib/api-client/gen";
 
 import icon from "../assets/albums.svg";

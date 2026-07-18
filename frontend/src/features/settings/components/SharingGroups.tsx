@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import { SettingsSharingGroups } from "@/features/sharing/components/settings/SettingsSharingGroups";
+import { SettingsSharingGroups } from "@/features/sharing";
 import { UserResponseDto, SharingGroupResponseDto } from "@/lib/api-client/gen";
 
 import icon from "../assets/sharing-groups.svg";

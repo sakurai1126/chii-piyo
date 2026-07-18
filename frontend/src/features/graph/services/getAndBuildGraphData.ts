@@ -1,6 +1,5 @@
-import { getCareRecords } from "@/features/care/api/getCareRecords";
-import { getGrowthRecords } from "@/features/care/api/getGrowthRecords";
-import { getWordRecords } from "@/features/record/api/getWordRecords";
+import { getGrowthRecords, getCareRecords } from "@/features/care/server";
+import { getWordRecords } from "@/features/record/server";
 import { formatShortDate, formatShortMonth } from "@/utils/date";
 
 import { growthStandardRanges } from "./growthStandardRanges";

@@ -1,8 +1,8 @@
 import Container from "@/components/layout/Container";
 import { PageTitle } from "@/components/ui/PageTitle";
 import { getAlbums } from "@/features/album/server";
-import { getCurrentUser, isAdminUser, isEasyMode } from "@/features/auth";
-import { getUsers } from "@/features/auth/actions/getUsers";
+import { isAdminUser, isEasyMode } from "@/features/auth";
+import { getCurrentUser, getUsers } from "@/features/auth/server";
 import {
   Account,
   Albums,

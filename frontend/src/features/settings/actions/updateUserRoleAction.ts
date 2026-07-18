@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { getCurrentUser } from "@/features/auth";
+import { getCurrentUser } from "@/features/auth/server";
 import { UserManagementApi, UserRoleUpdateRequestDtoRoleEnum } from "@/lib/api-client/gen";
 import { createAuthorizedConfig } from "@/lib/api-client/server";
 import { handleActionError, ActionResult } from "@/utils/action";

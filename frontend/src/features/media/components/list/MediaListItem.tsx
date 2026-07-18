@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Dispatch, SetStateAction, useId } from "react";
 
-import { FavoriteMediaList } from "@/features/favorite/components/FavoriteMediaList";
+import { FavoriteMediaList } from "@/features/favorite";
 import { MediaResponseDto, UserResponseDto } from "@/lib/api-client/gen";
 import { cn } from "@/utils/cn";
 
