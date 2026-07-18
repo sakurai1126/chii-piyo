@@ -73,6 +73,7 @@ export const CareCalendar = ({ initialCareRecords, initialGrowthRecords }: Props
           <span className="ml-1 pt-1 text-lg @max-md:text-sm">月</span>
         </div>
         <button
+          type="button"
           className="cursor-pointer pt-1 text-sm transition-all hover:opacity-70 @max-md:text-xs"
           onClick={() => changeWeek(7)}
         >
