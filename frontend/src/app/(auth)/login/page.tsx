@@ -10,13 +10,13 @@ export default async function Login({ searchParams }: Readonly<{ searchParams: S
   const logoutMessage = logout === "success";
 
   return (
-    <div className="px-5 py-50 @max-md:py-40">
+    <div className="grid h-screen place-content-center px-5">
       <Image
         src="/images/logo.png"
         alt="Chii-Piyo"
         width={300}
         height={100}
-        className="mx-auto @max-md:w-50"
+        className="mx-auto max-md:w-50"
       />
       <LoginForm logoutMessage={logoutMessage} />
     </div>
