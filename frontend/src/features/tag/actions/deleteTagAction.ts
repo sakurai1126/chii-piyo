@@ -13,7 +13,7 @@ type Input = {
 
 export const deleteTagAction = async (input: Input): Promise<ActionResult> => {
   try {
-    // 認証トークンを含むAPIクライアントの設定を生成し、MediaManagementApiのインスタンスを作成
+    // 認証トークンを含むAPIクライアントの設定を生成し、TagManagementApiのインスタンスを作成
     const configuration = await createAuthorizedConfig();
     const apiClient = new TagManagementApi(configuration);
 

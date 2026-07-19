@@ -13,7 +13,7 @@ type Input = {
 
 export const deleteCommentAction = async (input: Input): Promise<ActionResult> => {
   try {
-    // 認証トークンを含むAPIクライアントの設定を生成し、MediaManagementApiのインスタンスを作成
+    // 認証トークンを含むAPIクライアントの設定を生成し、MediaCommentManagementApiのインスタンスを作成
     const configuration = await createAuthorizedConfig();
     const apiClient = new MediaCommentManagementApi(configuration);
 

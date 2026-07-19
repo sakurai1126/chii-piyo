@@ -21,7 +21,7 @@ export const updateUserRoleAction = async (input: Input): Promise<ActionResult> 
       return { success: false, error: "自分自身の権限は変更できません" };
     }
 
-    // 認証トークンを含むAPIクライアントの設定を生成し、MediaManagementApiのインスタンスを作成
+    // 認証トークンを含むAPIクライアントの設定を生成し、UserManagementApiのインスタンスを作成
     const configuration = await createAuthorizedConfig();
     const apiClient = new UserManagementApi(configuration);
 
