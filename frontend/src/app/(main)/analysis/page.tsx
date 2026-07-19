@@ -1,7 +1,7 @@
 import Container from "@/components/layout/Container";
 import { ChildCareNavigation } from "@/components/ui/ChildCareNavigation";
 import { PageTitle } from "@/components/ui/PageTitle";
-import { isAdminUser, isEasyMode } from "@/features/auth";
+import { isAdminUser, isEasyMode } from "@/features/auth/server";
 import { getAndBuildGraphData, GraphChart, GraphSummary } from "@/features/graph";
 import { cn } from "@/utils/cn";
 

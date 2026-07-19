@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { isEasyMode } from "@/features/auth";
+import { isEasyMode } from "@/features/auth/server";
 import { cn } from "@/utils/cn";
 
 import { HeaderBtn } from "./HeaderBtn";

@@ -1,7 +1,6 @@
 import { AlbumMediaDetail } from "@/features/album";
 import { getAlbum } from "@/features/album/server";
-import { isAdminUser, isEasyMode } from "@/features/auth";
-import { getUsers, getCurrentUser } from "@/features/auth/server";
+import { getUsers, getCurrentUser, isAdminUser, isEasyMode } from "@/features/auth/server";
 import { ShareGroupMediaDetail } from "@/features/sharing";
 import { getSharingGroups } from "@/features/sharing/server";
 import { TagMediaDetail } from "@/features/tag";

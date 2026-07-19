@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 
 import Container from "@/components/layout/Container";
 import { ChildCareNavigation } from "@/components/ui/ChildCareNavigation";
-import { isAdminUser, isEasyMode } from "@/features/auth";
+import { isAdminUser, isEasyMode } from "@/features/auth/server";
 import { CareActionMenu, CareCalendar } from "@/features/care";
 import { getCareRecords, getGrowthRecords } from "@/features/care/server";
 

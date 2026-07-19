@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 
-import { isAdminUser, isEasyMode } from "@/features/auth";
+import { isAdminUser, isEasyMode } from "@/features/auth/server";
 import { CareTimeLine } from "@/features/care";
 
 type Props = {

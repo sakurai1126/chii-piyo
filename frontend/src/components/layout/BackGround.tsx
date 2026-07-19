@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import { isEasyMode } from "@/features/auth";
+import { isEasyMode } from "@/features/auth/server";
 import { cn } from "@/utils/cn";
 
 export default async function BackGround({ children }: Readonly<{ children: React.ReactNode }>) {

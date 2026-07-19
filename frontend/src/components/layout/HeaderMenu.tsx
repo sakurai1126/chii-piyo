@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { isAdminUser, isEasyMode } from "@/features/auth";
+import { isAdminUser, isEasyMode } from "@/features/auth/server";
 
 import { HeaderMenuLink } from "../ui/HeaderMenuLink";
 

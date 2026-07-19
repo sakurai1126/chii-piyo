@@ -1,4 +1,4 @@
-import { isEasyMode } from "@/features/auth";
+import { isEasyMode } from "@/features/auth/server";
 import { cn } from "@/utils/cn";
 
 type Props = {
