@@ -23,7 +23,7 @@ export const deleteTagAction = async (input: Input): Promise<ActionResult> => {
     });
 
     // キャッシュを破棄し、サーバーコンポーネントを再レンダリング
-    revalidatePath("/", "layout");
+    revalidatePath("/settings");
 
     return { success: true };
   } catch (error) {

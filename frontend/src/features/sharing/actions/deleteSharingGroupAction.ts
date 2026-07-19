@@ -23,7 +23,7 @@ export const deleteSharingGroupAction = async (input: Input): Promise<ActionResu
     });
 
     // キャッシュを破棄し、サーバーコンポーネントを再レンダリング
-    revalidatePath("/", "layout");
+    revalidatePath("/settings");
 
     return { success: true };
   } catch (error) {

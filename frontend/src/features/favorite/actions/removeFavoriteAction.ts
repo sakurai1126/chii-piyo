@@ -23,7 +23,10 @@ export const removeFavoriteAction = async (input: Input): Promise<ActionResult> 
     });
 
     // キャッシュを破棄し、サーバーコンポーネントを再レンダリング
-    revalidatePath("/", "layout");
+    revalidatePath("/");
+    revalidatePath("/media");
+    revalidatePath(`/media/${input.mediaId}`);
+    revalidatePath("/favorites");
 
     return { success: true };
   } catch (error) {

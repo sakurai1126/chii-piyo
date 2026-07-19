@@ -29,7 +29,8 @@ export const updateMediaBatchAction = async (input: Input): Promise<ActionResult
     });
 
     // キャッシュを破棄し、サーバーコンポーネントを再レンダリング
-    revalidatePath("/", "layout");
+    revalidatePath("/media");
+    revalidatePath("/albums");
 
     return { success: true };
   } catch (error) {
