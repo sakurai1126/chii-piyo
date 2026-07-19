@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { toast } from "@/components/ui/Toast";
 import { addAlbumMediaAction } from "@/features/album";
-import { SelectedMediaData } from "@/features/record/types";
+import { SelectedMediaData } from "@/features/record";
 import { SharingGroupFilter } from "@/features/sharing";
 import { TagFilter } from "@/features/tag";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
