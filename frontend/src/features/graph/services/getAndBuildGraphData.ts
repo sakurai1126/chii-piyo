@@ -1,3 +1,5 @@
+import "server-only";
+
 import { getGrowthRecords, getCareRecords } from "@/features/care/server";
 import { getWordRecords } from "@/features/record/server";
 import { formatShortDate, formatShortMonth } from "@/utils/date";

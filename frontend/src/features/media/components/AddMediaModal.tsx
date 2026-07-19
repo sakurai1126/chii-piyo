@@ -9,7 +9,7 @@ import { Modal } from "@/components/layout/Modal";
 import { Button } from "@/components/ui/Button";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { toast } from "@/components/ui/Toast";
-import { addAlbumMediaAction } from "@/features/album";
+import { addAlbumMediaAction } from "@/features/album/actions";
 import { SelectedMediaData } from "@/features/record";
 import { SharingGroupFilter } from "@/features/sharing";
 import { TagFilter } from "@/features/tag";

@@ -1,7 +1,7 @@
 import Container from "@/components/layout/Container";
 import { getAlbums } from "@/features/album/server";
 import { isAdminUser, isEasyMode, getUsers } from "@/features/auth/server";
-import { getAndBuildGraphData } from "@/features/graph";
+import { getAndBuildGraphData } from "@/features/graph/server";
 import { getMediaList } from "@/features/media/server";
 import { TopContents, TopMedia } from "@/features/top";
 
