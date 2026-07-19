@@ -4,7 +4,7 @@ import { useId } from "react";
 
 import { type TagResponseDto } from "@/lib/api-client/gen";
 
-import TagAddForm from "./TagAddForm";
+import { TagAddForm } from "./TagAddForm";
 
 type Props = {
   // 表示するタグ一覧

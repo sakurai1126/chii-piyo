@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 
-import Container from "@/components/layout/Container";
+import { Container } from "@/components/layout/Container";
 import { AccentButton } from "@/components/ui/AccentButton";
 import { formatJapaneseDateBasic, formatJapaneseDateNonTime } from "@/utils/date";
 

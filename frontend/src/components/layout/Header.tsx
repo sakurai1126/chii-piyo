@@ -7,7 +7,7 @@ import { cn } from "@/utils/cn";
 import { HeaderBtn } from "./HeaderBtn";
 import { HeaderMenu } from "./HeaderMenu";
 
-export default async function Header() {
+export const Header = async () => {
   const isEasy = await isEasyMode();
   return (
     <header
@@ -30,4 +30,4 @@ export default async function Header() {
       </HeaderBtn>
     </header>
   );
-}
+};

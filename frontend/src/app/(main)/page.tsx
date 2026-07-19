@@ -1,4 +1,4 @@
-import Container from "@/components/layout/Container";
+import { Container } from "@/components/layout/Container";
 import { getAlbums } from "@/features/album/server";
 import { isAdminUser, isEasyMode, getUsers } from "@/features/auth/server";
 import { getAndBuildGraphData } from "@/features/graph/server";

@@ -7,7 +7,7 @@ import { toast } from "@/components/ui/Toast";
 
 import { createTagAction } from "../actions/createTagAction";
 
-export default function TagAddForm() {
+export const TagAddForm = () => {
   const [tagName, setTagName] = useState<string>("");
   const [isPending, startTransition] = useTransition();
 
@@ -40,4 +40,4 @@ export default function TagAddForm() {
       </div>
     </>
   );
-}
+};

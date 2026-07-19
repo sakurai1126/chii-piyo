@@ -6,7 +6,7 @@ type Props = {
   className?: string;
 };
 
-export default async function Container({ children, className }: Readonly<Props>) {
+export const Container = async ({ children, className }: Readonly<Props>) => {
   const isEasy = await isEasyMode();
   return <div className={cn("mx-auto max-w-250", !isEasy && "px-5", className)}>{children}</div>;
-}
+};

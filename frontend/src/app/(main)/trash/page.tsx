@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 
-import Container from "@/components/layout/Container";
+import { Container } from "@/components/layout/Container";
 import { PageTitle } from "@/components/ui/PageTitle";
 import { isAdminUser, isEasyMode } from "@/features/auth/server";
 import { TrashAllDelete, TrashContent, TrashInfo, TrashPagination } from "@/features/trash";

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { isAdminUser, isEasyMode } from "@/features/auth/server";
 import { cn } from "@/utils/cn";
 
-export default async function Footer() {
+export const Footer = async () => {
   const [isAdmin, isEasy] = await Promise.all([isAdminUser(), isEasyMode()]);
 
   return (
@@ -33,4 +33,4 @@ export default async function Footer() {
       )}
     </footer>
   );
-}
+};

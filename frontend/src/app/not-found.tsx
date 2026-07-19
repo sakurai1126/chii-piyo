@@ -1,10 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import BackGround from "@/components/layout/BackGround";
+import { BackGround } from "@/components/layout/BackGround";
 import { BottomNavigation } from "@/components/layout/BottomNavigation";
-import Footer from "@/components/layout/Footer";
-import Header from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { Header } from "@/components/layout/Header";
 import { isAdminUser, isEasyMode } from "@/features/auth/server";
 
 export default async function NotFound() {

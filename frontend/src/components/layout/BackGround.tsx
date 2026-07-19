@@ -3,7 +3,7 @@ import Image from "next/image";
 import { isEasyMode } from "@/features/auth/server";
 import { cn } from "@/utils/cn";
 
-export default async function BackGround({ children }: Readonly<{ children: React.ReactNode }>) {
+export const BackGround = async ({ children }: Readonly<{ children: React.ReactNode }>) => {
   const isEasy = await isEasyMode();
   return (
     <div
@@ -52,4 +52,4 @@ export default async function BackGround({ children }: Readonly<{ children: Reac
       </div>
     </div>
   );
-}
+};

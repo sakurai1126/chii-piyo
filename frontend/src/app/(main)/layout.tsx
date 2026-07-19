@@ -1,7 +1,7 @@
-import BackGround from "@/components/layout/BackGround";
+import { BackGround } from "@/components/layout/BackGround";
 import { BottomNavigation } from "@/components/layout/BottomNavigation";
-import Footer from "@/components/layout/Footer";
-import Header from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { Header } from "@/components/layout/Header";
 import { isAdminUser, isEasyMode } from "@/features/auth/server";
 
 type Props = {

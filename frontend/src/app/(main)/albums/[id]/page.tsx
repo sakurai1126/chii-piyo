@@ -1,4 +1,4 @@
-import Container from "@/components/layout/Container";
+import { Container } from "@/components/layout/Container";
 import { PageTitle } from "@/components/ui/PageTitle";
 import { AddMediaAlbum } from "@/features/album";
 import { getAlbum } from "@/features/album/server";
