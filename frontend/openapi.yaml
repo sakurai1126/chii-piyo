@@ -255,29 +255,6 @@ paths:
         default:
           $ref: '#/components/responses/DefaultErrors'
   /sharing-groups/{id}:
-    get:
-      tags:
-        - sharingGroupManagement
-      summary: 共有グループをID指定で取得
-      operationId: getSharingGroup
-      parameters:
-        - $ref: '#/components/parameters/XRequestedWith'
-        - $ref: '#/components/parameters/ResourceId'
-      responses:
-        '200':
-          description: 共有グループ情報
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/SharingGroupResponseDto'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-        default:
-          $ref: '#/components/responses/DefaultErrors'
     patch:
       tags:
         - sharingGroupManagement
