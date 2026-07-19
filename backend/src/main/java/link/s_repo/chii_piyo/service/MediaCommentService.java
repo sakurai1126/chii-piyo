@@ -30,7 +30,7 @@ public class MediaCommentService {
      * @param commentId 対象コメントのID
      * @return メディアコメントエンティティ
      */
-    @Transactional
+    @Transactional(readOnly = true)
     public MediaComments getMediaComment(Long commentId) {
         return mediaCommentRepository.findById(commentId).orElseThrow(() ->
             new ResourceNotFoundException("コメントが見つかりません commentId=" + commentId));
