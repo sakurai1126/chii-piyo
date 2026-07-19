@@ -29,7 +29,7 @@ type Props = {
 
 export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
   const router = useRouter();
-  const [modeExpansion, setModeExpansion] = useState(false);
+  const [modeExpansion, setModeExpansion] = useState<boolean>(false);
   return (
     <div className="w-125 shrink-0 @max-xl:w-110 @max-md:w-full">
       {/* 拡大モード */}

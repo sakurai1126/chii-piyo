@@ -15,8 +15,8 @@ type Props = {
  * アルバム画像が複数ある時のみ呼び出されるスライドショーコンポーネント
  */
 export const AlbumsGridSlide = ({ album }: Props) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState<boolean>(false);
+  const [activeIndex, setActiveIndex] = useState<number>(0);
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout;

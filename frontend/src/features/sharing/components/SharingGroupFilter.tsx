@@ -20,7 +20,7 @@ export const SharingGroupFilter = ({ sharingGroups, updateFilter, currentValue =
   const uid = useId();
 
   // 折り返し展開フラグ
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   // 要素の数に応じて折り返しの有無を判定するカスタムフック
   const { ref, hasOverflow, isLoading, closedHeight, fullHeight } = useFlexWrapOverflow(

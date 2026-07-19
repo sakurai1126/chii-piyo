@@ -32,7 +32,7 @@ type UseUploadParams = {
  */
 export const useUploadRunner = ({ onItemUpdate, onAllComplete }: UseUploadParams = {}) => {
   // ボタンの二重押下防止に使用するアップロード中かどうかのステータス
-  const [isUploading, setIsUploading] = useState(false);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
 
   // 各ファイルの状態を管理するMap
   // Stateとして持つとレンダリングコストが上がるためrefで保持

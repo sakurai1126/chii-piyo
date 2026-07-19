@@ -54,7 +54,7 @@ export const MediaFilter = ({ isEasy, tags, sharingGroups, showMediaCount = fals
     router.push(pathname, { scroll: false });
   };
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   return (
     <div className="relative z-10">
       <div
