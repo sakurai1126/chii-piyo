@@ -1,9 +1,8 @@
 import Image from "next/image";
 
-import Container from "@/components/layout/Container";
+import { Container } from "@/components/layout/Container";
 import { AccentButton } from "@/components/ui/AccentButton";
-import { isAdminUser, isEasyMode } from "@/features/auth";
-import { getUsers } from "@/features/auth/actions/getUsers";
+import { isAdminUser, isEasyMode, getUsers } from "@/features/auth/server";
 import { MediaFilter, MediaListSection, MediaTitle } from "@/features/media";
 import { getMediaList } from "@/features/media/server";
 import { getSharingGroups } from "@/features/sharing/server";

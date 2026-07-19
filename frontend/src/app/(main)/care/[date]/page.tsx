@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
-import { isAdminUser, isEasyMode } from "@/features/auth";
-import { CareTimeLine } from "@/features/care/components/CareTimeLine";
+import { isAdminUser, isEasyMode } from "@/features/auth/server";
+import { CareTimeLine } from "@/features/care";
 
 type Props = {
   params: Promise<{ date: string }>;

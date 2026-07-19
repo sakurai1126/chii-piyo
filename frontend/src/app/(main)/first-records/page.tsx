@@ -1,9 +1,9 @@
-import Container from "@/components/layout/Container";
+import { Container } from "@/components/layout/Container";
 import { ChildCareNavigation } from "@/components/ui/ChildCareNavigation";
 import { PageTitle } from "@/components/ui/PageTitle";
-import { isAdminUser, isEasyMode } from "@/features/auth";
+import { isAdminUser, isEasyMode } from "@/features/auth/server";
 import { NewRecords, RecordItem } from "@/features/record";
-import { getFirstRecords } from "@/features/record/api/getFirstRecords";
+import { getFirstRecords } from "@/features/record/server";
 import { getSharingGroups } from "@/features/sharing/server";
 import { getTags } from "@/features/tag/server";
 import { cn } from "@/utils/cn";

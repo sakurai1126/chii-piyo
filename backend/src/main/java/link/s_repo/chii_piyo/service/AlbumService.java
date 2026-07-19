@@ -140,7 +140,6 @@ public class AlbumService {
         return result;
     }
 
-
     /**
      * アルバムを削除する
      *
@@ -180,6 +179,7 @@ public class AlbumService {
      * @param albumId  対象のアルバムID
      * @param mediaIds 対象のメディアIDリスト
      */
+    @Transactional
     public void addAlbumMedia(Long albumId, List<Long> mediaIds) {
         if (mediaIds == null || mediaIds.isEmpty()) {
             throw new IllegalArgumentException("IDが指定されていません");
@@ -205,6 +205,7 @@ public class AlbumService {
      * @param albumId  対象のアルバムID
      * @param mediaIds 対象のメディアIDリスト
      */
+    @Transactional
     public void deleteAlbumMedia(Long albumId, List<Long> mediaIds) {
         if (mediaIds == null || mediaIds.isEmpty()) {
             throw new IllegalArgumentException("IDが指定されていません");

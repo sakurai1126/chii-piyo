@@ -175,6 +175,7 @@ public class SharingGroupService {
      * - iconUrlsMap: キーがユーザーID、値がアイコンURLのMap<br>
      * - membersByGroupIdMap: キーが共有グループID、値がユーザーのMap
      */
+    @Transactional(readOnly = true)
     public MemberAndIconMapResult memberAndIconMapping(List<SharingGroupMembers> members) {
         // 所属メンバーから重複削除したユーザーIDを抽出
         List<Long> userIds = members.stream()
@@ -235,6 +236,7 @@ public class SharingGroupService {
      * @return 共有グループエンティティ
      */
     @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
     public SharingGroups updateSharingGroup(SharingGroups sharingGroups, String name) {
         sharingGroups.setName(name);
         sharingGroupRepository.update(sharingGroups);
@@ -248,6 +250,7 @@ public class SharingGroupService {
      * @param userId 対象ユーザーID
      * @return 共有グループのIDリスト
      */
+    @Transactional(readOnly = true)
     public List<Long> getUserSharingScopes(Long userId) {
         // ユーザーIDが一致するメンバー情報をDBから取得
         List<SharingGroupMembers> members = sharingGroupRepository.findMembersByUserId(userId);

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { FavoriteMediaList } from "@/features/favorite/components/FavoriteMediaList";
+import { FavoriteMediaList } from "@/features/favorite";
 import { MediaListResponseDto, UserResponseDto } from "@/lib/api-client/gen";
 import { cn } from "@/utils/cn";
 

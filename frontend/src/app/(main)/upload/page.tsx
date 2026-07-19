@@ -1,7 +1,7 @@
-import Container from "@/components/layout/Container";
+import { Container } from "@/components/layout/Container";
 import { PageTitle } from "@/components/ui/PageTitle";
 import { getAlbums } from "@/features/album/server";
-import { isAdminUser, isEasyMode } from "@/features/auth";
+import { isAdminUser, isEasyMode } from "@/features/auth/server";
 import { getSharingGroups } from "@/features/sharing/server";
 import { getTags } from "@/features/tag/server";
 import { UploadPageContents } from "@/features/upload";

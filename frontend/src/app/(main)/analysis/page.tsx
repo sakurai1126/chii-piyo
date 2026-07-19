@@ -1,8 +1,9 @@
-import Container from "@/components/layout/Container";
+import { Container } from "@/components/layout/Container";
 import { ChildCareNavigation } from "@/components/ui/ChildCareNavigation";
 import { PageTitle } from "@/components/ui/PageTitle";
-import { isAdminUser, isEasyMode } from "@/features/auth";
-import { getAndBuildGraphData, GraphChart, GraphSummary } from "@/features/graph";
+import { isAdminUser, isEasyMode } from "@/features/auth/server";
+import { GraphChart, GraphSummary } from "@/features/graph";
+import { getAndBuildGraphData } from "@/features/graph/server";
 import { cn } from "@/utils/cn";
 
 export default async function AnalysisPage() {

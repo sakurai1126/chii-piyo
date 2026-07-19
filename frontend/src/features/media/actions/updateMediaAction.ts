@@ -29,7 +29,7 @@ export const updateMediaAction = async (input: Input): Promise<ActionResult> => 
     });
 
     // キャッシュを破棄し、サーバーコンポーネントを再レンダリング
-    revalidatePath("/", "layout");
+    revalidatePath(`/media/${input.mediaId}`);
 
     return { success: true };
   } catch (error) {

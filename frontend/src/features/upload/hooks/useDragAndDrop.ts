@@ -1,4 +1,5 @@
 "use client";
+
 import { useRef, useState } from "react";
 
 type UseDragAndDropParams = {
@@ -21,7 +22,7 @@ type UseDragAndDropParams = {
  */
 export const useDragAndDrop = ({ onFilesAdd, acceptTypes }: UseDragAndDropParams) => {
   // ドラッグ中かどうかを管理するフラグ
-  const [isDragging, setIsDragging] = useState(false);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
   // 子要素に入るたびEnterとLeaveが発火するため、ドラッグ中かどうかをカウントで管理する
   const dragCounter = useRef(0);
 

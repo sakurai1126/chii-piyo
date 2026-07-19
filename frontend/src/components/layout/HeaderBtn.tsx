@@ -12,7 +12,7 @@ type Props = {
 };
 
 export const HeaderBtn = ({ isEasy, children }: Props) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   // 現在のURL(パス+パラメータ)
   const pathname = usePathname();
@@ -21,7 +21,7 @@ export const HeaderBtn = ({ isEasy, children }: Props) => {
   // 画面遷移時及びブラウザバック時に開いたままにならないように
   // URLの変更を検知した際に直前のURLを更新しつつメニューを閉じる
   const currentUrl = `${pathname}?${searchParams.toString()}`;
-  const [prevUrl, setPrevUrl] = useState(currentUrl);
+  const [prevUrl, setPrevUrl] = useState<string>(currentUrl);
 
   if (currentUrl !== prevUrl) {
     setPrevUrl(currentUrl);

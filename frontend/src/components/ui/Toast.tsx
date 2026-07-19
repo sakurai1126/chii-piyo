@@ -36,7 +36,7 @@ const dispatchToast = (type: ToastType, message: string) => {
 const DURATION = 5000;
 
 // トーストの表示を管理するコンポーネント
-export default function Toast() {
+export const Toast = () => {
   // トーストアイテム
   // closingはフェードアウトの開始を示すフラグ
   const [items, setItems] = useState<(ToastItem & { closing: boolean })[]>([]);
@@ -102,4 +102,4 @@ export default function Toast() {
       })}
     </div>
   );
-}
+};

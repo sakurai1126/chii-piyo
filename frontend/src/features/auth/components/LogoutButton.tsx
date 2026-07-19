@@ -1,4 +1,4 @@
-import { logoutAction } from "../actions/logout";
+import { logoutAction } from "../actions/logoutAction";
 
 export const LogoutButton = () => {
   return (

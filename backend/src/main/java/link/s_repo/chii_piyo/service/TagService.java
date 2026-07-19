@@ -198,6 +198,7 @@ public class TagService {
      * @param tagIds タグIDのリスト
      * @return タグIDのリストに一致するタグの件数
      */
+    @Transactional(readOnly = true)
     public Long count(List<Long> tagIds) {
         return tagRepository.countByTagIds(tagIds);
     }

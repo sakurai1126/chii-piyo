@@ -1,7 +1,7 @@
 "use server";
 
-import { createMediaCommentAction } from "@/features/comment/actions/createCommentAction";
-import { updateMediaTagsAction } from "@/features/tag/actions/updateMediaTagsAction";
+import { createMediaCommentAction } from "@/features/comment/actions";
+import { updateMediaTagsAction } from "@/features/tag/actions";
 import {
   type MediaUploadRequestDto,
   type MediaUploadResponseDto,

@@ -1,18 +1,19 @@
 "use client";
+
 import { useEffect, useRef, useState } from "react";
 
 export const useFlexWrapOverflow = (depsLength: number) => {
   // 折り返し要素があるかどうかの判別
-  const [hasOverflow, setHasOverflow] = useState(false);
+  const [hasOverflow, setHasOverflow] = useState<boolean>(false);
 
   // 折り返しの有無を判定中かどうか
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // アニメーション用に高さを保持
-  const [fullHeight, setFullHeight] = useState(0);
+  const [fullHeight, setFullHeight] = useState<number>(0);
 
   // 一行分の高さ
-  const [closedHeight, setClosedHeight] = useState(34);
+  const [closedHeight, setClosedHeight] = useState<number>(34);
 
   // 折り返しを判定する要素のref
   const ref = useRef<HTMLDivElement>(null);

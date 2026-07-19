@@ -20,7 +20,7 @@ type Props = {
 export const useMultipleSettings = ({ updateAllMetadata }: Props) => {
   const uid = useId();
   // 一括設定の開閉状態
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   // "yyyy-MM-dd"形式で今日の日付を取得
   const today = new Date().toLocaleDateString("sv-SE");
 

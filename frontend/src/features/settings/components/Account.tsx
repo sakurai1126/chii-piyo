@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 import { Button } from "@/components/ui/Button";
-import { logoutAction } from "@/features/auth/actions/logout";
+import { logoutAction } from "@/features/auth/actions";
 import { cn } from "@/utils/cn";
 
 import icon from "../assets/account.svg";

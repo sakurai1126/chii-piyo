@@ -35,7 +35,7 @@ export const MediaListSection = ({
   sharingGroups,
   albumId,
 }: Props) => {
-  const [isSelectionMode, setIsSelectionMode] = useState(false);
+  const [isSelectionMode, setIsSelectionMode] = useState<boolean>(false);
   const [selectedMedia, setSelectedMedia] = useState<number[]>([]);
   // 例: URLのsearchParamsから構築
   const sp = useSearchParams();

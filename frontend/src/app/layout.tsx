@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { M_PLUS_Rounded_1c, Zen_Maru_Gothic } from "next/font/google";
 import "@/styles/globals.css";
 
-import ThemeCookieSetter from "@/components/layout/ThemeCookieSetter";
-import Providers from "@/components/layout/providers";
-import Toast from "@/components/ui/Toast";
+import { ThemeCookieSetter } from "@/components/layout/ThemeCookieSetter";
+import { Providers } from "@/components/layout/providers";
+import { Toast } from "@/components/ui/Toast";
 import { cn } from "@/utils/cn";
 import { getTheme } from "@/utils/getTheme";
 

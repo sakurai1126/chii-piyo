@@ -90,6 +90,7 @@ public class MediaService {
      * @param mediaSearchCriteria 検索条件
      * @return メディアのリスト
      */
+    @Transactional(readOnly = true)
     public List<Media> getMediaList(MediaSearchCriteria mediaSearchCriteria) {
         // 一覧取得
         return mediaRepository.findBySearchCriteria(mediaSearchCriteria);
@@ -205,6 +206,7 @@ public class MediaService {
      * @param mediaId 対象メディアのID
      * @return Mediaエンティティとナビゲーション位置をまとめたリスト
      */
+    @Transactional(readOnly = true)
     public List<GetMediaNavigationResult> getMediaNavigation(Long mediaId) {
         Long userId = currentUserProvider.getUserId();
 
@@ -255,6 +257,7 @@ public class MediaService {
      * @param id         対象のメディアID
      * @param updateData 更新用データ（アルバムID と 共有グループIDを想定）
      */
+    @Transactional
     public void updateMedia(Long id, MediaUpdateRequestDto updateData) {
         // 対象メディアを取得
         Media media = getMedia(id);
@@ -361,6 +364,7 @@ public class MediaService {
      * @param trashItems ゴミ箱データエンティティ
      * @return ゴミ箱データとメディアデータをまとめたレコードのリスト
      */
+    @Transactional(readOnly = true)
     public List<TrashItemAndMediaResult> getTrashItemAndMedia(List<TrashItems> trashItems) {
         // 空の場合空リストで即時リターン
         if (trashItems == null || trashItems.isEmpty()) {

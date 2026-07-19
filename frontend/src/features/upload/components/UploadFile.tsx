@@ -38,7 +38,7 @@ export const UploadFile = ({
 }: Props) => {
   const uid = useId();
   // アコーディオンの開閉状態
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   // ファイルサイズの表示 (KB or MB)
   const sizeInKB = item.file.size / 1024;
   const sizeInMB = sizeInKB / 1024;

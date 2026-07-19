@@ -31,7 +31,7 @@ export const updateMediaTagsAction = async (
     });
 
     // キャッシュを破棄し、サーバーコンポーネントを再レンダリング
-    revalidatePath("/", "layout");
+    revalidatePath("/media", "layout");
 
     return { success: true, data: response };
   } catch (error) {

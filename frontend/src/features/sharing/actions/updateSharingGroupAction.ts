@@ -31,7 +31,7 @@ export const updateSharingGroupAction = async (
     });
 
     // キャッシュを破棄し、サーバーコンポーネントを再レンダリング
-    revalidatePath("/", "layout");
+    revalidatePath("/settings");
 
     return { success: true, data: response };
   } catch (error) {

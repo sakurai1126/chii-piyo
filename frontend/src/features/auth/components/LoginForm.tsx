@@ -5,7 +5,7 @@ import { useActionState, useEffect } from "react";
 
 import { toast } from "@/components/ui/Toast";
 
-import { loginAction, type LoginState } from "../actions/login";
+import { loginAction, type LoginState } from "../actions/loginAction";
 
 const initialState: LoginState = {};
 

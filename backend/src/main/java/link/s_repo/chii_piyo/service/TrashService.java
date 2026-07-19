@@ -49,6 +49,7 @@ public class TrashService {
      *
      * @param id 対象メディアのID
      */
+    @Transactional
     public void createTrashItem(Long id) {
         TrashItems trashItem = new TrashItems();
         trashItem.setMediaId(id);
@@ -92,6 +93,7 @@ public class TrashService {
      * @param limit  取得件数
      * @return ゴミ箱内のアイテム一覧
      */
+    @Transactional(readOnly = true)
     public List<TrashItems> getTrashItems(Integer offset, Integer limit) {
         return trashRepository.findAll(offset, limit);
     }
@@ -101,6 +103,7 @@ public class TrashService {
      *
      * @return ゴミ箱内のアイテム総件数
      */
+    @Transactional(readOnly = true)
     public Long getTotalCount() {
         return trashRepository.count();
     }
@@ -110,6 +113,7 @@ public class TrashService {
      *
      * @return 日数の数値
      */
+    @Transactional(readOnly = true)
     public Long getEarliestDeadline() {
         // 最も古いアイテムを取得
         Optional<TrashItems> oldestItem = trashRepository.findOldest();
@@ -132,6 +136,7 @@ public class TrashService {
     /**
      * 指定されたIDのゴミ箱データを削除する
      */
+    @Transactional
     public void restoreTrashItem(Long id) {
         trashRepository.delete(id);
     }
@@ -139,6 +144,7 @@ public class TrashService {
     /**
      * 指定された複数IDのゴミ箱データを削除する
      */
+    @Transactional
     public void restoreTrashItems(List<Long> ids) {
         trashRepository.delete(ids);
     }

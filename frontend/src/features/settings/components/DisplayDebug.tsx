@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 
-import { logoutAction } from "@/features/auth/actions/logout";
+import { logoutAction } from "@/features/auth/actions";
 import { UserResponseDto } from "@/lib/api-client/gen";
 import { cn } from "@/utils/cn";
 

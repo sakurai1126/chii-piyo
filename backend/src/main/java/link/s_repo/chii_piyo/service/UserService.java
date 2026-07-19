@@ -35,6 +35,7 @@ public class UserService {
      * @param id 対象のユーザーID
      * @return ユーザー情報
      */
+    @Transactional(readOnly = true)
     public Users getUserById(long id) {
         return userRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("ユーザーが見つかりません"));
@@ -46,6 +47,7 @@ public class UserService {
      * @param ids 対象となるユーザーIDのリスト
      * @return ユーザー情報のリスト
      */
+    @Transactional(readOnly = true)
     public List<Users> getUsersById(List<Long> ids) {
         if (ids == null || ids.isEmpty()) {
             return Collections.emptyList();
@@ -61,6 +63,7 @@ public class UserService {
      * @param updateData アップデート情報
      * @return 更新されたユーザーデータ
      */
+    @Transactional
     public Users updateMe(Long userId, UserUpdateRequestDto updateData) {
         // 現在のユーザー情報を取得
         Users user = getUserById(userId);
@@ -130,6 +133,7 @@ public class UserService {
      *
      * @return ユーザー情報とダウンロード用署名付きURLをまとめたレコード型の一覧
      */
+    @Transactional(readOnly = true)
     public List<UsersAndIconResult> getUsersAndIcon() {
         // ユーザー情報を一覧取得
         List<Users> users = userRepository.findAll();

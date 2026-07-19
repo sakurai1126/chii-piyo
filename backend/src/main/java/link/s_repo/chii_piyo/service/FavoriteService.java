@@ -86,6 +86,7 @@ public class FavoriteService {
      * @param mediaList 対象のメディアリスト
      * @return お気に入り情報のリスト
      */
+    @Transactional(readOnly = true)
     public List<Favorites> getFavoriteList(List<Media> mediaList) {
         // メディアIDをリスト化
         List<Long> mediaIds = mediaList.stream().map(Media::getId).toList();

@@ -1,4 +1,5 @@
 "use client";
+
 import { AnimatePresence } from "motion/react";
 import Image from "next/image";
 import { useState } from "react";
@@ -7,7 +8,7 @@ import { Modal } from "@/components/layout/Modal";
 import { ActionDialog } from "@/components/ui/ActionDialog";
 import { Button } from "@/components/ui/Button";
 import { toast } from "@/components/ui/Toast";
-import { updateMediaAction } from "@/features/media/actions/updateMediaAction"; // index.ts経由だと不要なサーバー処理を巻き込みエラーになるため直接ファイル指定
+import { updateMediaAction } from "@/features/media/actions";
 import { MediaResponseDto, SharingGroupResponseDto, UserResponseDto } from "@/lib/api-client/gen";
 
 import { SharingGroupsSelector } from "./SharingGroupsSelector";
