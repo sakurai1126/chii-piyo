@@ -35,7 +35,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      * @return エラーレスポンス
      */
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ApiResponse<Void>> handleResourceNotFound(ResourceNotFoundException e) {
+    public ResponseEntity<ApiResponse> handleResourceNotFound(ResourceNotFoundException e) {
         log.warn("リソースが見つかりません: {}", e.getMessage());
         return ResponseEntity
             // notFound()はbodyを構築できないためステータスを自分で設定し共通エラーコードを使用したレスポンスを返す
@@ -53,7 +53,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      * @return エラーレスポンス
      */
     @ExceptionHandler(ResourceAccessDeniedException.class)
-    public ResponseEntity<ApiResponse<Void>> handleMediaAccessDenied(
+    public ResponseEntity<ApiResponse> handleMediaAccessDenied(
         ResourceAccessDeniedException e) {
         log.warn("リソースへのアクセス拒否: {}", e.getMessage());
         return ResponseEntity
@@ -71,7 +71,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      * @return エラーレスポンス
      */
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ApiResponse<Void>> handleIllegalArgument(IllegalArgumentException e) {
+    public ResponseEntity<ApiResponse> handleIllegalArgument(IllegalArgumentException e) {
         log.warn("不正なリクエスト: {}", e.getMessage());
         return ResponseEntity.badRequest()
             .body(ApiResponse.error(
@@ -115,7 +115,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      * @return エラーレスポンス
      */
     @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
-    public ResponseEntity<ApiResponse<Void>> handleAccessDeniedException(
+    public ResponseEntity<ApiResponse> handleAccessDeniedException(
         org.springframework.security.access.AccessDeniedException e) {
         log.warn("アクセス権限がありません: {}", e.getMessage());
         return ResponseEntity
@@ -133,7 +133,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      * @return エラーレスポンス
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handleException(Exception e) {
+    public ResponseEntity<ApiResponse> handleException(Exception e) {
         log.error("予期しないエラーが発生しました", e);
         // 共通エラーコードを使用して、内部サーバーエラーのレスポンスを返す
         return ResponseEntity
