@@ -12,8 +12,11 @@ import java.util.List;
 @Mapper
 public interface MediaTagsCustomMapper {
 
-    // タグIDごとのメディア数を取得するクエリ
-    // tagIdとmediaCountのセットを格納したクラスのリストを返す
+    /**
+     * タグIDごとのメディア数を取得するクエリ
+     *
+     * @return tagIdとmediaCountのセットを格納したクラスのリスト
+     */
     @Select("SELECT tag_id AS tagId, COUNT(*) AS mediaCount "
         + "FROM media_tags "
         + "WHERE media_id NOT IN (SELECT media_id FROM trash_items) "

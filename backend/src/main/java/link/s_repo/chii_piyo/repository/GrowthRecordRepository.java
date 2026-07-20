@@ -13,6 +13,10 @@ import java.util.Optional;
 import static org.mybatis.dynamic.sql.SqlBuilder.isGreaterThanOrEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.isLessThan;
 
+/**
+ * 成長記録関連のリポジトリ<br>
+ * 成長記録に関するDB操作を提供
+ */
 @Repository
 @RequiredArgsConstructor
 public class GrowthRecordRepository {

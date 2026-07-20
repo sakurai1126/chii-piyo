@@ -18,6 +18,10 @@ import static link.s_repo.chii_piyo.repository.gen.TagsDynamicSqlSupport.id;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
 
+/**
+ * タグ関連のリポジトリ<br>
+ * タグに関するDB操作を提供
+ */
 @Repository
 @RequiredArgsConstructor
 public class TagRepository {

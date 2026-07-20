@@ -12,6 +12,10 @@ import static org.mybatis.dynamic.sql.SqlBuilder.and;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
 
+/**
+ * お気に入り関連のリポジトリ<br>
+ * お気に入りに関するDB操作を提供
+ */
 @Repository
 @RequiredArgsConstructor
 public class FavoriteRepository {

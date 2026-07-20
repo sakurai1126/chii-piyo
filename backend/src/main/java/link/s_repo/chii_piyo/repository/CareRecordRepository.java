@@ -15,6 +15,10 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isGreaterThanOrEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
 import static org.mybatis.dynamic.sql.SqlBuilder.isLessThan;
 
+/**
+ * 育児記録関連のリポジトリ<br>
+ * 育児記録に関するDB操作を提供
+ */
 @Repository
 @RequiredArgsConstructor
 public class CareRecordRepository {
