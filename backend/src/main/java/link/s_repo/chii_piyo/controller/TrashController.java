@@ -23,7 +23,7 @@ import java.util.List;
 
 /**
  * ゴミ箱管理コントローラー<br>
- * OpenAPI Generator生成のTrashManagementApiインターフェースを実装し、ゴミ箱のアイテム取得、復元に関するAPIエンドポイントを提供する
+ * ゴミ箱のアイテム取得、復元、メディアの完全削除に関するAPIエンドポイントを提供
  */
 @Slf4j
 @RestController
@@ -40,7 +40,7 @@ public class TrashController implements TrashManagementApi {
      * DELETE /trash/{id}<br>
      * ゴミ箱からアイテムを完全に削除
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param id             対象のリソースID
      * @return 204ステータス
      */
@@ -58,7 +58,7 @@ public class TrashController implements TrashManagementApi {
      * DELETE /trash<br>
      * ゴミ箱からメディアを完全に削除
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param trashItemIds   ゴミ箱データのIDリスト
      * @return 204ステータス
      */
@@ -76,7 +76,7 @@ public class TrashController implements TrashManagementApi {
      * DELETE /trash/empty<br>
      * ゴミ箱の中身をすべて空にする
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @return 204ステータス
      */
     @Override
@@ -93,7 +93,7 @@ public class TrashController implements TrashManagementApi {
      * GET /trash<br>
      * ゴミ箱内のアイテム一覧を取得
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param offset         取得開始位置
      * @param limit          取得件数
      * @return ゴミ箱アイテム一覧
@@ -153,7 +153,7 @@ public class TrashController implements TrashManagementApi {
      * POST /trash/{id}/restore<br>
      * ゴミ箱からアイテムを復元
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param id             対象のリソースID
      * @return 204ステータス
      */
@@ -167,12 +167,11 @@ public class TrashController implements TrashManagementApi {
         return ResponseEntity.noContent().build();
     }
 
-
     /**
      * POST /trash/<br>
      * ゴミ箱から複数アイテムを復元
      *
-     * @param xRequestedWith         X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith         CSRF防御用カスタムリクエストヘッダー
      * @param trashRestoreRequestDto 復元するIDリスト
      * @return 204ステータス
      */

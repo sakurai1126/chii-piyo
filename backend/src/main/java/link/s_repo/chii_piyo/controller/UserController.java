@@ -17,6 +17,10 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * ユーザー管理コントローラー<br>
+ * ユーザー情報の取得・更新に関するAPIエンドポイントを提供
+ */
 @RestController
 @RequiredArgsConstructor
 public class UserController implements UserManagementApi {
@@ -27,10 +31,10 @@ public class UserController implements UserManagementApi {
     private final SharingGroupService sharingGroupService;
 
     /**
-     * GET /users/me
+     * GET /users/me<br>
      * 現在ログインしているユーザーのログイン情報を取得
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @return 取得した現在のユーザー情報
      */
     @Override
@@ -44,31 +48,30 @@ public class UserController implements UserManagementApi {
     }
 
     /**
-     * PATCH /users/me
+     * PATCH /users/me<br>
      * 現在ログインしているユーザーのログイン情報を更新
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param userUpdateData 更新するユーザー情報
-     * @return 取得した現在のユーザー情報
+     * @return 204ステータス
      */
     @Override
-    public ResponseEntity<UserResponseDto> updateMe(
+    public ResponseEntity<Void> updateMe(
         String xRequestedWith, UserUpdateRequestDto userUpdateData) {
         Long currentUserId = currentUserProvider.getUserId();
-        List<Long> scopeSharingGroups = sharingGroupService.getUserSharingScopes(currentUserId);
 
-        // サービス層でS3キーを更新し更新後のユーザー情報を受け取る
-        Users updatedUser = userService.updateMe(currentUserId, userUpdateData);
-        URI presignedUrl = userService.generateIconDownloadPresignedUrl(updatedUser);
-        UserResponseDto response = userConverter.toUserResponseDto(updatedUser, presignedUrl, scopeSharingGroups);
-        return ResponseEntity.ok(response);
+        // サービス層で更新処理
+        userService.updateMe(currentUserId, userUpdateData);
+
+        // 204ステータスを返す
+        return ResponseEntity.noContent().build();
     }
 
     /**
-     * POST /users/me/icon
+     * POST /users/me/icon<br>
      * ログインユーザーのアイコン用情報を受信し、S3署名付きURLを取得
      *
-     * @param xRequestedWith       X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith       CSRF防御用カスタムリクエストヘッダー
      * @param userGenerateIconData 生成するユーザーのアイコン画像のファイル名情報
      * @return 生成後のユーザーの情報
      */
@@ -92,10 +95,10 @@ public class UserController implements UserManagementApi {
     }
 
     /**
-     * GET /users
+     * GET /users<br>
      * ユーザー情報の一覧を取得
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @return 取得したユーザー一覧情報
      */
     @Override
@@ -126,11 +129,11 @@ public class UserController implements UserManagementApi {
         );
     }
 
-
     /**
-     * PATCH /users/{id}/role : ログインユーザーの権限を更新
+     * PATCH /users/{id}/role<br>
+     * ログインユーザーの権限を更新
      *
-     * @param xRequestedWith     X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith     CSRF防御用カスタムリクエストヘッダー
      * @param id                 ユーザーID
      * @param userUpdateRoleData 更新するユーザー情報
      * @return 更新後のユーザー情報 (status code 200)

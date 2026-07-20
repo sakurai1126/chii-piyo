@@ -16,13 +16,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 
-
 import java.util.List;
 import java.util.Map;
 
 /**
  * タグ管理コントローラー<br>
- * OpenAPI Generator生成のTagManagementApiインターフェースを実装し、タグの取得・作成およびメディアとのタグ紐付けに関するAPIエンドポイントを提供する
+ * タグの取得・作成およびメディアとのタグ紐付けに関するAPIエンドポイントを提供
  */
 @Slf4j
 @RestController
@@ -36,26 +35,25 @@ public class TagController implements TagManagementApi {
      * POST /tags<br>
      * タグを作成する
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param tagData        アップロードリクエストDTO
-     * @return 作成されたタグの情報
+     * @return 201ステータス
      */
     @Override
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<TagResponseDto> createTag(String xRequestedWith, TagRequestDto tagData) {
+    public ResponseEntity<Void> createTag(String xRequestedWith, TagRequestDto tagData) {
         // サービス層でタグを作成する
-        Tags createdTag = tagService.createTag(tagData.getName());
+        tagService.createTag(tagData.getName());
 
-        // 作成されたタグをDTOに変換してレスポンスする
-        TagResponseDto response = tagConverter.toTagResponseDto(createdTag, null);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        // 201ステータスコードを返却
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     /**
      * GET /tags<br>
      * タグ一覧を取得する
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @return タグの一覧
      */
     @Override
@@ -77,34 +75,30 @@ public class TagController implements TagManagementApi {
      * PUT /media/{mediaId}/tags<br>
      * メディアのタグを一括更新
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param mediaId        メディアID
      * @param mediaTagsData  紐付けるタグIDの一覧
-     * @return 更新後のタグ一覧
+     * @return 204ステータス
      */
     @Override
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<TagResponseDto>> updateMediaTags(
+    public ResponseEntity<Void> updateMediaTags(
         String xRequestedWith, Long mediaId, MediaTagsUpdateRequestDto mediaTagsData) {
         // メディアの存在チェック
         mediaService.getMedia(mediaId);
 
         // サービス層でタグを更新する
-        List<Tags> updatedTags = tagService.syncMediaTags(mediaId, mediaTagsData.getTagIds());
+        tagService.syncMediaTags(mediaId, mediaTagsData.getTagIds());
 
-        // 更新されたタグをDTOに変換してレスポンスする
-        List<TagResponseDto> response = updatedTags.stream()
-            .map(tag -> tagConverter.toTagResponseDto(tag, null))
-            .toList();
-        return ResponseEntity.ok(response);
+        // 204ステータスを返す
+        return ResponseEntity.noContent().build();
     }
-
 
     /**
      * PUT /tags/{tagId}<br>
      * タグを更新する
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param tagId          タグID
      * @param tagData        タグの更新データ
      * @return 204ステータス
@@ -127,7 +121,7 @@ public class TagController implements TagManagementApi {
      * DELETE /tags/{tagId}<br>
      * タグを削除する
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param tagId          タグID
      * @return 204ステータス
      */

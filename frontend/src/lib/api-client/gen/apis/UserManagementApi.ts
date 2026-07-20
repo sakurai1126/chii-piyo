@@ -328,11 +328,11 @@ export class UserManagementApi extends runtime.BaseAPI {
   async updateMeRaw(
     requestParameters: UpdateMeRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<UserResponseDto>> {
+  ): Promise<runtime.ApiResponse<void>> {
     const requestOptions = await this.updateMeRequestOpts(requestParameters);
     const response = await this.request(requestOptions, initOverrides);
 
-    return new runtime.JSONApiResponse(response, (jsonValue) => UserResponseDtoFromJSON(jsonValue));
+    return new runtime.VoidApiResponse(response);
   }
 
   /**
@@ -341,9 +341,8 @@ export class UserManagementApi extends runtime.BaseAPI {
   async updateMe(
     requestParameters: UpdateMeRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<UserResponseDto> {
-    const response = await this.updateMeRaw(requestParameters, initOverrides);
-    return await response.value();
+  ): Promise<void> {
+    await this.updateMeRaw(requestParameters, initOverrides);
   }
 
   /**

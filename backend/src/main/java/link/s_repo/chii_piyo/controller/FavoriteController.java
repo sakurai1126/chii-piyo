@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * お気に入り管理コントローラー<br>
- * OpenAPI Generator生成のMediaApiインターフェースを実装し、メタデータ登録とアップロード状態更新のAPIエンドポイントを提供する
+ * お気に入り状態更新のAPIエンドポイントを提供
  */
 @Slf4j
 @RestController
@@ -26,7 +26,7 @@ public class FavoriteController implements FavoriteManagementApi {
      * POST /favorites/{mediaId}<br>
      * メディアをログイン中のユーザーのお気に入りに追加
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param mediaId        対象のメディアID
      * @return 201ステータス
      */
@@ -49,7 +49,7 @@ public class FavoriteController implements FavoriteManagementApi {
      * DELETE /favorites/{mediaId}<br>
      * メディアをお気に入りから削除
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param mediaId        対象のメディアID
      * @return 204ステータス
      */

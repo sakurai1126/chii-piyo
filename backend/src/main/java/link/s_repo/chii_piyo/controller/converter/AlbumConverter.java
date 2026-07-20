@@ -1,12 +1,12 @@
 package link.s_repo.chii_piyo.controller.converter;
+
 import link.s_repo.chii_piyo.model.gen.AlbumResponseDto;
 import link.s_repo.chii_piyo.model.gen.Albums;
 import link.s_repo.chii_piyo.service.AlbumService.MediaDataResult;
 import org.springframework.stereotype.Component;
 
 /**
- * APIレスポンスの組み立てを担当するコンバータークラス<br>
- * AlbumsエンティティをAlbumResponseDtoに変換するロジックを提供する
+ * AlbumsエンティティをAlbumResponseDtoに変換するコンバーター
  */
 @Component
 public class AlbumConverter {
@@ -17,16 +17,14 @@ public class AlbumConverter {
      * @param mediaData 画像数と動画数とカバーURLのリストのレコード
      * @return AlbumResponseDto
      */
-    public AlbumResponseDto toAlbumResponseDto(
-        Albums album, MediaDataResult mediaData) {
-        return new AlbumResponseDto(
-            album.getId(), // ID
-            album.getTitle(), // アルバムのタイトル
-            mediaData.urls(), // カバーURL一覧
-            mediaData.photoCount(), // 画像数
-            mediaData.videoCount(), // 動画数
-            album.getCreatedAt(), // 作成日時
-            album.getUpdatedAt() // 更新日時
-        );
+    public AlbumResponseDto toAlbumResponseDto(Albums album, MediaDataResult mediaData) {
+        return new AlbumResponseDto()
+            .id(album.getId())
+            .title(album.getTitle())
+            .coverMediaUrls(mediaData.urls())
+            .photoCount(mediaData.photoCount())
+            .videoCount(mediaData.videoCount())
+            .createdAt(album.getCreatedAt())
+            .updatedAt(album.getUpdatedAt());
     }
 }

@@ -15,14 +15,8 @@ put:
           $ref: "../../components/schemas/tags.yml#/MediaTagsUpdateRequestDto"
     required: true
   responses:
-    "200":
-      description: 更新後のタグ一覧
-      content:
-        application/json;charset=UTF-8:
-          schema:
-            type: array
-            items:
-              $ref: "../../components/schemas/tags.yml#/TagResponseDto"
+    "204":
+      description: タグの更新に成功
     "400":
       $ref: "../../components/responses.yml#/BadRequest"
     "401":

@@ -21,7 +21,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
+/**
+ * コメント管理コントローラー<br>
+ * コメントの取得・作成・削除に関するAPIエンドポイントを提供
+ */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -36,36 +39,32 @@ public class MediaCommentController implements MediaCommentManagementApi {
      * POST /media/{mediaId}/comments<br>
      * メディアにコメントを追加する
      *
-     * @param xRequestedWith   X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith   CSRF防御用カスタムリクエストヘッダー
      * @param mediaId          メディアID
      * @param mediaCommentData コメントの内容を含むリクエストDTO
-     * @return 作成されたcommentの情報
+     * @return 201ステータス
      */
     @Override
-    public ResponseEntity<MediaCommentResponseDto> createMediaComment(
+    public ResponseEntity<Void> createMediaComment(
         String xRequestedWith, Long mediaId, MediaCommentRequestDto mediaCommentData) {
         // 認証情報からアプリケーション側のユーザーIDを取得
         Long userId = currentUserProvider.getUserId();
-
-        Users user = userService.getUserById(userId);
 
         // メディアの存在チェック
         mediaService.getMedia(mediaId);
 
         // サービス層でコメントを作成する
-        MediaComments createMediaComment = mediaCommentService.createMediaComment(mediaId, userId, mediaCommentData.getContent());
+        mediaCommentService.createMediaComment(mediaId, userId, mediaCommentData.getContent());
 
-        // 作成されたコメントをDTOに変換してレスポンスする
-        MediaCommentResponseDto response =
-            mediaCommentConverter.toMediaCommentResponseDto(createMediaComment, user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        // 201ステータスコードを返却
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     /**
      * DELETE /media/comments/{id}<br>
      * コメントを削除
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param id             対象のコメントID
      * @return 204ステータス
      */
@@ -88,10 +87,10 @@ public class MediaCommentController implements MediaCommentManagementApi {
     }
 
     /**
-     * GET /media/{mediaId}/comments
+     * GET /media/{mediaId}/comments<br>
      * メディアのコメント一覧を取得
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param mediaId        メディアID
      * @return 取得したコメントの情報
      */

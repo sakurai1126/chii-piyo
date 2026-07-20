@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 
 /**
  * メディア管理コントローラー<br>
- * OpenAPI Generator生成のMediaApiインターフェースを実装し、メタデータ登録とアップロード状態更新のAPIエンドポイントを提供する
+ * メディアの取得、メタデータ登録とアップロード状態更新、ゴミ箱への移動のAPIエンドポイントを提供
  */
 @Slf4j
 @RestController
@@ -56,7 +56,7 @@ public class MediaController implements MediaManagementApi {
      * POST /media<br>
      * メディアのメタデータを登録し署名付きアップロードURLを取得する
      *
-     * @param xRequestedWith  X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith  CSRF防御用カスタムリクエストヘッダー
      * @param mediaUploadData アップロードリクエストDTO
      * @return 作成されたメディアID と 署名付きURL
      */
@@ -94,13 +94,13 @@ public class MediaController implements MediaManagementApi {
      * メディアのアップロード状態を更新する<br>
      * シーケンス図の S3 アップロード成功/失敗後の状態同期処理に該当する
      *
-     * @param xRequestedWith        X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith        CSRF防御用カスタムリクエストヘッダー
      * @param mediaId               対象のメディアID
      * @param mediaUpdateStatusData ステータス更新DTO
-     * @return 更新後のメディア情報
+     * @return 204ステータス
      */
     @Override
-    public ResponseEntity<MediaResponseDto> updateMediaUploadStatus(
+    public ResponseEntity<Void> updateMediaUploadStatus(
         String xRequestedWith,
         Long mediaId,
         MediaUploadStatusRequestDto mediaUpdateStatusData) {
@@ -109,32 +109,20 @@ public class MediaController implements MediaManagementApi {
         Long userId = currentUserProvider.getUserId();
 
         // サービス層でステータス更新
-        Media media = mediaService.updateUploadStatus(
+        mediaService.updateUploadStatus(
             mediaId,
             userId,
             mediaUpdateStatusData.getUploadStatus().getValue());
 
-        // レスポンスDTOに変換して返却
-        return ResponseEntity.ok(mediaConverter.toMediaResponseDto(
-            media,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null
-        ));
+        // 204ステータスを返す
+        return ResponseEntity.noContent().build();
     }
 
     /**
      * GET /media<br>
      * メディア一覧を取得
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param offset         ページネーションのオフセット
      * @param limit          ページネーションのリミット
      * @param mediaType      メディア種別フィルタ (IMAGE / VIDEO)
@@ -240,7 +228,7 @@ public class MediaController implements MediaManagementApi {
     }
 
     /**
-     * GET /media/{id} : メディアをID指定で1件取得
+     * GET /media/{id}<br>メディアをID指定で1件取得
      */
     @Override
     public ResponseEntity<MediaResponseDto> getMedia(String xRequestedWith, Long id) {
@@ -314,7 +302,7 @@ public class MediaController implements MediaManagementApi {
      * PATCH /media/{id}<br>
      * メディア情報を更新
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param id             対象のメディアID
      * @param updateData     更新用データ（アルバムID と 共有グループIDを想定）
      * @return 204ステータス
@@ -333,13 +321,12 @@ public class MediaController implements MediaManagementApi {
         return ResponseEntity.noContent().build();
     }
 
-
     /**
      * DELETE /media/{id}<br>
      * メディアを削除<br>
      * ※ゴミ箱に移動し30日間保持
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param id             対象のメディアID
      * @return 204ステータス
      */
@@ -361,7 +348,7 @@ public class MediaController implements MediaManagementApi {
      * 複数メディアを削除<br>
      * ※ゴミ箱に移動し30日間保持
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param mediaIds       対象メディアのIDリスト
      * @return 204ステータス
      */
@@ -384,9 +371,10 @@ public class MediaController implements MediaManagementApi {
     }
 
     /**
-     * PATCH /media/batch : メディアのタグ/共有範囲/アルバムを一括更新
+     * PATCH /media/batch<br>
+     * メディアのタグ/共有範囲/アルバムを一括更新
      *
-     * @param xRequestedWith       X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith       CSRF防御用カスタムリクエストヘッダー
      * @param mediaBatchUpdateData 更新用のデータ
      * @return 204ステータス
      */

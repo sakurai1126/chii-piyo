@@ -43,10 +43,6 @@ post:
   responses:
     "201":
       description: コメントの追加に成功
-      content:
-        application/json;charset=UTF-8:
-          schema:
-            $ref: "../../components/schemas/media.yml#/MediaCommentResponseDto"
     "400":
       $ref: "../../components/responses.yml#/BadRequest"
     "401":

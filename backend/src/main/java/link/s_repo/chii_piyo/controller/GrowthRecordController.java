@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * 成長記録管理コントローラー<br>
- * OpenAPI Generator生成のGrowthRecordManagementApiインターフェースを実装し、成長記録管理のAPIエンドポイントを提供する
+ * 成長記録管理のAPIエンドポイントを提供
  */
 @Slf4j
 @RestController
@@ -31,7 +31,7 @@ public class GrowthRecordController implements GrowthRecordManagementApi {
      * POST /growth-records<br>
      * 身長・体重記録を登録
      *
-     * @param xRequestedWith   X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith   CSRF防御用カスタムリクエストヘッダー
      * @param growthRecordData 登録する身長・体重記録情報
      * @return 201ステータス
      */
@@ -48,9 +48,10 @@ public class GrowthRecordController implements GrowthRecordManagementApi {
     }
 
     /**
-     * GET /growth-records : 身長・体重記録一覧を取得
+     * GET /growth-records<br>
+     * 身長・体重記録一覧を取得
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param startDate      検索開始日
      * @param endDate        検索終了日
      * @return 身長・体重記録一覧
@@ -71,9 +72,10 @@ public class GrowthRecordController implements GrowthRecordManagementApi {
     }
 
     /**
-     * PUT /growth-records/{id} : 身長・体重記録を更新
+     * PUT /growth-records/{id}<br>
+     * 身長・体重記録を更新
      *
-     * @param xRequestedWith   X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith   CSRF防御用カスタムリクエストヘッダー
      * @param id               リソースの一意な識別子
      * @param growthRecordData 更新する身長・体重記録情報
      * @return 更新された身長・体重記録
@@ -90,9 +92,10 @@ public class GrowthRecordController implements GrowthRecordManagementApi {
     }
 
     /**
-     * DELETE /growth-records/{id} : 身長・体重記録を削除
+     * DELETE /growth-records/{id}<br>
+     * 身長・体重記録を削除
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param id             リソースの一意な識別子
      * @return 204ステータス
      */

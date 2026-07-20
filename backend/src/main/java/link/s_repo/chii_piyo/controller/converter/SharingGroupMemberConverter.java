@@ -8,6 +8,9 @@ import org.springframework.stereotype.Component;
 import java.net.URI;
 import java.util.Objects;
 
+/**
+ * SharingGroupMembersエンティティをSharingGroupMemberResponseDtoに変換するコンバーター
+ */
 @Component
 public class SharingGroupMemberConverter {
     /**
@@ -17,16 +20,12 @@ public class SharingGroupMemberConverter {
      * @return SharingGroupMemberResponseDto
      */
     public SharingGroupMemberResponseDto toSharingGroupMemberResponseDto(
-        SharingGroupMembers sharingGroupMember,
-        Users user,
-        URI presignedIconUrl
-    ) {
-        return new SharingGroupMemberResponseDto(
-            sharingGroupMember.getId(),
-            sharingGroupMember.getUserId(),
-            user.getDisplayName(),
-            Objects.toString(presignedIconUrl, null),
-            sharingGroupMember.getCreatedAt()
-        );
+        SharingGroupMembers sharingGroupMember, Users user, URI presignedIconUrl) {
+        return new SharingGroupMemberResponseDto()
+            .id(sharingGroupMember.getId())
+            .userId(sharingGroupMember.getUserId())
+            .displayName(user.getDisplayName())
+            .presignedIconUrl(Objects.toString(presignedIconUrl, null))
+            .createdAt(sharingGroupMember.getCreatedAt());
     }
 }

@@ -5,12 +5,10 @@ import link.s_repo.chii_piyo.model.gen.Tags;
 import org.springframework.stereotype.Component;
 
 /**
- * APIレスポンスの組み立てを担当するコンバータークラス<br>
- * TagsエンティティをTagResponseDtoに変換するロジックを提供する
+ * TagsエンティティをTagResponseDtoに変換するコンバーター
  */
 @Component
 public class TagConverter {
-
     /**
      * TagsエンティティをTagResponseDtoに変換する
      *
@@ -18,13 +16,10 @@ public class TagConverter {
      * @return TagResponseDto
      */
     public TagResponseDto toTagResponseDto(Tags tag, Long mediaCount) {
-        TagResponseDto dto = new TagResponseDto(
-                tag.getId(), // ID
-                tag.getName(), // タグ名
-                tag.getCreatedAt() // 作成日時
-        );
-
-        dto.setMediaCount(mediaCount); // タグが紐づいているメディアの数
-        return dto;
+        return new TagResponseDto()
+            .id(tag.getId())
+            .name(tag.getName())
+            .createdAt(tag.getCreatedAt())
+            .mediaCount(mediaCount);
     }
 }

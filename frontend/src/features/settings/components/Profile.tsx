@@ -84,7 +84,7 @@ export const Profile = ({ isEasy, currentUser }: Props) => {
           <div className="w-full">
             <div>
               <div className={cn("flex", isEasy ? "flex-col" : "items-center gap-6 @max-md:gap-4")}>
-                <p className={cn("text-[18px] font-medium", !isEasy && "@max-md:text-[13px]")}>
+                <p className={cn(isEasy ? "text-[18px] font-medium" : "@max-md:text-[13px]")}>
                   表示名：{user.displayName}
                 </p>
                 <button

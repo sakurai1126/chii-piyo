@@ -38,11 +38,7 @@ post:
     required: true
   responses:
     "201":
-      description: 作成されたタグ
-      content:
-        application/json;charset=UTF-8:
-          schema:
-            $ref: "../../components/schemas/tags.yml#/TagResponseDto"
+      description: タグの作成に成功
     "400":
       $ref: "../../components/responses.yml#/BadRequest"
     "401":

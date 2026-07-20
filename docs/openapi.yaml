@@ -97,12 +97,8 @@ paths:
               $ref: '#/components/schemas/UserUpdateRequestDto'
         required: true
       responses:
-        '200':
-          description: 更新後のユーザー情報
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/UserResponseDto'
+        '204':
+          description: ログインユーザーの情報更新成功
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -272,12 +268,8 @@ paths:
               $ref: '#/components/schemas/SharingGroupUpdateRequestDto'
         required: true
       responses:
-        '200':
-          description: 更新された共有グループ情報
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/SharingGroupResponseDto'
+        '204':
+          description: 共有グループ情報の更新に成功
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -491,12 +483,8 @@ paths:
               $ref: '#/components/schemas/MediaUploadStatusRequestDto'
         required: true
       responses:
-        '200':
-          description: 更新されたメディア情報
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/MediaResponseDto'
+        '204':
+          description: メディアの更新に成功
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -581,10 +569,6 @@ paths:
       responses:
         '201':
           description: コメントの追加に成功
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/MediaCommentResponseDto'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -635,14 +619,8 @@ paths:
               $ref: '#/components/schemas/MediaTagsUpdateRequestDto'
         required: true
       responses:
-        '200':
-          description: 更新後のタグ一覧
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TagResponseDto'
+        '204':
+          description: タグの更新に成功
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -695,11 +673,7 @@ paths:
         required: true
       responses:
         '201':
-          description: 作成されたタグ
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/TagResponseDto'
+          description: タグの作成に成功
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -842,11 +816,7 @@ paths:
         required: true
       responses:
         '201':
-          description: 作成されたアルバム
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/AlbumResponseDto'
+          description: アルバムの作成に成功
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':

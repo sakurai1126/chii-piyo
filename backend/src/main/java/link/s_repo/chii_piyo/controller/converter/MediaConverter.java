@@ -12,17 +12,24 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * APIレスポンスの組み立てを担当するコンバータークラス<br>
- * MediaエンティティをMediaResponseDtoに変換するロジックを提供する
+ * メディアレスポンスに必要な各情報を受け取りMediaResponseDtoに変換するコンバーター
  */
 @Component
 public class MediaConverter {
-
     /**
-     * MediaエンティティをMediaResponseDtoに変換する
+     * ediaResponseDtoに変換する
      *
-     * @param media Mediaエンティティ
-     * @param tags  メディアに紐づくタグのリスト
+     * @param media                 メディアエンティティ
+     * @param tags                  メディアに紐づくタグのリスト
+     * @param presignedUrl          ダウンロード用URL
+     * @param thumbnailPresignedUrl サムネイルのダウンロード用URL
+     * @param isFavorite            お気に入りフラグ
+     * @param commentCount          コメント数
+     * @param nextMedia             次のメディア
+     * @param secondNextMedia       2つ後のメディア
+     * @param previousMedia         前のメディア
+     * @param secondPreviousMedia   2つ前のメディア
+     * @param addFavoriteUserIds    お気に入りに追加したユーザーのIDリスト
      * @return MediaResponseDto
      */
     public MediaResponseDto toMediaResponseDto(
@@ -38,38 +45,30 @@ public class MediaConverter {
         MediaNavigationResponseDto secondPreviousMedia,
         List<Long> addFavoriteUserIds
     ) {
-
-        // 必須フィールドを揃えてコンストラクタに渡す
-        MediaResponseDto dto = new MediaResponseDto(
-            media.getId(), // メディアID
-            media.getUploadedBy(), // アップロードしたユーザーID
-            MediaResponseDto.MediaTypeEnum.
-                fromValue(media.getMediaType()), // メディアの種類（画像、動画）
-            media.getOriginalFilename(), // オリジナルファイル名
-            media.getContentType(), // コンテンツタイプ
-            media.getFileSize(), // ファイルサイズ
-            media.getWidth(), // 横幅
-            media.getHeight(), // 高さ
-            media.getTakenAt(), // 撮影日時
-            media.getAlbumId(), // 関連するアルバムID
-            media.getSharingGroupId(), // 関連する共有グループID
-            MediaResponseDto.UploadStatusEnum.
-                fromValue(media.getUploadStatus()), // アップロードステータス
-            media.getCreatedAt(), // 作成日時
-            media.getUpdatedAt() // 更新日時
-        );
-
-        dto.setPresignedUrl(presignedUrl); // ダウンロード用署名付きURL
-        dto.setThumbnailPresignedUrl(JsonNullable.of(thumbnailPresignedUrl)); // サムネイルのダウンロード用署名付きURL
-        dto.setTags(tags);// タグのリスト
-        dto.setIsFavorite(isFavorite); // お気に入りフラグ
-        dto.setCommentCount(commentCount); // コメントの数
-        dto.setNextMedia(nextMedia); // 次のメディアのID
-        dto.setSecondNextMedia(secondNextMedia); // 2つ後のメディアのID
-        dto.setPreviousMedia(previousMedia); // 前のメディアのID
-        dto.setSecondPreviousMedia(secondPreviousMedia); // 2つ前のメディアのID
-        dto.setAddFavoriteUserIds(Optional.ofNullable(addFavoriteUserIds).orElse(List.of()));
-
-        return dto;
+        return new MediaResponseDto()
+            .id(media.getId()) // メディアID
+            .uploadedBy(media.getUploadedBy()) // アップロードしたユーザーID
+            .mediaType(MediaResponseDto.MediaTypeEnum.fromValue(media.getMediaType())) // メディアの種類（画像、動画）
+            .originalFilename(media.getOriginalFilename()) // オリジナルファイル名
+            .contentType(media.getContentType()) // コンテンツタイプ
+            .fileSize(media.getFileSize()) // ファイルサイズ
+            .width(media.getWidth()) // 横幅
+            .height(media.getHeight()) // 高さ
+            .takenAt(media.getTakenAt()) // 撮影日時
+            .albumId(media.getAlbumId()) // 関連するアルバムID
+            .sharingGroupId(media.getSharingGroupId()) // 関連する共有グループID
+            .uploadStatus(MediaResponseDto.UploadStatusEnum.fromValue(media.getUploadStatus())) // アップロードステータス
+            .createdAt(media.getCreatedAt()) // 作成日時
+            .updatedAt(media.getUpdatedAt()) // 更新日時
+            .presignedUrl(presignedUrl) // ダウンロード用URL
+            .thumbnailPresignedUrl(thumbnailPresignedUrl) // サムネイルのダウンロード用URL
+            .tags(tags) // タグのリスト
+            .isFavorite(isFavorite) // お気に入りフラグ
+            .commentCount(commentCount) // コメントの数
+            .nextMedia(nextMedia) // 次のメディアのID
+            .secondNextMedia(secondNextMedia) // 2つ後のメディアのID
+            .previousMedia(previousMedia) // 前のメディアのID
+            .secondPreviousMedia(secondPreviousMedia) // 2つ前のメディアのID
+            .addFavoriteUserIds(Optional.ofNullable(addFavoriteUserIds).orElse(List.of())); // お気に入りに追加したユーザーのIDリスト
     }
 }

@@ -8,11 +8,17 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * APIレスポンスの組み立てを担当するコンバータークラス<br>
- * WordRecordエンティティをWordRecordResponseDtoに変換するロジックを提供する
+ * WordRecordエンティティをWordRecordResponseDtoに変換するコンバーター
  */
 @Component
 public class WordRecordConverter {
+    /**
+     * WordRecordsエンティティをWordRecordResponseDtoに変換する
+     *
+     * @param record            WordRecordsエンティティ
+     * @param mediaResponseList 記録に紐づくメディアのレスポンスリスト
+     * @return WordRecordResponseDto
+     */
     public WordRecordResponseDto toWordRecordResponseDto(
         WordRecords record, List<MediaResponseDto> mediaResponseList) {
         return new WordRecordResponseDto()

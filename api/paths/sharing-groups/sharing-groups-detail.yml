@@ -15,12 +15,8 @@ patch:
           $ref: "../../components/schemas/sharing-groups.yml#/SharingGroupUpdateRequestDto"
     required: true
   responses:
-    "200":
-      description: 更新された共有グループ情報
-      content:
-        application/json;charset=UTF-8:
-          schema:
-            $ref: "../../components/schemas/sharing-groups.yml#/SharingGroupResponseDto"
+    "204":
+      description: 共有グループ情報の更新に成功
     "400":
       $ref: "../../components/responses.yml#/BadRequest"
     "401":

@@ -20,7 +20,7 @@ import java.util.List;
 
 /**
  * 共有グループ管理コントローラー<br>
- * OpenAPI Generator生成のSharingGroupManagementApiインターフェースを実装し、タグの取得・作成およびメディアとのタグ紐付けに関するAPIエンドポイントを提供する
+ * 共有グループと所属するメンバーの取得・作成・更新・削除に関するAPIエンドポイントを提供
  */
 @Slf4j
 @RestController
@@ -50,7 +50,7 @@ public class SharingGroupController implements SharingGroupManagementApi {
      * DELETE /sharing-groups/{id}<br>
      * 共有グループを削除する
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param id             対象の共有グループID
      * @return 204ステータス
      */
@@ -67,7 +67,7 @@ public class SharingGroupController implements SharingGroupManagementApi {
      * GET /sharing-groups<br>
      * 共有グループ一覧を取得する
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @return 共有グループ一覧
      */
     @Override
@@ -85,9 +85,10 @@ public class SharingGroupController implements SharingGroupManagementApi {
     }
 
     /**
-     * GET /sharing-groups/all : 共有グループ一覧を全件取得
+     * GET /sharing-groups/all<br>
+     * 共有グループ一覧を全件取得
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @return 共有グループ一覧
      */
     @Override
@@ -104,7 +105,7 @@ public class SharingGroupController implements SharingGroupManagementApi {
     }
 
     /**
-     * 取得した共有グループからレスポンスDTOを作成する
+     * 取得した共有グループからレスポンスDTOを作成する<br>
      * ユーザー毎一覧取得及び管理者向け全件取得の共通処理
      *
      * @param sharingGroups 共有グループエンティティリスト
@@ -151,14 +152,14 @@ public class SharingGroupController implements SharingGroupManagementApi {
      * PATCH /sharing-groups/{id}<br>
      * 共有グループメンバーを編集する
      *
-     * @param xRequestedWith         X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith         CSRF防御用カスタムリクエストヘッダー
      * @param id                     対象共有グループのID
      * @param sharingGroupUpdateData 編集するメンバー情報
-     * @return 更新されたメンバー情報一覧
+     * @return 204ステータス
      */
     @Override
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<SharingGroupResponseDto> updateSharingGroup(
+    public ResponseEntity<Void> updateSharingGroup(
         String xRequestedWith, Long id, SharingGroupUpdateRequestDto sharingGroupUpdateData) {
         // サービス層でグループのエンティティを取得
 
@@ -166,32 +167,13 @@ public class SharingGroupController implements SharingGroupManagementApi {
 
         // 名前のリクエストがある場合のサービス層で名前を更新
         if (sharingGroupUpdateData.getName() != null) {
-            sharingGroups = sharingGroupService.updateSharingGroup(sharingGroups, sharingGroupUpdateData.getName());
+            sharingGroupService.updateSharingGroup(sharingGroups, sharingGroupUpdateData.getName());
         }
 
         // サービス層でメンバー情報の更新を行う
-        List<SharingGroupMembers> newMembers = sharingGroupService.editMembers(
-            id, sharingGroupUpdateData.getUserIds());
+        sharingGroupService.editMembers(id, sharingGroupUpdateData.getUserIds());
 
-        // サービス層でアイコンURLを生成しつつMap化
-        SharingGroupService.MemberAndIconMapResult memberAndIconMap =
-            sharingGroupService.memberAndIconMapping(newMembers);
-
-        // 所属メンバーをレスポンスDTOに変換する
-        List<SharingGroupMemberResponseDto> memberDtos = newMembers.stream()
-            .map(member -> {
-                // IDを元に、Mapからユーザー情報とアイコンURLを取得
-                Users user = memberAndIconMap.usersMap().get(member.getUserId());
-                URI iconUrl = memberAndIconMap.iconUrlsMap().get(member.getUserId());
-                // メンバー情報、ユーザー情報、アイコンURLを渡して、メンバー用DTOを作成
-                return sharingGroupMemberConverter.toSharingGroupMemberResponseDto(member, user, iconUrl);
-            }).toList();
-
-        // コンバータで変換する
-        SharingGroupResponseDto response =
-            sharingGroupConverter.toSharingGroupResponseDto(sharingGroups, memberDtos);
-
-        // レスポンスを返却
-        return ResponseEntity.ok(response);
+        // 204ステータスを返す
+        return ResponseEntity.noContent().build();
     }
 }

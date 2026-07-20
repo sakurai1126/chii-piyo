@@ -8,23 +8,22 @@ import org.springframework.stereotype.Component;
 import java.net.URI;
 
 /**
- * メディアのナビゲーション情報を組み立てるコンバータークラス<br>
- * MediaエンティティからMediaNavigationResponseDtoに変換するロジックを提供
+ * MediaエンティティからMediaNavigationResponseDtoに変換するコンバーター
  */
 @Component
 public class MediaNavigationConverter {
-
+    /**
+     * MediaエンティティからMediaNavigationResponseDtoに変換する
+     *
+     * @param media                 Mediaエンティティ
+     * @param thumbnailPresignedUrl サムネイルダウンロード用URL
+     * @return MediaNavigationResponseDto
+     */
     public MediaNavigationResponseDto toMediaNavigationResponseDto(
         Media media, URI thumbnailPresignedUrl) {
-        MediaNavigationResponseDto dto = new MediaNavigationResponseDto(
-            media.getId(),
-            MediaNavigationResponseDto.MediaTypeEnum.
-                fromValue(media.getMediaType())
-        );
-
-        // サムネイルのダウンロード用署名付きURL
-        dto.setThumbnailPresignedUrl(JsonNullable.of(thumbnailPresignedUrl));
-
-        return dto;
+        return new MediaNavigationResponseDto()
+            .id(media.getId())
+            .mediaType(MediaNavigationResponseDto.MediaTypeEnum.fromValue(media.getMediaType()))
+            .thumbnailPresignedUrl(thumbnailPresignedUrl);
     }
 }

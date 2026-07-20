@@ -8,12 +8,19 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * APIレスポンスの組み立てを担当するコンバータークラス<br>
- * FirstRecordエンティティをFirstRecordResponseDtoに変換するロジックを提供する
+ * FirstRecordエンティティをFirstRecordResponseDtoに変換するコンバーター
  */
 @Component
 public class FirstRecordConverter {
-    public FirstRecordResponseDto toFirstRecordResponseDto(FirstRecords record, List<MediaResponseDto> mediaResponseList) {
+    /**
+     * FirstRecordsエンティティをFirstRecordResponseDtoに変換する
+     *
+     * @param record            FirstRecordsエンティティ
+     * @param mediaResponseList 記録に紐づくメディアのレスポンスリスト
+     * @return FirstRecordResponseDto
+     */
+    public FirstRecordResponseDto toFirstRecordResponseDto(
+        FirstRecords record, List<MediaResponseDto> mediaResponseList) {
         return new FirstRecordResponseDto()
             .id(record.getId())
             .title(record.getTitle())

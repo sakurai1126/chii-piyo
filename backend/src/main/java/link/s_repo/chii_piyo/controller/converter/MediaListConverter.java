@@ -7,12 +7,10 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * APIレスポンスの組み立てを担当するコンバータークラス<br>
- * MediaエンティティをMediaResponseDtoに変換するロジックを提供する
+ * MediaエンティティをMediaResponseDtoに変換するコンバーター
  */
 @Component
 public class MediaListConverter {
-
     /**
      * MediaエンティティをMediaResponseDtoに変換する
      *
@@ -22,14 +20,10 @@ public class MediaListConverter {
      * @return MediaResponseDto
      */
     public MediaListResponseDto toMediaListResponseDto(
-        List<MediaResponseDto> mediaList,
-        Long totalCount,
-        boolean hasNext) {
-
-        return new MediaListResponseDto(
-            mediaList,
-            totalCount,
-            hasNext
-        );
+        List<MediaResponseDto> mediaList, Long totalCount, boolean hasNext) {
+        return new MediaListResponseDto()
+            .items(mediaList)
+            .totalCount(totalCount)
+            .hasNext(hasNext);
     }
 }

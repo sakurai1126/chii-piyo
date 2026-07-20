@@ -97,7 +97,10 @@ export const useChangeSettings = ({ currentUser }: Props) => {
       // メタデータの更新
       const updatedUser = await updateProfileAction({ s3key });
       if (updatedUser.success) {
-        setUser(updatedUser.data);
+        setUser({
+          ...user,
+          presignedIconUrl: URL.createObjectURL(file),
+        });
         cancelIconEdit();
         toast.success("プロフィール画像のアップロードに成功しました");
       } else {
@@ -123,7 +126,7 @@ export const useChangeSettings = ({ currentUser }: Props) => {
     try {
       const updatedUser = await updateProfileAction({ displayName: newName });
       if (updatedUser.success) {
-        setUser(updatedUser.data);
+        setUser({ ...user, displayName: newName });
         setNewName("");
         setIsNameChangeMode(false);
         toast.success("表示名を変更しました");
@@ -146,20 +149,24 @@ export const useChangeSettings = ({ currentUser }: Props) => {
     try {
       const updatedUser = await updateProfileAction({ isDarkMode: !isDarkMode });
       if (updatedUser.success) {
-        setUser(updatedUser.data);
         // Cookieに保存(有効期限:7日間)
-        document.cookie = `theme=${updatedUser.data.isDarkMode ? "dark" : "light"}; path=/; max-age=604800; SameSite=Lax; Secure`;
+        document.cookie = `theme=${user.isDarkMode ? "light" : "dark"}; path=/; max-age=604800; SameSite=Lax; Secure`;
 
         // htmlタグのクラスを操作してクライアント側に即時反映
-        if (updatedUser.data.isDarkMode) {
-          document.documentElement.classList.add("dark");
-        } else {
+        if (user.isDarkMode) {
           document.documentElement.classList.remove("dark");
+        } else {
+          document.documentElement.classList.add("dark");
         }
 
-        setIsDarkMode(updatedUser.data.isDarkMode);
+        setUser({
+          ...user,
+          isDarkMode: !user.isDarkMode,
+        });
 
-        toast.success(`ダークモード表示を${updatedUser.data.isDarkMode ? "ON" : "OFF"}にしました`);
+        setIsDarkMode(!user.isDarkMode);
+
+        toast.success(`ダークモード表示を${user.isDarkMode ? "OFF" : "ON"}にしました`);
       } else {
         toast.error("ダークモード表示の変更に失敗しました");
       }
@@ -178,9 +185,12 @@ export const useChangeSettings = ({ currentUser }: Props) => {
     try {
       const updatedUser = await updateProfileAction({ isEasyMode: !isEasyMode });
       if (updatedUser.success) {
-        setUser(updatedUser.data);
-        setIsEasyMode(updatedUser.data.isEasyMode);
         toast.success(`かんたんモードを${isEasyMode ? "OFF" : "ON"}にしました`);
+        setIsEasyMode(!user.isEasyMode);
+        setUser({
+          ...user,
+          isEasyMode: !user.isEasyMode,
+        });
       } else {
         toast.error("かんたんモードの変更に失敗しました");
       }
