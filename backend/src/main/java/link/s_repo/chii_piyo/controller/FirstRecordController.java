@@ -20,7 +20,7 @@ import java.util.List;
 
 /**
  * はじめて記録管理コントローラー<br>
- * OpenAPI Generator生成のFirstRecordManagementApiインターフェースを実装し、はじめて記録の取得・作成およびメディアとのアルバム紐付けに関するAPIエンドポイントを提供する
+ * はじめて記録の取得・作成・更新・削除およびメディアとのアルバム紐付けに関するAPIエンドポイントを提供
  */
 @Slf4j
 @RestController
@@ -35,7 +35,7 @@ public class FirstRecordController implements FirstRecordManagementApi {
      * POST /first-records<br>
      * はじめて記録を登録
      *
-     * @param xRequestedWith  X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param firstRecordData 登録するはじめて記録情報
      * @return 201ステータス
      */
@@ -54,7 +54,7 @@ public class FirstRecordController implements FirstRecordManagementApi {
      * GET /first-records<br>
      * はじめて記録一覧を取得
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @return はじめて記録一覧
      */
     @Override
@@ -94,7 +94,7 @@ public class FirstRecordController implements FirstRecordManagementApi {
      * PUT /first-records/{id}<br>
      * はじめて記録を更新
      *
-     * @param xRequestedWith  X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith  CSRF防御用カスタムリクエストヘッダー
      * @param id              記録ID
      * @param firstRecordData 更新するはじめて記録情報
      * @return 204ステータス
@@ -114,7 +114,7 @@ public class FirstRecordController implements FirstRecordManagementApi {
      * DELETE /first-records/{id}<br>
      * はじめて記録を削除
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param id             記録ID
      * @return 204ステータス
      */

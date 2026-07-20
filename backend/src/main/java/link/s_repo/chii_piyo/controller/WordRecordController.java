@@ -19,6 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.net.URI;
 import java.util.List;
 
+/**
+ * ことば記録管理コントローラー<br>
+ * ことば記録の取得・作成・更新・削除およびメディアとのアルバム紐付けに関するAPIエンドポイントを提供
+ */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -33,7 +37,7 @@ public class WordRecordController implements WordRecordManagementApi {
      * POST /word-records<br>
      * ことばの記録を登録
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param wordRecordData 登録することばの記録情報
      * @return 201ステータス
      */
@@ -53,7 +57,7 @@ public class WordRecordController implements WordRecordManagementApi {
      * GET /word-records<br>
      * ことばの記録一覧を取得
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @return ことばの記録一覧
      */
     @Override
@@ -94,7 +98,7 @@ public class WordRecordController implements WordRecordManagementApi {
      * PUT /word-records/{id}<br>
      * ことばの記録を更新
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param id             記録ID
      * @param wordRecordData 更新することばの記録情報
      * @return 204ステータス
@@ -114,7 +118,7 @@ public class WordRecordController implements WordRecordManagementApi {
      * DELETE /word-records/{id}<br>
      * ことばの記録を削除
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param id             記録ID
      * @return 204ステータス
      */

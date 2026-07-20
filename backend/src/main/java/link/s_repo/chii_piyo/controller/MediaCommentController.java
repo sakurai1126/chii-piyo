@@ -21,7 +21,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
+/**
+ * コメント管理コントローラー<br>
+ * コメントの取得・作成・削除に関するAPIエンドポイントを提供
+ */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -36,7 +39,7 @@ public class MediaCommentController implements MediaCommentManagementApi {
      * POST /media/{mediaId}/comments<br>
      * メディアにコメントを追加する
      *
-     * @param xRequestedWith   X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith   CSRF防御用カスタムリクエストヘッダー
      * @param mediaId          メディアID
      * @param mediaCommentData コメントの内容を含むリクエストDTO
      * @return 作成されたcommentの情報
@@ -65,7 +68,7 @@ public class MediaCommentController implements MediaCommentManagementApi {
      * DELETE /media/comments/{id}<br>
      * コメントを削除
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param id             対象のコメントID
      * @return 204ステータス
      */
@@ -88,10 +91,10 @@ public class MediaCommentController implements MediaCommentManagementApi {
     }
 
     /**
-     * GET /media/{mediaId}/comments
+     * GET /media/{mediaId}/comments<br>
      * メディアのコメント一覧を取得
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param mediaId        メディアID
      * @return 取得したコメントの情報
      */

@@ -16,13 +16,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 
-
 import java.util.List;
 import java.util.Map;
 
 /**
  * タグ管理コントローラー<br>
- * OpenAPI Generator生成のTagManagementApiインターフェースを実装し、タグの取得・作成およびメディアとのタグ紐付けに関するAPIエンドポイントを提供する
+ * タグの取得・作成およびメディアとのタグ紐付けに関するAPIエンドポイントを提供
  */
 @Slf4j
 @RestController
@@ -36,7 +35,7 @@ public class TagController implements TagManagementApi {
      * POST /tags<br>
      * タグを作成する
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param tagData        アップロードリクエストDTO
      * @return 作成されたタグの情報
      */
@@ -55,7 +54,7 @@ public class TagController implements TagManagementApi {
      * GET /tags<br>
      * タグ一覧を取得する
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @return タグの一覧
      */
     @Override
@@ -77,7 +76,7 @@ public class TagController implements TagManagementApi {
      * PUT /media/{mediaId}/tags<br>
      * メディアのタグを一括更新
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param mediaId        メディアID
      * @param mediaTagsData  紐付けるタグIDの一覧
      * @return 更新後のタグ一覧
@@ -99,12 +98,11 @@ public class TagController implements TagManagementApi {
         return ResponseEntity.ok(response);
     }
 
-
     /**
      * PUT /tags/{tagId}<br>
      * タグを更新する
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param tagId          タグID
      * @param tagData        タグの更新データ
      * @return 204ステータス
@@ -127,7 +125,7 @@ public class TagController implements TagManagementApi {
      * DELETE /tags/{tagId}<br>
      * タグを削除する
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param tagId          タグID
      * @return 204ステータス
      */

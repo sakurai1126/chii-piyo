@@ -23,7 +23,7 @@ import java.util.List;
 
 /**
  * 育児記録管理コントローラー<br>
- * OpenAPI Generator生成のCareRecordManagementApiインターフェースを実装し、育児記録管理のAPIエンドポイントを提供する
+ * 育児記録管理の取得・作成・更新・削除に関するAPIエンドポイントを提供
  */
 @Slf4j
 @RestController
@@ -38,7 +38,7 @@ public class CareRecordController implements CareRecordManagementApi {
      * POST /care-records<br>
      * 育児記録を登録
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param careRecordData 登録する育児記録情報
      * @return 201ステータス
      */
@@ -60,7 +60,7 @@ public class CareRecordController implements CareRecordManagementApi {
      * GET /care-records<br>
      * 育児記録一覧を取得
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param startDate      検索開始日
      * @param endDate        検索終了日
      * @return 育児記録一覧
@@ -100,7 +100,7 @@ public class CareRecordController implements CareRecordManagementApi {
      * PUT /care-records/{id}<br>
      * 育児記録を更新
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param id             リソースの一意な識別子
      * @param careRecordData 更新する育児記録情報
      */
@@ -119,7 +119,7 @@ public class CareRecordController implements CareRecordManagementApi {
      * DELETE /care-records/{id}<br>
      * 育児記録を削除
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param id             リソースの一意な識別子
      * @return 204ステータス
      */

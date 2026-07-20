@@ -20,7 +20,7 @@ import java.util.Map;
 
 /**
  * アルバム管理コントローラー<br>
- * OpenAPI Generator生成のAlbumManagementApiインターフェースを実装し、アルバムの取得・作成およびメディアとのアルバム紐付けに関するAPIエンドポイントを提供する
+ * アルバムの取得・作成およびメディアとのアルバム紐付けに関するAPIエンドポイントを提供
  */
 @Slf4j
 @RestController
@@ -30,10 +30,10 @@ public class AlbumController implements AlbumManagementApi {
     private final AlbumConverter albumConverter;
 
     /**
-     * POST /albums/{id}/media
+     * POST /albums/{id}/media<br>
      * アルバムにメディアを追加する
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param id             対象のアルバムID
      * @param albumMediaData アルバムに追加するメディアの情報(メディアIDリスト)
      * @return 204ステータス
@@ -49,10 +49,10 @@ public class AlbumController implements AlbumManagementApi {
     }
 
     /**
-     * DELETE /albums/{id}/media
+     * DELETE /albums/{id}/media<br>
      * アルバムから複数メディアを削除する
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param id             対象のアルバムID
      * @param mediaIds       アルバムから削除するメディアのIDリスト
      * @return 204ステータス
@@ -68,13 +68,11 @@ public class AlbumController implements AlbumManagementApi {
         return ResponseEntity.noContent().build();
     }
 
-
-
     /**
      * POST /albums<br>
      * 新しいアルバムを作成する
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param albumData      アップロードリクエストDTO
      * @return 作成されたアルバムの情報
      */
@@ -156,7 +154,7 @@ public class AlbumController implements AlbumManagementApi {
      * PUT /albums/{albumId}<br>
      * 指定したIDのアルバムを更新する
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param albumId        アルバムID
      * @param albumData      リクエストデータ(新しいアルバムのタイトル)
      * @return 204ステータス
@@ -179,7 +177,7 @@ public class AlbumController implements AlbumManagementApi {
      * DELETE /albums/{albumId}<br>
      * 指定したIDのアルバムを削除する
      *
-     * @param xRequestedWith X-Requested-With ヘッダ (CSRF防御用)
+     * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param albumId        アルバムID
      * @return 204ステータス
      */
