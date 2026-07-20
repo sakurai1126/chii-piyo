@@ -12,6 +12,10 @@ import java.util.Optional;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
 
+/**
+ * コメント関連のリポジトリ<br>
+ * コメントに関するDB操作を提供
+ */
 @Repository
 @RequiredArgsConstructor
 public class MediaCommentRepository {
@@ -35,7 +39,6 @@ public class MediaCommentRepository {
     public void save(MediaComments mediaComments) {
         mediaCommentsMapper.insertSelective(mediaComments);
     }
-
 
     /**
      * コメントをメディアIDで複数件取得する
@@ -63,6 +66,8 @@ public class MediaCommentRepository {
 
     /**
      * コメントを削除する
+     *
+     * @param id 対象コメントのID
      */
     public void delete(Long id) {
         mediaCommentsMapper.deleteByPrimaryKey(id);
@@ -70,16 +75,23 @@ public class MediaCommentRepository {
 
     /**
      * メディアIDに紐づくコメントを削除する
+     *
+     * @param mediaId 対象メディアのID
      */
     public void deleteByMediaId(Long mediaId) {
-        mediaCommentsMapper.delete(c -> c.where(MediaCommentsDynamicSqlSupport.mediaId, isEqualTo(mediaId)));
+        mediaCommentsMapper.delete(
+            c -> c.where(MediaCommentsDynamicSqlSupport.mediaId, isEqualTo(mediaId))
+        );
     }
 
     /**
      * メディアIDリストに紐づくコメントを削除する
+     *
+     * @param mediaIds 対象メディアのIDリスト
      */
     public void deleteByMediaIds(List<Long> mediaIds) {
-        mediaCommentsMapper.delete(c ->
-            c.where(MediaCommentsDynamicSqlSupport.mediaId, isIn(mediaIds)));
+        mediaCommentsMapper.delete(
+            c -> c.where(MediaCommentsDynamicSqlSupport.mediaId, isIn(mediaIds))
+        );
     }
 }

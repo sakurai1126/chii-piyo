@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 
 /**
  * タグ管理サービス<br>
- * タグの取得・作成およびメディアとのタグ紐付けを担う
+ * タグに関する処理のロジックを担う
  */
 @Slf4j
 @Service
@@ -30,13 +30,12 @@ public class TagService {
     private final TagRepository tagRepository;
 
     /**
-     * タグを新規作成する<br>
+     * タグを新規作成する
      *
      * @param name 追加するタグ名
-     * @return 作成されたタグエンティティ
      */
     @Transactional
-    public Tags createTag(String name) {
+    public void createTag(String name) {
         Tags tag = new Tags();
 
         // タグエンティティに値をセット
@@ -44,7 +43,6 @@ public class TagService {
 
         // タグをDBに保存
         tagRepository.save(tag);
-        return tag;
     }
 
     /**
@@ -59,7 +57,7 @@ public class TagService {
     }
 
     /**
-     * メディアに紐づくタグ一覧を取得する。
+     * メディアに紐づくタグ一覧を取得する
      *
      * @param mediaId メディアID
      * @return タグのリスト
@@ -81,14 +79,13 @@ public class TagService {
     }
 
     /**
-     * メディアに紐づくタグを一括更新する<br>
+     * メディアに紐づくタグを一括更新する
      *
      * @param mediaId メディアID
      * @param tagIds  タグIDのリスト
-     * @return 更新後のタグエンティティのリスト
      */
     @Transactional
-    public List<Tags> syncMediaTags(Long mediaId, List<Long> tagIds) {
+    public void syncMediaTags(Long mediaId, List<Long> tagIds) {
         // メディアIDと紐づいたタグIDの一覧を取得する
         List<Long> currentTagIds = tagRepository.findMediaTagsByMediaId(mediaId).stream()
             // MediaTagsエンティティからタグIDだけ抜き取りリスト化
@@ -121,20 +118,6 @@ public class TagService {
         if (!toInsertTags.isEmpty()) {
             tagRepository.saveMediaTags(toInsertTags);
         }
-
-        // 更新後のmedia_tagsからtagIdを取り出す
-        List<Long> updatedTagIds = Stream.concat(
-            currentTagIds.stream().filter(id -> !toDeleteTagIds.contains(id)),
-            toInsertTags.stream().map(MediaTags::getTagId)
-        ).toList();
-
-        // タグIDが空の場合は空リストを返す
-        if (updatedTagIds.isEmpty()) {
-            return List.of();
-        }
-
-        // tagIdでTagsを取得して返す
-        return tagRepository.findByIds(updatedTagIds);
     }
 
     /**

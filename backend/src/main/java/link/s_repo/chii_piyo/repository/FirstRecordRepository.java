@@ -15,6 +15,10 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * はじめて記録関連のリポジトリ<br>
+ * はじめて記録に関するDB操作を提供
+ */
 @Repository
 @RequiredArgsConstructor
 public class FirstRecordRepository {

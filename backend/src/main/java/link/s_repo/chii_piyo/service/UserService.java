@@ -19,7 +19,7 @@ import java.util.List;
 
 /**
  * ユーザー管理サービス<br>
- * ユーザーの取得・作成およびメディアとのユーザー紐付けを担う
+ * ユーザーの処理のロジックを担う
  */
 @Slf4j
 @Service
@@ -61,10 +61,9 @@ public class UserService {
      *
      * @param userId     ユーザーデータ
      * @param updateData アップデート情報
-     * @return 更新されたユーザーデータ
      */
     @Transactional
-    public Users updateMe(Long userId, UserUpdateRequestDto updateData) {
+    public void updateMe(Long userId, UserUpdateRequestDto updateData) {
         // 現在のユーザー情報を取得
         Users user = getUserById(userId);
         boolean isUpdated = false;
@@ -96,14 +95,13 @@ public class UserService {
             // Selectiveメソッドを使って、null以外の項目のみUPDATE実行
             userRepository.update(user);
         }
-        return user;
     }
 
     /**
-     * プロフィールアイコンダウンロード用署名付きURLの生成
+     * プロフィールアイコンダウンロード用URLの生成
      *
      * @param user ユーザー情報
-     * @return 生成した署名付きダウンロード用URL
+     * @return 生成したダウンロード用URL
      */
     public URI generateIconDownloadPresignedUrl(Users user) {
         String s3Key = user.getUserIconKey();
@@ -112,33 +110,33 @@ public class UserService {
     }
 
     /**
-     * プロフィールアイコン生成用署名付きURLの生成
+     * プロフィールアイコン生成用URLの生成
      *
      * @param filename    ファイル名
      * @param contentType コンテンツタイプ
-     * @return 生成した署名付きアップロード用URL
+     * @return 生成したアップロード用URL
      */
     public CreateIconS3KeyResult generateIconPresignedUrl(String filename, String contentType) {
         // S3キーを生成
         String s3Key = s3KeyGenerator.buildS3Key("profile", filename);
 
-        // 署名付きアップロードURLを発行
+        // アップロードURLを発行
         URI presignedUrl = s3StorageManager.generateUploadPresignedUrl(s3Key, contentType);
 
         return new CreateIconS3KeyResult(s3Key, presignedUrl);
     }
 
     /**
-     * ユーザー情報の一覧の取得と取得したユーザーからダウンロード用署名付きURLを生成し返却する
+     * ユーザー情報の一覧の取得と取得したユーザーからダウンロード用URLを生成し返却する
      *
-     * @return ユーザー情報とダウンロード用署名付きURLをまとめたレコード型の一覧
+     * @return ユーザー情報とダウンロード用URLをまとめたレコード型の一覧
      */
     @Transactional(readOnly = true)
     public List<UsersAndIconResult> getUsersAndIcon() {
         // ユーザー情報を一覧取得
         List<Users> users = userRepository.findAll();
 
-        // 取得下ユーザー情報から署名付きURLを取得して返却
+        // 取得したユーザー情報からURLを取得して返却
         return users.stream().map(user -> {
             // ダウンロード用URLを生成
             URI presignedUrl = generateIconDownloadPresignedUrl(user);
@@ -164,13 +162,19 @@ public class UserService {
     }
 
     /**
-     * ユーザー情報とダウンロード用署名付きURLをまとめて返すための内部クラス
+     * ユーザー情報とダウンロード用URLをまとめて返すための内部クラス
+     *
+     * @param user         ユーザー情報
+     * @param presignedUrl ダウンロード用URL
      */
     public record UsersAndIconResult(Users user, URI presignedUrl) {
     }
 
     /**
-     * S3Keyと署名付きURLをまとめて返すための内部クラス
+     * S3Keyとダウンロード用URLをまとめて返すための内部クラス
+     *
+     * @param s3Key        S3キー
+     * @param presignedUrl ダウンロード用URL
      */
     public record CreateIconS3KeyResult(String s3Key, URI presignedUrl) {
     }

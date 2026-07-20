@@ -10,12 +10,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-
+/**
+ * お気に入り管理サービス<br>
+ * お気に入りに関する処理のロジックを担う
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
+
     /**
      * お気に入りに追加したユーザーのIDリストを取得する
      *

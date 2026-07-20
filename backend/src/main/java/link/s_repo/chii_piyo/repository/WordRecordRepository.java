@@ -15,6 +15,10 @@ import java.util.Optional;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
 
+/**
+ * ことばの記録関連のリポジトリ<br>
+ * ことばの記録に関するDB操作を提供
+ */
 @Repository
 @RequiredArgsConstructor
 public class WordRecordRepository {

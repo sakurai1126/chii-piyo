@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 
 /**
  * メディア管理サービス<br>
- * 写真・動画のメタデータ登録およびS3との連携を担う
+ * 写真・動画に関する処理のロジックを担う
  */
 @Slf4j
 @Service
@@ -162,12 +162,9 @@ public class MediaService {
      * @param mediaId      対象のメディアID
      * @param userId       実行ユーザーID
      * @param uploadStatus 更新後のステータス (COMPLETED / FAILED / PROCESSING)
-     * @return 更新後のメディア情報
-     * @throws ResourceNotFoundException     対象メディアが存在しない場合
-     * @throws ResourceAccessDeniedException アップロード者以外が更新しようとした場合
      */
     @Transactional
-    public Media updateUploadStatus(Long mediaId, Long userId, String uploadStatus) {
+    public void updateUploadStatus(Long mediaId, Long userId, String uploadStatus) {
         // 対象メディアを取得
         // 生成に必須の処理のためゴミ箱フィルターはなし
         Media media = mediaRepository.findUnscopedById(mediaId)
@@ -195,8 +192,6 @@ public class MediaService {
                 media.getFileSize()
             );
         }
-
-        return media;
     }
 
     /**
@@ -393,17 +388,21 @@ public class MediaService {
 
     /**
      * ゴミ箱のデータとそれに連動したメディアのレコード
+     *
+     * @param trashItem ゴミ箱データ
+     * @param media     ゴミ箱データに紐づくメディアデータ
      */
     public record TrashItemAndMediaResult(TrashItems trashItem, Media media) {
     }
 
-
     /**
      * Mediaエンティティと署名付きURLをまとめて返すための内部クラス
+     *
+     * @param media        作成されたメディアエンティティ
+     * @param presignedUrl 署名付きアップロードURL
      */
     public record CreateMediaResult(Media media, URI presignedUrl) {
     }
-
 
     /**
      * どの位置のナビゲーションを返すかのENUM型
@@ -414,9 +413,11 @@ public class MediaService {
 
     /**
      * Mediaエンティティとナビゲーション位置をまとめて返すための内部クラス
+     *
+     * @param media    対象のメディアエンティティ
+     * @param position ナビゲーション位置
      */
     public record GetMediaNavigationResult(Media media, NavigationPosition position) {
     }
-
 
 }

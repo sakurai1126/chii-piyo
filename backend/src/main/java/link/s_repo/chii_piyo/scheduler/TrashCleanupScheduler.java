@@ -19,6 +19,9 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Stream;
 
+/**
+ * ゴミ箱の定期クリーンアップ処理用コンポーネント
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -42,6 +45,7 @@ public class TrashCleanupScheduler {
         OffsetDateTime now = OffsetDateTime.now(ZoneId.of("Asia/Tokyo"));
         List<TrashItems> expiredItems = trashRepository.findExpiredItems(now);
 
+        // 削除対象がない場合即時リターン
         if (expiredItems.isEmpty()) {
             log.info("削除対象のゴミ箱データはありませんでした。");
             return;

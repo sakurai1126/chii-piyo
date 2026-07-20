@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 /**
  * コメント管理サービス<br>
- * コメントの取得・作成およびメディアとのコメント紐付けを担う
+ * コメントの処理のロジックを担う
  */
 @Slf4j
 @Service
@@ -42,10 +42,9 @@ public class MediaCommentService {
      * @param mediaId 追加するコメントに紐づけるメディアのID
      * @param userId  コメントをするユーザーのID
      * @param content コメント本文
-     * @return 作成されたコメントエンティティ
      */
     @Transactional
-    public MediaComments createMediaComment(Long mediaId, Long userId, String content) {
+    public void createMediaComment(Long mediaId, Long userId, String content) {
         MediaComments mediaComments = new MediaComments();
 
         // コメントエンティティに値をセット
@@ -55,7 +54,6 @@ public class MediaCommentService {
 
         // コメントをDBに保存
         mediaCommentRepository.save(mediaComments);
-        return mediaComments;
     }
 
     /**

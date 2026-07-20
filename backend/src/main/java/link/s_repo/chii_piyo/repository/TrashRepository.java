@@ -15,6 +15,10 @@ import java.util.Optional;
 import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
 import static org.mybatis.dynamic.sql.SqlBuilder.isLessThanOrEqualTo;
 
+/**
+ * ゴミ箱データ関連のリポジトリ<br>
+ * ゴミ箱データに関するDB操作を提供
+ */
 @Repository
 @RequiredArgsConstructor
 public class TrashRepository {
@@ -82,7 +86,6 @@ public class TrashRepository {
         );
     }
 
-
     /**
      * ゴミ箱データを削除する
      *
@@ -100,7 +103,6 @@ public class TrashRepository {
     public void delete(List<Long> ids) {
         trashItemsMapper.delete(c -> c.where(TrashItemsDynamicSqlSupport.id, isIn(ids)));
     }
-
 
     /**
      * ゴミ箱内のアイテムの総件数を取得

@@ -25,16 +25,21 @@ import static link.s_repo.chii_piyo.repository.gen.MediaDynamicSqlSupport.thumbn
 import static link.s_repo.chii_piyo.repository.gen.MediaDynamicSqlSupport.uploadStatus;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
+/**
+ * メディア関連のリポジトリ<br>
+ * メディアに関するDB操作を提供
+ */
 @Repository
 @RequiredArgsConstructor
 public class MediaRepository {
     private final MediaMapper mediaMapper;
 
     /**
-     * メディアをID指定で1件取得する
+     * メディアをID指定で1件取得する<br>
      * (ゴミ箱にあるデータは除外)
      *
-     * @param id 対象のメディアのID
+     * @param id     対象のメディアのID
+     * @param userId 現在のユーザーID
      * @return メディアデータ
      */
     public Optional<Media> findById(Long id, Long userId) {
@@ -44,10 +49,11 @@ public class MediaRepository {
     }
 
     /**
-     * メディアをID指定で複数件取得する
+     * メディアをID指定で複数件取得する<br>
      * (ゴミ箱にあるデータは除外)
      *
-     * @param ids 対象のメディアのIDリスト
+     * @param ids    対象のメディアのIDリスト
+     * @param userId 現在のユーザーID
      * @return メディアデータリスト
      */
     public List<Media> findByIds(List<Long> ids, Long userId) {
@@ -57,7 +63,7 @@ public class MediaRepository {
     }
 
     /**
-     * 検索条件をもとに該当するメディアの総件数を取得する
+     * 検索条件をもとに該当するメディアの総件数を取得する<br>
      * (ゴミ箱にあるデータは除外)
      *
      * @param mediaSearchCriteria 検索条件
@@ -72,7 +78,7 @@ public class MediaRepository {
     }
 
     /**
-     * メディアのページ用一覧を取得する
+     * メディアのページ用一覧を取得する<br>
      * (ゴミ箱にあるデータは除外)
      *
      * @param mediaSearchCriteria 検索条件
@@ -98,7 +104,7 @@ public class MediaRepository {
     }
 
     /**
-     * 対象メディアをID指定で取得する
+     * 対象メディアをID指定で取得する<br>
      * ゴミ箱にあるデータも含む
      *
      * @param id 対象のメディアID
@@ -108,7 +114,7 @@ public class MediaRepository {
     }
 
     /**
-     * 対象メディアをIDリスト指定で取得する
+     * 対象メディアをIDリスト指定で取得する<br>
      * ゴミ箱にあるデータも含む
      *
      * @param ids 対象のメディアIDリスト
@@ -181,8 +187,12 @@ public class MediaRepository {
     }
 
     /**
-     * 対象の前のメディアをID降順で2件取得
+     * 対象の前のメディアをID降順で2件取得<br>
      * (ゴミ箱にあるデータは除外)
+     *
+     * @param id     対象のメディアID
+     * @param userId 現在のユーザーID
+     * @return 対象の前のメディアのリスト
      */
     public List<Media> findPreviousMedia(Long id, Long userId) {
         return mediaMapper.select(c -> c
@@ -195,8 +205,12 @@ public class MediaRepository {
     }
 
     /**
-     * 対象以降のメディアをID昇順で2件取得
+     * 対象以降のメディアをID昇順で2件取得<br>
      * (ゴミ箱にあるデータは除外)
+     *
+     * @param id     対象のメディアID
+     * @param userId 現在のユーザーID
+     * @return 対象の次のメディアのリスト
      */
     public List<Media> findNextMedia(Long id, Long userId) {
         return mediaMapper.select(c -> c
@@ -209,7 +223,7 @@ public class MediaRepository {
     }
 
     /**
-     * メディアをアルバムIDリスト指定で複数件取得する
+     * メディアをアルバムIDリスト指定で複数件取得する<br>
      * (ゴミ箱にあるデータは除外)
      *
      * @param albumIds 対象のアルバムのIDリスト
@@ -233,7 +247,7 @@ public class MediaRepository {
     }
 
     /**
-     * IDリストに紐づくメディアのalbum_idをnullに更新
+     * IDリストに紐づくメディアのalbum_idをnullに更新<br>
      * (ゴミ箱にあるデータは除外)
      *
      * @param mediaIds 対象のメディアIDリスト
@@ -245,8 +259,11 @@ public class MediaRepository {
     }
 
     /**
-     * IDリスト指定の対象メディアのアルバムIDデータを一括更新する
+     * IDリスト指定の対象メディアのアルバムIDデータを一括更新する<br>
      * (ゴミ箱にあるデータは除外)
+     *
+     * @param mediaIds 対象のメディアIDリスト
+     * @param albumId  更新対象のアルバムID
      */
     public void updateAlbumIdByMediaIds(List<Long> mediaIds, Long albumId) {
         mediaMapper.update(
@@ -343,7 +360,6 @@ public class MediaRepository {
             );
         }
 
-
         // 共有範囲でのフィルタリング
         if (mediaSearchCriteria.currentUserId() != null) {
             conditions.add(andSharingGroupFilter(mediaSearchCriteria.currentUserId()));
@@ -357,12 +373,14 @@ public class MediaRepository {
             ))
         );
 
-
         return conditions;
     }
 
     /**
      * 共有範囲に合わせてフィルタリングする
+     *
+     * @param userId 現在のユーザーID
+     * @return 共有範囲に合わせたフィルタリング条件
      */
     private AndOrCriteriaGroup andSharingGroupFilter(Long userId) {
         // 共有グループ未設定(全員に公開)を許可
@@ -380,6 +398,7 @@ public class MediaRepository {
     /**
      * アップロードが完了していてサムネイルのキーがデータ登録されていないものを取得
      *
+     * @param limit 取得件数の上限
      * @return 対象のメディアエンティティリスト
      */
     public List<Media> findMissingThumbnails(Long limit) {
@@ -392,6 +411,9 @@ public class MediaRepository {
 
     /**
      * thumbnail_s3_key を更新する
+     *
+     * @param media          対象のメディアエンティティ
+     * @param thumbnailS3Key 更新するサムネイルのS3キー
      */
     @Transactional
     public void updateThumbnailKey(Media media, String thumbnailS3Key) {
@@ -402,6 +424,8 @@ public class MediaRepository {
 
     /**
      * 「AND id NOT IN (ゴミ箱)」を丸ごと返す共通メソッド
+     *
+     * @return ゴミ箱にないメディアの条件
      */
     private AndOrCriteriaGroup andNotInTrash() {
         return and(MediaDynamicSqlSupport.id, isNotIn(

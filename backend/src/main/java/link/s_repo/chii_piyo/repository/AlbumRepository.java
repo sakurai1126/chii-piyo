@@ -10,6 +10,10 @@ import java.util.Optional;
 
 import static link.s_repo.chii_piyo.repository.gen.AlbumsDynamicSqlSupport.id;
 
+/**
+ * アルバム関連リポジトリ<br>
+ * アルバムに関するDB操作を提供
+ */
 @Repository
 @RequiredArgsConstructor
 public class AlbumRepository {
@@ -54,6 +58,8 @@ public class AlbumRepository {
 
     /**
      * アルバムを更新する
+     *
+     * @param album アルバムエンティティ
      */
     public void update(Albums album) {
         albumsMapper.updateByPrimaryKeySelective(album);

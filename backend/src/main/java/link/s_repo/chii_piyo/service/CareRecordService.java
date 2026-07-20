@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * 育児記録管理サービス<br>
- * 各種育児記録のデータ管理を担う
+ * 各種育児記録の処理のロジックを担う
  */
 @Slf4j
 @Service
@@ -78,6 +78,10 @@ public class CareRecordService {
 
     /**
      * 食事記録を登録する
+     *
+     * @param request        リクエストデータ
+     * @param careRecordData 育児記録データ
+     * @param userId         ユーザーID
      */
     private void saveMealRecord(
         MealDetailDto request, CareRecordRequestDto careRecordData, Long userId) {
@@ -95,6 +99,10 @@ public class CareRecordService {
 
     /**
      * ミルク記録を登録する
+     *
+     * @param request        リクエストデータ
+     * @param careRecordData 育児記録データ
+     * @param userId         ユーザーID
      */
     private void saveMilkRecord(
         MilkDetailDto request, CareRecordRequestDto careRecordData, Long userId) {
@@ -113,6 +121,10 @@ public class CareRecordService {
 
     /**
      * 排泄記録を登録する
+     *
+     * @param request        リクエストデータ
+     * @param careRecordData 育児記録データ
+     * @param userId         ユーザーID
      */
     private void saveDiaperRecord(
         DiaperDetailDto request, CareRecordRequestDto careRecordData, Long userId) {
@@ -131,6 +143,10 @@ public class CareRecordService {
 
     /**
      * 体調記録を登録する
+     *
+     * @param request        リクエストデータ
+     * @param careRecordData 育児記録データ
+     * @param userId         ユーザーID
      */
     private void saveHealthRecord(
         HealthDetailDto request, CareRecordRequestDto careRecordData, Long userId) {

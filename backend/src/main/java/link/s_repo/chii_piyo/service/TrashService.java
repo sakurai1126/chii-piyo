@@ -29,7 +29,7 @@ import java.util.stream.Stream;
 
 /**
  * ゴミ箱管理サービス<br>
- * メディアのゴミ箱データの作成・削除を行う
+ * メディアのゴミ箱に関する処理のロジックを担う
  */
 @Slf4j
 @Service
@@ -135,6 +135,8 @@ public class TrashService {
 
     /**
      * 指定されたIDのゴミ箱データを削除する
+     *
+     * @param id 削除するゴミ箱データのID
      */
     @Transactional
     public void restoreTrashItem(Long id) {
@@ -143,6 +145,8 @@ public class TrashService {
 
     /**
      * 指定された複数IDのゴミ箱データを削除する
+     *
+     * @param ids 削除するゴミ箱データのIDリスト
      */
     @Transactional
     public void restoreTrashItems(List<Long> ids) {
@@ -195,6 +199,8 @@ public class TrashService {
 
     /**
      * ゴミ箱内の複数メディアの完全削除処理を実行する
+     *
+     * @param trashItemIds 対象のゴミ箱テーブルのデータIDリスト
      */
     @Transactional
     public void multiplePermanentlyDelete(List<Long> trashItemIds) {

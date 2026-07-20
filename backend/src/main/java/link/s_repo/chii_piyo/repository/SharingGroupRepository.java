@@ -17,7 +17,10 @@ import static link.s_repo.chii_piyo.repository.gen.SharingGroupsDynamicSqlSuppor
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
 
-
+/**
+ * 共有グループ関連のリポジトリ<br>
+ * 共有グループに関するDB操作を提供
+ */
 @Repository
 @RequiredArgsConstructor
 public class SharingGroupRepository {
@@ -38,6 +41,7 @@ public class SharingGroupRepository {
      * 共有グループ一覧を取得する<br>
      * 全件をID昇順で返す
      *
+     * @param ids 対象の共有グループIDリスト
      * @return 共有グループエンティティの一覧
      */
     public List<SharingGroups> findByIdsOrderById(List<Long> ids) {
@@ -58,13 +62,17 @@ public class SharingGroupRepository {
 
     /**
      * 共有グループを新規作成する
+     *
+     * @param sharingGroups 共有グループエンティティ
      */
     public void save(SharingGroups sharingGroups) {
         sharingGroupsMapper.insertSelective(sharingGroups);
     }
 
     /**
-     * 共有グループメンバーを複数県新規作成する
+     * 共有グループメンバーを複数件新規作成する
+     *
+     * @param members 共有グループメンバーエンティティのリスト
      */
     public void membersSave(List<SharingGroupMembers> members) {
         sharingGroupMembersMapper.insertMultiple(members);
