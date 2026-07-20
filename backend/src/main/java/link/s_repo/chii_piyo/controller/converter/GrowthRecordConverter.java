@@ -5,12 +5,10 @@ import link.s_repo.chii_piyo.model.gen.GrowthRecords;
 import org.springframework.stereotype.Component;
 
 /**
- * APIレスポンスの組み立てを担当するコンバータークラス<br>
- * 成長記録エンティティをGrowthRecordResponseDtoに変換するロジックを提供する
+ * 成長記録エンティティをGrowthRecordResponseDtoに変換するコンバーター
  */
 @Component
 public class GrowthRecordConverter {
-
     /**
      * GrowthRecordsエンティティをGrowthRecordResponseDtoに変換する
      *
@@ -18,18 +16,13 @@ public class GrowthRecordConverter {
      * @return GrowthRecordResponseDto
      */
     public GrowthRecordResponseDto toGrowthRecordResponseDto(GrowthRecords growthRecord) {
-        GrowthRecordResponseDto dto = new GrowthRecordResponseDto()
+        return new GrowthRecordResponseDto()
             .id(growthRecord.getId())
             .measurementDate(growthRecord.getMeasurementDate())
             .note(growthRecord.getNote())
+            .height(growthRecord.getHeight() != null ? growthRecord.getHeight().doubleValue() : null)
+            .weight(growthRecord.getWeight() != null ? growthRecord.getWeight().doubleValue() : null)
             .createdAt(growthRecord.getCreatedAt())
             .updatedAt(growthRecord.getUpdatedAt());
-
-        Double heightDouble = growthRecord.getHeight() != null ? growthRecord.getHeight().doubleValue() : null;
-        Double weightDouble = growthRecord.getWeight() != null ? growthRecord.getWeight().doubleValue() : null;
-        dto.setHeight(heightDouble);
-        dto.setWeight(weightDouble);
-
-        return dto;
     }
 }

@@ -7,11 +7,20 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * APIレスポンスの組み立てを担当するコンバータークラス<br>
- * 各育児記録エンティティをCareRecordListResponseDtoに変換するロジックを提供する
+ * 各育児記録エンティティリストをCareRecordListResponseDtoに変換するコンバーター
  */
 @Component
 public class CareRecordListConverter {
+    /**
+     * 各育児記録エンティティリストをCareRecordListResponseDtoに変換する
+     *
+     * @param careRecords   育児記録のリスト
+     * @param mealRecords   食事記録のリスト
+     * @param milkRecords   ミルク記録のリスト
+     * @param diaperRecords 排泄記録のリスト
+     * @param healthRecords 体調記録のリスト
+     * @return CareRecordListResponseDto
+     */
     public CareRecordListResponseDto toCareRecordListResponseDto(
         List<CareRecords> careRecords,
         List<MealDetails> mealRecords,
@@ -20,48 +29,47 @@ public class CareRecordListConverter {
         List<HealthDetails> healthRecords) {
 
         List<CareRecordResponseDto> recordsDto = careRecords.stream().map(
-            c -> {
-                CareRecordResponseDto dto = new CareRecordResponseDto(
-                    c.getId(),
-                    c.getRecordedBy(),
-                    CareRecordResponseDto.RecordTypeEnum.valueOf(c.getRecordType()),
-                    c.getRecordedAt(),
-                    c.getCreatedAt(),
-                    c.getUpdatedAt()
-                );
+            careRecord -> {
+                CareRecordResponseDto dto = new CareRecordResponseDto()
+                    .id(careRecord.getId())
+                    .recordedBy(careRecord.getRecordedBy())
+                    .recordType(CareRecordResponseDto.RecordTypeEnum.valueOf(careRecord.getRecordType()))
+                    .recordedAt(careRecord.getRecordedAt())
+                    .createdAt(careRecord.getCreatedAt())
+                    .updatedAt(careRecord.getUpdatedAt());
 
                 // 食事記録のセット
                 mealRecords.stream()
-                    .filter(m -> m.getCareRecordId().equals(c.getId()))
+                    .filter(mealRecord -> mealRecord.getCareRecordId().equals(careRecord.getId()))
                     .findFirst()
-                    .map(m -> new MealDetailDto().note(m.getNote()))
+                    .map(mealRecord -> new MealDetailDto().note(mealRecord.getNote()))
                     .ifPresent(mealDto -> dto.setMealDetail(JsonNullable.of(mealDto)));
 
                 // ミルク記録のセット
                 milkRecords.stream()
-                    .filter(m -> m.getCareRecordId().equals(c.getId()))
+                    .filter(milkRecord -> milkRecord.getCareRecordId().equals(careRecord.getId()))
                     .findFirst()
-                    .map(m -> new MilkDetailDto()
-                        .amountMl(m.getAmountMl())
-                        .note(m.getNote()))
+                    .map(milkRecord -> new MilkDetailDto()
+                        .amountMl(milkRecord.getAmountMl())
+                        .note(milkRecord.getNote()))
                     .ifPresent(milkDto -> dto.setMilkDetail(JsonNullable.of(milkDto)));
 
                 // 排泄記録のセット
                 diaperRecords.stream()
-                    .filter(m -> m.getCareRecordId().equals(c.getId()))
+                    .filter(diaperRecord -> diaperRecord.getCareRecordId().equals(careRecord.getId()))
                     .findFirst()
-                    .map(m -> new DiaperDetailDto()
-                        .diaperType(DiaperDetailDto.DiaperTypeEnum.valueOf(m.getDiaperType()))
-                        .note(m.getNote()))
+                    .map(diaperRecord -> new DiaperDetailDto()
+                        .diaperType(DiaperDetailDto.DiaperTypeEnum.valueOf(diaperRecord.getDiaperType()))
+                        .note(diaperRecord.getNote()))
                     .ifPresent(diaperDto -> dto.setDiaperDetail(JsonNullable.of(diaperDto)));
 
                 // 体調記録のセット
                 healthRecords.stream()
-                    .filter(m -> m.getCareRecordId().equals(c.getId()))
+                    .filter(healthRecord -> healthRecord.getCareRecordId().equals(careRecord.getId()))
                     .findFirst()
-                    .map(m -> new HealthDetailDto()
-                        .temperature(m.getTemperature() != null ? m.getTemperature().doubleValue() : null)
-                        .note(m.getNote()))
+                    .map(healthRecord -> new HealthDetailDto()
+                        .temperature(healthRecord.getTemperature() != null ? healthRecord.getTemperature().doubleValue() : null)
+                        .note(healthRecord.getNote()))
                     .ifPresent(healthDto -> dto.setHealthDetail(JsonNullable.of(healthDto)));
 
                 return dto;

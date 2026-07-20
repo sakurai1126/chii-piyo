@@ -6,24 +6,21 @@ import org.springframework.stereotype.Component;
 import java.net.URI;
 
 /**
- * APIレスポンスの組み立てを担当するコンバータークラス<br>
- * S3キーと署名付きS3アップロード用URLをUserGenerateIconDataResponseDtoに変換するロジックを提供する
+ * S3キーとS3アップロード用URLをUserGenerateIconDataResponseDtoに変換するコンバーター
  */
 @Component
 public class UserGenerateIconDataConverter {
     /**
-     * S3キーと署名付きS3アップロード用URLをUserGenerateIconDataResponseDtoに変換する
+     * S3キーとS3アップロード用URLをUserGenerateIconDataResponseDtoに変換する
      *
      * @param s3Key        S3キー
-     * @param presignedUrl 署名付きS3アップロード用URL
+     * @param presignedUrl S3アップロード用URL
      * @return UserGenerateIconDataResponseDto
      */
     public UserGenerateIconDataResponseDto toUserGenerateIconDataResponseDto(
-        String s3Key,
-        URI presignedUrl) {
-        return new UserGenerateIconDataResponseDto(
-            presignedUrl,
-            s3Key
-        );
+        String s3Key, URI presignedUrl) {
+        return new UserGenerateIconDataResponseDto()
+            .presignedUrl(presignedUrl)
+            .s3key(s3Key);
     }
 }

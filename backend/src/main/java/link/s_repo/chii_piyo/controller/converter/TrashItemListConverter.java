@@ -7,8 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * APIレスポンスの組み立てを担当するコンバータークラス<br>
- * TrashItemsエンティティをTrashItemListResponseDtoに変換するロジックを提供する
+ * TrashItemsエンティティをTrashItemListResponseDtoに変換するコンバーター
  */
 @Component
 public class TrashItemListConverter {
@@ -23,6 +22,10 @@ public class TrashItemListConverter {
      */
     public TrashItemListResponseDto toTrashItemListResponseDto(
         List<TrashItemResponseDto> trashItems, Long earliest, Long totalCount, boolean hasNext) {
-        return new TrashItemListResponseDto(trashItems, earliest, totalCount, hasNext);
+        return new TrashItemListResponseDto()
+            .items(trashItems)
+            .earliest(earliest)
+            .totalCount(totalCount)
+            .hasNext(hasNext);
     }
 }

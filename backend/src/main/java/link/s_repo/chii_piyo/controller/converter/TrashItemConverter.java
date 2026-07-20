@@ -6,12 +6,10 @@ import link.s_repo.chii_piyo.model.gen.TrashItems;
 import org.springframework.stereotype.Component;
 
 /**
- * APIレスポンスの組み立てを担当するコンバータークラス<br>
- * TrashItemエンティティをTrashItemResponseDtoに変換するロジックを提供する
+ * TrashItemエンティティをTrashItemResponseDtoに変換するコンバーター
  */
 @Component
 public class TrashItemConverter {
-
     /**
      * TrashItemsエンティティリストをTrashItemResponseDtoに変換する
      *
@@ -19,13 +17,11 @@ public class TrashItemConverter {
      * @return TrashItemResponseDto
      */
     public TrashItemResponseDto toTrashItemResponseDto(
-        TrashItems trashItem,
-        MediaResponseDto media) {
-        return new TrashItemResponseDto(
-            trashItem.getId(),
-            media,
-            trashItem.getExpiresAt(),
-            trashItem.getCreatedAt()
-        );
+        TrashItems trashItem, MediaResponseDto media) {
+        return new TrashItemResponseDto()
+            .id(trashItem.getId())
+            .media(media)
+            .expiresAt(trashItem.getExpiresAt())
+            .createdAt(trashItem.getCreatedAt());
     }
 }

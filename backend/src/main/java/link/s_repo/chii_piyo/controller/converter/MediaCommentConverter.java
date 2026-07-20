@@ -7,8 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /**
- * APIレスポンスの組み立てを担当するコンバータークラス<br>
- * MediaCommentエンティティをMediaCommentResponseDtoに変換するロジックを提供する
+ * MediaCommentエンティティをMediaCommentResponseDtoに変換するコンバーター
  */
 @Component
 @RequiredArgsConstructor
@@ -20,17 +19,13 @@ public class MediaCommentConverter {
      * @return MediaCommentResponseDto
      */
     public MediaCommentResponseDto toMediaCommentResponseDto(
-        MediaComments mediaComment,
-        Users user) {
-
-        // 必須フィールドを揃えてコンストラクタに渡す
-        return new MediaCommentResponseDto(
-            mediaComment.getId(), // ID
-            mediaComment.getUserId(), // コメントしたユーザーID
-            user.getDisplayName(), // コメントしたユーザーの表示名
-            mediaComment.getContent(), // コメント本文
-            mediaComment.getCreatedAt(), // 作成日時
-            mediaComment.getUpdatedAt() // 更新日時
-        );
+        MediaComments mediaComment, Users user) {
+        return new MediaCommentResponseDto()
+            .id(mediaComment.getId())
+            .userId(mediaComment.getUserId())
+            .displayName(user.getDisplayName())
+            .content(mediaComment.getContent())
+            .createdAt(mediaComment.getCreatedAt())
+            .updatedAt(mediaComment.getUpdatedAt());
     }
 }
