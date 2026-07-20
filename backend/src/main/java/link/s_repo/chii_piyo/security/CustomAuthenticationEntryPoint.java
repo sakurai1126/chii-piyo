@@ -47,7 +47,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         response.setCharacterEncoding("UTF-8");
 
         // 共通定義のApiResponse形式エラーレスポンスを作成
-        ApiResponse<Void> body = ApiResponse.error(
+        ApiResponse body = ApiResponse.error(
             ErrorCode.UNAUTHORIZED.getCode(),
             ErrorCode.UNAUTHORIZED.getMessage()
         );

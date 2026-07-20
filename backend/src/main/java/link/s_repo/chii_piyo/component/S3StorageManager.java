@@ -17,7 +17,6 @@ import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignReques
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 
-
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -25,6 +24,9 @@ import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * S3ストレージを操作処理をまとめたコンポーネント
+ */
 @Component
 @RequiredArgsConstructor
 public class S3StorageManager {
@@ -37,7 +39,7 @@ public class S3StorageManager {
     private String s3Bucket;
 
     /**
-     * アップロード用Pre-signed URLを発行する
+     * アップロード用Pre-signed URLを発行する<br>
      * 有効期限は15分
      *
      * @param s3Key       S3オブジェクトのキー
@@ -73,7 +75,7 @@ public class S3StorageManager {
     }
 
     /**
-     * ダウンロード用Pre-signed URLを発行する
+     * ダウンロード用Pre-signed URLを発行する<br>
      * 有効期限は60分
      *
      * @param s3Key    S3オブジェクトのキー

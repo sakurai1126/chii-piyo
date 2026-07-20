@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URI;
 import java.util.Collections;
@@ -62,15 +61,6 @@ public class SharingGroupController implements SharingGroupManagementApi {
 
         // 204 No Contentを返す
         return ResponseEntity.noContent().build();
-    }
-
-    /**
-     * GET /sharing-groups/{id}
-     * 共有グループをID指定で取得する
-     */
-    @Override
-    public ResponseEntity<SharingGroupResponseDto> getSharingGroup(String xRequestedWith, Long id) {
-        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
     }
 
     /**

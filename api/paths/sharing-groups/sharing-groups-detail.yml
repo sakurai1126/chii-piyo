@@ -1,27 +1,3 @@
-get:
-  tags:
-    - sharingGroupManagement
-  summary: 共有グループをID指定で取得
-  operationId: getSharingGroup
-  parameters:
-    - $ref: "../../components/parameters.yml#/XRequestedWith"
-    - $ref: "../../components/parameters.yml#/ResourceId"
-  responses:
-    "200":
-      description: 共有グループ情報
-      content:
-        application/json;charset=UTF-8:
-          schema:
-            $ref: "../../components/schemas/sharing-groups.yml#/SharingGroupResponseDto"
-    "401":
-      $ref: "../../components/responses.yml#/Unauthorized"
-    "404":
-      $ref: "../../components/responses.yml#/NotFound"
-    "500":
-      $ref: "../../components/responses.yml#/InternalServerError"
-    default:
-      $ref: "../../components/responses.yml#/DefaultErrors"
-
 patch:
   tags:
     - sharingGroupManagement

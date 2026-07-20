@@ -1,6 +1,7 @@
 package link.s_repo.chii_piyo.config;
 
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidatorResult;
@@ -13,12 +14,14 @@ import org.springframework.security.oauth2.jwt.Jwt;
 @RequiredArgsConstructor
 public class AudienceValidator implements OAuth2TokenValidator<Jwt> {
     // CognitoのアプリケーションクライアントIDを使用
+    // SecurityConfigからの呼び出し時にapplication.yamlのaws.cognito.audienceをセット想定
     private final String audience;
 
     @Override
+    @NonNull
     public OAuth2TokenValidatorResult validate(Jwt jwt) {
         // JWTのAudienceクレームに指定された値が期待するアプリケーションクライアントIDと一致するかを検証
-        if (jwt.getAudience().contains(audience)) {
+        if (jwt.getAudience() != null && jwt.getAudience().contains(audience)) {
             return OAuth2TokenValidatorResult.success();
         }
 

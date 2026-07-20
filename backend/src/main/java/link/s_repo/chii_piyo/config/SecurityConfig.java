@@ -32,10 +32,13 @@ public class SecurityConfig {
     // 環境変数からapplication.yaml経由で取得した値をセット
     @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
     private String jwkSetUri;
+
     @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
     private String issuerUri;
+
     @Value("${aws.cognito.audience}")
     private String audience;
+
     @Value("${app.cors.allowed-origins}")
     private List<String> allowedOrigins;
 
@@ -80,8 +83,8 @@ public class SecurityConfig {
     }
 
     /**
-     * CORS設定
-     * フロントからのブラウザ経由リクエストを許可するため設定する
+     * CORS設定<br>
+     * フロントからのブラウザ経由リクエストを許可するため設定する<br>
      * 全てのアクセスに対して、application.yamlで指定したオリジンからのリクエストを許可するように設定
      *
      * @return CORS設定ソース
@@ -102,7 +105,7 @@ public class SecurityConfig {
 
 
     /**
-     * JwtDecoderをカスタマイズ
+     * JwtDecoderをカスタマイズ<br>
      * 有効期限+発行者+クライアントIDの検証を行うように設定
      *
      * @return カスタマイズされたJwtDecoderインスタンス

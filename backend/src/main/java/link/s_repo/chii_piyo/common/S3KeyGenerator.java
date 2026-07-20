@@ -6,6 +6,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
+/**
+ * S3キー生成処理用コンポーネント
+ */
 @Component
 public class S3KeyGenerator {
     // S3キー生成時に使用する日付フォーマット
@@ -41,6 +44,4 @@ public class S3KeyGenerator {
         // パス区切り文字をアンダースコアに置換し、安全な文字のみを許可
         return filename.replaceAll("[^a-zA-Z0-9._-]", "_");
     }
-
-
 }
