@@ -53,8 +53,6 @@ public class UserSyncComponent {
         user.setIsDarkMode(false);
         user.setIsEasyMode(false);
         user.setRole("VIEWER");
-        user.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
-        user.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
 
         // DBに保存
         userRepository.save(user);

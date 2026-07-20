@@ -11,8 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.List;
 
@@ -382,7 +380,6 @@ public class CareRecordService {
 
         // 更新可能な箇所を書き換え
         careRecord.setRecordedAt(updateData.getRecordedAt());
-        careRecord.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
 
         // CareRecordsを更新
         careRecordRepository.updateCareRecord(careRecord);

@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +30,8 @@ public class GrowthRecordRepository {
      * @param growthRecord 成長記録データエンティティ
      */
     public void save(GrowthRecords growthRecord) {
+        growthRecord.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
+        growthRecord.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         growthRecordsMapper.insertSelective(growthRecord);
     }
 
@@ -76,6 +80,7 @@ public class GrowthRecordRepository {
      * @param growthRecord 更新用データ
      */
     public void updateGrowthRecord(GrowthRecords growthRecord) {
+        growthRecord.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         growthRecordsMapper.updateByPrimaryKey(growthRecord);
     }
 }

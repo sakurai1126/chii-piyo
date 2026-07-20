@@ -13,8 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -127,7 +125,6 @@ public class FirstRecordService {
         firstRecord.setTitle(updateData.getTitle());
         firstRecord.setComment(updateData.getComment());
         firstRecord.setRecordedDate(updateData.getRecordedDate());
-        firstRecord.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
 
         // リポジトリ層で更新
         firstRecordRepository.update(firstRecord);
@@ -191,7 +188,6 @@ public class FirstRecordService {
                 FirstRecordMedia firstRecordMedia = new FirstRecordMedia();
                 firstRecordMedia.setFirstRecordId(firstRecord.getId());
                 firstRecordMedia.setMediaId(mediaId);
-                firstRecordMedia.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
                 return firstRecordMedia;
             }).toList();
 

@@ -13,8 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -79,7 +77,6 @@ public class WordRecordService {
                 WordRecordMedia wordRecordMedia = new WordRecordMedia();
                 wordRecordMedia.setWordRecordId(wordRecord.getId());
                 wordRecordMedia.setMediaId(mediaId);
-                wordRecordMedia.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
                 return wordRecordMedia;
             }).toList();
 
@@ -162,7 +159,6 @@ public class WordRecordService {
         wordRecord.setTitle(updateData.getTitle());
         wordRecord.setComment(updateData.getComment());
         wordRecord.setRecordedDate(updateData.getRecordedDate());
-        wordRecord.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
 
         // リポジトリ層で更新
         wordRecordRepository.update(wordRecord);

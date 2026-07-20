@@ -9,6 +9,7 @@ import org.mybatis.dynamic.sql.dsl.SelectDSLCompleter;
 import org.springframework.stereotype.Repository;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,6 +60,7 @@ public class TrashRepository {
      * @param trashItem ゴミ箱データエンティティ
      */
     public void save(TrashItems trashItem) {
+        trashItem.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         trashItemsMapper.insertSelective(trashItem);
     }
 
@@ -68,6 +70,7 @@ public class TrashRepository {
      * @param trashItems ゴミ箱データエンティティリスト
      */
     public void saveAll(List<TrashItems> trashItems) {
+        trashItems.forEach(item -> item.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC)));
         trashItemsMapper.insertMultiple(trashItems);
     }
 

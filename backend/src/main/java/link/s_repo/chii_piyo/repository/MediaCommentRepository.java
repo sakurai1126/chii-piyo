@@ -6,6 +6,8 @@ import link.s_repo.chii_piyo.repository.gen.MediaCommentsMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +39,8 @@ public class MediaCommentRepository {
      * @param mediaComments コメントエンティティ
      */
     public void save(MediaComments mediaComments) {
+        mediaComments.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
+        mediaComments.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         mediaCommentsMapper.insertSelective(mediaComments);
     }
 

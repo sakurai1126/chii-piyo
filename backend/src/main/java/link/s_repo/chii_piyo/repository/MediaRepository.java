@@ -100,6 +100,8 @@ public class MediaRepository {
      * @param media メディアエンティティ
      */
     public void save(Media media) {
+        media.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
+        media.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         mediaMapper.insertSelective(media);
     }
 
@@ -129,6 +131,7 @@ public class MediaRepository {
      * @param media メディアエンティティ
      */
     public void update(Media media) {
+        media.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         mediaMapper.updateByPrimaryKeySelective(media);
     }
 
@@ -138,6 +141,7 @@ public class MediaRepository {
      * @param media メディアエンティティ
      */
     public void updateAll(Media media) {
+        media.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         mediaMapper.updateByPrimaryKey(media);
     }
 
@@ -171,12 +175,18 @@ public class MediaRepository {
             if (mediaBatchUpdateData.getSharingGroupId().isPresent()) {
                 Long newSharingGroupId = mediaBatchUpdateData.getSharingGroupId().get();
                 if (newSharingGroupId == null) {
-                    updateBuilder = updateBuilder.set(MediaDynamicSqlSupport.sharingGroupId).equalToNull();
+                    updateBuilder = updateBuilder
+                        .set(MediaDynamicSqlSupport.sharingGroupId)
+                        .equalToNull()
+                        .set(MediaDynamicSqlSupport.updatedAt)
+                        .equalTo(OffsetDateTime.now(ZoneOffset.UTC));
                 } else {
                     // sharing_group_idカラムをnewSharingGroupIdの値に更新する
                     updateBuilder = updateBuilder
                         .set(MediaDynamicSqlSupport.sharingGroupId)
-                        .equalTo(newSharingGroupId);
+                        .equalTo(newSharingGroupId)
+                        .set(MediaDynamicSqlSupport.updatedAt)
+                        .equalTo(OffsetDateTime.now(ZoneOffset.UTC));
                 }
             }
 
@@ -242,7 +252,11 @@ public class MediaRepository {
      * @param albumId 対象のアルバムID
      */
     public void clearAlbumId(Long albumId) {
-        mediaMapper.update(c -> c.set(MediaDynamicSqlSupport.albumId).equalToNull()
+        mediaMapper.update(c -> c
+            .set(MediaDynamicSqlSupport.albumId)
+            .equalToNull()
+            .set(MediaDynamicSqlSupport.updatedAt)
+            .equalTo(OffsetDateTime.now(ZoneOffset.UTC))
             .where(MediaDynamicSqlSupport.albumId, isEqualTo(albumId)));
     }
 
@@ -253,7 +267,11 @@ public class MediaRepository {
      * @param mediaIds 対象のメディアIDリスト
      */
     public void clearAlbumIdByMediaIds(List<Long> mediaIds) {
-        mediaMapper.update(c -> c.set(MediaDynamicSqlSupport.albumId).equalToNull()
+        mediaMapper.update(c -> c
+            .set(MediaDynamicSqlSupport.albumId)
+            .equalToNull()
+            .set(MediaDynamicSqlSupport.updatedAt)
+            .equalTo(OffsetDateTime.now(ZoneOffset.UTC))
             .where(MediaDynamicSqlSupport.id, isIn(mediaIds))
         );
     }
@@ -266,9 +284,12 @@ public class MediaRepository {
      * @param albumId  更新対象のアルバムID
      */
     public void updateAlbumIdByMediaIds(List<Long> mediaIds, Long albumId) {
-        mediaMapper.update(
-            c -> c.set(MediaDynamicSqlSupport.albumId).equalTo(albumId)
-                .where(MediaDynamicSqlSupport.id, isIn(mediaIds), andNotInTrash())
+        mediaMapper.update(c -> c
+            .set(MediaDynamicSqlSupport.albumId)
+            .equalTo(albumId)
+            .set(MediaDynamicSqlSupport.updatedAt)
+            .equalTo(OffsetDateTime.now(ZoneOffset.UTC))
+            .where(MediaDynamicSqlSupport.id, isIn(mediaIds), andNotInTrash())
         );
     }
 
@@ -278,7 +299,11 @@ public class MediaRepository {
      * @param sharingGroupId 対象の共有グループID
      */
     public void clearSharingGroupId(Long sharingGroupId) {
-        mediaMapper.update(c -> c.set(MediaDynamicSqlSupport.sharingGroupId).equalToNull()
+        mediaMapper.update(c -> c
+            .set(MediaDynamicSqlSupport.sharingGroupId)
+            .equalToNull()
+            .set(MediaDynamicSqlSupport.updatedAt)
+            .equalTo(OffsetDateTime.now(ZoneOffset.UTC))
             .where(MediaDynamicSqlSupport.sharingGroupId, isEqualTo(sharingGroupId)));
     }
 

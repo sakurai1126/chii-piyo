@@ -21,7 +21,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
@@ -59,7 +58,6 @@ public class TrashService {
                 .plusDays(30)
                 .with(LocalTime.of(2, 0))
         );
-        trashItem.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
 
         trashRepository.save(trashItem);
     }
@@ -80,7 +78,6 @@ public class TrashService {
                     .plusDays(30)
                     .with(LocalTime.of(2, 0))
             );
-            trashItem.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
             return trashItem;
         }).toList();
         trashRepository.saveAll(trashItems);

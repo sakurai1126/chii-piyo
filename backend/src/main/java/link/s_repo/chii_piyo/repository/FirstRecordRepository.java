@@ -12,6 +12,8 @@ import org.springframework.stereotype.Repository;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +33,8 @@ public class FirstRecordRepository {
      * @param firstRecord はじめて記録エンティティ
      */
     public void save(FirstRecords firstRecord) {
+        firstRecord.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
+        firstRecord.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         firstRecordsMapper.insertSelective(firstRecord);
     }
 
@@ -40,6 +44,7 @@ public class FirstRecordRepository {
      * @param firstRecordMediaList はじめて記録メディアエンティティ
      */
     public void saveMedia(List<FirstRecordMedia> firstRecordMediaList) {
+        firstRecordMediaList.forEach(item -> item.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC)));
         firstRecordMediaMapper.insertMultiple(firstRecordMediaList);
     }
 
@@ -79,6 +84,7 @@ public class FirstRecordRepository {
      * @param firstRecord はじめて記録エンティティ
      */
     public void update(FirstRecords firstRecord) {
+        firstRecord.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         firstRecordsMapper.updateByPrimaryKey(firstRecord);
     }
 

@@ -6,7 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,6 +46,8 @@ public class CareRecordRepository {
      * @param careRecord 育児記録エンティティ
      */
     public void save(CareRecords careRecord) {
+        careRecord.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
+        careRecord.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         careRecordsMapper.insertSelective(careRecord);
     }
 
@@ -53,6 +57,8 @@ public class CareRecordRepository {
      * @param mealDetail 食事記録エンティティ
      */
     public void saveMeal(MealDetails mealDetail) {
+        mealDetail.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
+        mealDetail.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         mealDetailsMapper.insertSelective(mealDetail);
     }
 
@@ -62,6 +68,8 @@ public class CareRecordRepository {
      * @param milkDetail ミルク記録エンティティ
      */
     public void saveMilk(MilkDetails milkDetail) {
+        milkDetail.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
+        milkDetail.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         milkDetailsMapper.insertSelective(milkDetail);
     }
 
@@ -71,6 +79,8 @@ public class CareRecordRepository {
      * @param diaperDetail 排泄記録エンティティ
      */
     public void saveDiaper(DiaperDetails diaperDetail) {
+        diaperDetail.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
+        diaperDetail.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         diaperDetailsMapper.insertSelective(diaperDetail);
     }
 
@@ -80,6 +90,8 @@ public class CareRecordRepository {
      * @param healthDetail 体調記録エンティティ
      */
     public void saveHealth(HealthDetails healthDetail) {
+        healthDetail.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
+        healthDetail.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         healthDetailsMapper.insertSelective(healthDetail);
     }
 
@@ -252,6 +264,7 @@ public class CareRecordRepository {
      * @param mealDetail 更新用データ
      */
     public void updateMealDetail(MealDetails mealDetail) {
+        mealDetail.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         mealDetailsMapper.updateByPrimaryKeySelective(mealDetail);
     }
 
@@ -261,6 +274,7 @@ public class CareRecordRepository {
      * @param milkDetail 更新用データ
      */
     public void updateMilkDetail(MilkDetails milkDetail) {
+        milkDetail.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         milkDetailsMapper.updateByPrimaryKeySelective(milkDetail);
     }
 
@@ -270,6 +284,7 @@ public class CareRecordRepository {
      * @param diaperDetail 更新用データ
      */
     public void updateDiaperDetail(DiaperDetails diaperDetail) {
+        diaperDetail.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         diaperDetailsMapper.updateByPrimaryKeySelective(diaperDetail);
     }
 
@@ -279,6 +294,7 @@ public class CareRecordRepository {
      * @param healthDetail 更新用データ
      */
     public void updateHealthDetail(HealthDetails healthDetail) {
+        healthDetail.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         healthDetailsMapper.updateByPrimaryKeySelective(healthDetail);
     }
 
@@ -288,6 +304,7 @@ public class CareRecordRepository {
      * @param careRecord 更新用データ
      */
     public void updateCareRecord(CareRecords careRecord) {
+        careRecord.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         careRecordsMapper.updateByPrimaryKeySelective(careRecord);
     }
 }

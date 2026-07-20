@@ -16,7 +16,6 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
-
 /**
  * ユーザー管理サービス<br>
  * ユーザーの処理のロジックを担う
@@ -90,8 +89,6 @@ public class UserService {
 
         // 何らかの変更があった場合のみDBを更新
         if (isUpdated) {
-            // 更新日時をUTCでセット
-            user.setUpdatedAt(java.time.OffsetDateTime.now(java.time.ZoneOffset.UTC));
             // Selectiveメソッドを使って、null以外の項目のみUPDATE実行
             userRepository.update(user);
         }
