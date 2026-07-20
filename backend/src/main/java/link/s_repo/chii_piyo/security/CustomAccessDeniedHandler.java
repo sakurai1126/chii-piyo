@@ -16,7 +16,7 @@ import java.io.IOException;
 
 /**
  * 認可エラー時のハンドラー<br>
- * 権限不足時に本アプリケーション指定の共通ApiResponse形式で403を返す
+ * 権限不足時に共通定義のApiResponse形式で403を返す
  */
 @Slf4j
 @Component

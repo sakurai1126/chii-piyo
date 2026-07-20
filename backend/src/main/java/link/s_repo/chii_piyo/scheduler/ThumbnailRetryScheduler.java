@@ -12,8 +12,7 @@ import java.util.List;
 
 /**
  * サムネイル生成失敗を救済する定期実行サービス<br>
- * upload_status が COMPLETED でありながら thumbnail_s3_key が null のメディアを定期的に拾い直し、
- * サムネイル生成を再実行する
+ * upload_status が COMPLETED でありながら thumbnail_s3_key が null のメディアを定期的に拾い直しサムネイル生成を再実行する
  */
 @Slf4j
 @Component

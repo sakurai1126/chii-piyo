@@ -10,6 +10,10 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
 
+/**
+ * 現在のユーザー情報を取得するコンポーネント<br>
+ * JWTのsubクレームをキーにDBユーザーを検索してアプリケーション側のユーザーIDを返す
+ */
 @Component
 @RequiredArgsConstructor
 public class CurrentUserProvider {
@@ -17,8 +21,7 @@ public class CurrentUserProvider {
     private final UserRepository userRepository;
 
     /**
-     * SecurityContextHolder からJWT認証情報を取り出し<br>
-     * Cognito subクレームをキーにDBユーザーを検索してアプリケーション側のユーザーIDを返す
+     * SecurityContextHolder からJWT認証情報を取り出し、Cognito subクレームをキーにDBユーザーを検索してアプリケーション側のユーザーIDを返す
      *
      * @return アプリケーション側のユーザーID
      * @throws IllegalStateException 認証情報が存在しない、またはJwtAuthenticationToken以外の場合
@@ -34,7 +37,8 @@ public class CurrentUserProvider {
         // CognitoのユーザーIDはsubクレームに入っているのでそこから取得
         String cognitoSub = jwt.getSubject();
 
-        // DBからユーザーを取得してIDを返す。ユーザーが見つからない場合は例外をスロー
+        // DBからユーザーを取得してIDを返す
+        // ユーザーが見つからない場合は例外をスロー
         Users user = userRepository.findByCognitoUserId(cognitoSub)
             .orElseThrow(() -> new ResourceNotFoundException("ユーザーが見つかりません"));
         return user.getId();

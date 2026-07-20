@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * JWT認証のカスタムコンバータ<br>
+ * JWT認証のカスタムコンバーター<br>
  * CognitoのJWTからユーザー情報を取り出し、DBからロールを取得してそれらを含めた認証情報オブジェクトを返却する
  */
 @Slf4j
@@ -26,11 +26,25 @@ public class CustomJwtAuthenticationConverter implements Converter<Jwt, Abstract
 
     private final UserSyncComponent userSyncComponent;
 
+    /**
+     * JWTからユーザー情報を取り出し、DBからロールを取得してそれらを含めた認証情報オブジェクトを返却する
+     *
+     * @param jwt トークン
+     * @return 認証情報オブジェクト
+     */
     @Override
     public AbstractAuthenticationToken convert(Jwt jwt) {
 
         // CognitoのIDトークンからユーザーIDを取得 (CognitoはsubクレームにユーザーIDを入れる)
         String cognitoUserId = jwt.getSubject();
+
+        if (cognitoUserId == null || cognitoUserId.isBlank()) {
+            log.warn("subクレームがJWTに含まれていません");
+            throw new org.springframework.security.oauth2.jwt.BadJwtException(
+                "IDトークンにsubクレームが含まれていません"
+            );
+        }
+
         String email = jwt.getClaimAsString("email");
 
         if (email == null) {
@@ -45,7 +59,7 @@ public class CustomJwtAuthenticationConverter implements Converter<Jwt, Abstract
 
         // 権限情報を持つオブジェクトを作成する
         Collection<GrantedAuthority> authorities = List.of(
-            // PreAuthorizeアノテーションで権限制御をする際にはSpring SequrityはROLE_***の形式で受け取るため
+            // PreAuthorizeアノテーションで権限制御をする際にはSpring SecurityはROLE_***の形式で受け取るため
             // "ROLE_ユーザーロール"の形式で権限を登録
             new SimpleGrantedAuthority("ROLE_" + user.getRole())
         );
