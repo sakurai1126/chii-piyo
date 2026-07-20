@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 /**
  * 共有グループ管理サービス<br>
- * 共有グループの取得・作成およびメディアとの共有グループ紐付け、メンバーの管理を担う
+ * 共有グループの処理のロジックを担う
  */
 @Slf4j
 @Service
@@ -137,10 +137,9 @@ public class SharingGroupService {
      *
      * @param id         対象共有グループID
      * @param newUserIds 新しい共有グループメンバーのIDリスト
-     * @return 更新後のメンバーリスト
      */
     @Transactional
-    public List<SharingGroupMembers> editMembers(
+    public void editMembers(
         Long id, List<Long> newUserIds) {
 
         // 対象グループの既存メンバーを一度すべて削除
@@ -161,9 +160,6 @@ public class SharingGroupService {
             // DBに一括登録
             sharingGroupRepository.membersSave(newMembers);
         }
-
-        // 更新後のメンバーリストを再取得して返却
-        return getMembersByGroupIds(List.of(id));
     }
 
     /**
@@ -233,15 +229,12 @@ public class SharingGroupService {
      *
      * @param sharingGroups 対象の共有グループID
      * @param name          新しい名前
-     * @return 共有グループエンティティ
      */
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
-    public SharingGroups updateSharingGroup(SharingGroups sharingGroups, String name) {
+    public void updateSharingGroup(SharingGroups sharingGroups, String name) {
         sharingGroups.setName(name);
         sharingGroupRepository.update(sharingGroups);
-
-        return sharingGroups;
     }
 
     /**
@@ -288,6 +281,10 @@ public class SharingGroupService {
 
     /**
      * memberAndIconMappingの結果を返すためのレコードクラス
+     *
+     * @param usersMap            ユーザーIDをキー、ユーザー情報を値とするMap
+     * @param iconUrlsMap         ユーザーIDをキー、アイコンの署名付きURLを値とするMap
+     * @param membersByGroupIdMap 共有グループIDをキー、所属メンバーのリストを値とするMap
      */
     public record MemberAndIconMapResult(
         Map<Long, Users> usersMap, Map<Long, URI> iconUrlsMap,

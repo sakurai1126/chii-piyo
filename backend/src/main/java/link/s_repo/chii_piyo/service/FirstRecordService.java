@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 /**
  * はじめて記録管理サービス<br>
- * はじめて記録の取得・作成およびメディアとのはじめて記録紐付けを担う
+ * はじめて記録の処理のロジックを担う
  */
 @Slf4j
 @Service
@@ -32,7 +32,7 @@ public class FirstRecordService {
     private final CurrentUserProvider currentUserProvider;
 
     /**
-     * はじめて記録を新規作成する<br>
+     * はじめて記録を新規作成する
      *
      * @param insertData 追加するはじめて記録のデータ
      */
@@ -54,6 +54,8 @@ public class FirstRecordService {
 
     /**
      * はじめて記録を一覧取得する
+     *
+     * @return はじめて記録とメディアをまとめたレコードのリスト
      */
     @Transactional(readOnly = true)
     public List<FirstRecordWithMedia> getFirstRecords() {
@@ -153,6 +155,9 @@ public class FirstRecordService {
 
     /**
      * はじめて記録をID指定で1件取得する
+     *
+     * @param id 対象の記録ID
+     * @return はじめて記録エンティティ
      */
     private FirstRecords getFirstRecord(Long id) {
         return firstRecordRepository.findById(id).orElseThrow(() ->
@@ -196,6 +201,9 @@ public class FirstRecordService {
 
     /**
      * はじめて記録を返却する際の記録とメディアをまとめたレコード
+     *
+     * @param record    はじめて記録のエンティティ
+     * @param mediaList はじめて記録に紐づくメディアのリスト
      */
     public record FirstRecordWithMedia(
         FirstRecords record, List<Media> mediaList) {

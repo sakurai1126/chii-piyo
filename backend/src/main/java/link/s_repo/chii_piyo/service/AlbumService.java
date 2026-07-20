@@ -25,7 +25,7 @@ import java.util.Map;
 
 /**
  * アルバム管理サービス<br>
- * アルバムの取得・作成およびメディアとのアルバム紐付けを担う
+ * アルバムに関する処理のロジックを担う
  */
 @Slf4j
 @Service
@@ -37,13 +37,12 @@ public class AlbumService {
     private final CurrentUserProvider currentUserProvider;
 
     /**
-     * アルバムを新規作成する<br>
+     * アルバムを新規作成する
      *
      * @param title 追加するアルバムのタイトル
-     * @return 作成されたアルバムエンティティ
      */
     @Transactional
-    public Albums createAlbum(String title) {
+    public void createAlbum(String title) {
         Albums album = new Albums();
 
         // アルバムエンティティに値をセット
@@ -51,7 +50,6 @@ public class AlbumService {
 
         // アルバムをDBに保存
         albumRepository.save(album);
-        return album;
     }
 
     /**

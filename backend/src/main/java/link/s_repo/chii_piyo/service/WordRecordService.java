@@ -19,6 +19,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * ことば記録管理サービス<br>
+ * ことば記録の処理のロジックを担う
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -28,7 +32,7 @@ public class WordRecordService {
     private final CurrentUserProvider currentUserProvider;
 
     /**
-     * ことば記録を新規作成する<br>
+     * ことば記録を新規作成する
      *
      * @param insertData 追加することば記録のデータ
      */
@@ -85,6 +89,8 @@ public class WordRecordService {
 
     /**
      * ことばの記録を一覧取得する
+     *
+     * @return ことばの記録と紐づくメディア情報のリスト
      */
     @Transactional(readOnly = true)
     public List<WordRecordWithMedia> getWordRecords() {
@@ -184,6 +190,9 @@ public class WordRecordService {
 
     /**
      * ことばの記録をID指定で1件取得する
+     *
+     * @param id ことばの記録ID
+     * @return ことばの記録のエンティティ
      */
     private WordRecords getWordRecord(Long id) {
         return wordRecordRepository.findById(id).orElseThrow(() ->
@@ -192,6 +201,9 @@ public class WordRecordService {
 
     /**
      * ことばの記録を返却する際の記録とメディアをまとめたレコード
+     *
+     * @param record    ことばの記録のエンティティ
+     * @param mediaList ことばの記録に紐づくメディアリスト
      */
     public record WordRecordWithMedia(
         WordRecords record, List<Media> mediaList) {

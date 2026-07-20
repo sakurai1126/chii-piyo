@@ -16,6 +16,10 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 
+/**
+ * 成長記録管理サービス<br>
+ * 成長記録の処理のロジックを担う
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
