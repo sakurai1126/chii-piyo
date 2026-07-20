@@ -97,10 +97,10 @@ public class MediaController implements MediaManagementApi {
      * @param xRequestedWith        CSRF防御用カスタムリクエストヘッダー
      * @param mediaId               対象のメディアID
      * @param mediaUpdateStatusData ステータス更新DTO
-     * @return 更新後のメディア情報
+     * @return 204ステータス
      */
     @Override
-    public ResponseEntity<MediaResponseDto> updateMediaUploadStatus(
+    public ResponseEntity<Void> updateMediaUploadStatus(
         String xRequestedWith,
         Long mediaId,
         MediaUploadStatusRequestDto mediaUpdateStatusData) {
@@ -109,25 +109,13 @@ public class MediaController implements MediaManagementApi {
         Long userId = currentUserProvider.getUserId();
 
         // サービス層でステータス更新
-        Media media = mediaService.updateUploadStatus(
+        mediaService.updateUploadStatus(
             mediaId,
             userId,
             mediaUpdateStatusData.getUploadStatus().getValue());
 
-        // レスポンスDTOに変換して返却
-        return ResponseEntity.ok(mediaConverter.toMediaResponseDto(
-            media,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null
-        ));
+        // 204ステータスを返す
+        return ResponseEntity.noContent().build();
     }
 
     /**

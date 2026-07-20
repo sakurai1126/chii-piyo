@@ -402,13 +402,11 @@ export class SharingGroupManagementApi extends runtime.BaseAPI {
   async updateSharingGroupRaw(
     requestParameters: UpdateSharingGroupRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<SharingGroupResponseDto>> {
+  ): Promise<runtime.ApiResponse<void>> {
     const requestOptions = await this.updateSharingGroupRequestOpts(requestParameters);
     const response = await this.request(requestOptions, initOverrides);
 
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      SharingGroupResponseDtoFromJSON(jsonValue),
-    );
+    return new runtime.VoidApiResponse(response);
   }
 
   /**
@@ -417,8 +415,7 @@ export class SharingGroupManagementApi extends runtime.BaseAPI {
   async updateSharingGroup(
     requestParameters: UpdateSharingGroupRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<SharingGroupResponseDto> {
-    const response = await this.updateSharingGroupRaw(requestParameters, initOverrides);
-    return await response.value();
+  ): Promise<void> {
+    await this.updateSharingGroupRaw(requestParameters, initOverrides);
   }
 }

@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 
-import { UserManagementApi, UserResponseDto } from "@/lib/api-client/gen";
+import { UserManagementApi } from "@/lib/api-client/gen";
 import { createAuthorizedConfig } from "@/lib/api-client/server";
 import { handleActionError, ActionResult } from "@/utils/action";
 
@@ -25,13 +25,13 @@ type Input = {
  * 成功時：成功フラグ
  * 失敗時：失敗フラグ + エラーメッセージ
  */
-export const updateProfileAction = async (input: Input): Promise<ActionResult<UserResponseDto>> => {
+export const updateProfileAction = async (input: Input): Promise<ActionResult> => {
   try {
     // 認証トークンを含むAPIクライアントの設定を生成し、UserManagementApiのインスタンスを作成
     const configuration = await createAuthorizedConfig();
     const apiClient = new UserManagementApi(configuration);
 
-    const response = await apiClient.updateMe({
+    await apiClient.updateMe({
       xRequestedWith: "XMLHttpRequest",
       userUpdateData: {
         displayName: input.displayName,
@@ -55,7 +55,7 @@ export const updateProfileAction = async (input: Input): Promise<ActionResult<Us
     // キャッシュを破棄し、サーバーコンポーネントを再レンダリング
     revalidatePath("/settings");
 
-    return { success: true, data: response };
+    return { success: true };
   } catch (error) {
     return handleActionError(error, "プロフィール更新に失敗しました");
   }

@@ -74,21 +74,17 @@ public class AlbumController implements AlbumManagementApi {
      *
      * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param albumData      アップロードリクエストDTO
-     * @return 作成されたアルバムの情報
+     * @return 201ステータス
      */
     @Override
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<AlbumResponseDto> createAlbum(
+    public ResponseEntity<Void> createAlbum(
         String xRequestedWith, AlbumRequestDto albumData) {
         // サービス層でアルバムを作成する
-        Albums createdAlbum = albumService.createAlbum(albumData.getTitle());
+        albumService.createAlbum(albumData.getTitle());
 
-        // 作成されたアルバムをDTOに変換してレスポンスする
-        AlbumResponseDto response = albumConverter.toAlbumResponseDto(
-            createdAlbum,
-            new AlbumService.MediaDataResult(0, 0, Collections.emptyList())
-        );
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        // 201ステータスコードを返却
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     /**

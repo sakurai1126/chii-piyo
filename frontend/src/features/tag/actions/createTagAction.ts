@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { TagManagementApi, TagRequestDto, TagResponseDto } from "@/lib/api-client/gen";
+import { TagManagementApi, TagRequestDto } from "@/lib/api-client/gen";
 import { createAuthorizedConfig } from "@/lib/api-client/server";
 import { handleActionError, ActionResult } from "@/utils/action";
 
@@ -11,7 +11,7 @@ type Input = {
   name: string;
 };
 
-export const createTagAction = async (input: Input): Promise<ActionResult<TagResponseDto>> => {
+export const createTagAction = async (input: Input): Promise<ActionResult> => {
   try {
     // 認証トークンを含むAPIクライアントの設定を生成し、TagManagementApiのインスタンスを作成
     const configuration = await createAuthorizedConfig();
@@ -21,7 +21,7 @@ export const createTagAction = async (input: Input): Promise<ActionResult<TagRes
       name: input.name,
     };
 
-    const response = await apiClient.createTag({
+    await apiClient.createTag({
       xRequestedWith: "XMLHttpRequest",
       tagData: requestDto,
     });
@@ -30,7 +30,7 @@ export const createTagAction = async (input: Input): Promise<ActionResult<TagRes
     revalidatePath("/settings");
     revalidatePath("/upload");
 
-    return { success: true, data: response };
+    return { success: true };
   } catch (error) {
     return handleActionError(error, "タグ登録に失敗しました");
   }

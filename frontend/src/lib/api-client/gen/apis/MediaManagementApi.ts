@@ -734,13 +734,11 @@ export class MediaManagementApi extends runtime.BaseAPI {
   async updateMediaUploadStatusRaw(
     requestParameters: UpdateMediaUploadStatusRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<MediaResponseDto>> {
+  ): Promise<runtime.ApiResponse<void>> {
     const requestOptions = await this.updateMediaUploadStatusRequestOpts(requestParameters);
     const response = await this.request(requestOptions, initOverrides);
 
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      MediaResponseDtoFromJSON(jsonValue),
-    );
+    return new runtime.VoidApiResponse(response);
   }
 
   /**
@@ -749,9 +747,8 @@ export class MediaManagementApi extends runtime.BaseAPI {
   async updateMediaUploadStatus(
     requestParameters: UpdateMediaUploadStatusRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<MediaResponseDto> {
-    const response = await this.updateMediaUploadStatusRaw(requestParameters, initOverrides);
-    return await response.value();
+  ): Promise<void> {
+    await this.updateMediaUploadStatusRaw(requestParameters, initOverrides);
   }
 }
 

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { AlbumManagementApi, AlbumRequestDto, AlbumResponseDto } from "@/lib/api-client/gen";
+import { AlbumManagementApi, AlbumRequestDto } from "@/lib/api-client/gen";
 import { createAuthorizedConfig } from "@/lib/api-client/server";
 import { handleActionError, ActionResult } from "@/utils/action";
 
@@ -11,7 +11,7 @@ type Input = {
   title: string;
 };
 
-export const createAlbumAction = async (input: Input): Promise<ActionResult<AlbumResponseDto>> => {
+export const createAlbumAction = async (input: Input): Promise<ActionResult> => {
   try {
     // 認証トークンを含むAPIクライアントの設定を生成し、AlbumManagementApiのインスタンスを作成
     const configuration = await createAuthorizedConfig();
@@ -21,7 +21,7 @@ export const createAlbumAction = async (input: Input): Promise<ActionResult<Albu
       title: input.title,
     };
 
-    const response = await apiClient.createAlbum({
+    await apiClient.createAlbum({
       xRequestedWith: "XMLHttpRequest",
       albumData: requestDto,
     });
@@ -31,7 +31,7 @@ export const createAlbumAction = async (input: Input): Promise<ActionResult<Albu
     revalidatePath("/settings");
     revalidatePath("/upload");
 
-    return { success: true, data: response };
+    return { success: true };
   } catch (error) {
     return handleActionError(error, "アルバム作成に失敗しました");
   }

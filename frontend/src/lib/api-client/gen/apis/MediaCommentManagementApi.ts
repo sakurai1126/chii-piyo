@@ -116,13 +116,11 @@ export class MediaCommentManagementApi extends runtime.BaseAPI {
   async createMediaCommentRaw(
     requestParameters: CreateMediaCommentRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<MediaCommentResponseDto>> {
+  ): Promise<runtime.ApiResponse<void>> {
     const requestOptions = await this.createMediaCommentRequestOpts(requestParameters);
     const response = await this.request(requestOptions, initOverrides);
 
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      MediaCommentResponseDtoFromJSON(jsonValue),
-    );
+    return new runtime.VoidApiResponse(response);
   }
 
   /**
@@ -131,9 +129,8 @@ export class MediaCommentManagementApi extends runtime.BaseAPI {
   async createMediaComment(
     requestParameters: CreateMediaCommentRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<MediaCommentResponseDto> {
-    const response = await this.createMediaCommentRaw(requestParameters, initOverrides);
-    return await response.value();
+  ): Promise<void> {
+    await this.createMediaCommentRaw(requestParameters, initOverrides);
   }
 
   /**

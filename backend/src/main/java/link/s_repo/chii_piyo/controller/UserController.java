@@ -53,19 +53,18 @@ public class UserController implements UserManagementApi {
      *
      * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param userUpdateData 更新するユーザー情報
-     * @return 取得した現在のユーザー情報
+     * @return 204ステータス
      */
     @Override
-    public ResponseEntity<UserResponseDto> updateMe(
+    public ResponseEntity<Void> updateMe(
         String xRequestedWith, UserUpdateRequestDto userUpdateData) {
         Long currentUserId = currentUserProvider.getUserId();
-        List<Long> scopeSharingGroups = sharingGroupService.getUserSharingScopes(currentUserId);
 
-        // サービス層でS3キーを更新し更新後のユーザー情報を受け取る
-        Users updatedUser = userService.updateMe(currentUserId, userUpdateData);
-        URI presignedUrl = userService.generateIconDownloadPresignedUrl(updatedUser);
-        UserResponseDto response = userConverter.toUserResponseDto(updatedUser, presignedUrl, scopeSharingGroups);
-        return ResponseEntity.ok(response);
+        // サービス層で更新処理
+        userService.updateMe(currentUserId, userUpdateData);
+
+        // 204ステータスを返す
+        return ResponseEntity.noContent().build();
     }
 
     /**

@@ -69,8 +69,6 @@ export const SharingGroupListItem = ({ users, sharingGroup }: Props) => {
 
       if (result.success) {
         setIsOpen(false);
-        setIsMembers(result.data.members.map((member) => member.userId));
-
         toast.success("共有グループの編集に成功しました");
       } else {
         toast.error(result.error);

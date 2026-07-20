@@ -118,11 +118,11 @@ export class TagManagementApi extends runtime.BaseAPI {
   async createTagRaw(
     requestParameters: CreateTagRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<TagResponseDto>> {
+  ): Promise<runtime.ApiResponse<void>> {
     const requestOptions = await this.createTagRequestOpts(requestParameters);
     const response = await this.request(requestOptions, initOverrides);
 
-    return new runtime.JSONApiResponse(response, (jsonValue) => TagResponseDtoFromJSON(jsonValue));
+    return new runtime.VoidApiResponse(response);
   }
 
   /**
@@ -131,9 +131,8 @@ export class TagManagementApi extends runtime.BaseAPI {
   async createTag(
     requestParameters: CreateTagRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<TagResponseDto> {
-    const response = await this.createTagRaw(requestParameters, initOverrides);
-    return await response.value();
+  ): Promise<void> {
+    await this.createTagRaw(requestParameters, initOverrides);
   }
 
   /**
@@ -336,13 +335,11 @@ export class TagManagementApi extends runtime.BaseAPI {
   async updateMediaTagsRaw(
     requestParameters: UpdateMediaTagsRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<Array<TagResponseDto>>> {
+  ): Promise<runtime.ApiResponse<void>> {
     const requestOptions = await this.updateMediaTagsRequestOpts(requestParameters);
     const response = await this.request(requestOptions, initOverrides);
 
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      jsonValue.map(TagResponseDtoFromJSON),
-    );
+    return new runtime.VoidApiResponse(response);
   }
 
   /**
@@ -351,9 +348,8 @@ export class TagManagementApi extends runtime.BaseAPI {
   async updateMediaTags(
     requestParameters: UpdateMediaTagsRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<Array<TagResponseDto>> {
-    const response = await this.updateMediaTagsRaw(requestParameters, initOverrides);
-    return await response.value();
+  ): Promise<void> {
+    await this.updateMediaTagsRaw(requestParameters, initOverrides);
   }
 
   /**

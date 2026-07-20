@@ -37,17 +37,16 @@ public class TagController implements TagManagementApi {
      *
      * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param tagData        アップロードリクエストDTO
-     * @return 作成されたタグの情報
+     * @return 201ステータス
      */
     @Override
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<TagResponseDto> createTag(String xRequestedWith, TagRequestDto tagData) {
+    public ResponseEntity<Void> createTag(String xRequestedWith, TagRequestDto tagData) {
         // サービス層でタグを作成する
-        Tags createdTag = tagService.createTag(tagData.getName());
+        tagService.createTag(tagData.getName());
 
-        // 作成されたタグをDTOに変換してレスポンスする
-        TagResponseDto response = tagConverter.toTagResponseDto(createdTag, null);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        // 201ステータスコードを返却
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     /**
@@ -79,23 +78,20 @@ public class TagController implements TagManagementApi {
      * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
      * @param mediaId        メディアID
      * @param mediaTagsData  紐付けるタグIDの一覧
-     * @return 更新後のタグ一覧
+     * @return 204ステータス
      */
     @Override
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<TagResponseDto>> updateMediaTags(
+    public ResponseEntity<Void> updateMediaTags(
         String xRequestedWith, Long mediaId, MediaTagsUpdateRequestDto mediaTagsData) {
         // メディアの存在チェック
         mediaService.getMedia(mediaId);
 
         // サービス層でタグを更新する
-        List<Tags> updatedTags = tagService.syncMediaTags(mediaId, mediaTagsData.getTagIds());
+        tagService.syncMediaTags(mediaId, mediaTagsData.getTagIds());
 
-        // 更新されたタグをDTOに変換してレスポンスする
-        List<TagResponseDto> response = updatedTags.stream()
-            .map(tag -> tagConverter.toTagResponseDto(tag, null))
-            .toList();
-        return ResponseEntity.ok(response);
+        // 204ステータスを返す
+        return ResponseEntity.noContent().build();
     }
 
     /**
