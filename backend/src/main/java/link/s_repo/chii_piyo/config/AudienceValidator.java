@@ -14,6 +14,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 @RequiredArgsConstructor
 public class AudienceValidator implements OAuth2TokenValidator<Jwt> {
     // CognitoのアプリケーションクライアントIDを使用
+    // SecurityConfigからの呼び出し時にapplication.yamlのaws.cognito.audienceをセット想定
     private final String audience;
 
     @Override

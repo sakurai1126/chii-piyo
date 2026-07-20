@@ -4,7 +4,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * エラーコードの列挙型
+ * エラーコードの列挙型<br>
+ * 共通例外ハンドラーにて使用し、HTTPステータスとエラーメッセージを返す
  */
 @Getter
 @RequiredArgsConstructor

@@ -23,8 +23,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
- * サムネイル生成を非同期で実行するコンポーネント<br>
- * MediaService.updateUploadStatus から呼ばれ、リクエストとは別スレッドで動作する
+ * サムネイル生成を非同期で実行するコンポーネント
  */
 @Slf4j
 @Component
@@ -113,6 +112,9 @@ public class ThumbnailGenerator {
 
     /**
      * サムネイル用S3キーを構築する
+     *
+     * @param originalFilename ファイル名
+     * @return サムネイル用S3キー
      */
     private String buildThumbnailS3Key(String originalFilename) {
         // 日付プレフィックスを生成する
@@ -126,8 +128,11 @@ public class ThumbnailGenerator {
     }
 
     /**
-     * ファイル名から拡張子を除去する<br>
+     * ファイル名から拡張子を除去する
      * 例: "example.jpg" -> "example"
+     *
+     * @param filename ファイル名
+     * @return 拡張子を除去したファイル名
      */
     private String stripExtension(String filename) {
         if (filename == null) return "unknown";
@@ -139,6 +144,9 @@ public class ThumbnailGenerator {
 
     /**
      * ファイル名をS3キー用にサニタイズする
+     *
+     * @param filename ファイル名
+     * @return サニタイズされたファイル名
      */
     private String sanitizeFilename(String filename) {
         if (filename == null) return "unknown";
