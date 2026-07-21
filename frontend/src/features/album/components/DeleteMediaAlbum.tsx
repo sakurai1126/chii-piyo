@@ -71,6 +71,7 @@ export const DeleteMediaAlbum = ({
           className="mt-3 ml-auto flex w-fit items-center justify-center gap-2 px-7 @max-md:mt-3 @max-md:px-3"
           variant="remove"
           onClick={confirmOpen}
+          disabled={isPending}
         >
           <p className="@max-md:text-xs">選択したメディアをアルバムから削除</p>
         </Button>

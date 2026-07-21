@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
 /**
  * コメント管理サービス<br>
  * コメントの処理のロジックを担う

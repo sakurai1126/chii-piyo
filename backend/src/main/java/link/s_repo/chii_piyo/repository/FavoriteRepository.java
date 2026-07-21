@@ -6,6 +6,8 @@ import link.s_repo.chii_piyo.repository.gen.FavoritesMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.and;
@@ -67,6 +69,7 @@ public class FavoriteRepository {
      * @param favorite お気に入りエンティティ
      */
     public void save(Favorites favorite) {
+        favorite.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         favoritesMapper.insertSelective(favorite);
     }
 

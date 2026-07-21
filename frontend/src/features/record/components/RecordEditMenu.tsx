@@ -59,6 +59,7 @@ export const RecordEditMenu = ({
             className="focus:outline-brown-light border-line-gray bg-light-dark h-12 w-100 rounded-sm border px-2 @max-md:h-9 @max-md:w-full @max-md:max-w-100 @max-md:text-[13px] dark:outline-none"
             value={data.title}
             onChange={(e) => setData({ ...data, title: e.target.value })}
+            disabled={isPending}
           />
         </div>
         <div className="grid gap-2">
@@ -68,6 +69,7 @@ export const RecordEditMenu = ({
             className="focus:outline-brown-light border-line-gray bg-light-dark h-12 w-40 rounded-sm border px-2 @max-md:h-9 @max-md:text-[13px] dark:outline-none"
             value={data.recordedDate}
             onChange={(e) => setData({ ...data, recordedDate: e.target.value })}
+            disabled={isPending}
           />
         </div>
       </div>
@@ -78,6 +80,7 @@ export const RecordEditMenu = ({
         className="focus:outline-brown-light border-line-gray bg-light-dark mt-2 h-25 w-full rounded-sm border p-2 @max-md:h-20 @max-md:text-[13px] dark:outline-none"
         value={data.comment}
         onChange={(e) => setData({ ...data, comment: e.target.value })}
+        disabled={isPending}
       ></textarea>
 
       {/* メディア追加 */}
@@ -86,6 +89,7 @@ export const RecordEditMenu = ({
           variant="button"
           className="shrink-0"
           onClick={() => setIsAddMediaModalOpen(true)}
+          disabled={isPending}
         >
           <span>メディアを追加</span>
           <Image src={mediaIcon} alt="" width={16} height={16} />
@@ -104,6 +108,7 @@ export const RecordEditMenu = ({
                 type="button"
                 className="bg-warning absolute -top-0.5 -right-0.5 hidden h-4 w-4 cursor-pointer place-content-center rounded-2xl group-hover:grid"
                 onClick={() => removeMedia(item.id)}
+                disabled={isPending}
               >
                 <Image src={closeIcon} alt="" width={8} height={8} />
               </button>
@@ -114,10 +119,10 @@ export const RecordEditMenu = ({
 
       {/* ボタン */}
       <div className="mt-5 ml-auto flex w-fit gap-5 @max-md:mt-7">
-        <Button variant="cancel" onClick={cancelEdit}>
+        <Button variant="cancel" onClick={cancelEdit} disabled={isPending}>
           キャンセル
         </Button>
-        <Button onClick={confirmOpen}>
+        <Button onClick={confirmOpen} disabled={isPending}>
           {variant === "newFirstRecord" || variant === "newWordRecord" ? "記録する" : "更新する"}
         </Button>
       </div>

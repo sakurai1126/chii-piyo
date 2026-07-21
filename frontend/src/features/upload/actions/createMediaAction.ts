@@ -10,6 +10,7 @@ import {
 } from "@/lib/api-client/gen";
 import { createAuthorizedConfig } from "@/lib/api-client/server";
 import { handleActionError, ActionResult } from "@/utils/action";
+import { dateOnlyToUtcNoon } from "@/utils/date";
 
 type ResponseData = MediaUploadResponseDto & {
   warnings?: string[];
@@ -59,7 +60,7 @@ export const createMediaAction = async (input: Input): Promise<ActionResult<Resp
       fileSize: input.fileSize,
       width: input.width ?? null,
       height: input.height ?? null,
-      takenAt: input.takenAt ? new Date(input.takenAt) : null,
+      takenAt: input.takenAt ? dateOnlyToUtcNoon(input.takenAt) : null,
       albumId: input.albumId ?? null,
       sharingGroupId: input.sharingGroupId ?? null,
     };

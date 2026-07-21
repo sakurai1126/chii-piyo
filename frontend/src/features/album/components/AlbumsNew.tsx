@@ -48,7 +48,7 @@ export const AlbumsNew = () => {
         <AnimatePresence>
           {isOpen && (
             <Modal>
-              <ActionDialog onClose={cancel}>
+              <ActionDialog onClose={isPending ? undefined : cancel}>
                 <div>
                   <p className="@max-md:mt-4 @max-md:text-[13px]">アルバムを新規作成</p>
                   <div className="mx-auto mt-7 w-full max-w-110">
@@ -76,7 +76,7 @@ export const AlbumsNew = () => {
         </AnimatePresence>
       </div>
 
-      <AccentButton variant="button" onClick={() => setIsOpen(true)}>
+      <AccentButton variant="button" onClick={() => setIsOpen(true)} disabled={isPending}>
         <p>アルバムを新規作成</p>
         <Image src={media} width={16} height={16} alt="" />
       </AccentButton>

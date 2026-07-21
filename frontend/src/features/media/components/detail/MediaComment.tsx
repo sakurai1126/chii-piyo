@@ -174,6 +174,7 @@ export const MediaComment = ({ mediaId, isEasy, comments, currentUser, users }: 
                 )}
                 value={inputComment}
                 onChange={(e) => setInputComment(e.target.value)}
+                disabled={isPending}
               ></textarea>
             </div>
             <Button
@@ -204,6 +205,7 @@ export const MediaComment = ({ mediaId, isEasy, comments, currentUser, users }: 
           className="mt-4 block @max-md:h-9 @max-md:w-28 @max-md:text-xs"
           isEasy={isEasy}
           onClick={() => setIsCommentMode(true)}
+          disabled={isPending}
         >
           コメントする
         </Button>

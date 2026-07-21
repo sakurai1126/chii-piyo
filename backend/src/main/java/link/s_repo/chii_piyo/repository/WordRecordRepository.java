@@ -9,6 +9,8 @@ import link.s_repo.chii_piyo.repository.gen.WordRecordsMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +34,8 @@ public class WordRecordRepository {
      * @param wordRecord ことばの記録エンティティ
      */
     public void save(WordRecords wordRecord) {
+        wordRecord.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
+        wordRecord.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         wordRecordsMapper.insertSelective(wordRecord);
     }
 
@@ -41,6 +45,7 @@ public class WordRecordRepository {
      * @param wordRecordMediaList ことばの記録メディアエンティティ
      */
     public void saveMedia(List<WordRecordMedia> wordRecordMediaList) {
+        wordRecordMediaList.forEach(item -> item.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC)));
         wordRecordMediaMapper.insertMultiple(wordRecordMediaList);
     }
 
@@ -81,6 +86,7 @@ public class WordRecordRepository {
      * @param wordRecord ことばの記録エンティティ
      */
     public void update(WordRecords wordRecord) {
+        wordRecord.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         wordRecordsMapper.updateByPrimaryKey(wordRecord);
     }
 

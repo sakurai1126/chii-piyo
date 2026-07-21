@@ -15,9 +15,17 @@ type Props = {
   selectedTagIds: number[];
   // タグ追加フォームの表示フラグ（省略時は非表示）
   addTag?: boolean;
+  // 選択中のタグを無効化するかどうか
+  isPending?: boolean;
 };
 
-export const TagSelector = ({ tags, onTagSelect, selectedTagIds, addTag = false }: Props) => {
+export const TagSelector = ({
+  tags,
+  onTagSelect,
+  selectedTagIds,
+  addTag = false,
+  isPending = false,
+}: Props) => {
   const uid = useId();
 
   const handleChange = (tagId: number, checked: boolean) => {
@@ -44,6 +52,7 @@ export const TagSelector = ({ tags, onTagSelect, selectedTagIds, addTag = false 
                   className="accent-accent-pink h-4 w-4"
                   onChange={(e) => handleChange(tag.id, e.target.checked)}
                   checked={selectedTagIds.includes(tag.id)}
+                  disabled={isPending}
                 />
                 <p className="@max-md:text-[13px]">{tag.name}</p>
               </label>

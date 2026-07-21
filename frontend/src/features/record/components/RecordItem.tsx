@@ -187,6 +187,7 @@ const RecordItemDisplayMode = ({
             type="button"
             className="cursor-pointer underline transition-all hover:opacity-70 @max-md:text-xs"
             onClick={() => setIsEditMode(true)}
+            disabled={isPending}
           >
             編集
           </button>
@@ -194,6 +195,7 @@ const RecordItemDisplayMode = ({
             type="button"
             className="text-warning cursor-pointer underline transition-all hover:opacity-70 @max-md:text-xs dark:font-medium"
             onClick={() => setIsDeleteConfirmOpen(true)}
+            disabled={isPending}
           >
             削除
           </button>

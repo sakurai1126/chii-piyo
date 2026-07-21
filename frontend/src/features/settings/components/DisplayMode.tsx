@@ -15,7 +15,7 @@ type Props = {
 };
 
 export const DisplayMode = ({ isEasy, currentUser }: Props) => {
-  const { isDarkMode, darkModeChange, isEasyMode, easyModeChange } = useChangeSettings({
+  const { isDarkMode, darkModeChange, isEasyMode, easyModeChange, isPending } = useChangeSettings({
     currentUser,
   });
 
@@ -52,6 +52,7 @@ export const DisplayMode = ({ isEasy, currentUser }: Props) => {
               className="peer hidden"
               checked={isDarkMode}
               onChange={darkModeChange}
+              disabled={isPending}
             />
             <span className="peer-checked:bg-accent-orange bg-line-gray absolute inset-0 rounded-full transition-colors"></span>
             <span className="bg-light-dark absolute top-0.75 left-0.75 h-5.5 w-5.5 scale-90 rounded-full transition-transform group-hover:scale-100 peer-checked:translate-x-8.75 @max-md:top-0.5 @max-md:h-5 @max-md:w-5 @max-md:peer-checked:translate-x-6.5"></span>
@@ -68,6 +69,7 @@ export const DisplayMode = ({ isEasy, currentUser }: Props) => {
               className="peer hidden"
               checked={isEasyMode}
               onChange={easyModeChange}
+              disabled={isPending}
             />
             <span className="peer-checked:bg-accent-orange bg-line-gray absolute inset-0 rounded-full transition-colors"></span>
             <span className="bg-light-dark absolute top-0.75 left-0.75 h-5.5 w-5.5 scale-90 rounded-full transition-transform group-hover:scale-100 peer-checked:translate-x-8.75 @max-md:top-0.5 @max-md:h-5 @max-md:w-5 @max-md:peer-checked:translate-x-6.5"></span>

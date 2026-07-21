@@ -44,6 +44,7 @@ export const LoginForm = ({ logoutMessage }: Readonly<Props>) => {
         required
         autoComplete="email"
         className="focus:outline-brown-light bg-login-form border-line-gray mt-1 mb-5 block h-12 w-full rounded-sm border px-3 autofill:shadow-[inset_0_0_0_30px_var(--color-login-form)] max-md:mb-4 max-md:h-10 dark:outline-none"
+        disabled={isPending}
       />
       <label htmlFor="password" className="text-sm max-md:text-xs">
         パスワード
@@ -55,6 +56,7 @@ export const LoginForm = ({ logoutMessage }: Readonly<Props>) => {
         required
         autoComplete="current-password"
         className="focus:outline-brown-light bg-login-form border-line-gray mt-1 block h-12 w-full rounded-sm border px-3 autofill:shadow-[inset_0_0_0_30px_var(--color-login-form)] max-md:h-10 dark:outline-none"
+        disabled={isPending}
       />
       <button
         type="submit"

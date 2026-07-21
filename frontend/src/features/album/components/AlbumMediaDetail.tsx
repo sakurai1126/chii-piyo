@@ -87,6 +87,7 @@ export const AlbumMediaDetail = ({ isAdmin, isEasy, album, media }: Props) => {
                 type="button"
                 className="text-warning cursor-pointer text-xs underline transition-all hover:opacity-70 @max-md:text-[10px] dark:font-medium"
                 onClick={() => setIsOpen(true)}
+                disabled={isPending}
               >
                 アルバムから削除する
               </button>

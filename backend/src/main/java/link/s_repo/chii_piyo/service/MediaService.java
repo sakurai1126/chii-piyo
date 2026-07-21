@@ -23,8 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -143,8 +141,6 @@ public class MediaService {
         media.setSharingGroupId(sharingGroupId);
         // アップロード進行中の状態でステータスを登録
         media.setUploadStatus("PROCESSING");
-        media.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
-        media.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
 
         // DBに保存
         mediaRepository.save(media);
@@ -177,7 +173,6 @@ public class MediaService {
 
         // ステータスのみを更新
         media.setUploadStatus(uploadStatus);
-        media.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
 
         // updateByPrimaryKeySelectiveでnullカラムをスキップして更新
         mediaRepository.update(media);
@@ -333,7 +328,6 @@ public class MediaService {
                             MediaTags mediaTag = new MediaTags();
                             mediaTag.setMediaId(mediaId);
                             mediaTag.setTagId(tagId);
-                            mediaTag.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
                             insertList.add(mediaTag);
                         }
                     }

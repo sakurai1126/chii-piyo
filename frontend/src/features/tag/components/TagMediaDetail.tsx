@@ -84,13 +84,14 @@ export const TagMediaDetail = ({ isAdmin, mediaId, mediaTags, tags }: Props) => 
       <AnimatePresence>
         {isOpen && (
           <Modal>
-            <ActionDialog onClose={editCancel}>
+            <ActionDialog onClose={isPending ? undefined : editCancel}>
               <div className="flex h-full flex-col justify-between">
                 <div className="-mt-8">
                   <TagSelector
                     tags={tags}
                     selectedTagIds={selectedTagIds}
                     onTagSelect={(tagIds) => setSelectedTagIds(tagIds)}
+                    isPending={isPending}
                   />
                 </div>
                 <div className="flex justify-center gap-5 @max-md:mt-8">

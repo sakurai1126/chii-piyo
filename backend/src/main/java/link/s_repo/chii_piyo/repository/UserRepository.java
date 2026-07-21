@@ -6,6 +6,8 @@ import link.s_repo.chii_piyo.repository.gen.UsersMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,6 +50,8 @@ public class UserRepository {
      * @param user ユーザーエンティティ
      */
     public void save(Users user) {
+        user.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
+        user.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         usersMapper.insertSelective(user);
     }
 
@@ -57,6 +61,7 @@ public class UserRepository {
      * @param user ユーザーエンティティ
      */
     public void update(Users user) {
+        user.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         usersMapper.updateByPrimaryKeySelective(user);
     }
 

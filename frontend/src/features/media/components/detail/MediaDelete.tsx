@@ -33,6 +33,7 @@ export const MediaDelete = ({ mediaId }: Props) => {
         type="button"
         className="text-warning mt-4 ml-auto block w-fit cursor-pointer text-xs underline transition-all hover:opacity-70 dark:font-medium"
         onClick={() => setIsOpen(true)}
+        disabled={isPending}
       >
         メディアをゴミ箱に移動する
       </button>

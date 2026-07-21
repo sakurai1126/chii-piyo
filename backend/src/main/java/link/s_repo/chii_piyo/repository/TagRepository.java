@@ -11,6 +11,8 @@ import link.s_repo.chii_piyo.repository.mapper.MediaTagsCustomMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,6 +67,7 @@ public class TagRepository {
      * @param tag タグエンティティ
      */
     public void save(Tags tag) {
+        tag.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         tagsMapper.insertSelective(tag);
     }
 
@@ -113,6 +116,7 @@ public class TagRepository {
      * @param mediaTags メディアへのタグ登録データリスト
      */
     public void saveMediaTags(List<MediaTags> mediaTags) {
+        mediaTags.forEach(item -> item.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC)));
         mediaTagsMapper.insertMultiple(mediaTags);
     }
 

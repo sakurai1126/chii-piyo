@@ -15,8 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -105,7 +103,6 @@ public class SharingGroupService {
                     SharingGroupMembers member = new SharingGroupMembers();
                     member.setSharingGroupId(id);
                     member.setUserId(userId);
-                    member.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
                     return member;
                 })
                 .toList();
@@ -152,7 +149,6 @@ public class SharingGroupService {
                     SharingGroupMembers member = new SharingGroupMembers();
                     member.setSharingGroupId(id);
                     member.setUserId(userId);
-                    member.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
                     return member;
                 })
                 .toList();

@@ -5,12 +5,13 @@ import { revalidatePath } from "next/cache";
 import { WordRecordManagementApi, WordRecordRequestDto } from "@/lib/api-client/gen";
 import { createAuthorizedConfig } from "@/lib/api-client/server";
 import { handleActionError, ActionResult } from "@/utils/action";
+import { dateOnlyToUtcNoon } from "@/utils/date";
 
 // クライアントから受け取る入力型
 type Input = {
   id: number;
   title: string;
-  recordedDate: Date;
+  recordedDate: string;
   comment: string;
   mediaIds: number[];
 };
@@ -23,7 +24,7 @@ export const updateWordRecordAction = async (input: Input): Promise<ActionResult
 
     const requestDto: WordRecordRequestDto = {
       title: input.title,
-      recordedDate: input.recordedDate,
+      recordedDate: dateOnlyToUtcNoon(input.recordedDate),
       comment: input.comment,
       mediaIds: input.mediaIds,
     };

@@ -5,6 +5,8 @@ import link.s_repo.chii_piyo.repository.gen.AlbumsMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +27,8 @@ public class AlbumRepository {
      * @param album アルバムエンティティ
      */
     public void save(Albums album) {
+        album.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
+        album.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         albumsMapper.insertSelective(album);
     }
 
@@ -62,6 +66,7 @@ public class AlbumRepository {
      * @param album アルバムエンティティ
      */
     public void update(Albums album) {
+        album.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         albumsMapper.updateByPrimaryKeySelective(album);
     }
 }

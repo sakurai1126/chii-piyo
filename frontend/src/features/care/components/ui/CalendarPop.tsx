@@ -211,6 +211,7 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
                                       amountMl: Number(e.target.value),
                                     }));
                                   }}
+                                  disabled={isPending}
                                 />
                                 <span className="ml-2 text-sm">ml</span>
                               </>
@@ -233,6 +234,7 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
                                         diaperType: "WET",
                                       }));
                                     }}
+                                    disabled={isPending}
                                   />
                                   <span>おしっこ</span>
                                 </label>
@@ -251,6 +253,7 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
                                         diaperType: "DIRTY",
                                       }));
                                     }}
+                                    disabled={isPending}
                                   />
                                   <span>うんち</span>
                                 </label>
@@ -272,6 +275,7 @@ export const CalendarPop = ({ state, popCloseAction, setIsDeleteConfirmOpen }: P
                                       temperature: Number(e.target.value),
                                     }));
                                   }}
+                                  disabled={isPending}
                                 />
                                 <span className="ml-2 text-sm">℃</span>
                               </>

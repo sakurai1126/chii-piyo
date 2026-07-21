@@ -10,13 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 /**
@@ -109,7 +106,6 @@ public class TagService {
                 MediaTags mediaTag = new MediaTags();
                 mediaTag.setTagId(tagId);
                 mediaTag.setMediaId(mediaId);
-                mediaTag.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
                 return mediaTag;
             })
             .toList();

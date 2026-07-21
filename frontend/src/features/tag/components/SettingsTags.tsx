@@ -93,6 +93,7 @@ const TagItem = ({ tag }: { tag: TagResponseDto }) => {
             className="text-brown-dark h-5 border-b text-sm outline-none"
             value={newTagName}
             onChange={(e) => setNewTagName(e.target.value)}
+            disabled={isPending}
           />
         ) : (
           <p className="text-brown-dark text-sm @max-md:text-xs">{newTagName}</p>
@@ -193,6 +194,7 @@ const NewTag = () => {
         className="text-brown-dark mr-4 h-5 border-b text-sm outline-none"
         value={newTagName}
         onChange={(e) => setNewTagName(e.target.value)}
+        disabled={isPending}
       />
       <button
         type="button"

@@ -5,11 +5,12 @@ import { revalidatePath } from "next/cache";
 import { FirstRecordManagementApi, FirstRecordRequestDto } from "@/lib/api-client/gen";
 import { createAuthorizedConfig } from "@/lib/api-client/server";
 import { handleActionError, ActionResult } from "@/utils/action";
+import { dateOnlyToUtcNoon } from "@/utils/date";
 
 // クライアントから受け取る入力型
 type Input = {
   title: string;
-  achievedDate: Date;
+  achievedDate: string;
   comment: string;
   mediaIds: number[];
 };
@@ -22,7 +23,7 @@ export const createFirstRecordAction = async (input: Input): Promise<ActionResul
 
     const requestDto: FirstRecordRequestDto = {
       title: input.title,
-      recordedDate: input.achievedDate,
+      recordedDate: dateOnlyToUtcNoon(input.achievedDate),
       comment: input.comment,
       mediaIds: input.mediaIds,
     };

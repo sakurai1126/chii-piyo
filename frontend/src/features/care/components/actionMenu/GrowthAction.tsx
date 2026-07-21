@@ -57,7 +57,7 @@ export const GrowthAction = () => {
 
     startTransition(async () => {
       const result = await createGrowthRecordAction({
-        measurementDate: recordTime,
+        measurementDate: date,
         height: height || undefined,
         weight: weight || undefined,
         note,

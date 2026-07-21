@@ -256,6 +256,7 @@ export const CareTimeLineItem = ({ index, careItem, growthItem }: Props) => {
                     onChange={(e) => {
                       setUpdateData((prev) => ({ ...prev, amountMl: Number(e.target.value) }));
                     }}
+                    disabled={isPending}
                   />
                   <span className="@max-md:text-xs">ml</span>
                 </div>
@@ -272,6 +273,7 @@ export const CareTimeLineItem = ({ index, careItem, growthItem }: Props) => {
                       onChange={() => {
                         setUpdateData((prev) => ({ ...prev, diaperType: "WET" }));
                       }}
+                      disabled={isPending}
                     />
                     <span className="text-sm font-medium @max-md:text-xs">おしっこ</span>
                   </label>
@@ -285,6 +287,7 @@ export const CareTimeLineItem = ({ index, careItem, growthItem }: Props) => {
                       onChange={() => {
                         setUpdateData((prev) => ({ ...prev, diaperType: "DIRTY" }));
                       }}
+                      disabled={isPending}
                     />
                     <span className="text-sm font-medium @max-md:text-xs">うんち</span>
                   </label>
@@ -305,6 +308,7 @@ export const CareTimeLineItem = ({ index, careItem, growthItem }: Props) => {
                         temperature: Number(e.target.value),
                       }));
                     }}
+                    disabled={isPending}
                   />
                   <span className="@max-md:text-xs">℃</span>
                 </div>
@@ -359,6 +363,7 @@ export const CareTimeLineItem = ({ index, careItem, growthItem }: Props) => {
                 className="border-line-gray focus:outline-brown-light bg-light-dark mt-3 h-8 w-full max-w-80 rounded-sm border px-2 @max-md:h-6 @max-md:text-sm dark:outline-none"
                 value={updateData.note}
                 onChange={(e) => setUpdateData((prev) => ({ ...prev, note: e.target.value }))}
+                disabled={isPending}
               />
 
               {/* 日時編集 */}
@@ -370,6 +375,7 @@ export const CareTimeLineItem = ({ index, careItem, growthItem }: Props) => {
                     className="font-medium outline-none @max-md:text-xs"
                     value={updateData.time}
                     onChange={(e) => setUpdateData((prev) => ({ ...prev, time: e.target.value }))}
+                    disabled={isPending}
                   />
                 )}
 
@@ -378,6 +384,7 @@ export const CareTimeLineItem = ({ index, careItem, growthItem }: Props) => {
                   className="font-medium outline-none @max-md:text-xs"
                   value={updateData.date}
                   onChange={(e) => setUpdateData((prev) => ({ ...prev, date: e.target.value }))}
+                  disabled={isPending}
                 />
               </div>
             </div>

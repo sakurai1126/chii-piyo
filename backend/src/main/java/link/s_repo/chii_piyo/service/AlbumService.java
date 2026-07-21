@@ -14,14 +14,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 /**
  * アルバム管理サービス<br>
@@ -167,7 +164,6 @@ public class AlbumService {
 
         // タイトルを更新してDBに保存
         album.setTitle(title);
-        album.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         albumRepository.update(album);
     }
 

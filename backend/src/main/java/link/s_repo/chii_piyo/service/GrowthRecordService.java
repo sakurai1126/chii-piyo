@@ -12,8 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 
 /**
@@ -100,7 +98,6 @@ public class GrowthRecordService {
         growthRecord.setWeight(weight != null ? BigDecimal.valueOf(weight) : null);
 
         growthRecord.setNote(updateData.getNote());
-        growthRecord.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
 
         // リポジトリ層で更新
         growthRecordRepository.updateGrowthRecord(growthRecord);

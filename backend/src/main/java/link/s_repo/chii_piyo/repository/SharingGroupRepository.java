@@ -9,6 +9,8 @@ import link.s_repo.chii_piyo.repository.gen.SharingGroupsMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,6 +68,8 @@ public class SharingGroupRepository {
      * @param sharingGroups 共有グループエンティティ
      */
     public void save(SharingGroups sharingGroups) {
+        sharingGroups.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
+        sharingGroups.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         sharingGroupsMapper.insertSelective(sharingGroups);
     }
 
@@ -75,6 +79,7 @@ public class SharingGroupRepository {
      * @param members 共有グループメンバーエンティティのリスト
      */
     public void membersSave(List<SharingGroupMembers> members) {
+        members.forEach(item -> item.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC)));
         sharingGroupMembersMapper.insertMultiple(members);
     }
 
@@ -114,6 +119,7 @@ public class SharingGroupRepository {
      * @param sharingGroups 共有グループエンティティ
      */
     public void update(SharingGroups sharingGroups) {
+        sharingGroups.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         sharingGroupsMapper.updateByPrimaryKeySelective(sharingGroups);
     }
 

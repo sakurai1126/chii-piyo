@@ -105,6 +105,7 @@ export const MultiEdit = ({
         className="-mt-10 flex items-center justify-center gap-2 @max-md:w-30"
         onClick={toggleMenu}
         variant={isOpen ? "cancel" : "primary"}
+        disabled={isPending}
       >
         {!isOpen && <Image src="/images/select-start-check.svg" alt="" width={18} height={18} />}
         <p className="@max-md:text-xs">{isOpen ? "閉じる" : "選択を開始"}</p>
@@ -122,6 +123,7 @@ export const MultiEdit = ({
                 className="accent-accent-pink h-4 w-4"
                 checked={editType === "all"}
                 onChange={() => setEditType("all")}
+                disabled={isPending}
               />
               <p className="@max-md:text-[13px]">両方編集する</p>
             </label>
@@ -132,6 +134,7 @@ export const MultiEdit = ({
                 className="accent-accent-pink h-4 w-4"
                 checked={editType === "tag"}
                 onChange={() => setEditType("tag")}
+                disabled={isPending}
               />
               <p className="@max-md:text-[13px]">タグのみ</p>
             </label>
@@ -142,6 +145,7 @@ export const MultiEdit = ({
                 className="accent-accent-pink h-4 w-4"
                 checked={editType === "sharing"}
                 onChange={() => setEditType("sharing")}
+                disabled={isPending}
               />
               <p className="@max-md:text-[13px]">共有範囲のみ</p>
             </label>
@@ -152,6 +156,7 @@ export const MultiEdit = ({
               tags={tags}
               selectedTagIds={selectedTagIds}
               onTagSelect={(tagIds) => setSelectedTagIds(tagIds)}
+              isPending={isPending}
             />
           )}
 
@@ -161,6 +166,7 @@ export const MultiEdit = ({
               sharingGroups={sharingGroups}
               onSharingGroupSelect={(id) => setSelectedGroupId(id)}
               selectedGroupId={selectedGroupId}
+              isPending={isPending}
             />
           )}
 

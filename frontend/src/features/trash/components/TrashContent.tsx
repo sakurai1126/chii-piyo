@@ -83,14 +83,25 @@ export const TrashContent = ({ trashItems }: Props) => {
             className="accent-accent-pink h-4.5 w-4.5 @max-md:h-4 @max-md:w-4"
             checked={allChecked}
             onChange={(e) => (e.target.checked ? allCheck() : allClear())}
+            disabled={isPending}
           />
           <p className="text-lg @max-md:text-[13px]">すべて選択</p>
         </label>
         <div className="flex gap-3 @max-md:flex-col">
-          <Button variant="cancel" className="w-fit px-4" onClick={restoreConfirmOpen}>
+          <Button
+            variant="cancel"
+            className="w-fit px-4"
+            onClick={restoreConfirmOpen}
+            disabled={isPending}
+          >
             選択したメディアを復元
           </Button>
-          <Button variant="remove" className="w-fit px-4" onClick={deleteConfirmOpen}>
+          <Button
+            variant="remove"
+            className="w-fit px-4"
+            onClick={deleteConfirmOpen}
+            disabled={isPending}
+          >
             選択したメディアを完全に削除
           </Button>
         </div>
@@ -102,7 +113,6 @@ export const TrashContent = ({ trashItems }: Props) => {
             trashItem={trashItem}
             selectedIds={selectedIds}
             setSelectedIds={setSelectedIds}
-            // ページ全体のボタンを一時無効化するため
             isPending={isPending}
             startTransition={startTransition}
           />
