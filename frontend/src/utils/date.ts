@@ -212,3 +212,15 @@ export const calculateDaysSinceBirth = (
   result += `${days}日`;
   return result;
 };
+
+/**
+ * "YYYY-MM-DD"形式の日付文字列を、TZ非依存で日付が保たれるDateに変換する
+ * ※OpenAPI Generatorがdate型を toISOString().substring(0,10) で送るため、UTC正午に固定することで実行環境のTZが±12時間ずれても日付がずれない
+ *
+ * @param dateStr "YYYY-MM-DD"形式の日付文字列
+ * @returns TZ非依存で日付が保たれるDate
+ */
+export const dateOnlyToUtcNoon = (dateStr: string): Date => {
+  // OpenAPI Generatorがdate型を toISOString().substring(0,10) で送るため、UTC正午に固定することで実行環境のTZが±12時間ずれても日付がずれない
+  return new Date(`${dateStr}T12:00:00Z`);
+};

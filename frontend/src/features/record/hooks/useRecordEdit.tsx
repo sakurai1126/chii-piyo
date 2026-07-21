@@ -81,7 +81,7 @@ export const useRecordEdit = ({ setIsMenuOpen, initialEditData, variant }: Props
   const saveNewFirstRecord = async () => {
     const result = await createFirstRecordAction({
       title: data.title,
-      achievedDate: new Date(data.recordedDate),
+      achievedDate: data.recordedDate,
       comment: data.comment,
       mediaIds: selectedMediaData.map((media) => media.id),
     });
@@ -99,7 +99,7 @@ export const useRecordEdit = ({ setIsMenuOpen, initialEditData, variant }: Props
     const result = await updateFirstRecordAction({
       id: initialEditData.id,
       title: data.title,
-      recordedDate: new Date(data.recordedDate),
+      recordedDate: data.recordedDate,
       comment: data.comment,
       mediaIds: selectedMediaData.map((media) => media.id),
     });
@@ -111,7 +111,7 @@ export const useRecordEdit = ({ setIsMenuOpen, initialEditData, variant }: Props
   const saveNewWordRecord = async () => {
     const result = await createWordRecordAction({
       title: data.title,
-      recordedDate: new Date(data.recordedDate),
+      recordedDate: data.recordedDate,
       comment: data.comment,
       mediaIds: selectedMediaData.map((media) => media.id),
     });
@@ -129,7 +129,7 @@ export const useRecordEdit = ({ setIsMenuOpen, initialEditData, variant }: Props
     const result = await updateWordRecordAction({
       id: initialEditData.id,
       title: data.title,
-      recordedDate: new Date(data.recordedDate),
+      recordedDate: data.recordedDate,
       comment: data.comment,
       mediaIds: selectedMediaData.map((media) => media.id),
     });
