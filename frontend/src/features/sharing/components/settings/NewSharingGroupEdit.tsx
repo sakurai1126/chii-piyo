@@ -80,6 +80,7 @@ export const NewSharingGroupEdit = ({ users }: Props) => {
                   id={`new-${user.id}`}
                   onChange={() => toggleMember(user.id)}
                   checked={newGroupMemberIds.includes(user.id)}
+                  disabled={isPending}
                 />
 
                 <div className="h-6 w-6 shrink-0 rounded-full bg-[linear-gradient(100deg,#FFC0AB_35%,#FFF829_65%)] p-px">

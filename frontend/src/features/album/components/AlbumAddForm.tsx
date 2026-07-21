@@ -32,6 +32,7 @@ export const AlbumAddForm = () => {
           type="text"
           value={albumTitle}
           onChange={(e) => setAlbumTitle(e.target.value)}
+          disabled={isPending}
         />
 
         <Button className="max-w-20 @max-md:max-h-8" onClick={addAlbumAction} disabled={isPending}>

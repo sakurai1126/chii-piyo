@@ -62,6 +62,7 @@ export const NewAlbumEdit = () => {
         <Button
           className="mt-5 ml-auto block @max-md:mx-auto @max-md:w-30"
           onClick={() => setIsAlbumEdit(true)}
+          disabled={isPending}
         >
           新規追加
         </Button>

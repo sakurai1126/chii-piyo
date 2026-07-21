@@ -158,16 +158,16 @@ export const useRecordEdit = ({ setIsMenuOpen, initialEditData, variant }: Props
     startTransition(async () => {
       switch (variant) {
         case "newFirstRecord":
-          saveNewFirstRecord();
+          await saveNewFirstRecord();
           break;
         case "editFirstRecord":
-          updateFirstRecord();
+          await updateFirstRecord();
           break;
         case "newWordRecord":
-          saveNewWordRecord();
+          await saveNewWordRecord();
           break;
         case "editWordRecord":
-          updateWordRecord();
+          await updateWordRecord();
           break;
         default:
           break;

@@ -81,6 +81,7 @@ export const DiaperAction = () => {
               className="accent-accent-pink h-5 w-5"
               checked={diaperType === "WET"}
               onChange={() => setDiaperType("WET")}
+              disabled={isPending}
             />
             <p className="text-xl font-medium">おしっこ</p>
           </label>
@@ -91,6 +92,7 @@ export const DiaperAction = () => {
               className="accent-accent-pink h-5 w-5"
               checked={diaperType === "DIRTY"}
               onChange={() => setDiaperType("DIRTY")}
+              disabled={isPending}
             />
             <p className="text-xl font-medium">うんち</p>
           </label>

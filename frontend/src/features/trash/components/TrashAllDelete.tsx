@@ -39,6 +39,7 @@ export const TrashAllDelete = () => {
           variant="remove"
           className="w-fit px-6 @max-md:mt-4 @max-md:ml-auto"
           onClick={() => setIsOpen(true)}
+          disabled={isPending}
         >
           ゴミ箱を空にする
         </Button>

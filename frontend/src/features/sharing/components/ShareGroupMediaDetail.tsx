@@ -2,7 +2,7 @@
 
 import { AnimatePresence } from "motion/react";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 
 import { Modal } from "@/components/layout/Modal";
 import { ActionDialog } from "@/components/ui/ActionDialog";
@@ -27,23 +27,27 @@ export const ShareGroupMediaDetail = ({ isAdmin, media, sharingGroups, users }: 
     currentSharingGroup?.id,
   );
 
+  // 非同期処理中のボタン状態管理
+  const [isPending, startTransition] = useTransition();
+
   const saveUpdate = async () => {
     if (selectedGroupId === currentSharingGroup?.id) {
       toast.error("変更されていません");
       return;
     }
+    startTransition(async () => {
+      const result = await updateMediaAction({
+        mediaId: media.id,
+        sharingGroupId: selectedGroupId ?? null,
+      });
 
-    const result = await updateMediaAction({
-      mediaId: media.id,
-      sharingGroupId: selectedGroupId ?? null,
+      if (result.success) {
+        toast.success("共有範囲を更新しました");
+        setIsOpen(false);
+      } else {
+        toast.error(result.error);
+      }
     });
-
-    if (result.success) {
-      toast.success("共有範囲を更新しました");
-      setIsOpen(false);
-    } else {
-      toast.error(result.error);
-    }
   };
 
   return (
@@ -95,6 +99,7 @@ export const ShareGroupMediaDetail = ({ isAdmin, media, sharingGroups, users }: 
             type="button"
             className="cursor-pointer text-sm underline transition-all hover:opacity-70 @max-md:mt-3 @max-md:ml-auto @max-md:text-xs"
             onClick={() => setIsOpen(true)}
+            disabled={isPending}
           >
             共有範囲を変更する
           </button>
@@ -103,20 +108,23 @@ export const ShareGroupMediaDetail = ({ isAdmin, media, sharingGroups, users }: 
       <AnimatePresence>
         {isOpen && (
           <Modal>
-            <ActionDialog onClose={() => setIsOpen(false)}>
+            <ActionDialog onClose={isPending ? undefined : () => setIsOpen(false)}>
               <div className="flex h-full flex-col justify-between">
                 <div className="-mt-8">
                   <SharingGroupsSelector
                     sharingGroups={sharingGroups}
                     onSharingGroupSelect={(id) => setSelectedGroupId(id)}
                     selectedGroupId={selectedGroupId}
+                    isPending={isPending}
                   />
                 </div>
                 <div className="flex justify-center gap-5 @max-md:mt-8">
-                  <Button variant="cancel" onClick={() => setIsOpen(false)}>
+                  <Button variant="cancel" onClick={() => setIsOpen(false)} disabled={isPending}>
                     キャンセル
                   </Button>
-                  <Button onClick={saveUpdate}>保存する</Button>
+                  <Button onClick={saveUpdate} disabled={isPending}>
+                    保存する
+                  </Button>
                 </div>
               </div>
             </ActionDialog>

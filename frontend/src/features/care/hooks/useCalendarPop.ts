@@ -102,6 +102,9 @@ export const useCalendarPop = ({ state, popCloseAction }: Props) => {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      // 送信中は画面外クリックによるポップアップ閉じをブロックする
+      if (isPending) return;
+
       // popRefが存在し、かつクリックされた要素がpopRefの内側ではない場合
       if (popRef.current && !popRef.current.contains(event.target as Node)) {
         popCloseAction();
@@ -113,7 +116,7 @@ export const useCalendarPop = ({ state, popCloseAction }: Props) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [popCloseAction]);
+  }, [popCloseAction, isPending]);
 
   const saveCareRecordAction = () => {
     if (!state.record) {

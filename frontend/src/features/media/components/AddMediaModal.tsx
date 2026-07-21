@@ -238,6 +238,7 @@ export const AddMediaModal = ({
                     type="button"
                     onClick={() => setIsFilterOpen(!isFilterOpen)}
                     className="text-brown-dark border-brown-dark dark:text-brown-light bg-background-accent mt-7 flex w-full items-center justify-center gap-2 rounded-lg border py-5 text-[13px] outline-0 @md:hidden"
+                    disabled={isPending}
                   >
                     <p>{isFilterOpen ? "絞込検索を閉じる" : "絞込検索"}</p>
 
@@ -370,6 +371,7 @@ export const AddMediaModal = ({
                           }
                           value={item.id}
                           className="accent-accent-pink absolute top-1 left-1 z-1"
+                          disabled={isPending}
                         />
                         <Image
                           src={item.thumbnailPresignedUrl ?? "/images/no-thumbnail.png"}

@@ -11,11 +11,13 @@ type Props = {
   onSharingGroupSelect: (selectedGroupId: number | undefined) => void;
   // 現在選択されている共有グループID
   selectedGroupId?: number;
+  isPending?: boolean;
 };
 export const SharingGroupsSelector = ({
   sharingGroups,
   onSharingGroupSelect,
   selectedGroupId,
+  isPending = false,
 }: Props) => {
   const uid = useId();
 
@@ -39,6 +41,7 @@ export const SharingGroupsSelector = ({
             className="accent-accent-pink h-4 w-4"
             onChange={() => onSharingGroupSelect(undefined)}
             checked={selectedGroupId === undefined}
+            disabled={isPending}
           />
           <p className="@max-md:text-[13px]">全員に公開</p>
         </label>

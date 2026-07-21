@@ -32,6 +32,7 @@ export const TagAddForm = () => {
           type="text"
           value={tagName}
           onChange={(e) => setTagName(e.target.value)}
+          disabled={isPending}
         />
 
         <Button className="max-w-20 @max-md:max-h-8" onClick={addTagAction} disabled={isPending}>

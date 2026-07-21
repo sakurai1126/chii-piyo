@@ -16,7 +16,7 @@ type Props = {
 };
 
 export const DisplayDebug = ({ currentUser }: Props) => {
-  const { isDarkMode, darkModeChange, isEasyMode, easyModeChange } = useChangeSettings({
+  const { isDarkMode, darkModeChange, isEasyMode, easyModeChange, isPending } = useChangeSettings({
     currentUser,
   });
 
@@ -43,6 +43,7 @@ export const DisplayDebug = ({ currentUser }: Props) => {
                 className="peer hidden"
                 checked={isDarkMode}
                 onChange={darkModeChange}
+                disabled={isPending}
               />
               <span className="peer-checked:bg-accent-orange bg-line-gray absolute inset-0 rounded-full transition-colors"></span>
               <span className="bg-light-dark absolute top-0.75 left-0.75 h-5.5 w-5.5 scale-90 rounded-full transition-transform group-hover:scale-100 peer-checked:translate-x-8.75 @max-md:top-0.5 @max-md:h-5 @max-md:w-5 @max-md:peer-checked:translate-x-6.5"></span>
@@ -60,6 +61,7 @@ export const DisplayDebug = ({ currentUser }: Props) => {
                 className="peer hidden"
                 checked={isEasyMode}
                 onChange={easyModeChange}
+                disabled={isPending}
               />
               <span className="peer-checked:bg-accent-orange bg-line-gray absolute inset-0 rounded-full transition-colors"></span>
               <span className="bg-light-dark absolute top-0.75 left-0.75 h-5.5 w-5.5 scale-90 rounded-full transition-transform group-hover:scale-100 peer-checked:translate-x-8.75 @max-md:top-0.5 @max-md:h-5 @max-md:w-5 @max-md:peer-checked:translate-x-6.5"></span>
@@ -73,6 +75,7 @@ export const DisplayDebug = ({ currentUser }: Props) => {
               type="button"
               onClick={logoutAction}
               className="text-black-text border-line-gray rounded-sm border bg-white px-3 py-2 text-xs"
+              disabled={isPending}
             >
               ログアウト
             </button>
@@ -81,6 +84,7 @@ export const DisplayDebug = ({ currentUser }: Props) => {
             type="button"
             onClick={() => setIsOpen(false)}
             className="mx-auto mt-3 block w-fit text-sm"
+            disabled={isPending}
           >
             close
           </button>
@@ -90,6 +94,7 @@ export const DisplayDebug = ({ currentUser }: Props) => {
           type="button"
           onClick={() => setIsOpen(true)}
           className="mx-auto block w-fit text-sm"
+          disabled={isPending}
         >
           <Image src={icon} alt="" width={20} height={20} className="dark:hidden" />
           <Image src={whiteIcon} alt="" width={20} height={20} className="hidden dark:block" />

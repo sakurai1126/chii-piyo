@@ -28,6 +28,7 @@ export const Profile = ({ isEasy, currentUser }: Props) => {
     newName,
     setNewName,
     nameChange,
+    isPending,
   } = useChangeSettings({ currentUser });
 
   return (
@@ -77,6 +78,7 @@ export const Profile = ({ isEasy, currentUser }: Props) => {
                 isEasy ? "text-[13px] font-medium" : "text-xs @max-md:text-[10px]",
               )}
               onClick={() => iconInputRef.current?.click()}
+              disabled={isPending}
             >
               アイコンを編集する
             </button>
@@ -94,6 +96,7 @@ export const Profile = ({ isEasy, currentUser }: Props) => {
                     isEasy ? "mt-2 w-fit text-[13px]" : "@max-md:text-[10px]",
                   )}
                   onClick={() => setIsNameChangeMode(true)}
+                  disabled={isPending}
                 >
                   編集する
                 </button>
@@ -108,12 +111,19 @@ export const Profile = ({ isEasy, currentUser }: Props) => {
                     className="border-line-gray focus:outline-brown-light bg-light-dark mt-2 block h-10 w-full max-w-90 rounded-sm border px-2.5 dark:outline-none"
                     value={newName}
                     onChange={(e) => setNewName(e.target.value)}
+                    disabled={isPending}
                   />
                   <div className="mt-3 flex gap-3">
-                    <Button variant="cancel" onClick={() => setIsNameChangeMode(false)}>
+                    <Button
+                      variant="cancel"
+                      onClick={() => setIsNameChangeMode(false)}
+                      disabled={isPending}
+                    >
                       キャンセル
                     </Button>
-                    <Button onClick={nameChange}>変更する</Button>
+                    <Button onClick={nameChange} disabled={isPending}>
+                      変更する
+                    </Button>
                   </div>
                 </div>
               )}
@@ -162,13 +172,14 @@ export const Profile = ({ isEasy, currentUser }: Props) => {
               className="text-sm file:hidden"
               ref={iconInputRef}
               onChange={(e) => iconEdit(e.target.files?.[0])}
+              disabled={isPending}
             />
           </div>
           <div className="mt-5 flex gap-4">
-            <Button variant="cancel" onClick={cancelIconEdit}>
+            <Button variant="cancel" onClick={cancelIconEdit} disabled={isPending}>
               キャンセル
             </Button>
-            <Button className="block" onClick={iconUpload}>
+            <Button className="block" onClick={iconUpload} disabled={isPending}>
               送信する
             </Button>
           </div>
