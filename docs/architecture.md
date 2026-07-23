@@ -158,3 +158,5 @@ graph TB
 - [画面設計書](./screen-spec.md)
 - [API仕様](./openapi.yaml)
 - [シーケンス図](./sequence.md)
+- [テスト設計書](./test-plan.md)
+- [テストケース表](./test-cases/index.md)

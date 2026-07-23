@@ -46,3 +46,5 @@
 - [ER図](./er-diagram.md)
 - [API仕様](./openapi.yaml)
 - [シーケンス図](./sequence.md)
+- [テスト設計書](./test-plan.md)
+- [テストケース表](./test-cases/index.md)

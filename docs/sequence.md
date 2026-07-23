@@ -336,3 +336,5 @@ sequenceDiagram
 - [ER図](./er-diagram.md)
 - [画面設計書](./screen-spec.md)
 - [API仕様](./openapi.yaml)
+- [テスト設計書](./test-plan.md)
+- [テストケース表](./test-cases/index.md)
