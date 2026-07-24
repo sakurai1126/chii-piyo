@@ -1,0 +1,24 @@
+spring:
+  # Flywayの設定
+  # テスト用PostgreSQLコンテナ起動時に、自動で全マイグレーションを流す
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  # セキュリティ環境変数をテスト用にダミーで設定する
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://cognito-idp.ap-northeast-1.amazonaws.com/dummy
+          jwk-set-uri: https://cognito-idp.ap-northeast-1.amazonaws.com/dummy/.well-known/jwks.json
+
+# AWS環境変数をテスト用にダミーで設定する
+aws:
+  cognito:
+    audience: dummy-client-id
+  s3:
+    region: ap-northeast-1
+    bucket: dummy-bucket
+    credentials:
+      access-key: dummy-access-key
+      secret-key: dummy-secret-key

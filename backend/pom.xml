@@ -45,6 +45,8 @@
         <mybatis-dynamic-sql.version>2.0.0</mybatis-dynamic-sql.version>
         <software.amazon.awssdk.version>2.48.0</software.amazon.awssdk.version>
         <thumbnailator.version>0.4.21</thumbnailator.version>
+        <org.testcontainers.version>1.21.4</org.testcontainers.version>
+        <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
     </properties>
 
     <dependencies>
@@ -134,7 +136,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- OpenAPI Generatorに必要な依存 -->
+        <!-- OpenAPI Generator関係 -->
         <dependency>
             <groupId>org.openapitools</groupId>
             <artifactId>jackson-databind-nullable</artifactId>
@@ -150,7 +152,7 @@
             <artifactId>jakarta.validation-api</artifactId>
         </dependency>
 
-        <!-- Mybatis Generatorに必要な依存 -->
+        <!-- Mybatis Generator関係 -->
         <dependency>
             <groupId>org.mybatis.dynamic-sql</groupId>
             <artifactId>mybatis-dynamic-sql</artifactId>
@@ -181,6 +183,35 @@
             <artifactId>thumbnailator</artifactId>
             <version>${thumbnailator.version}</version>
         </dependency>
+
+        <!-- Spring Boot標準テスト一式 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- PostgreSQLコンテナ起動用 -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+            <version>${org.testcontainers.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>test</scope>
+            <version>${org.testcontainers.version}</version>
+        </dependency>
+
+        <!-- testcontainers 設定簡略化 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-testcontainers</artifactId>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -247,7 +278,8 @@
                         </goals>
                         <configuration>
                             <!-- openapi.yamlのパス -->
-                            <inputSpec>${project.basedir}/src/main/resources/openapi.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/src/main/resources/openapi.yaml
+                            </inputSpec>
                             <!-- SpringBoot用のコード生成の指定 -->
                             <generatorName>spring</generatorName>
                             <!-- 出力先ディレクトリ -->
@@ -298,7 +330,8 @@
                 <version>${mybatis-generator-maven-plugin.version}</version>
                 <configuration>
                     <!-- generatorConfig.xml の配置場所 -->
-                    <configurationFile>${project.basedir}/src/main/resources/generatorConfig.xml</configurationFile>
+                    <configurationFile>${project.basedir}/src/main/resources/generatorConfig.xml
+                    </configurationFile>
                     <!-- 既存ファイルを上書きするか -->
                     <overwrite>true</overwrite>
                 </configuration>
@@ -310,6 +343,37 @@
                         <version>${postgresql.version}</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+
+            <!-- カバレッジ計測プラグイン -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- カバレッジ対象から除外する自動生成コード・設定クラス等の対象 -->
+                    <excludes>
+                        <exclude>link/s_repo/chii_piyo/controller/gen/**</exclude>
+                        <exclude>link/s_repo/chii_piyo/model/gen/**</exclude>
+                        <exclude>link/s_repo/chii_piyo/repository/gen/**</exclude>
+                        <exclude>**/*Config.class</exclude>
+                        <exclude>**/*Application.class</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
         </plugins>
     </build>

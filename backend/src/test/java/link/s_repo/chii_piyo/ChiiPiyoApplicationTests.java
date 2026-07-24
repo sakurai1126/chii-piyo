@@ -1,10 +1,8 @@
 package link.s_repo.chii_piyo;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class ChiiPiyoApplicationTests {
+class ChiiPiyoApplicationTests extends IntegrationTestBase {
 
 	@Test
 	void contextLoads() {
