@@ -61,3 +61,5 @@ frontend/src/lib/api-client/gen/docs/
 frontend/src/lib/api-client/gen/.openapi-generator/
 
 config.properties
+
+.obsidian
