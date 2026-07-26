@@ -1,6 +1,10 @@
 package link.s_repo.chii_piyo.controller;
 
 import link.s_repo.chii_piyo.controller.converter.TagConverter;
+import link.s_repo.chii_piyo.exception.ResourceNotFoundException;
+import link.s_repo.chii_piyo.model.gen.Media;
+import link.s_repo.chii_piyo.model.gen.MediaTagsUpdateRequestDto;
+import link.s_repo.chii_piyo.model.gen.TagRequestDto;
 import link.s_repo.chii_piyo.model.gen.TagResponseDto;
 import link.s_repo.chii_piyo.model.gen.Tags;
 import link.s_repo.chii_piyo.service.MediaService;
@@ -14,8 +18,12 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import java.util.List;
 import java.util.Map;
 
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,12 +39,12 @@ public class TagControllerTest extends BaseControllerTest {
 
     @Test
     @WithMockUser
-    @DisplayName("GET /tags - タグ一覧を取得できるかのテスト")
+    @DisplayName("TagCtrl-01: タグ一覧を取得できること")
     void getTags_success() throws Exception {
         // テスト用のダミーデータを生成
         Tags tag = new Tags();
         tag.setId(1L);
-        tag.setName("おでかけ");
+        tag.setName("お散歩");
 
         // サービスから返されるデータにダミーを設定
         when(tagService.getTags()).thenReturn(List.of(tag));
@@ -45,7 +53,7 @@ public class TagControllerTest extends BaseControllerTest {
         // コンバーターで変換された後に返されるDTOを設定
         TagResponseDto expectedDto = new TagResponseDto();
         expectedDto.setId(1L);
-        expectedDto.setName("おでかけ");
+        expectedDto.setName("お散歩");
         expectedDto.setMediaCount(3L);
 
         when(tagConverter.toTagResponseDto(tag, 3L)).thenReturn(expectedDto);
@@ -56,7 +64,171 @@ public class TagControllerTest extends BaseControllerTest {
             .andExpect(status().isOk())
             // 配列の1件目の各プロパティが期待通りか検証
             .andExpect(jsonPath("$[0].id").value(1L))
-            .andExpect(jsonPath("$[0].name").value("おでかけ"))
+            .andExpect(jsonPath("$[0].name").value("お散歩"))
             .andExpect(jsonPath("$[0].mediaCount").value(3L));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    @DisplayName("TagCtrl-02: タグを作成できること")
+    void createTag_success() throws Exception {
+        // リクエストボディの作成
+        TagRequestDto request = new TagRequestDto();
+        request.setName("お散歩");
+
+        // POSTリクエストの送信
+        mockMvc.perform(post("/tags")
+                .contentType("application/json;charset=UTF-8")
+                .content(objectMapper.writeValueAsString(request)))
+            // ステータスコード 201 Createdであることを確認
+            .andExpect(status().isCreated());
+
+        // tagService.createTagが呼ばれていることを検証
+        verify(tagService).createTag("お散歩");
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("TagCtrl-03: 一般ユーザーで作成を試みた場合アクセスが拒否されること")
+    void createTag_forbidden() throws Exception {
+        // リクエストボディの作成
+        TagRequestDto request = new TagRequestDto();
+        request.setName("お散歩");
+
+        // POSTリクエストの送信
+        mockMvc.perform(post("/tags")
+                .contentType("application/json;charset=UTF-8")
+                .content(objectMapper.writeValueAsString(request)))
+            // ステータスコード 403 Forbiddenであることを確認
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    @DisplayName("TagCtrl-04: タグを更新できること")
+    void updateTag_success() throws Exception {
+        // リクエストボディの作成
+        TagRequestDto request = new TagRequestDto();
+        request.setName("お散歩");
+
+        // PUTリクエストの送信
+        mockMvc.perform(put("/tags/1")
+                .contentType("application/json;charset=UTF-8")
+                .content(objectMapper.writeValueAsString(request)))
+            // ステータスコード 204 No Contentであることを確認
+            .andExpect(status().isNoContent());
+
+        // tagService.updateTagが呼ばれていることを検証
+        verify(tagService).updateTag(1L, "お散歩");
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("TagCtrl-05: 一般ユーザーで更新を試みた場合アクセスが拒否されること")
+    void updateTag_forbidden() throws Exception {
+        // リクエストボディの作成
+        TagRequestDto request = new TagRequestDto();
+        request.setName("お散歩");
+
+        // PUTリクエストの送信
+        mockMvc.perform(put("/tags/1")
+                .contentType("application/json;charset=UTF-8")
+                .content(objectMapper.writeValueAsString(request)))
+            // ステータスコード 403 Forbiddenであることを確認
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    @DisplayName("TagCtrl-06: 空の更新内容で更新した場合拒否されること")
+    void updateTag_emptyName() throws Exception {
+        // リクエストボディの作成
+        TagRequestDto request = new TagRequestDto();
+
+        // PUTリクエストの送信
+        mockMvc.perform(put("/tags/1")
+                .contentType("application/json;charset=UTF-8")
+                .content(objectMapper.writeValueAsString(request)))
+            // ステータスコード 400 Bad Requestであることを確認
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    @DisplayName("TagCtrl-07: メディアのタグを一括更新できること")
+    void updateMediaTags_success() throws Exception {
+        // リクエストボディの作成
+        MediaTagsUpdateRequestDto request = new MediaTagsUpdateRequestDto();
+        request.setTagIds(List.of(1L, 2L));
+
+        // サービスから返されるデータにダミーを設定
+        when(mediaService.getMedia(1L)).thenReturn(new Media());
+
+        // PUTリクエストの送信
+        mockMvc.perform(put("/media/1/tags")
+                .contentType("application/json;charset=UTF-8")
+                .content(objectMapper.writeValueAsString(request)))
+            // ステータスコード 204 No Contentであることを確認
+            .andExpect(status().isNoContent());
+
+        // tagService.syncMediaTagsが呼ばれていることを検証
+        verify(tagService).syncMediaTags(1L, List.of(1L, 2L));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    @DisplayName("TagCtrl-08: 存在しないメディアIDを渡した場合拒否されること")
+    void updateMediaTags_notFound() throws Exception {
+        // リクエストボディの作成
+        MediaTagsUpdateRequestDto request = new MediaTagsUpdateRequestDto();
+
+        // mediaService.getMedia(1L) が呼ばれたときに ResourceNotFoundException をスローするように設定
+        when(mediaService.getMedia(1L))
+            .thenThrow(new ResourceNotFoundException("メディアが見つかりません mediaId=1"));
+
+        // PUTリクエストの送信
+        mockMvc.perform(put("/media/1/tags")
+                .contentType("application/json;charset=UTF-8")
+                .content(objectMapper.writeValueAsString(request)))
+            // ステータスコード 404 Not Foundであることを確認
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("TagCtrl-09: 一般ユーザーでメディアタグ更新を試みた場合アクセスが拒否されること")
+    void updateMediaTags_forbidden() throws Exception {
+        // リクエストボディの作成
+        MediaTagsUpdateRequestDto request = new MediaTagsUpdateRequestDto();
+
+        // PUTリクエストの送信
+        mockMvc.perform(put("/media/1/tags")
+                .contentType("application/json;charset=UTF-8")
+                .content(objectMapper.writeValueAsString(request)))
+            // ステータスコード 403 Forbiddenであることを確認
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    @DisplayName("TagCtrl-10: タグを削除できること")
+    void deleteTag_success() throws Exception {
+        // DELETEリクエストの送信
+        mockMvc.perform(delete("/tags/1"))
+            // ステータスコード 204 No Contentであることを確認
+            .andExpect(status().isNoContent());
+
+        // tagService.deleteTagが呼ばれていることを検証
+        verify(tagService).deleteTag(1L);
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("TagCtrl-11: 一般ユーザーで削除を試みた場合アクセスが拒否されること")
+    void deleteTag_forbidden() throws Exception {
+        // DELETEリクエストの送信
+        mockMvc.perform(delete("/tags/1"))
+            // ステータスコード 403 Forbiddenであることを確認
+            .andExpect(status().isForbidden());
     }
 }
