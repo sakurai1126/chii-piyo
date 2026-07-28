@@ -61,7 +61,7 @@ public class AlbumController implements AlbumManagementApi {
     public ResponseEntity<Void> deleteAlbumMedia(
         String xRequestedWith, Long id, List<Long> mediaIds) {
 
-        // サービス層でアルバムにメディアを追加する
+        // サービス層でアルバムからメディアを削除する
         albumService.deleteAlbumMedia(id, mediaIds);
 
         // 204 No Contentを返す
