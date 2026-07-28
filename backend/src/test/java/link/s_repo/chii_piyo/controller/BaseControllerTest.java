@@ -2,6 +2,7 @@ package link.s_repo.chii_piyo.controller;
 
 import link.s_repo.chii_piyo.component.UserSyncComponent;
 import link.s_repo.chii_piyo.config.TestSecurityConfig;
+import link.s_repo.chii_piyo.security.CurrentUserProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -31,4 +32,7 @@ public abstract class BaseControllerTest {
     // コントローラー共通で使用するモック
     @MockitoBean
     protected UserSyncComponent userSyncComponent;
+
+    @MockitoBean
+    protected CurrentUserProvider currentUserProvider;
 }

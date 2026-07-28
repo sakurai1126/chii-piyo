@@ -10,7 +10,7 @@
 | MediaCtrl-02 | getMediaList | 境界 | offset+取得件数が総件数と一致 | hasNextがfalseになる |
 | MediaCtrl-03 | getMediaList | 境界 | offset+取得件数が総件数未満 | hasNextがtrueになる |
 | MediaCtrl-04 | getMediaList | 正常 | 現ユーザーがお気に入り済みのメディアを含む | 対象のisFavoriteがtrueで返る |
-| MediaCtrl-05 | getMediaList | 境界 | サムネイルS3キーがnullのメディアを含む | 該当メディアのサムネイルURLがnullで返る |
+| MediaCtrl-05 | getMediaList | 正常 | サムネイルS3キーがnullのメディアを含む | 該当メディアのサムネイルURLがnullで返る |
 | MediaCtrl-06 | getMedia | 正常 | 有効なメディアIDを渡す | 200とメディア詳細・前後ナビゲーションが返る |
 | MediaCtrl-07 | getMedia | 異常 | 存在しないメディアIDを渡す | 404が返る |
 | MediaCtrl-08 | createMedia | 正常 | 有効なアップロードリクエストを渡す | 201とメディアID・署名付きURLが返る |
