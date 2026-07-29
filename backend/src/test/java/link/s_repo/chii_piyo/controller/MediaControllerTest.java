@@ -536,7 +536,6 @@ public class MediaControllerTest extends BaseControllerTest {
             verify(mediaService).updateMediaBatch(eq(request));
         }
 
-        // MediaCtrl-13	updateMediaBatch	異常	一般ユーザーで一括更新	403が返る
         @Test
         @WithMockUser
         @DisplayName("MediaCtrl-13: 一般ユーザーでメディアメタデータの更新を試みた場合アクセスが拒否されること")
