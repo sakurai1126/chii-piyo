@@ -139,9 +139,9 @@
 | TagCtrl-10 | deleteTag | 正常 | 有効なタグIDを渡す | 204が返る |
 | TagCtrl-11 | deleteTag | 異常 | 一般ユーザーで削除 | 403が返る |
 
-## はじめて・ことば記録管理
+## はじめて記録管理
 
-対象ファイル：FirstRecordController.java / WordRecordController.java
+対象ファイル：FirstRecordController.java
 
 | ケースID | 対象メソッド | 観点 | 条件 | 期待結果 |
 | ------------ | ----------------- | --- | --------------- | --------------- |
@@ -152,6 +152,13 @@
 | FirstCtrl-05 | updateFirstRecord | 異常 | 一般ユーザーで更新 | 403が返る |
 | FirstCtrl-06 | deleteFirstRecord | 正常 | 有効なIDを渡す | 204が返る |
 | FirstCtrl-07 | deleteFirstRecord | 異常 | 一般ユーザーで削除 | 403が返る |
+
+## ことば記録管理
+
+対象ファイル：WordRecordController.java
+
+| ケースID | 対象メソッド | 観点 | 条件 | 期待結果 |
+| ----------- | ---------------- | --- | --------------- | -------------- |
 | WordCtrl-01 | getWordRecords | 正常 | 呼び出す | 200とことば記録一覧が返る |
 | WordCtrl-02 | createWordRecord | 正常 | 管理者で有効な記録データを渡す | 201が返る |
 | WordCtrl-03 | createWordRecord | 異常 | 一般ユーザーで作成 | 403が返る |

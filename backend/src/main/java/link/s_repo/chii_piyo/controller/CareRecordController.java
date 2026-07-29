@@ -97,7 +97,7 @@ public class CareRecordController implements CareRecordManagementApi {
     }
 
     /**
-     * PUT /care-records/{id}<br>
+     * PATCH /care-records/{id}<br>
      * 育児記録を更新
      *
      * @param xRequestedWith CSRF防御用カスタムリクエストヘッダー
