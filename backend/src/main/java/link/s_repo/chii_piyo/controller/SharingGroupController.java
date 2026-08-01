@@ -55,6 +55,7 @@ public class SharingGroupController implements SharingGroupManagementApi {
      * @return 204ステータス
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteSharingGroup(String xRequestedWith, Long id) {
         // サービス層で削除処理
         sharingGroupService.deleteSharingGroup(id);
