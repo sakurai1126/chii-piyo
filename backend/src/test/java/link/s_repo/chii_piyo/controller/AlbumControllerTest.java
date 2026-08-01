@@ -61,11 +61,11 @@ public class AlbumControllerTest extends BaseControllerTest {
                 mockAlbumId1, new AlbumService.MediaDataResult(0, 0, Collections.emptyList()),
                 mockAlbumId2, new AlbumService.MediaDataResult(0, 0, Collections.emptyList()));
 
-            // アルバム取得のモック化
+            // アルバム取得のスタブ化
             when(albumService.getAlbums()).thenReturn(List.of(album1, album2));
-            // メディア取得のモック化
+            // メディア取得のスタブ化
             when(albumService.getMediaDataByAlbumIds(albumIds)).thenReturn(mediaDataMap);
-            // レスポンス取得のモック化
+            // レスポンス取得のスタブ化
             when(albumConverter.toAlbumResponseDto(any(), any())).thenReturn(response);
 
             // GETリクエストの送信
@@ -107,11 +107,11 @@ public class AlbumControllerTest extends BaseControllerTest {
                 mockAlbumId, new AlbumService.MediaDataResult(0, 0, Collections.emptyList())
             );
 
-            // アルバム取得のモック化（不足していたため追加）
+            // アルバム取得のスタブ化（不足していたため追加）
             when(albumService.getAlbumById(mockAlbumId)).thenReturn(album);
-            // メディア取得のモック化
+            // メディア取得のスタブ化
             when(albumService.getMediaDataByAlbumIds(albumIds)).thenReturn(mediaDataMap);
-            // レスポンス取得のモック化
+            // レスポンス取得のスタブ化
             when(albumConverter.toAlbumResponseDto(any(), any())).thenReturn(response);
 
             // GETリクエストの送信

@@ -66,6 +66,8 @@ class AlbumServiceTest {
             Long mockAlbumId = 1L;
             Albums mockAlbum = new Albums();
             mockAlbum.setId(mockAlbumId);
+
+            // 取得処理のスタブ化
             when(albumRepository.findAll()).thenReturn(List.of(mockAlbum));
 
             // 対象を呼び出して結果を取得
@@ -88,7 +90,7 @@ class AlbumServiceTest {
             Albums mockAlbum = new Albums();
             mockAlbum.setId(1L);
 
-            // 取得処理のモック化
+            // 取得処理のスタブ化
             when(albumRepository.findById(requestId)).thenReturn(Optional.of(mockAlbum));
 
             // 対象を呼び出して結果を取得
@@ -104,7 +106,7 @@ class AlbumServiceTest {
             // リクエストデータの作成
             Long requestId = 1L;
 
-            // 取得処理のモック化
+            // 取得処理のスタブ化
             when(albumRepository.findById(requestId)).thenReturn(Optional.empty());
 
             // 例外が吐かれるか確認
@@ -141,7 +143,7 @@ class AlbumServiceTest {
                 createMedia(3L, mockAlbumId, "VIDEO", "thumbnail-3.png")
             );
 
-            // 各処理のモック化
+            // 各処理のスタブ化
             when(currentUserProvider.getUserId()).thenReturn(mockCurrentUserId);
             when(mediaRepository.findByAlbumIds(List.of(mockAlbumId), mockCurrentUserId))
                 .thenReturn(mockMediaList);
@@ -170,7 +172,7 @@ class AlbumServiceTest {
                 createMedia(4L, mockAlbumId2, "VIDEO", "thumbnail-4.png")
             );
 
-            // 各処理のモック化
+            // 各処理のスタブ化
             when(currentUserProvider.getUserId()).thenReturn(mockCurrentUserId);
             when(mediaRepository.findByAlbumIds(List.of(mockAlbumId1, mockAlbumId2), mockCurrentUserId))
                 .thenReturn(mockMediaList);
@@ -186,8 +188,6 @@ class AlbumServiceTest {
             // 動画のカウント数を検証
             assertThat(result.get(mockAlbumId1).videoCount()).isEqualTo(0);
             assertThat(result.get(mockAlbumId2).videoCount()).isEqualTo(1);
-
-
         }
 
         @Test
@@ -215,7 +215,7 @@ class AlbumServiceTest {
                 createMedia(4L, mockAlbumId, "PHOTO", "thumbnail-4.png")
             );
 
-            // 各処理のモック化
+            // 各処理のスタブ化
             when(currentUserProvider.getUserId()).thenReturn(mockCurrentUserId);
             when(mediaRepository.findByAlbumIds(List.of(mockAlbumId), mockCurrentUserId)).thenReturn(mediaList);
             when(s3StorageManager.generateDownloadPresignedUrl(any(), any()))
@@ -241,6 +241,7 @@ class AlbumServiceTest {
                 createMedia(2L, mockAlbumId, "PHOTO", "thumbnail.png")
             );
 
+            // 各処理のスタブ化
             when(currentUserProvider.getUserId()).thenReturn(mockCurrentUserId);
             when(mediaRepository.findByAlbumIds(any(), any())).thenReturn(mediaList);
             when(s3StorageManager.generateDownloadPresignedUrl(any(), any()))
@@ -272,7 +273,7 @@ class AlbumServiceTest {
             Albums mockAlbum = new Albums();
             mockAlbum.setId(requestId);
 
-            // 取得処理のモック化
+            // 取得処理のスタブ化
             when(albumRepository.findById(requestId)).thenReturn(Optional.of(mockAlbum));
 
             // 対象の実行
@@ -296,7 +297,7 @@ class AlbumServiceTest {
             Albums mockAlbum = new Albums();
             mockAlbum.setId(1L);
 
-            // 取得処理のモック化
+            // 取得処理のスタブ化
             when(albumRepository.findById(requestId)).thenReturn(Optional.of(mockAlbum));
 
             // 対象の実行
@@ -325,7 +326,7 @@ class AlbumServiceTest {
             mockAlbum.setId(1L);
             Media mockMedia = new Media();
 
-            // 取得処理のモック化
+            // 取得処理のスタブ化
             when(albumRepository.findById(requestId)).thenReturn(Optional.of(mockAlbum));
             when(mediaRepository.findByIds(eq(requestMediaIds), any())).thenReturn(List.of(mockMedia));
 
@@ -357,7 +358,7 @@ class AlbumServiceTest {
             Albums mockAlbum = new Albums();
             mockAlbum.setId(1L);
 
-            // 取得処理のモック化
+            // 取得処理のスタブ化
             when(albumRepository.findById(requestId)).thenReturn(Optional.of(mockAlbum));
             when(mediaRepository.findByIds(eq(requestMediaIds), any())).thenReturn(List.of());
 
@@ -388,7 +389,7 @@ class AlbumServiceTest {
             Media mockMedia = new Media();
             mockMedia.setAlbumId(requestId);
 
-            // 取得処理のモック化
+            // 取得処理のスタブ化
             when(albumRepository.findById(requestId)).thenReturn(Optional.of(mockAlbum));
             when(mediaRepository.findByIds(eq(requestMediaIds), any())).thenReturn(List.of(mockMedia));
 
@@ -420,7 +421,7 @@ class AlbumServiceTest {
             Albums mockAlbum = new Albums();
             mockAlbum.setId(requestId);
 
-            // 取得処理のモック化
+            // 取得処理のスタブ化
             when(albumRepository.findById(requestId)).thenReturn(Optional.of(mockAlbum));
             when(mediaRepository.findByIds(eq(requestMediaIds), any())).thenReturn(List.of());
 
@@ -443,7 +444,7 @@ class AlbumServiceTest {
             mockAlbum.setId(requestId);
             Media mockMedia = new Media();
 
-            // 取得処理のモック化
+            // 取得処理のスタブ化
             when(albumRepository.findById(requestId)).thenReturn(Optional.of(mockAlbum));
             when(mediaRepository.findByIds(eq(requestMediaIds), any())).thenReturn(List.of(mockMedia));
 

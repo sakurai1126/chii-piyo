@@ -107,33 +107,33 @@ public class MediaControllerTest extends BaseControllerTest {
             Long mockMediaId, Long mockCommentCount,
             MediaResponseDto response, MediaListResponseDto responseList) {
 
-            // ログインユーザーID取得のモック化
+            // ログインユーザーID取得のスタブ化
             when(currentUserProvider.getUserId()).thenReturn(mockCurrentUserId);
 
-            // 総件数取得のモック化
+            // 総件数取得のスタブ化
             when(mediaService.countMedia(any())).thenReturn(mockTotalCount);
 
-            // メディア取得処理のモック化
+            // メディア取得処理のスタブ化
             when(mediaService.getMediaList(any())).thenReturn(List.of(media));
 
-            // お気に入り取得処理のモック化
+            // お気に入り取得処理のスタブ化
             when(favoriteService.getFavoriteList(any())).thenReturn(List.of(favorite));
 
-            // メディアコメントのIDリスト取得処理のモック化
+            // メディアコメントのIDリスト取得処理のスタブ化
             when(mediaCommentService.getCommentCountsByMediaIds(any()))
                 .thenReturn(Map.of(mockMediaId, mockCommentCount));
 
-            // S3ダウンロード用URL生成処理のモック化
+            // S3ダウンロード用URL生成処理のスタブ化
             when(s3StorageManager.generateDownloadPresignedUrl(any(), any()))
                 .thenReturn(URI.create("https://example.com/image.jpg"));
 
-            // 単体のレスポンス変換処理をモック化
+            // 単体のレスポンス変換処理のスタブ化
             when(mediaConverter.toMediaResponseDto(
                 eq(media), isNull(), isNull(), any(), anyBoolean(), eq(mockCommentCount),
                 isNull(), isNull(), isNull(), isNull(), any()
             )).thenReturn(response);
 
-            // 一覧のレスポンス変換処理をモック化
+            // 一覧のレスポンス変換処理のスタブ化
             when(mediaListConverter.toMediaListResponseDto(
                 any(), eq(mockTotalCount), anyBoolean()
             )).thenReturn(responseList);
@@ -345,10 +345,10 @@ public class MediaControllerTest extends BaseControllerTest {
             // 単体レスポンスの作成
             MediaResponseDto response = new MediaResponseDto().id(mockMediaId);
 
-            // 画像取得処理のモック化
+            // 画像取得処理のスタブ化
             when(mediaService.getMedia(eq(mockMediaId))).thenReturn(mockMedia);
 
-            // 単体のレスポンス変換処理をモック化
+            // 単体のレスポンス変換処理のスタブ化
             when(mediaConverter.toMediaResponseDto(
                 eq(mockMedia), any(), any(), any(), anyBoolean(), isNull(), isNull(), isNull(), isNull(), isNull(), any()
             )).thenReturn(response);
@@ -412,10 +412,10 @@ public class MediaControllerTest extends BaseControllerTest {
                 .contentType("image/jpeg")
                 .fileSize(100L);
 
-            // ログインユーザーID取得のモック化
+            // ログインユーザーID取得のスタブ化
             when(currentUserProvider.getUserId()).thenReturn(mockCurrentUserId);
 
-            // サービス層処理のモック化
+            // サービス層処理のスタブ化
             when(mediaService.createMedia(any(), any(), any(), any(), any(), any(), any(), any(), any(), any()))
                 .thenReturn(mockResult);
 
@@ -424,7 +424,7 @@ public class MediaControllerTest extends BaseControllerTest {
                 .mediaId(mockMediaId)
                 .presignedUrl(mockPresignedUrl);
 
-            // コンバーター処理のモック化
+            // コンバーター処理のスタブ化
             when(mediaUploadConverter.toMediaUploadResponseDto(any(), any()))
                 .thenReturn(response);
 
@@ -463,7 +463,7 @@ public class MediaControllerTest extends BaseControllerTest {
             MediaUploadStatusRequestDto request = new MediaUploadStatusRequestDto()
                 .uploadStatus(MediaUploadStatusRequestDto.UploadStatusEnum.COMPLETED);
 
-            // ログインユーザーID取得のモック化
+            // ログインユーザーID取得のスタブ化
             when(currentUserProvider.getUserId()).thenReturn(mockCurrentUserId);
 
             // PATCHリクエストの送信
@@ -599,7 +599,7 @@ public class MediaControllerTest extends BaseControllerTest {
             List<Long> expectedMediaIds = List.of(1L, 2L);
             List<Media> mockMediaList = List.of(new Media(), new Media());
 
-            // メディア取得のモック化
+            // メディア取得のスタブ化
             when(mediaService.getMediabyIds(any())).thenReturn(mockMediaList);
 
             // DELETEリクエストの送信
@@ -622,7 +622,7 @@ public class MediaControllerTest extends BaseControllerTest {
             // モックデータを作成
             List<Media> mockMediaList = List.of();
 
-            // メディアの取得処理をモック化
+            // メディアの取得処理をスタブ化
             when(mediaService.getMediabyIds(any())).thenReturn(mockMediaList);
 
             // DELETEリクエストの送信

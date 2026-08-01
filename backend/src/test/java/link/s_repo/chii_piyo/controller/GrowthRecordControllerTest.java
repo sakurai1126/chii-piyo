@@ -54,11 +54,11 @@ public class GrowthRecordControllerTest extends BaseControllerTest {
             GrowthRecordResponseDto mockResponseDto = new GrowthRecordResponseDto()
                 .id(mockResponseItemId);
 
-            // 取得処理のモック化
+            // 取得処理のスタブ化
             when(growthRecordService.getGrowthRecords(mockStartDate, mockEndDate))
                 .thenReturn(List.of(mockRecord));
 
-            // コンバーター処理のモック化
+            // コンバーター処理のスタブ化
             when(growthRecordConverter.toGrowthRecordResponseDto(mockRecord))
                 .thenReturn(mockResponseDto);
 

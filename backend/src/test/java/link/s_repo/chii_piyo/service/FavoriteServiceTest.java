@@ -35,9 +35,9 @@ public class FavoriteServiceTest {
         Long mockCurrentUserId = 2L;
 
         @Test
-        @DisplayName("Fav-01:  お気に入り登録ができること")
+        @DisplayName("Fav-01: お気に入り登録ができること")
         void addFavorite_success() {
-            // 判定処理のモック化
+            // 判定処理のスタブ化
             when(favoriteRepository.countByMediaIdAndUserId(requestMediaId, mockCurrentUserId)).thenReturn(0L);
 
             // 対象の実行
@@ -50,7 +50,7 @@ public class FavoriteServiceTest {
         @Test
         @DisplayName("Fav-02: 追加済みの場合即時リターンされること")
         void addFavorite_alreadyFavorited() {
-            // 判定処理のモック化
+            // 判定処理のスタブ化
             when(favoriteRepository.countByMediaIdAndUserId(requestMediaId, mockCurrentUserId)).thenReturn(1L);
 
             // 対象の実行
@@ -89,7 +89,7 @@ public class FavoriteServiceTest {
         @Test
         @DisplayName("Fav-04: 追加済の判定ができること")
         void getCurrentUserIsFavorite_isFavorite() {
-            // 判定処理のモック化
+            // 判定処理のスタブ化
             when(favoriteRepository.countByMediaIdAndUserId(requestMediaId, mockCurrentUserId)).thenReturn(1L);
 
             // 対象を実行し結果を取得
@@ -102,7 +102,7 @@ public class FavoriteServiceTest {
         @Test
         @DisplayName("Fav-05: 未追加の判定ができること")
         void getCurrentUserIsFavorite_notFavorite() {
-            // 判定処理のモック化
+            // 判定処理のスタブ化
             when(favoriteRepository.countByMediaIdAndUserId(requestMediaId, mockCurrentUserId)).thenReturn(0L);
 
             // 対象を実行し結果を取得
@@ -127,7 +127,7 @@ public class FavoriteServiceTest {
             Favorites mockFavorites = new Favorites();
             mockFavorites.setUserId(mockUserId);
 
-            // 取得処理のモック化
+            // 取得処理のスタブ化
             when(favoriteRepository.findByMediaId(requestMediaId)).thenReturn(List.of(mockFavorites));
 
             // 対象を実行し結果を取得
@@ -152,7 +152,7 @@ public class FavoriteServiceTest {
             Favorites mockFavorites = new Favorites();
             mockFavorites.setId(mockFavoritesId);
 
-            // 取得処理のモック化
+            // 取得処理のスタブ化
             when(favoriteRepository.findByMediaIds(List.of(mockMediaId))).thenReturn(List.of(mockFavorites));
 
             // 対象を実行し結果を取得

@@ -59,11 +59,11 @@ public class WordRecordControllerTest extends BaseControllerTest {
             WordRecordResponseDto mockResponseDto = new WordRecordResponseDto()
                 .id(mockResponseItemId);
 
-            // 取得処理のモック化
+            // 取得処理のスタブ化
             when(wordRecordService.getWordRecords())
                 .thenReturn(List.of(mockItem));
 
-            // コンバーター処理のモック化
+            // コンバーター処理のスタブ化
             when(wordRecordConverter.toWordRecordResponseDto(any(), any()))
                 .thenReturn(mockResponseDto);
 

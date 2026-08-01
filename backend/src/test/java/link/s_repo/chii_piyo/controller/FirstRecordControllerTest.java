@@ -60,11 +60,11 @@ public class FirstRecordControllerTest extends BaseControllerTest {
             FirstRecordResponseDto mockResponseDto = new FirstRecordResponseDto()
                 .id(mockResponseItemId);
 
-            // 取得処理のモック化
+            // 取得処理のスタブ化
             when(firstRecordService.getFirstRecords())
                 .thenReturn(List.of(mockItem));
 
-            // コンバーター処理のモック化
+            // コンバーター処理のスタブ化
             when(firstRecordConverter.toFirstRecordResponseDto(any(), any()))
                 .thenReturn(mockResponseDto);
 

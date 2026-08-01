@@ -58,14 +58,14 @@ public class MediaCommentControllerTest extends BaseControllerTest {
             MediaComments comment = new MediaComments();
             comment.setUserId(mockUserId);
 
-            // コメント取得のモック化
+            // コメント取得のスタブ化
             when(mediaCommentService.getMediaComments(mockRequestId)).thenReturn(List.of(comment));
 
-            // レスポンス取得のモック化
+            // レスポンス取得のスタブ化
             when(mediaCommentConverter.toMediaCommentResponseDto(any(), any()))
                 .thenReturn(new MediaCommentResponseDto().id(mockResponseId));
 
-            // ユーザー情報取得のモック化
+            // ユーザー情報取得のスタブ化
             when(userService.getUsersById(List.of(mockUserId))).thenReturn(List.of(mockUser));
 
             // GETリクエストの送信
@@ -85,7 +85,7 @@ public class MediaCommentControllerTest extends BaseControllerTest {
         @WithMockUser
         @DisplayName("CommentCtrl-02: コメントのないメディアIDのリクエストに空リストを返すこと")
         void getMediaComments_emptyComment() throws Exception {
-            // コメント取得のモック化
+            // コメント取得のスタブ化
             when(mediaCommentService.getMediaComments(mockRequestId)).thenReturn(List.of());
 
             // GETリクエストの送信
@@ -112,7 +112,7 @@ public class MediaCommentControllerTest extends BaseControllerTest {
             MediaCommentRequestDto request = new MediaCommentRequestDto();
             request.setContent(mockContent);
 
-            // ユーザーID取得のモック化
+            // ユーザーID取得のスタブ化
             when(currentUserProvider.getUserId()).thenReturn(mockUserId);
 
             // POSTリクエストの送信
@@ -130,11 +130,11 @@ public class MediaCommentControllerTest extends BaseControllerTest {
         @WithMockUser
         @DisplayName("CommentCtrl-04: 存在しないメディアへのコメント追加リクエストに404を返すこと")
         void createMediaComment_notFound() throws Exception {
-            // ユーザーID取得のモック化
+            // ユーザーID取得のスタブ化
             MediaCommentRequestDto request = new MediaCommentRequestDto();
             request.setContent(mockContent);
 
-            // メディア取得処理のモック化
+            // メディア取得処理のスタブ化
             when(mediaService.getMedia(any()))
                 .thenThrow(new ResourceNotFoundException("メディアが見つかりません mediaId=" + mockRequestId));
 
@@ -162,10 +162,10 @@ public class MediaCommentControllerTest extends BaseControllerTest {
         @WithMockUser
         @DisplayName("CommentCtrl-05: コメントを削除できること")
         void deleteMediaComment_success() throws Exception {
-            // ユーザーID取得のモック化
+            // ユーザーID取得のスタブ化
             when(currentUserProvider.getUserId()).thenReturn(mockUserId);
 
-            // 取得処理のモック化
+            // 取得処理のスタブ化
             when(mediaCommentService.getMediaComment(mockRequestId)).thenReturn(mockComment);
 
             // DELETEリクエストの送信
