@@ -69,7 +69,7 @@ public class UserController implements UserManagementApi {
 
     /**
      * POST /users/me/icon<br>
-     * ログインユーザーのアイコン用情報を受信し、S3署名付きURLを取得
+     * ログインユーザーのアイコン用情報を受信し、S3アップロードURLを取得
      *
      * @param xRequestedWith       CSRF防御用カスタムリクエストヘッダー
      * @param userGenerateIconData 生成するユーザーのアイコン画像のファイル名情報
@@ -78,7 +78,7 @@ public class UserController implements UserManagementApi {
     @Override
     public ResponseEntity<UserGenerateIconDataResponseDto> generateIconPresignedUrl(
         String xRequestedWith, UserUpdateIconRequestDto userGenerateIconData) {
-        // サービス層で署名付きURLを発行
+        // サービス層でS3アップロードURLを発行
         UserService.CreateIconS3KeyResult result =
             userService.generateIconPresignedUrl(
                 userGenerateIconData.getFilename(),
@@ -103,7 +103,7 @@ public class UserController implements UserManagementApi {
      */
     @Override
     public ResponseEntity<List<UserResponseDto>> getUsers(String xRequestedWith) {
-        // サービス層でユーザー情報一覧とアイコンダウンロード用署名付きURLを取得する
+        // サービス層でユーザー情報一覧とアイコンダウンロード用URLを取得する
         List<UserService.UsersAndIconResult> usersAndIcon = userService.getUsersAndIcon();
 
         // 取得したデータからユーザーIDを抽出し手リスト化

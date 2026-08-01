@@ -51,7 +51,7 @@ public class FavoriteControllerTest extends BaseControllerTest {
         @WithMockUser
         @DisplayName("FavCtrl-02: 存在しないメディアIDでお気に入りに追加しようとした場合404が返ること")
         void addFavorite_notFound() throws Exception {
-            // ユーザーID取得処理のモック化
+            // メディア取得処理のモック化
             when(mediaService.getMedia(mockRequestId))
                 .thenThrow(new ResourceNotFoundException("メディアが見つかりません mediaId=" + mockRequestId));
 
