@@ -54,6 +54,7 @@
 | ShareCtrl-07 | updateSharingGroup | 異常 | 存在しないグループIDを渡す | 404が返る |
 | ShareCtrl-08 | updateSharingGroup | 異常 | 一般ユーザーで更新 | 403が返る |
 | ShareCtrl-09 | deleteSharingGroup | 正常 | 有効なグループIDを渡す | 204が返る |
+| ShareCtrl-10 | deleteSharingGroup | 異常 | 一般ユーザーで更新 | 403が返る |
 
 ## コメント管理
 
@@ -66,7 +67,6 @@
 | CommentCtrl-03 | createMediaComment | 正常 | メディアIDと本文を渡す | 201が返る |
 | CommentCtrl-04 | createMediaComment | 異常 | 存在しないメディアIDを渡す | 404が返る |
 | CommentCtrl-05 | deleteMediaComment | 正常 | 自身のコメントIDを渡す | 204が返る |
-| CommentCtrl-06 | deleteMediaComment | 異常 | 他ユーザーのコメントを削除 | 403が返る |
 
 ## ゴミ箱管理
 
