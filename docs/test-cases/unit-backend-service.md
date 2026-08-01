@@ -45,14 +45,20 @@
 | Album-02 | getAlbums | 正常 | 呼び出す | アルバム一覧が返る |
 | Album-03 | getAlbumById | 正常 | 有効なアルバムIDを渡す | 対象アルバムが返る |
 | Album-04 | getAlbumById | 異常 | 存在しないアルバムIDを渡す | ResourceNotFoundExceptionの例外がスローされる |
-| Album-05 | updateAlbum | 正常 | アルバムIDと新しいタイトルを渡す | タイトルが更新される |
-| Album-06 | deleteAlbum | 正常 | 有効なアルバムIDを渡す | 対象アルバムが削除される |
-| Album-07 | addAlbumMedia | 正常 | アルバムIDとメディアIDリストを渡す | メディアがアルバムに追加される |
-| Album-08 | addAlbumMedia | 異常 | 空のメディアIDリストを渡す | IllegalArgumentExceptionの例外がスローされる |
-| Album-09 | addAlbumMedia | 異常 | 存在しないメディアを含める | ResourceNotFoundExceptionの例外がスローされる |
-| Album-10 | deleteAlbumMedia | 正常 | アルバムに属するメディアを渡す | メディアがアルバムから削除される |
-| Album-11 | deleteAlbumMedia | 異常 | 空のメディアIDリストを渡す | IllegalArgumentExceptionの例外がスローされる |
-| Album-12 | deleteAlbumMedia | 異常 | アルバムに属さないメディアを含める | IllegalArgumentExceptionの例外がスローされる |
+| Album-05 | getMediaDataByAlbumIds | 正常 | PHOTOとVIDEOが混在するアルバムIDを渡す | アルバムごとに写真件数と動画件数が集計されて返る |
+| Album-06 | getMediaDataByAlbumIds | 正常 | 複数アルバムのメディアを渡す | アルバムIDごとに分けて集計される |
+| Album-07 | getMediaDataByAlbumIds | 境界 | 空のアルバムIDリストを渡す | 空のマップが返りリポジトリ層が呼ばれない |
+| Album-08 | getMediaDataByAlbumIds | 境界 | サムネイル付きメディアが4件以上あるアルバムを渡す | カバーURLは3件までで打ち切られる |
+| Album-09 | getMediaDataByAlbumIds | 境界 | サムネイルS3キーがnullのメディアを含む | 該当メディアのURLは追加されずURL生成も呼ばれない |
+| Album-10 | updateAlbum | 正常 | アルバムIDと新しいタイトルを渡す | タイトルが更新される |
+| Album-11 | deleteAlbum | 正常 | 有効なアルバムIDを渡す | 対象アルバムが削除される |
+| Album-12 | addAlbumMedia | 正常 | アルバムIDとメディアIDリストを渡す | メディアがアルバムに追加される |
+| Album-13 | addAlbumMedia | 異常 | 空のメディアIDリストを渡す | IllegalArgumentExceptionの例外がスローされる |
+| Album-14 | addAlbumMedia | 異常 | 存在しないメディアを含める | ResourceNotFoundExceptionの例外がスローされる |
+| Album-15 | deleteAlbumMedia | 正常 | アルバムに属するメディアを渡す | メディアがアルバムから削除される |
+| Album-16 | deleteAlbumMedia | 異常 | 空のメディアIDリストを渡す | IllegalArgumentExceptionの例外がスローされる |
+| Album-17 | deleteAlbumMedia | 異常 | 存在しないメディアを含める | ResourceNotFoundExceptionの例外がスローされる |
+| Album-18 | deleteAlbumMedia | 異常 | アルバムに属さないメディアを含める | IllegalArgumentExceptionの例外がスローされる |
 
 ## お気に入り
 
