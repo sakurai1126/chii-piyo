@@ -50,7 +50,7 @@ public class CareRecordControllerTest extends BaseControllerTest {
                 .id(mockResponseItemId);
             CareRecordListResponseDto response = new CareRecordListResponseDto(List.of(item));
 
-            // コンバーター処理のモック化
+            // コンバーター処理のスタブ化
             when(careRecordListConverter.toCareRecordListResponseDto(
                 any(), any(), any(), any(), any())).thenReturn(response);
 
@@ -104,7 +104,7 @@ public class CareRecordControllerTest extends BaseControllerTest {
             request.setRecordType(CareRecordRequestDto.RecordTypeEnum.MEAL);
             request.setRecordedAt(OffsetDateTime.now());
 
-            // ログインユーザーID取得のモック化
+            // ログインユーザーID取得のスタブ化
             when(currentUserProvider.getUserId()).thenReturn(mockCurrentUserId);
 
             // POSTリクエストの送信

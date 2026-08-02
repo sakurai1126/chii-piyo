@@ -40,32 +40,40 @@
 対象ファイル：AlbumService.java
 
 | ケースID | 対象メソッド | 観点 | 条件 | 期待結果 |
-| -------- | ---------------- | --- | ------------------- | ----------------------------------- |
+| -------- | ---------------------- | --- | ------------------------- | ----------------------------------- |
 | Album-01 | createAlbum | 正常 | タイトルを渡す | アルバムが作成される |
 | Album-02 | getAlbums | 正常 | 呼び出す | アルバム一覧が返る |
 | Album-03 | getAlbumById | 正常 | 有効なアルバムIDを渡す | 対象アルバムが返る |
 | Album-04 | getAlbumById | 異常 | 存在しないアルバムIDを渡す | ResourceNotFoundExceptionの例外がスローされる |
-| Album-05 | updateAlbum | 正常 | アルバムIDと新しいタイトルを渡す | タイトルが更新される |
-| Album-06 | deleteAlbum | 正常 | 有効なアルバムIDを渡す | 対象アルバムが削除される |
-| Album-07 | addAlbumMedia | 正常 | アルバムIDとメディアIDリストを渡す | メディアがアルバムに追加される |
-| Album-08 | addAlbumMedia | 異常 | 空のメディアIDリストを渡す | IllegalArgumentExceptionの例外がスローされる |
-| Album-09 | addAlbumMedia | 異常 | 存在しないメディアを含める | ResourceNotFoundExceptionの例外がスローされる |
-| Album-10 | deleteAlbumMedia | 正常 | アルバムに属するメディアを渡す | メディアがアルバムから削除される |
-| Album-11 | deleteAlbumMedia | 異常 | 空のメディアIDリストを渡す | IllegalArgumentExceptionの例外がスローされる |
-| Album-12 | deleteAlbumMedia | 異常 | アルバムに属さないメディアを含める | IllegalArgumentExceptionの例外がスローされる |
+| Album-05 | getMediaDataByAlbumIds | 正常 | PHOTOとVIDEOが混在するアルバムIDを渡す | アルバムごとに写真件数と動画件数が集計されて返る |
+| Album-06 | getMediaDataByAlbumIds | 正常 | 複数アルバムのメディアを渡す | アルバムIDごとに分けて集計される |
+| Album-07 | getMediaDataByAlbumIds | 境界 | 空のアルバムIDリストを渡す | 空のマップが返りリポジトリ層が呼ばれない |
+| Album-08 | getMediaDataByAlbumIds | 境界 | サムネイル付きメディアが4件以上あるアルバムを渡す | カバーURLは3件までで打ち切られる |
+| Album-09 | getMediaDataByAlbumIds | 境界 | サムネイルS3キーがnullのメディアを含む | 該当メディアのURLは追加されずURL生成も呼ばれない |
+| Album-10 | updateAlbum | 正常 | アルバムIDと新しいタイトルを渡す | タイトルが更新される |
+| Album-11 | deleteAlbum | 正常 | 有効なアルバムIDを渡す | 対象アルバムが削除される |
+| Album-12 | addAlbumMedia | 正常 | アルバムIDとメディアIDリストを渡す | メディアがアルバムに追加される |
+| Album-13 | addAlbumMedia | 異常 | 空のメディアIDリストを渡す | IllegalArgumentExceptionの例外がスローされる |
+| Album-14 | addAlbumMedia | 異常 | 存在しないメディアを含める | ResourceNotFoundExceptionの例外がスローされる |
+| Album-15 | deleteAlbumMedia | 正常 | アルバムに属するメディアを渡す | メディアがアルバムから削除される |
+| Album-16 | deleteAlbumMedia | 異常 | 空のメディアIDリストを渡す | IllegalArgumentExceptionの例外がスローされる |
+| Album-17 | deleteAlbumMedia | 異常 | 存在しないメディアを含める | ResourceNotFoundExceptionの例外がスローされる |
+| Album-18 | deleteAlbumMedia | 異常 | アルバムに属さないメディアを含める | IllegalArgumentExceptionの例外がスローされる |
 
 ## お気に入り
 
 対象ファイル：FavoriteService.java
 
 | ケースID | 対象メソッド | 観点 | 条件 | 期待結果 |
-| ------ | ------------------------ | --- | ----------------- | ---------------- |
+| ------ | ------------------------ | --- | ---------------------- | ---------------- |
 | Fav-01 | addFavorite | 正常 | メディアIDと現ユーザーIDを渡す | お気に入りが登録される |
-| Fav-02 | removeFavorite | 正常 | メディアIDと現ユーザーIDを渡す | お気に入りが解除される |
-| Fav-03 | getCurrentUserIsFavorite | 正常 | お気に入り済みのメディアを渡す | trueが返る |
-| Fav-04 | getCurrentUserIsFavorite | 正常 | 未登録のメディアを渡す | falseが返る |
-| Fav-05 | getAddFavoriteUserIds | 正常 | 有効なメディアIDを渡す | 登録済みユーザーIDリストが返る |
-| Fav-06 | getFavoriteList | 正常 | メディアリストを渡す | 対応するお気に入り一覧が返る |
+| Fav-02 | addFavorite | 境界 | 追加済みのメディアIDと現ユーザーIDを渡す | 即時リターンされる |
+| Fav-03 | removeFavorite | 正常 | メディアIDと現ユーザーIDを渡す | お気に入りが解除される |
+| Fav-04 | getCurrentUserIsFavorite | 正常 | お気に入り済みのメディアを渡す | trueが返る |
+| Fav-05 | getCurrentUserIsFavorite | 正常 | 未登録のメディアを渡す | falseが返る |
+| Fav-06 | getAddFavoriteUserIds | 正常 | 有効なメディアIDを渡す | 登録済みユーザーIDリストが返る |
+| Fav-07 | getFavoriteList | 正常 | メディアリストを渡す | 対応するお気に入り一覧が返る |
+| Fav-08 | getFavoriteList | 境界 | 空のメディアリストを渡す | 空リストが返る |
 
 ## ゴミ箱管理
 
@@ -175,18 +183,38 @@
 | Word-03 | 画像紐づけ | 正常 | 有効なメディアIDを渡す | 記録に画像が紐づく |
 | Word-04 | 画像紐づけ | 異常 | 存在しないメディアを含める | ResourceNotFoundExceptionの例外がスローされる |
 
-## 成長記録管理/タグ管理
+## 成長記録管理
 
-対象ファイル：GrowthRecordService.java / TagService.java
+対象ファイル：GrowthRecordService.java
 
 | ケースID | 対象メソッド | 観点 | 条件 | 期待結果 |
 | --------- | --------- | --- | ------------ | ----------------------------------- |
 | Growth-01 | getById 系 | 正常 | 有効なIDを渡す | 対象の成長記録が返る |
 | Growth-02 | getById 系 | 異常 | 存在しないIDを渡す | ResourceNotFoundExceptionの例外がスローされる |
 | Growth-03 | グラフデータ生成 | 正常 | 記録が存在する期間を渡す | グラフ用データが返る |
-| Tag-01 | getById 系 | 正常 | 有効なタグIDを渡す | 対象タグが返る |
-| Tag-02 | getById 系 | 異常 | 存在しないタグIDを渡す | ResourceNotFoundExceptionの例外がスローされる |
 
+## タグ管理
+
+対象ファイル：TagService.java
+
+| ケースID | 対象メソッド | 観点 | 条件 | 期待結果 |
+| ------ | -------------------- | --- | -------------------- | -------------------------------- |
+| Tag-01 | createTag | 正常 | タグ名を渡す | タグが保存される |
+| Tag-02 | getTags | 正常 | 呼び出す | ID昇順のタグ一覧が返る |
+| Tag-03 | getTagById | 正常 | 有効なタグIDを渡す | 対象タグが返る |
+| Tag-04 | getTagById | 異常 | 存在しないタグIDを渡す | ResourceNotFoundException が送出される |
+| Tag-05 | getMediaTags | 正常 | タグが紐づくメディアIDを渡す | 紐づくタグ一覧が返る |
+| Tag-06 | getMediaTags | 境界 | タグが紐づかないメディアIDを渡す | 空リストが返り findByIds が呼ばれない |
+| Tag-07 | syncMediaTags | 正常 | 既存タグに無いタグIDを渡す | 差分のタグのみ登録される |
+| Tag-08 | syncMediaTags | 正常 | 既存タグから一部を除いたタグIDを渡す | 除かれたタグのみ削除される |
+| Tag-09 | syncMediaTags | 正常 | 追加と削除が同時に発生するタグIDを渡す | 追加と削除の両方が実行される |
+| Tag-10 | syncMediaTags | 境界 | 既存タグと同一のタグIDを渡す | 登録も削除も呼ばれない |
+| Tag-11 | syncMediaTags | 境界 | 空のタグIDリストを渡す | 既存タグが全件削除され登録は呼ばれない |
+| Tag-12 | getMediaCountByTagId | 正常 | タグごとのメディア数が存在する | タグIDをキーとしたマップが返る |
+| Tag-13 | updateTag | 正常 | タグIDと新しい名前を渡す | タグ名が更新される |
+| Tag-14 | updateTag | 異常 | 存在しないタグIDを渡す | ResourceNotFoundException が送出される |
+| Tag-15 | deleteTag | 正常 | 有効なタグIDを渡す | メディアとの紐づきが削除された後にタグが削除される |
+| Tag-16 | count | 正常 | タグIDリストを渡す | 一致するタグの件数が返る |
 # その他テストケース一覧
 
 - [バックエンド単体テストケース(コントローラー層)](./unit-backend-controller.md)

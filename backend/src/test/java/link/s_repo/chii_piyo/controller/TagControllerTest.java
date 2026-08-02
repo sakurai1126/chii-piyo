@@ -57,11 +57,11 @@ public class TagControllerTest extends BaseControllerTest {
             mockTag.setId(mockTagId);
             mockTag.setName(mockTagName);
 
-            // サービスから返されるデータにダミーを設定
+            // サービスから返されるデータのスタブ化
             when(tagService.getTags()).thenReturn(List.of(mockTag));
             when(tagService.getMediaCountByTagId()).thenReturn(Map.of(mockTagId, mockMediaCount));
 
-            // コンバーターで変換された後に返されるDTOを設定
+            // コンバーターで変換された後に返されるDTOのスタブ化
             TagResponseDto expectedDto = new TagResponseDto();
             expectedDto.setId(mockTagId);
             expectedDto.setName(mockTagName);
@@ -205,7 +205,7 @@ public class TagControllerTest extends BaseControllerTest {
             MediaTagsUpdateRequestDto request = new MediaTagsUpdateRequestDto();
             request.setTagIds(List.of(1L, 2L));
 
-            // サービスから返されるデータにダミーを設定
+            // サービスから返されるデータのスタブ化
             when(mediaService.getMedia(1L)).thenReturn(new Media());
 
             // PUTリクエストの送信

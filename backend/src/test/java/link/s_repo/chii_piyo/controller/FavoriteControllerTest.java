@@ -51,7 +51,7 @@ public class FavoriteControllerTest extends BaseControllerTest {
         @WithMockUser
         @DisplayName("FavCtrl-02: 存在しないメディアIDでお気に入りに追加しようとした場合404が返ること")
         void addFavorite_notFound() throws Exception {
-            // メディア取得処理のモック化
+            // メディア取得処理のスタブ化
             when(mediaService.getMedia(mockRequestId))
                 .thenThrow(new ResourceNotFoundException("メディアが見つかりません mediaId=" + mockRequestId));
 
@@ -75,7 +75,7 @@ public class FavoriteControllerTest extends BaseControllerTest {
         @WithMockUser
         @DisplayName("FavCtrl-03: お気に入りから削除できること")
         void removeFavorite_success() throws Exception {
-            // ユーザーID取得処理のモック化
+            // ユーザーID取得処理のスタブ化
             when(currentUserProvider.getUserId()).thenReturn(mockCurrentUserId);
 
             // DELETEリクエストの送信
@@ -91,7 +91,7 @@ public class FavoriteControllerTest extends BaseControllerTest {
         @WithMockUser
         @DisplayName("FavCtrl-04: 存在しないメディアIDでお気に入りから削除しようとした場合404が返ること")
         void removeFavorite_notFound() throws Exception {
-            // ユーザーID取得処理のモック化
+            // ユーザーID取得処理のスタブ化
             when(mediaService.getMedia(mockRequestId))
                 .thenThrow(new ResourceNotFoundException("メディアが見つかりません mediaId=" + mockRequestId));
 

@@ -117,7 +117,7 @@ public class TagService {
     }
 
     /**
-     * タグIDごとのメディア数ををMapに格納して返す
+     * タグIDごとのメディア数をMapに格納して返す
      *
      * @return タグID → メディア数のマップ
      */

@@ -58,15 +58,15 @@ public class UserControllerTest extends BaseControllerTest {
             mockUser.setId(mockCurrentUserId);
             UserResponseDto response = new UserResponseDto().id(mockCurrentUserId);
 
-            // ユーザーID取得処理のモック化
+            // ユーザーID取得処理のスタブ化
             when(currentUserProvider.getUserId()).thenReturn(mockCurrentUserId);
-            // ユーザー取得処理のモック化
+            // ユーザー取得処理のスタブ化
             when(userService.getUserById(mockCurrentUserId)).thenReturn(mockUser);
-            // ユーザーの共有範囲の取得処理のモック化
+            // ユーザーの共有範囲の取得処理のスタブ化
             when(sharingGroupService.getUserSharingScopes(mockCurrentUserId)).thenReturn(mockScopeSharingGroups);
-            // プロフィール画像取得処理のモック化
+            // プロフィール画像取得処理のスタブ化
             when(userService.generateIconDownloadPresignedUrl(mockUser)).thenReturn(mockPresignedUrl);
-            // レスポンス取得処理のモック化
+            // レスポンス取得処理のスタブ化
             when(userConverter.toUserResponseDto(mockUser, mockPresignedUrl, mockScopeSharingGroups)).thenReturn(response);
 
             // GETリクエストの送信
@@ -94,7 +94,7 @@ public class UserControllerTest extends BaseControllerTest {
             Long mockCurrentUserId = 1L;
             UserUpdateRequestDto request = new UserUpdateRequestDto();
 
-            // ユーザーID取得処理のモック化
+            // ユーザーID取得処理のスタブ化
             when(currentUserProvider.getUserId()).thenReturn(mockCurrentUserId);
 
             // PATCHリクエストの送信
@@ -131,10 +131,10 @@ public class UserControllerTest extends BaseControllerTest {
                 .s3key(mockS3Key)
                 .presignedUrl(mockPresignedUrl);
 
-            // アップロード用URL発行処理のモック化
+            // アップロード用URL発行処理のスタブ化
             when(userService.generateIconPresignedUrl(mockFileName, mockContentType)).thenReturn(mockResult);
 
-            // レスポンス生成処理のモック化
+            // レスポンス生成処理のスタブ化
             when(userGenerateIconDataConverter.toUserGenerateIconDataResponseDto(mockS3Key, mockPresignedUrl))
                 .thenReturn(response);
 
@@ -171,12 +171,12 @@ public class UserControllerTest extends BaseControllerTest {
                 .UsersAndIconResult(mockUser, mockPresignedUrl);
             UserResponseDto response = new UserResponseDto().id(mockUserId);
 
-            // ユーザー情報一覧とアイコンダウンロード用URL取得処理のモック化
+            // ユーザー情報一覧とアイコンダウンロード用URL取得処理のスタブ化
             when(userService.getUsersAndIcon()).thenReturn(List.of(mockResult));
-            // 共有グループの一括取得処理のモック化
+            // 共有グループの一括取得処理のスタブ化
             when(sharingGroupService.getUserSharingScopesBulk(List.of(mockUserId)))
                 .thenReturn(Map.of(mockUserId, mockScopeSharingGroups));
-            // レスポンス生成処理のモック化
+            // レスポンス生成処理のスタブ化
             when(userConverter.toUserResponseDto(mockUser, mockPresignedUrl, mockScopeSharingGroups))
                 .thenReturn(response);
 
@@ -210,7 +210,7 @@ public class UserControllerTest extends BaseControllerTest {
             UserRoleUpdateRequestDto request = new UserRoleUpdateRequestDto();
             request.setRole(UserRoleUpdateRequestDto.RoleEnum.ADMIN);
 
-            // ユーザーID取得処理のモック化
+            // ユーザーID取得処理のスタブ化
             when(currentUserProvider.getUserId()).thenReturn(mockCurrentUserId);
 
             // PATCHリクエストの送信
@@ -231,7 +231,7 @@ public class UserControllerTest extends BaseControllerTest {
             UserRoleUpdateRequestDto request = new UserRoleUpdateRequestDto();
             request.setRole(UserRoleUpdateRequestDto.RoleEnum.ADMIN);
 
-            // ユーザーID取得処理のモック化
+            // ユーザーID取得処理のスタブ化
             when(currentUserProvider.getUserId()).thenReturn(mockCurrentUserId);
 
             // PATCHリクエストの送信

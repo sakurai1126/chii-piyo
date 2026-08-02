@@ -76,21 +76,21 @@ public class SharingGroupControllerTest extends BaseControllerTest {
                     Map.of(mockMemberUserId, mockIconUrl),
                     Map.of(mockGroupId, List.of(mockMember)));
 
-            // ユーザーID取得のモック化
+            // ユーザーID取得のスタブ化
             when(currentUserProvider.getUserId()).thenReturn(mockCurrentUserId);
 
-            // 共有グループ取得のモック化
+            // 共有グループ取得のスタブ化
             when(sharingGroupService.getSharingGroups(mockCurrentUserId))
                 .thenReturn(List.of(mockGroup));
 
-            // 所属メンバー取得のモック化
+            // 所属メンバー取得のスタブ化
             when(sharingGroupService.getMembersByGroupIds(List.of(mockGroupId)))
                 .thenReturn(List.of(mockMember));
 
-            // マッピング処理のモック化
+            // マッピング処理のスタブ化
             when(sharingGroupService.memberAndIconMapping(List.of(mockMember))).thenReturn(mockMemberAndIconMap);
 
-            // レスポンス変換のモック化
+            // レスポンス変換のスタブ化
             when(sharingGroupConverter.toSharingGroupResponseDto(any(), any()))
                 .thenReturn(new SharingGroupResponseDto().id(mockGroupId));
 
@@ -147,17 +147,17 @@ public class SharingGroupControllerTest extends BaseControllerTest {
                     Map.of(mockMemberUserId, mockIconUrl),
                     Map.of(mockGroupId, List.of(mockMember)));
 
-            // 共有グループ取得のモック化
+            // 共有グループ取得のスタブ化
             when(sharingGroupService.getAllSharingGroups()).thenReturn(List.of(mockGroup));
 
-            // 所属メンバー取得のモック化
+            // 所属メンバー取得のスタブ化
             when(sharingGroupService.getMembersByGroupIds(List.of(mockGroupId)))
                 .thenReturn(List.of(mockMember));
 
-            // マッピング処理のモック化
+            // マッピング処理のスタブ化
             when(sharingGroupService.memberAndIconMapping(List.of(mockMember))).thenReturn(mockMemberAndIconMap);
 
-            // レスポンス変換のモック化
+            // レスポンス変換のスタブ化
             when(sharingGroupConverter.toSharingGroupResponseDto(any(), any()))
                 .thenReturn(new SharingGroupResponseDto().id(mockGroupId));
 
@@ -256,7 +256,7 @@ public class SharingGroupControllerTest extends BaseControllerTest {
 
             SharingGroups mockSharingGroups = new SharingGroups();
 
-            // 共有グループ取得のモック化
+            // 共有グループ取得のスタブ化
             when(sharingGroupService.getSharingGroupById(requestId)).thenReturn(mockSharingGroups);
 
             // PATCHリクエストの送信
@@ -282,7 +282,7 @@ public class SharingGroupControllerTest extends BaseControllerTest {
             request.setName(mockName);
             request.setUserIds(mockUserIds);
 
-            // 共有グループ取得のモック化
+            // 共有グループ取得のスタブ化
             when(sharingGroupService.getSharingGroupById(requestId))
                 .thenThrow(new ResourceNotFoundException("共有グループが見つかりません id=" + requestId));
 

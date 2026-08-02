@@ -62,13 +62,13 @@ public class TrashControllerTest extends BaseControllerTest {
             TrashItems trashItem = new TrashItems();
             trashItem.setId(1L);
 
-            // 取得処理のモック化
+            // 取得処理のスタブ化
             when(trashService.getTrashItems(mockOffset, mockLimit)).thenReturn(List.of(trashItem));
 
-            // 残り日数取得のモック化
+            // 残り日数取得のスタブ化
             when(trashService.getEarliestDeadline()).thenReturn(mockEarliest);
 
-            // 総件数取得のモック化
+            // 総件数取得のスタブ化
             when(trashService.getTotalCount()).thenReturn(mockTotalCount);
 
             // GETリクエストの送信
