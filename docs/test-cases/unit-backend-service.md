@@ -176,17 +176,14 @@
 | -------- | ----------------- | --- | ------------------ | -------------------------------- |
 | First-01 | createFirstRecord | 正常 | メディアIDを含む記録データを渡す | 記録が保存され紐づくメディアも保存される |
 | First-02 | createFirstRecord | 境界 | メディアIDが空の記録データを渡す | 記録のみ保存されメディア保存が呼ばれない |
-| First-03 | createFirstRecord | 境界 | 重複したメディアIDを渡す | 重複が除外されて保存される |
-| First-04 | createFirstRecord | 異常 | 存在しないメディアIDを含める | ResourceNotFoundException が送出される |
-| First-05 | getFirstRecords | 正常 | 記録とメディアが存在する | 記録ごとにメディアが紐づいて返る |
-| First-06 | getFirstRecords | 境界 | 記録が0件 | 空リストが返りメディア取得が呼ばれない |
-| First-07 | getFirstRecords | 境界 | 記録はあるがメディアが紐づかない | メディアが空リストの記録が返る |
-| First-08 | getFirstRecords | 境界 | ゴミ箱内のメディアIDが紐づいている | 該当メディアが除外されて返る |
-| First-09 | updateFirstRecord | 正常 | 有効なIDと更新データを渡す | 既存メディアが削除された後に記録が更新され新メディアが保存される |
-| First-10 | updateFirstRecord | 異常 | 存在しない記録IDを渡す | ResourceNotFoundException が送出される |
-| First-11 | updateFirstRecord | 異常 | 存在しないメディアIDを含める | ResourceNotFoundException が送出される |
-| First-12 | deleteFirstRecord | 正常 | 有効なIDを渡す | 紐づくメディアが削除された後に記録が削除される |
-| First-13 | deleteFirstRecord | 異常 | 存在しない記録IDを渡す | ResourceNotFoundException が送出される |
+| First-03 | createFirstRecord | 異常 | 存在しないメディアIDを含める | ResourceNotFoundException が送出される |
+| First-04 | getFirstRecords | 正常 | 記録とメディアが存在する | 記録ごとにメディアが紐づいて返る |
+| First-05 | getFirstRecords | 境界 | 記録が0件 | 空リストが返りメディア取得が呼ばれない |
+| First-06 | getFirstRecords | 境界 | 記録はあるがメディアが紐づかない | メディアが空リストの記録が返る |
+| First-07 | getFirstRecords | 境界 | ゴミ箱内のメディアIDが紐づいている | 該当メディアが除外されて返る |
+| First-08 | updateFirstRecord | 正常 | 有効なIDと更新データを渡す | 既存メディアが削除された後に記録が更新され新メディアが保存される |
+| First-09 | updateFirstRecord | 異常 | 存在しない記録IDを渡す | ResourceNotFoundException が送出される |
+| First-10 | deleteFirstRecord | 正常 | 有効なIDを渡す | 紐づくメディアが削除された後に記録が削除される |
 
 ## ことば記録管理
 
@@ -196,17 +193,14 @@
 | ------- | ---------------- | --- | ------------------ | -------------------------------- |
 | Word-01 | createWordRecord | 正常 | メディアIDを含む記録データを渡す | 記録が保存され紐づくメディアも保存される |
 | Word-02 | createWordRecord | 境界 | メディアIDが空の記録データを渡す | 記録のみ保存されメディア保存が呼ばれない |
-| Word-03 | createWordRecord | 境界 | 重複したメディアIDを渡す | 重複が除外されて保存される |
-| Word-04 | createWordRecord | 異常 | 存在しないメディアIDを含める | ResourceNotFoundException が送出される |
-| Word-05 | getWordRecords | 正常 | 記録とメディアが存在する | 記録ごとにメディアが紐づいて返る |
-| Word-06 | getWordRecords | 境界 | 記録が0件 | 空リストが返りメディア取得が呼ばれない |
-| Word-07 | getWordRecords | 境界 | 記録はあるがメディアが紐づかない | メディアが空リストの記録が返る |
-| Word-08 | getWordRecords | 境界 | ゴミ箱内のメディアIDが紐づいている | 該当メディアが除外されて返る |
-| Word-09 | updateWordRecord | 正常 | 有効なIDと更新データを渡す | 既存メディアが削除された後に記録が更新され新メディアが保存される |
-| Word-10 | updateWordRecord | 異常 | 存在しない記録IDを渡す | ResourceNotFoundException が送出される |
-| Word-11 | updateWordRecord | 異常 | 存在しないメディアIDを含める | ResourceNotFoundException が送出される |
-| Word-12 | deleteWordRecord | 正常 | 有効なIDを渡す | 紐づくメディアが削除された後に記録が削除される |
-| Word-13 | deleteWordRecord | 異常 | 存在しない記録IDを渡す | ResourceNotFoundException が送出される |
+| Word-03 | createWordRecord | 異常 | 存在しないメディアIDを含める | ResourceNotFoundException が送出される |
+| Word-04 | getWordRecords | 正常 | 記録とメディアが存在する | 記録ごとにメディアが紐づいて返る |
+| Word-05 | getWordRecords | 境界 | 記録が0件 | 空リストが返りメディア取得が呼ばれない |
+| Word-06 | getWordRecords | 境界 | 記録はあるがメディアが紐づかない | メディアが空リストの記録が返る |
+| Word-07 | getWordRecords | 境界 | ゴミ箱内のメディアIDが紐づいている | 該当メディアが除外されて返る |
+| Word-08 | updateWordRecord | 正常 | 有効なIDと更新データを渡す | 既存メディアが削除された後に記録が更新され新メディアが保存される |
+| Word-09 | updateWordRecord | 異常 | 存在しない記録IDを渡す | ResourceNotFoundException が送出される |
+| Word-10 | deleteWordRecord | 正常 | 有効なIDを渡す | 紐づくメディアが削除された後に記録が削除される |
 
 ## 成長記録管理
 
