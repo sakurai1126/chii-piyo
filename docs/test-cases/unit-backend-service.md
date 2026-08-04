@@ -116,16 +116,24 @@
 | Care-06 | createCareRecord | 異常 | 種別MILKだがミルク詳細が欠落 | IllegalArgumentExceptionの例外がスローされる |
 | Care-07 | createCareRecord | 異常 | 種別DIAPERだが排泄詳細が欠落 | IllegalArgumentExceptionの例外がスローされる |
 | Care-08 | createCareRecord | 異常 | 種別HEALTHだが体調詳細が欠落 | IllegalArgumentExceptionの例外がスローされる |
-| Care-09 | createCareRecord | 異常 | 未定義の記録種別を渡す | IllegalArgumentExceptionの例外がスローされる |
-| Care-10 | getCareRecords | 正常 | 開始日と終了日を渡す | 期間内の育児記録一覧が返る |
-| Care-11 | getCareRecords | 境界 | 開始日と終了日が同一日 | 当日分の記録が返る |
-| Care-12 | getMealRecords | 正常 | 有効な記録IDリストを渡す | 対応する食事詳細一覧が返る |
-| Care-13 | getMilkRecords | 正常 | 有効な記録IDリストを渡す | 対応するミルク詳細一覧が返る |
+| Care-09 | getCareRecords | 正常 | 開始日と終了日を渡す | 指定した開始日と終了日で取得処理が呼ばれ結果が返る |
+| Care-10 | getMealRecords | 正常 | 有効な記録IDリストを渡す | 対応する食事詳細一覧が返る |
+| Care-11 | getMealRecords | 境界 | 空の記録IDリストを渡す | 取得処理が呼ばれず空リストが返る |
+| Care-12 | getMilkRecords | 正常 | 有効な記録IDリストを渡す | 対応するミルク詳細一覧が返る |
+| Care-13 | getMilkRecords | 境界 | 空の記録IDリストを渡す | 取得処理が呼ばれず空リストが返る |
 | Care-14 | getDiaperRecords | 正常 | 有効な記録IDリストを渡す | 対応する排泄詳細一覧が返る |
-| Care-15 | getHealthRecords | 正常 | 有効な記録IDリストを渡す | 対応する体調詳細一覧が返る |
-| Care-16 | updateCareRecord | 正常 | 有効なIDと更新データを渡す | 対象の育児記録が更新される |
-| Care-17 | updateCareRecord | 異常 | 存在しないIDを渡す | ResourceNotFoundExceptionの例外がスローされる |
-| Care-18 | deleteCareRecord | 正常 | 有効なIDを渡す | 対象の育児記録が削除される |
+| Care-15 | getDiaperRecords | 境界 | 空の記録IDリストを渡す | 取得処理が呼ばれず空リストが返る |
+| Care-16 | getHealthRecords | 正常 | 有効な記録IDリストを渡す | 対応する体調詳細一覧が返る |
+| Care-17 | getHealthRecords | 境界 | 空の記録IDリストを渡す | 取得処理が呼ばれず空リストが返る |
+| Care-18 | updateCareRecord | 正常 | 種別MEALで有効なIDと更新データを渡す | 対象の食事記録が更新される |
+| Care-19 | updateCareRecord | 正常 | 種別MILKで有効なIDと更新データを渡す | 対象のミルク記録が更新される |
+| Care-20 | updateCareRecord | 正常 | 種別DIAPERで有効なIDと更新データを渡す | 対象の排泄記録が更新される |
+| Care-21 | updateCareRecord | 正常 | 種別HEALTHで有効なIDと更新データを渡す | 対象の体調記録が更新される |
+| Care-22 | updateCareRecord | 異常 | 存在しないIDを渡す | ResourceNotFoundExceptionの例外がスローされる |
+| Care-23 | deleteCareRecord | 正常 | 種別MEALで有効なIDを渡す | 対象の食事記録が削除される |
+| Care-24 | deleteCareRecord | 正常 | 種別MILKで有効なIDを渡す | 対象のミルク記録が削除される |
+| Care-25 | deleteCareRecord | 正常 | 種別DIAPERで有効なIDを渡す | 対象の排泄記録が削除される |
+| Care-26 | deleteCareRecord | 正常 | 種別HEALTHで有効なIDを渡す | 対象の体調記録が削除される |
 
 ## 共有範囲管理
 
@@ -207,10 +215,12 @@
 対象ファイル：GrowthRecordService.java
 
 | ケースID | 対象メソッド | 観点 | 条件 | 期待結果 |
-| --------- | --------- | --- | ------------ | ----------------------------------- |
-| Growth-01 | getById 系 | 正常 | 有効なIDを渡す | 対象の成長記録が返る |
-| Growth-02 | getById 系 | 異常 | 存在しないIDを渡す | ResourceNotFoundExceptionの例外がスローされる |
-| Growth-03 | グラフデータ生成 | 正常 | 記録が存在する期間を渡す | グラフ用データが返る |
+| --------- | ------------------ | --- | ---------------------- | ----------------------------------- |
+| Growth-01 | createGrowthRecord | 正常 | 身長・体重・メモをすべて指定して渡す | 成長記録が登録される |
+| Growth-02 | getGrowthRecords | 正常 | 記録が存在する期間を渡す | 該当期間の成長記録一覧が返る |
+| Growth-03 | updateGrowthRecord | 正常 | 有効なIDと更新データを渡す | 対象の成長記録が更新される |
+| Growth-04 | updateGrowthRecord | 異常 | 存在しないIDを渡す | ResourceNotFoundExceptionの例外がスローされる |
+| Growth-05 | deleteGrowthRecord | 正常 | 有効なIDを渡す | 対象の成長記録が削除される |
 
 ## タグ管理
 

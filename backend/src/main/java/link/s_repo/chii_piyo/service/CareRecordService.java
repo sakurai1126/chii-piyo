@@ -70,7 +70,7 @@ public class CareRecordService {
                 }
                 break;
             default:
-                throw new IllegalArgumentException("不正な記録種別です");
+                break;
         }
     }
 
