@@ -35,7 +35,7 @@ public class UserService {
      * @return ユーザー情報
      */
     @Transactional(readOnly = true)
-    public Users getUserById(long id) {
+    public Users getUserById(Long id) {
         return userRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("ユーザーが見つかりません"));
     }
