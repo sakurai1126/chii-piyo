@@ -136,9 +136,7 @@ public class SharingGroupService {
      * @param newUserIds 新しい共有グループメンバーのIDリスト
      */
     @Transactional
-    public void editMembers(
-        Long id, List<Long> newUserIds) {
-
+    public void editMembers(Long id, List<Long> newUserIds) {
         // 対象グループの既存メンバーを一度すべて削除
         sharingGroupRepository.deleteMembersByGroupId(id);
 
