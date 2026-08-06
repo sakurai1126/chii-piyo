@@ -142,17 +142,20 @@
 | ケースID | 対象メソッド | 観点 | 条件 | 期待結果 |
 | -------- | ------------------------ | --- | ------------------ | ----------------------------------- |
 | Share-01 | getSharingGroups | 正常 | 有効なユーザーIDを渡す | そのユーザーの共有グループ一覧が返る |
-| Share-02 | getAllSharingGroups | 正常 | 呼び出す | 全共有グループ一覧が返る |
-| Share-03 | getSharingGroupById | 正常 | 有効なグループIDを渡す | 対象の共有グループが返る |
-| Share-04 | getSharingGroupById | 異常 | 存在しないグループIDを渡す | ResourceNotFoundExceptionの例外がスローされる |
-| Share-05 | createGroup | 正常 | グループ名とユーザーIDリストを渡す | 共有グループとメンバーが作成される |
-| Share-06 | getMembersByGroupIds | 正常 | 有効なグループIDリストを渡す | 対応するメンバー一覧が返る |
-| Share-07 | editMembers | 正常 | メンバーの追加削除を渡す | メンバー構成が更新される |
-| Share-08 | deleteSharingGroup | 正常 | 有効なグループIDを渡す | 対象の共有グループが削除される |
-| Share-09 | updateSharingGroup | 正常 | 対象グループと新しい名前を渡す | グループ名が更新される |
-| Share-10 | getUserSharingScopes | 正常 | 有効なユーザーIDを渡す | そのユーザーの共有範囲IDリストが返る |
-| Share-11 | getUserSharingScopesBulk | 正常 | 複数ユーザーIDを渡す | ユーザーごとの共有範囲マップが返る |
-| Share-12 | getUserSharingScopesBulk | 境界 | 空のユーザーIDリストを渡す | 空のマップが返る |
+| Share-02 | getSharingGroups | 境界 | 共有グループに所属しないユーザーIDを渡す | 空リストが返る |
+| Share-03 | getAllSharingGroups | 正常 | 呼び出す | 全共有グループ一覧が返る |
+| Share-04 | getSharingGroupById | 正常 | 有効なグループIDを渡す | 対象の共有グループが返る |
+| Share-05 | getSharingGroupById | 異常 | 存在しないグループIDを渡す | ResourceNotFoundExceptionの例外がスローされる |
+| Share-06 | createGroup | 正常 | グループ名とユーザーIDリストを渡す | 共有グループとメンバーが作成される |
+| Share-07 | getMembersByGroupIds | 正常 | 有効なグループIDリストを渡す | 対応するメンバー一覧が返る |
+| Share-08 | getMembersByGroupIds | 正常 | 空のIDリストを渡す | 空リストが返る |
+| Share-09 | editMembers | 正常 | メンバーの追加削除を渡す | メンバー構成が更新される |
+| Share-10 | deleteSharingGroup | 正常 | 有効なグループIDを渡す | 対象の共有グループが削除される |
+| Share-11 | updateSharingGroup | 正常 | 対象グループと新しい名前を渡す | グループ名が更新される |
+| Share-12 | getUserSharingScopes | 正常 | 有効なユーザーIDを渡す | そのユーザーの共有範囲IDリストが返る |
+| Share-13 | getUserSharingScopesBulk | 正常 | 複数ユーザーIDを渡す | ユーザーごとの共有範囲マップが返る |
+| Share-14 | getUserSharingScopesBulk | 境界 | 空のユーザーIDリストを渡す | 空のマップが返る |
+| Share-15 | memberAndIconMapping | 正常 | 所属メンバーリストを渡す | ユーザーマップ・アイコンURLマップ・グループ別メンバーマップが返る |
 
 ## ユーザー管理
 
@@ -165,16 +168,13 @@
 | User-03 | getUsersById | 正常 | 有効なIDリストを渡す | 対応するユーザー一覧が返る |
 | User-04 | getUsersById | 境界 | nullまたは空リストを渡す | 空リストが返り検索が実行されない |
 | User-05 | updateMe | 正常 | 表示名を渡す | 表示名が更新される |
-| User-06 | updateMe | 正常 | ダークモード・かんたんモードを渡す | 各設定が更新される |
-| User-07 | updateMe | 正常 | profile/で始まるS3キーを渡す | アイコンキーが更新される |
-| User-08 | updateMe | 異常 | profile/以外のS3キーを渡す | アイコンキーが更新されない |
-| User-09 | updateMe | 境界 | 更新項目がすべてnull | DB更新処理が呼ばれない |
-| User-10 | generateIconDownloadPresignedUrl | 正常 | アイコンキーを持つユーザーを渡す | ダウンロード用URLが返る |
-| User-11 | generateIconDownloadPresignedUrl | 境界 | アイコンキーがnullまたは空 | nullが返りURL生成が呼ばれない |
-| User-12 | generateIconPresignedUrl | 正常 | ファイル名とコンテンツタイプを渡す | S3キーとアップロード用URLが返る |
-| User-13 | getUsersAndIcon | 正常 | ユーザーが複数存在する | 各ユーザーとアイコンURLがまとめて返る |
-| User-14 | updateRole | 正常 | 有効なユーザーIDとロールを渡す | ロールが更新される |
-| User-15 | updateRole | 異常 | 存在しないユーザーIDを渡す | ResourceNotFoundExceptionの例外がスローされる |
+| User-06 | updateMe | 異常 | profile/以外のS3キーを渡す | アイコンキーが更新されない |
+| User-07 | updateMe | 境界 | 更新項目がすべてnull | DB更新処理が呼ばれない |
+| User-08 | generateIconDownloadPresignedUrl | 正常 | アイコンキーを持つユーザーを渡す | ダウンロード用URLが返る |
+| User-09 | generateIconDownloadPresignedUrl | 境界 | アイコンキーがnullまたは空 | nullが返りURL生成が呼ばれない |
+| User-10 | generateIconPresignedUrl | 正常 | ファイル名とコンテンツタイプを渡す | S3キーとアップロード用URLが返る |
+| User-11 | getUsersAndIcon | 正常 | ユーザーが複数存在する | 各ユーザーとアイコンURLがまとめて返る |
+| User-12 | updateRole | 正常 | 有効なユーザーIDとロールを渡す | ロールが更新される |
 
 ## はじめて記録管理
 
