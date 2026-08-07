@@ -31,9 +31,9 @@
 | ケースID | 対象 | 観点 | 条件 | 期待結果 |
 | -------- | --------------------- | --- | -------------- | ---------------- |
 | Sched-01 | TrashCleanupScheduler | 正常 | 期限切れアイテムが存在する | 対象が完全削除処理に渡される |
-| Sched-02 | TrashCleanupScheduler | 境界 | 期限が現在時刻と同時刻 | 期限切れとして削除対象に含まれる |
-| Sched-03 | TrashCleanupScheduler | 境界 | 期限がまだ到来していない | 削除対象に含まれない |
-| Sched-04 | TrashCleanupScheduler | 境界 | 期限切れアイテムが存在しない | 削除処理が呼ばれず正常終了する |
+| Sched-02 | TrashCleanupScheduler | 境界 | 期限切れアイテムが存在しない | 削除処理が呼ばれず正常終了する |
+| Sched-03 | TrashCleanupScheduler | 境界 | S3キーとサムネイルキーが空 | S3削除処理が呼ばれず正常終了する |
+| Sched-04 | TrashCleanupScheduler | 異常 | 削除中に例外が発生 | ログ出力して正常終了する |
 
 ## その他テストケース一覧
 

@@ -82,25 +82,22 @@
 | ケースID | 対象メソッド | 観点 | 条件 | 期待結果 |
 | -------- | ------------------------- | --- | ------------------- | ----------------------------------- |
 | Trash-01 | createTrashItem | 正常 | 有効なメディアIDを渡す | 対象IDのゴミ箱データが保存される |
-| Trash-02 | createTrashItem | 境界 | 削除予定日時を検証する | 日本時間で30日後のAM2:00が設定される |
-| Trash-03 | createTrashItems | 正常 | 複数のメディアIDリストを渡す | 件数分のゴミ箱データが一括保存される |
-| Trash-04 | createTrashItems | 境界 | 空リストを渡す | 保存処理が呼ばれ0件で正常終了する |
-| Trash-05 | getTrashItems | 正常 | offsetとlimitを渡す | 指定範囲のゴミ箱一覧が返る |
-| Trash-06 | getTotalCount | 正常 | ゴミ箱にデータが存在する | 総件数が返る |
-| Trash-07 | getEarliestDeadline | 正常 | 最古アイテムの期限が未来 | 今日から期限日までの残り日数が返る |
-| Trash-08 | getEarliestDeadline | 境界 | 期限日が今日と同日 | 残り日数として0が返る |
-| Trash-09 | getEarliestDeadline | 異常 | ゴミ箱が空 | nullが返る |
-| Trash-10 | restoreTrashItem | 正常 | 有効なIDを渡す | 対象のゴミ箱データが削除される |
-| Trash-11 | restoreTrashItems | 正常 | 複数のIDリストを渡す | 対象のゴミ箱データが一括削除される |
-| Trash-12 | permanentlyDelete | 正常 | 有効なゴミ箱IDを渡す | 関連データ・ゴミ箱・メディアが削除されS3も削除される |
-| Trash-13 | permanentlyDelete | 異常 | 存在しないゴミ箱IDを渡す | ResourceNotFoundExceptionの例外がスローされる |
-| Trash-14 | permanentlyDelete | 異常 | ゴミ箱は存在するがメディアが存在しない | ResourceNotFoundExceptionの例外がスローされる |
-| Trash-15 | permanentlyDelete | 境界 | S3キーとサムネイルキーが空 | S3削除処理が呼ばれず正常終了する |
-| Trash-16 | permanentlyDelete | 正常 | 関連データの削除順序を検証する | 紐づきデータ削除の後にメディアが削除される |
-| Trash-17 | multiplePermanentlyDelete | 正常 | 有効なゴミ箱IDリストを渡す | 対象すべての関連データ・ゴミ箱・メディア・S3が削除される |
-| Trash-18 | multiplePermanentlyDelete | 異常 | 該当するゴミ箱データが存在しない | ResourceNotFoundExceptionの例外がスローされる |
-| Trash-19 | allDelete | 正常 | ゴミ箱に複数データが存在する | 全件の関連データ・ゴミ箱・メディア・S3が削除される |
-| Trash-20 | allDelete | 境界 | ゴミ箱が空 | 削除処理が呼ばれ0件で正常終了する |
+| Trash-02 | createTrashItems | 正常 | 複数のメディアIDリストを渡す | 件数分のゴミ箱データが一括保存される |
+| Trash-03 | getTrashItems | 正常 | offsetとlimitを渡す | 指定範囲のゴミ箱一覧が返る |
+| Trash-04 | getTotalCount | 正常 | ゴミ箱にデータが存在する | 総件数が返る |
+| Trash-05 | getEarliestDeadline | 正常 | 最古アイテムの期限が未来 | 今日から期限日までの残り日数が返る |
+| Trash-06 | getEarliestDeadline | 境界 | 期限日が今日と同日 | 残り日数として0が返る |
+| Trash-07 | getEarliestDeadline | 異常 | ゴミ箱が空 | nullが返る |
+| Trash-08 | restoreTrashItem | 正常 | 有効なIDを渡す | 対象のゴミ箱データが削除される |
+| Trash-09 | restoreTrashItems | 正常 | 複数のIDリストを渡す | 対象のゴミ箱データが一括削除される |
+| Trash-10 | permanentlyDelete | 正常 | 有効なゴミ箱IDを渡す | 関連データ・ゴミ箱・メディアが削除されS3も削除される |
+| Trash-11 | permanentlyDelete | 異常 | 存在しないゴミ箱IDを渡す | ResourceNotFoundExceptionの例外がスローされる |
+| Trash-12 | permanentlyDelete | 異常 | ゴミ箱は存在するがメディアが存在しない | ResourceNotFoundExceptionの例外がスローされる |
+| Trash-13 | permanentlyDelete | 境界 | S3キーとサムネイルキーが空 | S3削除処理が呼ばれず正常終了する |
+| Trash-14 | multiplePermanentlyDelete | 正常 | 有効なゴミ箱IDリストを渡す | 対象すべての関連データ・ゴミ箱・メディア・S3が削除される |
+| Trash-15 | multiplePermanentlyDelete | 異常 | 該当するゴミ箱データが存在しない | ResourceNotFoundExceptionの例外がスローされる |
+| Trash-16 | multiplePermanentlyDelete | 境界 | S3キーとサムネイルキーが空 | S3削除処理が呼ばれず正常終了する |
+| Trash-17 | allDelete | 正常 | ゴミ箱に複数データが存在する | 全件の関連データ・ゴミ箱・メディア・S3が削除される |
 
 ## 育児記録管理
 
