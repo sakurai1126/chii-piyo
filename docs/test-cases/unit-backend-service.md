@@ -13,14 +13,20 @@
 | Media-05 | getMediaList | 正常 | 検索条件を渡す | 条件に合致するメディア一覧が返る |
 | Media-06 | createMedia | 正常 | 有効なアップロード情報を渡す | メディアが登録されPre-signed URLが発行される |
 | Media-07 | updateUploadStatus | 正常 | 自身のメディアIDとステータスを渡す | アップロードステータスが更新される |
-| Media-08 | getMediaNavigation | 正常 | 有効なメディアIDを渡す | 前後のメディア位置情報が返る |
-| Media-09 | updateMedia | 正常 | 自身のメディアの更新データを渡す | 対象メディアが更新される |
-| Media-10 | updateMedia | 異常 | 存在しないメディアIDを渡す | ResourceNotFoundExceptionの例外がスローされる |
-| Media-11 | updateMedia | 権限 | 他ユーザーのメディアを更新しようとする | ResourceAccessDeniedExceptionの例外がスローされる |
-| Media-12 | updateMedia | 異常 | 共有範囲更新で存在しない共有グループIDを指定 | ResourceNotFoundExceptionの例外がスローされる |
-| Media-13 | updateMedia | 異常 | アルバム更新で存在しないアルバムIDを指定 | ResourceNotFoundExceptionの例外がスローされる |
-| Media-14 | updateMediaBatch | 正常 | 有効なメディアIDリストと更新内容を渡す | 対象すべてが一括更新される |
-| Media-15 | updateMediaBatch | 異常 | 対象メディアが存在しない | ResourceNotFoundExceptionの例外がスローされる |
+| Media-08 | updateUploadStatus | 正常 | COMPLETED以外のステータスを渡す | generateThumbnailAsyncが呼ばれない |
+| Media-09 | updateUploadStatus | 異常 | 存在しない、または権限外のIDを渡す | ResourceNotFoundExceptionの例外がスローされる |
+| Media-10 | updateUploadStatus | 異常 | 他ユーザーのメディアを更新しようとする | ResourceAccessDeniedExceptionの例外がスローされる |
+| Media-11 | getMediaNavigation | 正常 | 有効なメディアIDを渡す | 前後のメディア位置情報が返る |
+| Media-12 | updateMedia | 正常 | 自身のメディアの更新データを渡す | 対象メディアが更新される |
+| Media-13 | updateMedia | 異常 | 共有範囲更新で存在しない共有グループIDを指定 | ResourceNotFoundExceptionの例外がスローされる |
+| Media-14 | updateMedia | 異常 | アルバム更新で存在しないアルバムIDを指定 | ResourceNotFoundExceptionの例外がスローされる |
+| Media-15 | updateMediaBatch | 正常 | 有効なメディアIDリストと更新内容を渡す | メディアの共有範囲とタグが一括更新される |
+| Media-16 | updateMediaBatch | 境界 | タグIDに空リストを渡す | 既存のタグが一括削除され、新規タグ登録は呼ばれない |
+| Media-17 | updateMediaBatch | 異常 | 存在しないメディアIDが含まれている | ResourceNotFoundExceptionの例外がスローされる |
+| Media-18 | updateMediaBatch | 異常 | 存在しない共有グループIDを指定 | ResourceNotFoundExceptionの例外がスローされる |
+| Media-19 | updateMediaBatch | 異常 | 存在しないタグIDが含まれている | ResourceNotFoundExceptionの例外がスローされる |
+| Media-20 | getTrashItemAndMedia | 正常 | 有効なゴミ箱データを渡す | ゴミ箱データに紐づくメディアが返る |
+| Media-21 | getTrashItemAndMedia | 境界 | 空のゴミ箱データを渡す | 空の結果が返る |
 
 ## コメント管理
 
@@ -29,11 +35,13 @@
 | ケースID | 対象メソッド | 観点 | 条件 | 期待結果 |
 | ---------- | -------------------------- | --- | ------------------- | --------------------------------------- |
 | Comment-01 | createMediaComment | 正常 | メディアID・ユーザーID・本文を渡す | コメントが登録される |
-| Comment-02 | getMediaComments | 正常 | 有効なメディアIDを渡す | そのメディアのコメント一覧が返る |
-| Comment-03 | getCommentCountsByMediaIds | 正常 | 有効なメディアIDリストを渡す | メディアごとのコメント件数が返る |
-| Comment-04 | getCommentCountsByMediaIds | 境界 | 空のメディアIDリストを渡す | 空の結果が返る |
-| Comment-05 | deleteMediaComment | 正常 | 自身のコメントを削除する | コメントが削除される |
-| Comment-06 | deleteMediaComment | 権限 | 他ユーザーのコメントを削除しようとする | ResourceAccessDeniedExceptionの例外がスローされる |
+| Comment-02 | getMediaComment | 正常 | 有効なコメントIDを渡す | 対象コメントが返る |
+| Comment-03 | getMediaComment | 正常 | 存在しないコメントIDを渡す | ResourceNotFoundExceptionの例外がスローされる |
+| Comment-04 | getMediaComments | 正常 | 有効なメディアIDを渡す | そのメディアのコメント一覧が返る |
+| Comment-05 | getCommentCountsByMediaIds | 正常 | 有効なメディアIDリストを渡す | メディアごとのコメント件数が返る |
+| Comment-06 | getCommentCountsByMediaIds | 境界 | 空のメディアIDリストを渡す | 空の結果が返る |
+| Comment-07 | deleteMediaComment | 正常 | 自身のコメントを削除する | コメントが削除される |
+| Comment-08 | deleteMediaComment | 異常 | 他ユーザーのコメントを削除しようとする | ResourceAccessDeniedExceptionの例外がスローされる |
 
 ## アルバム
 
