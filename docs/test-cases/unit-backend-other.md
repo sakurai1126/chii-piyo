@@ -20,11 +20,13 @@
 
 | ケースID | 観点 | 条件 | 期待結果 |
 | ----- | --- | --------------------------------------- | ------------------------------- |
-| Ex-01 | 異常 | ResourceNotFoundExceptionが発生 | NOT_FOUND と 404 が返る |
-| Ex-02 | 権限 | ResourceAccessDeniedExceptionが発生 | FORBIDDEN と 403 が返る |
-| Ex-03 | 異常 | IllegalArgumentException / バリデーション違反が発生 | VALIDATION_ERROR と 400 が返る |
-| Ex-04 | 異常 | 未認証でのアクセス | UNAUTHORIZED と 401 が返る |
-| Ex-05 | 異常 | 想定外の例外が発生 | INTERNAL_SERVER_ERROR と 500 が返る |
+| Ex-01 | 異常 | ResourceNotFoundExceptionが発生 | NOT_FOUNDと404と指定エラーメッセージが返る |
+| Ex-02 | 権限 | ResourceAccessDeniedExceptionが発生 | FORBIDDENと403と指定エラーメッセージが返る |
+| Ex-03 | 異常 | IllegalArgumentExceptionが発生 | VALIDATION_ERRORと400と指定エラーメッセージが返る |
+| Ex-04 | 異常 | バリデーションエラーが発生 | VALIDATION_ERRORと400と独自エラーメッセージが返る |
+| Ex-05 | 異常 | 未認証でのアクセス | UNAUTHORIZEDと401と指定エラーメッセージが返る |
+| Ex-06 | 異常 | 想定外の例外が発生 | INTERNAL_SERVER_ERRORと500と指定エラーメッセージが返る |
+| Ex-07 | 異常 | その他のSpring MVC標準の例外が発生 | 標準のステータスコードとメッセージが返る |
 
 ## スケジューラ
 
