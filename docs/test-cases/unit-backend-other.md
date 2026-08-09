@@ -16,26 +16,38 @@
 | Auth-10 | CustomAccessDeniedHandler | 権限 | 認可エラーが発生 | 403とFORBIDDENのレスポンスボディが返る |
 | Auth-11 | CustomAuthenticationEntryPoint | 異常 | 認証エラーが発生 | 401とUNAUTHORIZEDのレスポンスボディが返る |
 
+## 共通ユーティリティ
+
+| ケースID | 対象 | 観点 | 条件 | 期待結果 |
+| ------- | ----------------- | --- | ------------------------ | ---------------------------------- |
+| Util-01 | S3KeyGenerator | 正常 | 英数字のみの安全なファイル名を渡す | prefix/yyyy/MM/dd/UUID_ファイル名の形式で返る |
+| Util-02 | S3KeyGenerator | 異常 | null または空文字を渡す | ファイル名部分が unknown として生成される |
+| Util-03 | S3KeyGenerator | 境界 | 日本語やパス区切り文字を含むファイル名を渡す | 許可されていない文字がすべて _ にサニタイズされて生成される |
+| Util-04 | UserSyncComponent | 正常 | DBに存在するCognitoユーザーIDを渡す | 既存のユーザー情報がそのまま返る |
+| Util-05 | UserSyncComponent | 正常 | DBに存在しないCognitoユーザーIDを渡す | デフォルト値（ロール等）がセットされた新規ユーザーとして保存され返る |
+
 ## 共通例外処理
 
-| ケースID | 観点 | 条件 | 期待結果 |
-| ----- | --- | --------------------------------------- | ------------------------------- |
-| Ex-01 | 異常 | ResourceNotFoundExceptionが発生 | NOT_FOUNDと404と指定エラーメッセージが返る |
-| Ex-02 | 権限 | ResourceAccessDeniedExceptionが発生 | FORBIDDENと403と指定エラーメッセージが返る |
-| Ex-03 | 異常 | IllegalArgumentExceptionが発生 | VALIDATION_ERRORと400と指定エラーメッセージが返る |
-| Ex-04 | 異常 | バリデーションエラーが発生 | VALIDATION_ERRORと400と独自エラーメッセージが返る |
-| Ex-05 | 異常 | 未認証でのアクセス | UNAUTHORIZEDと401と指定エラーメッセージが返る |
-| Ex-06 | 異常 | 想定外の例外が発生 | INTERNAL_SERVER_ERRORと500と指定エラーメッセージが返る |
-| Ex-07 | 異常 | その他のSpring MVC標準の例外が発生 | 標準のステータスコードとメッセージが返る |
+| ケースID | 対象メソッド | 観点 | 条件 | 期待結果 |
+| ----- | ---------------------------- | --- | -------------------------------- | --------------------------------------- |
+| Ex-01 | handleResourceNotFound | 異常 | ResourceNotFoundExceptionが発生 | NOT_FOUNDと404と指定エラーメッセージが返る |
+| Ex-02 | handleResourceAccessDenied | 権限 | ResourceAccessDeniedExceptionが発生 | FORBIDDENと403と指定エラーメッセージが返る |
+| Ex-03 | handleIllegalArgument | 異常 | IllegalArgumentExceptionが発生 | VALIDATION_ERRORと400と指定エラーメッセージが返る |
+| Ex-04 | handleMethodArgumentNotValid | 異常 | バリデーションエラーが発生 | VALIDATION_ERRORと400と独自エラーメッセージが返る |
+| Ex-05 | handleAccessDeniedException | 異常 | 未認証でのアクセス | UNAUTHORIZEDと401と指定エラーメッセージが返る |
+| Ex-06 | handleException | 異常 | 想定外の例外が発生 | INTERNAL_SERVER_ERRORと500と指定エラーメッセージが返る |
+| Ex-07 | handleExceptionInternal | 異常 | その他のSpring MVC標準の例外が発生 | 標準のステータスコードとメッセージが返る |
 
 ## スケジューラ
 
 | ケースID | 対象 | 観点 | 条件 | 期待結果 |
-| -------- | --------------------- | --- | -------------- | ---------------- |
+| -------- | ----------------------- | --- | ------------------- | ---------------------- |
 | Sched-01 | TrashCleanupScheduler | 正常 | 期限切れアイテムが存在する | 対象が完全削除処理に渡される |
 | Sched-02 | TrashCleanupScheduler | 境界 | 期限切れアイテムが存在しない | 削除処理が呼ばれず正常終了する |
 | Sched-03 | TrashCleanupScheduler | 境界 | S3キーとサムネイルキーが空 | S3削除処理が呼ばれず正常終了する |
 | Sched-04 | TrashCleanupScheduler | 異常 | 削除中に例外が発生 | ログ出力して正常終了する |
+| Sched-05 | ThumbnailRetryScheduler | 正常 | サムネイル未生成のメディアが存在する | 対象の件数分サムネイル生成処理が呼び出される |
+| Sched-06 | ThumbnailRetryScheduler | 境界 | サムネイル未生成のメディアが存在しない | サムネイル生成処理は呼ばれず正常終了する |
 
 ## その他テストケース一覧
 

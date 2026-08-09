@@ -8,6 +8,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.jwt.BadJwtException;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
@@ -40,18 +41,14 @@ public class CustomJwtAuthenticationConverter implements Converter<Jwt, Abstract
 
         if (cognitoUserId == null || cognitoUserId.isBlank()) {
             log.warn("subクレームがJWTに含まれていません");
-            throw new org.springframework.security.oauth2.jwt.BadJwtException(
-                "IDトークンにsubクレームが含まれていません"
-            );
+            throw new BadJwtException("IDトークンにsubクレームが含まれていません");
         }
 
         String email = jwt.getClaimAsString("email");
 
         if (email == null) {
             log.warn("emailクレームがJWTに含まれていません sub={}", cognitoUserId);
-            throw new org.springframework.security.oauth2.jwt.BadJwtException(
-                "IDトークンにemailクレームが含まれていません"
-            );
+            throw new BadJwtException("IDトークンにemailクレームが含まれていません");
         }
 
         // DBからユーザー情報を取得（存在しなければ作成）してロールを判定
