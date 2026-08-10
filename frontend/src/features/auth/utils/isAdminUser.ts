@@ -8,12 +8,17 @@ import { createAuthorizedConfig } from "@/lib/api-client/server";
  * サーバーコンポーネントからのみ呼び出し可能
  */
 export const isAdminUser = async () => {
-  const configuration = await createAuthorizedConfig();
-  const apiClient = new UserManagementApi(configuration);
+  try {
+    const configuration = await createAuthorizedConfig();
+    const apiClient = new UserManagementApi(configuration);
 
-  const currentUser = await apiClient.getMe({
-    xRequestedWith: "XMLHttpRequest",
-  });
+    const currentUser = await apiClient.getMe({
+      xRequestedWith: "XMLHttpRequest",
+    });
 
-  return currentUser.role === "ADMIN";
+    return currentUser.role === "ADMIN";
+  } catch {
+    // 未ログインや認証失敗時はfalseを返す
+    return false;
+  }
 };
