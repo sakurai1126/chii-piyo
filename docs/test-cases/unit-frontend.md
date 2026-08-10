@@ -1,28 +1,28 @@
 # フロントエンド単体テストケース
 
-## 純粋関数（バリデーション）
+## バリデーション
 
-| ケースID | 対象関数 | 観点 | 条件 | 期待結果 |
-| ------ | -------------------------- | --- | -------------------- | --------------- |
-| Val-01 | validateMilkUpdate | 正常 | ミルク量に有効値（10〜400）を渡す | trueが返る |
-| Val-02 | validateMilkUpdate | 異常 | ミルク量が未入力 | falseが返る |
-| Val-03 | validateMilkUpdate | 境界 | ミルク量が400を超える | falseが返る |
-| Val-04 | validateMilkUpdate | 境界 | ミルク量が10未満 | falseが返る |
-| Val-05 | validateMilkUpdate | 境界 | ミルク量がちょうど10 / 400 | trueが返る |
-| Val-06 | validateDiaperUpdate | 正常 | 排泄タイプにDIRTY / WETを渡す | trueが返る |
-| Val-07 | validateDiaperUpdate | 異常 | 排泄タイプが未入力 | falseが返る |
-| Val-08 | validateDiaperUpdate | 異常 | 排泄タイプが不正な値 | falseが返る |
-| Val-09 | validateHealthUpdate | 正常 | 体温に有効値（34〜42）を渡す | trueが返る |
-| Val-10 | validateHealthUpdate | 異常 | 体温が未入力 | falseが返る |
-| Val-11 | validateHealthUpdate | 境界 | 体温が34未満 / 42超 | falseが返る |
-| Val-12 | validateHealthUpdate | 境界 | 体温がちょうど34 / 42 | trueが返る |
-| Val-13 | validateGrowthRecordUpdate | 正常 | 身長または体重に有効値を渡す | trueが返る |
-| Val-14 | validateGrowthRecordUpdate | 異常 | 身長・体重どちらも未入力 | falseが返る |
-| Val-15 | validateGrowthRecordUpdate | 境界 | 身長が0以下 / 200超 | falseが返る |
-| Val-16 | validateGrowthRecordUpdate | 境界 | 体重が0以下 / 200超 | falseが返る |
-| Val-17 | validateCareRecordUpdate | 正常 | MEAL種別を渡す | 詳細検証を行わずtrueが返る |
+| ケースID  | 対象関数                       | 観点  | 条件                   | 期待結果     |
+| ------ | -------------------------- | --- | -------------------- | -------- |
+| Val-01 | validateMilkUpdate         | 正常  | ミルク量に有効値（10〜400）を渡す  | trueが返る  |
+| Val-02 | validateMilkUpdate         | 異常  | ミルク量が未入力             | falseが返る |
+| Val-03 | validateMilkUpdate         | 境界  | ミルク量が400を超える         | falseが返る |
+| Val-04 | validateMilkUpdate         | 境界  | ミルク量が10未満            | falseが返る |
+| Val-05 | validateMilkUpdate         | 境界  | ミルク量がちょうど10 / 400    | trueが返る  |
+| Val-06 | validateDiaperUpdate       | 正常  | 排泄タイプにDIRTY / WETを渡す | trueが返る  |
+| Val-07 | validateDiaperUpdate       | 異常  | 排泄タイプが未入力            | falseが返る |
+| Val-08 | validateDiaperUpdate       | 異常  | 排泄タイプが不正な値           | falseが返る |
+| Val-09 | validateHealthUpdate       | 正常  | 体温に有効値（34〜42）を渡す     | trueが返る  |
+| Val-10 | validateHealthUpdate       | 異常  | 体温が未入力               | falseが返る |
+| Val-11 | validateHealthUpdate       | 境界  | 体温が34未満 / 42超        | falseが返る |
+| Val-12 | validateHealthUpdate       | 境界  | 体温がちょうど34 / 42       | trueが返る  |
+| Val-13 | validateGrowthRecordUpdate | 正常  | 身長または体重に有効値を渡す       | trueが返る  |
+| Val-14 | validateGrowthRecordUpdate | 異常  | 身長・体重どちらも未入力         | falseが返る |
+| Val-15 | validateGrowthRecordUpdate | 境界  | 身長が0以下 / 200超        | falseが返る |
+| Val-16 | validateGrowthRecordUpdate | 境界  | 体重が0以下 / 200超        | falseが返る |
+| Val-17 | validateCareRecordUpdate   | 正常  | MEAL種別を渡す            | trueが返る  |
 
-## 純粋関数（パラメータ生成・日付・グラフ）
+## パラメータ生成・日付・グラフ
 
 | ケースID | 対象 | 観点 | 条件 | 期待結果 |
 | -------- | ------------------------------------ | --- | ------------------ | --------------------------- |
