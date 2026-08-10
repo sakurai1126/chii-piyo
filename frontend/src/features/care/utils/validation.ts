@@ -57,18 +57,19 @@ const validateHealthUpdate = (updateData: UpdateDataParams): boolean => {
   return true;
 };
 
+// 成長記録バリデーション
 export const validateGrowthRecordUpdate = (updateData: UpdateDataParams) => {
-  if (!updateData.height && !updateData.weight) {
+  if (updateData.height === undefined && updateData.weight === undefined) {
     toast.error("身長または体重を入力してください");
     return false;
   }
 
-  if (updateData.height && (updateData.height <= 0 || updateData.height > 200)) {
+  if (updateData.height !== undefined && (updateData.height <= 0 || updateData.height > 200)) {
     toast.error("身長を正しく入力してください");
     return false;
   }
 
-  if (updateData.weight && (updateData.weight <= 0 || updateData.weight > 200)) {
+  if (updateData.weight !== undefined && (updateData.weight <= 0 || updateData.weight > 200)) {
     toast.error("体重を正しく入力してください");
     return false;
   }
