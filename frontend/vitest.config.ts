@@ -13,6 +13,8 @@ export default defineConfig({
   test: {
     // Reactコンポーネントのテストを行うための実行環境
     environment: "jsdom",
+    // 各テスト開始前にモック履歴をクリア
+    clearMocks: true,
     // セットアップファイルの指定
     setupFiles: ["./vitest.setup.ts"],
     // vitestのテスト対象外のファイル
