@@ -7,7 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "generate-api": "rm -rf ./src/lib/api-client/gen/* && openapi-generator-cli generate -i ./openapi.yaml -g typescript-fetch -o ./src/lib/api-client/gen"
+    "generate-api": "rm -rf ./src/lib/api-client/gen/* && openapi-generator-cli generate -i ./openapi.yaml -g typescript-fetch -o ./src/lib/api-client/gen",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "^3.1087.0",
@@ -26,17 +31,27 @@
   },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^2.39.1",
+    "@playwright/test": "^1.62.1",
     "@tailwindcss/postcss": "^4",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.3",
     "@types/node": "^26",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^6.0.5",
+    "@vitest/coverage-v8": "^4.1.10",
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
+    "jsdom": "^30.0.1",
     "prettier": "^3.9.5",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "tailwindcss": "^4",
-    "typescript": "5"
+    "typescript": "5",
+    "vite-tsconfig-paths": "^6.1.1",
+    "vitest": "^4.1.10"
   }
 }
