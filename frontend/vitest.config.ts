@@ -1,3 +1,5 @@
+import path from "node:path";
+
 import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { defineConfig } from "vitest/config";
@@ -10,6 +12,11 @@ export default defineConfig({
     // @/ などのエイリアスインポートを有効化
     tsconfigPaths(),
   ],
+  resolve: {
+    alias: {
+      "server-only": path.resolve(__dirname, "./test/mocks/server-only.ts"),
+    },
+  },
   test: {
     // Reactコンポーネントのテストを行うための実行環境
     environment: "jsdom",
