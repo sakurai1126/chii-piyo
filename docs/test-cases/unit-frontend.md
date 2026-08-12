@@ -2,42 +2,69 @@
 
 ## バリデーション
 
-| ケースID  | 対象関数                       | 観点  | 条件                   | 期待結果     |
+| ケースID | 対象関数 | 観点 | 条件 | 期待結果 |
 | ------ | -------------------------- | --- | -------------------- | -------- |
-| Val-01 | validateMilkUpdate         | 正常  | ミルク量に有効値（10〜400）を渡す  | trueが返る  |
-| Val-02 | validateMilkUpdate         | 異常  | ミルク量が未入力             | falseが返る |
-| Val-03 | validateMilkUpdate         | 境界  | ミルク量が400を超える         | falseが返る |
-| Val-04 | validateMilkUpdate         | 境界  | ミルク量が10未満            | falseが返る |
-| Val-05 | validateMilkUpdate         | 境界  | ミルク量がちょうど10 / 400    | trueが返る  |
-| Val-06 | validateDiaperUpdate       | 正常  | 排泄タイプにDIRTY / WETを渡す | trueが返る  |
-| Val-07 | validateDiaperUpdate       | 異常  | 排泄タイプが未入力            | falseが返る |
-| Val-08 | validateDiaperUpdate       | 異常  | 排泄タイプが不正な値           | falseが返る |
-| Val-09 | validateHealthUpdate       | 正常  | 体温に有効値（34〜42）を渡す     | trueが返る  |
-| Val-10 | validateHealthUpdate       | 異常  | 体温が未入力               | falseが返る |
-| Val-11 | validateHealthUpdate       | 境界  | 体温が34未満 / 42超        | falseが返る |
-| Val-12 | validateHealthUpdate       | 境界  | 体温がちょうど34 / 42       | trueが返る  |
-| Val-13 | validateGrowthRecordUpdate | 正常  | 身長または体重に有効値を渡す       | trueが返る  |
-| Val-14 | validateGrowthRecordUpdate | 異常  | 身長・体重どちらも未入力         | falseが返る |
-| Val-15 | validateGrowthRecordUpdate | 境界  | 身長が0以下 / 200超        | falseが返る |
-| Val-16 | validateGrowthRecordUpdate | 境界  | 体重が0以下 / 200超        | falseが返る |
-| Val-17 | validateCareRecordUpdate   | 正常  | MEAL種別を渡す            | trueが返る  |
+| Val-01 | validateMilkUpdate | 正常 | ミルク量に有効値（10〜400）を渡す | trueが返る |
+| Val-02 | validateMilkUpdate | 異常 | ミルク量が未入力 | falseが返る |
+| Val-03 | validateMilkUpdate | 境界 | ミルク量が400を超える | falseが返る |
+| Val-04 | validateMilkUpdate | 境界 | ミルク量が10未満 | falseが返る |
+| Val-05 | validateMilkUpdate | 境界 | ミルク量がちょうど10 / 400 | trueが返る |
+| Val-06 | validateDiaperUpdate | 正常 | 排泄タイプにDIRTY / WETを渡す | trueが返る |
+| Val-07 | validateDiaperUpdate | 異常 | 排泄タイプが未入力 | falseが返る |
+| Val-08 | validateDiaperUpdate | 異常 | 排泄タイプが不正な値 | falseが返る |
+| Val-09 | validateHealthUpdate | 正常 | 体温に有効値（34〜42）を渡す | trueが返る |
+| Val-10 | validateHealthUpdate | 異常 | 体温が未入力 | falseが返る |
+| Val-11 | validateHealthUpdate | 境界 | 体温が34未満 / 42超 | falseが返る |
+| Val-12 | validateHealthUpdate | 境界 | 体温がちょうど34 / 42 | trueが返る |
+| Val-13 | validateGrowthRecordUpdate | 正常 | 身長または体重に有効値を渡す | trueが返る |
+| Val-14 | validateGrowthRecordUpdate | 異常 | 身長・体重どちらも未入力 | falseが返る |
+| Val-15 | validateGrowthRecordUpdate | 境界 | 身長が0以下 / 200超 | falseが返る |
+| Val-16 | validateGrowthRecordUpdate | 境界 | 体重が0以下 / 200超 | falseが返る |
+| Val-17 | validateCareRecordUpdate | 正常 | MEAL種別を渡す | trueが返る |
 
-## パラメータ生成・日付・グラフ
+## パラメータ生成
 
 | ケースID | 対象 | 観点 | 条件 | 期待結果 |
-| -------- | ------------------------------------ | --- | ------------------ | --------------------------- |
-| Param-01 | generateUpdateCareRecordActionParams | 正常 | MILK種別と更新データを渡す | milkDetailのみ生成され他はundefined |
-| Param-02 | generateUpdateCareRecordActionParams | 正常 | DIAPER種別を渡す | diaperDetailのみ生成される |
-| Param-03 | generateUpdateCareRecordActionParams | 境界 | 種別に対応する値がundefined | 該当detailがundefinedになる |
-| Date-01 | formatJapaneseDate | 正常 | 有効な日付を渡す | 日本語形式の日時文字列が返る |
-| Date-02 | calculateRemainingDays | 正常 | 未来の期限日を渡す | 残り日数が返る |
-| Date-03 | calculateRemainingDays | 境界 | 期限日が当日 | 0が返る |
-| Date-04 | calculateDaysSinceBirth | 正常 | 誕生日を渡す | 経過日数が返る |
-| Date-05 | dateOnlyToUtcNoon | 正常 | 日付文字列を渡す | UTC正午のDateが返る |
-| Graph-01 | getAndBuildGraphData | 正常 | 記録データを渡す | グラフ描画用データが返る |
-| Graph-02 | getAndBuildGraphData | 境界 | 空の記録データを渡す | 空の結果が返り例外にならない |
-| Graph-03 | growthStandardRanges | 正常 | 月齢を渡す | 対応する標準範囲が返る |
-| Graph-04 | growthStandardRanges | 境界 | 範囲外の月齢を渡す | 仕様通りの境界挙動になる |
+| -------- | ------------------------------------ | --- | ------------------ | ----------------- |
+| Param-01 | generateUpdateCareRecordActionParams | 正常 | MEAL種別と更新データを渡す | 食事記録詳細のみ生成される |
+| Param-02 | generateUpdateCareRecordActionParams | 正常 | MILK種別と更新データを渡す | ミルク記録詳細のみ生成される |
+| Param-03 | generateUpdateCareRecordActionParams | 正常 | DIAPER種別と更新データを渡す | 排泄記録詳細のみ生成される |
+| Param-04 | generateUpdateCareRecordActionParams | 正常 | HEALTH種別と更新データを渡す | 健康記録詳細のみ生成される |
+| Param-05 | generateUpdateCareRecordActionParams | 境界 | 種別に対応する値がundefined | 該当詳細がundefinedになる |
+
+## 日付関連
+
+| ケースID | 対象 | 観点 | 条件 | 期待結果 |
+| ------- | -------------------------- | --- | --------------------- | ------------------------ |
+| Date-01 | formatJapaneseDate | 正常 | 有効な日付を渡す | YYYY年M月D日 HH:MM形式の文字列が返る |
+| Date-02 | formatJapaneseDate | 異常 | 無効な日付文字列を渡す | 空文字が返る |
+| Date-03 | formatJapaneseDateNonTime | 正常 | 有効な日付を渡す | YYYY年M月D日形式の文字列が返る |
+| Date-04 | formatJapaneseDateNonTime | 正常 | 無効な日付文字列を渡す | 空文字が返る |
+| Date-05 | formatShortDate | 正常 | 有効な日付を渡す | 日本時間のM/D形式の文字列が返る |
+| Date-06 | formatShortDate | 正常 | 無効な日付文字列を渡す | 空文字が返る |
+| Date-07 | formatShortMonth | 正常 | 有効な日付を渡す | 日本時間のYYYY/M形式の文字列が返る |
+| Date-08 | formatShortMonth | 正常 | 無効な日付文字列を渡す | 空文字が返る |
+| Date-09 | formatJapaneseDateBasic | 正常 | 有効な日付を渡す | YYYY-MM-DD形式の文字列が返る |
+| Date-10 | formatJapaneseDateBasic | 正常 | 無効な日付文字列を渡す | 空文字が返る |
+| Date-11 | formatJapaneseDateTimeOnly | 正常 | 有効な日付を渡す | HH:MM形式の文字列が返る |
+| Date-12 | formatJapaneseDateTimeOnly | 正常 | 無効な日付文字列を渡す | 空文字が返る |
+| Date-13 | calculateRemainingDays | 正常 | 未来の期限日を渡す | 残り日数（正の整数）が返る |
+| Date-14 | calculateRemainingDays | 境界 | 期限日が当日または過去日付 | 0が返る |
+| Date-15 | getCurrentDateTime | 正常 | 関数を実行する | 現在日時と現在時刻が返る |
+| Date-16 | calculateDaysSinceBirth | 正常 | 誕生日からの経過日付を渡す | X年Yヶ月Z日形式の経過日数文字列が返る |
+| Date-17 | calculateDaysSinceBirth | 境界 | 月跨ぎで日繰り下げが発生する日付を渡す | 前月末日を加算した日繰り下げ計算結果が返る |
+| Date-18 | calculateDaysSinceBirth | 境界 | 誕生日より前の日付を渡す | 0日が返る |
+| Date-19 | dateOnlyToUtcNoon | 正常 | YYYY-MM-DD形式の日付文字列を渡す | UTC正午が返る |
+
+## グラフ
+
+| ケースID | 対象 | 観点 | 条件 | 期待結果 |
+| -------- | -------------------- | --- | ----------------- | ------------------------- |
+| Graph-01 | getAndBuildGraphData | 正常 | 管理者権限で実行 | 12か月分および7日分の集計データが構築されて返る |
+| Graph-02 | getAndBuildGraphData | 正常 | 一般ユーザー権限で実行 | 育児記録が集計されず初期値として返る |
+| Graph-03 | getAndBuildGraphData | 境界 | 記録データが存在しない | 12か月分および7日分の空のデータ構造が返る |
+| Graph-04 | getAndBuildGraphData | 境界 | 同一月に複数の身体測定記録が存在 | 最新の測定記録が優先して採用される |
+| Graph-05 | getAndBuildGraphData | 境界 | 発育標準範囲内外の月齢を対象とする | 標準範囲のデータが正しく処理される |
 
 ## 認証・セッションユーティリティ
 
