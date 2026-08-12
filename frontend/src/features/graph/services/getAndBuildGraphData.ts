@@ -6,6 +6,20 @@ import { formatShortDate, formatShortMonth } from "@/utils/date";
 
 import { growthStandardRanges } from "./growthStandardRanges";
 
+/**
+ * グラフ表示に必要なデータを一括取得・集計する
+ *
+ * @param isAdmin 管理者権限
+ * @returns グラフ表示用のデータ
+ * - heightData: 12ヶ月分の身長データ
+ * - weightData: 12ヶ月分の体重データ
+ * - milkData: 7日分のミルクデータ
+ * - diaperData: 7日分の排泄データ
+ * - wordData: 12ヶ月分のことばデータ
+ * - careRecords: 7日分の全育児記録データ
+ * - growthRecords: 12ヶ月分の成長記録データ
+ * - wordRecords: ことば記録全データ
+ */
 export const getAndBuildGraphData = async (isAdmin: boolean) => {
   // 誕生日指定
   const birthYear = 2025;
