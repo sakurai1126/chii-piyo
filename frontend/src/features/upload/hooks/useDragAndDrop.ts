@@ -14,6 +14,9 @@ type UseDragAndDropParams = {
  * ファイルが追加されたときに呼び出される関数
  * useUploadPageのsetFileAndUrlを渡す想定
  *
+ * @param acceptTypes
+ * "image"または"video"を指定することで、画像または動画のみを許可する
+ *
  * @returns
  * - isDragging: ドラッグ中かどうかのフラグ
  * - handleDrop: ドロップした際の処理

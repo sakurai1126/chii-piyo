@@ -198,7 +198,7 @@ export const useUploadMediaState = () => {
 };
 
 /**
- * 画像ファイルを読み込んでプレビューURLと縦横サイズを取得する関数
+ * ファイルを読み込んでプレビューURLと縦横サイズを取得する関数
  */
 const loadImageFile = (file: File): Promise<UploadMedia> => {
   return new Promise((resolve, reject) => {
