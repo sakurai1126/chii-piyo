@@ -66,44 +66,41 @@
 | Graph-04 | getAndBuildGraphData | 境界 | 同一月に複数の身体測定記録が存在 | 最新の測定記録が優先して採用される |
 | Graph-05 | getAndBuildGraphData | 境界 | 発育標準範囲内外の月齢を対象とする | 標準範囲のデータが正しく処理される |
 
-## 認証・セッションユーティリティ
-
-| ケースID | 対象 | 観点 | 条件 | 期待結果 |
-| ---------- | ------------- | --- | ------------------------- | -------- |
-| Jwt-01 | verifyIdToken | 正常 | 有効なIDトークンを渡す | trueが返る |
-| Jwt-02 | verifyIdToken | 異常 | 署名・Issuer・Audienceが不正 | falseが返る |
-| Jwt-03 | verifyIdToken | 異常 | token_useがidでない | falseが返る |
-| Jwt-04 | verifyIdToken | 異常 | sub / emailクレームが欠落 | falseが返る |
-| Jwt-05 | verifyIdToken | 異常 | 検証で例外が発生 | falseが返る |
-| Session-01 | isAdminUser | 権限 | 取得したユーザーのroleがADMIN | trueが返る |
-| Session-02 | isAdminUser | 権限 | 取得したユーザーのroleがADMIN以外 | falseが返る |
-| Session-03 | isEasyMode | 正常 | 取得したユーザーのisEasyModeがtrue | trueが返る |
-| Session-04 | isEasyMode | 正常 | 取得したユーザーのisEasyModeがfalse | falseが返る |
-
 ## カスタムフック
 
 | ケースID | 対象フック | 観点 | 条件 | 期待結果 |
-| ------- | -------------------- | --- | ----------- | ------------- |
-| Hook-01 | useCareRecord | 正常 | 記録操作を実行 | 状態が期待通り更新される |
-| Hook-02 | useCalendar | 正常 | 月移動・日付選択を行う | カレンダー状態が更新される |
-| Hook-03 | useInfiniteMediaList | 正常 | 追加読み込みを行う | 次ページが結合されて返る |
-| Hook-04 | useInfiniteMediaList | 境界 | 次ページが無い | 追加読み込みが行われない |
-| Hook-05 | useUploadRunner | 正常 | アップロードを実行 | 進行状態が遷移し完了する |
-| Hook-06 | useUploadRunner | 異常 | アップロードが失敗 | エラー状態に遷移する |
+| ------- | ------------------- | --- | --------------------------- | ---------------------------- |
+| Hook-01 | useCalendar | 正常 | 初期化時 | 当週の日付一覧および当日の選択状態が生成される |
+| Hook-02 | useCalendar | 正常 | 翌週への移動操作を実行 | 表示週が7日後にずれ、週の日付一覧が再生成される |
+| Hook-03 | useCalendar | 境界 | 日付移動で週をまたぐ場合 | 自動的に週変更が実行され表示週が更新される |
+| Hook-04 | useCalendar | 境界 | 当週以外に移動後、当週に戻った場合 | 現在の週のフラグが切り替わる |
+| Hook-05 | useCalendarPop | 正常 | 育児記録がセットされた状態で編集モードを開く | 記録の日時・メモ・種別固有の値が入力初期値にセットされる |
+| Hook-06 | useCalendarPop | 正常 | 成長記録がセットされた状態で編集モードを開く | 記録の日付・身長・体重・メモが入力初期値にセットされる |
+| Hook-07 | useCalendarPop | 異常 | 育児記録のバリデーションに失敗する入力で保存操作を実行 | 更新APIが呼ばれずエラーとなる |
+| Hook-08 | useRecordEdit | 正常 | 必須項目を入力した状態で確認操作を実行 | 入力検証を通過し確認状態へ遷移する |
+| Hook-09 | useRecordEdit | 異常 | 必須項目が未入力の状態で確認操作を実行 | 入力検証エラーとなり確認状態へ遷移しない |
+| Hook-10 | useRecordEdit | 正常 | 編集のキャンセル操作を実行 | 入力内容および選択済みメディアが初期状態にリセットされる |
+| Hook-11 | useDragAndDrop | 正常 | 指定形式のファイルをドロップ | ファイル検証を通過しファイル追加処理が実行される |
+| Hook-12 | useDragAndDrop | 異常 | 対象外形式のファイルをドロップ | 対象外ファイルが除外され追加処理が実行されない |
+| Hook-13 | useDragAndDrop | 境界 | 子要素をまたいでドラッグした場合 | ドラッグ状態が途中で意図せず解除されない |
+| Hook-14 | useUploadMediaState | 正常 | サイズ・枚数制限内の画像を追加 | ファイルが一覧に追加される |
+| Hook-15 | useUploadMediaState | 境界 | 上限枚数（30枚）を超える画像を追加 | 上限分のみ追加され超過分はスキップされる |
+| Hook-16 | useUploadMediaState | 境界 | サイズ制限（20MB）を超える画像を追加 | サイズ超過ファイルが除外される |
+| Hook-17 | useUploadMediaState | 正常 | 特定インデックスのファイルを個別削除 | 対象ファイルのみ一覧から除外される |
+| Hook-18 | useUploadMediaState | 正常 | 全ファイルを一括削除 | 一覧が空になる |
+| Hook-19 | useUploadRunner | 正常 | 複数ファイルのアップロード処理を開始 | 最大3並列で処理が実行され全件完了コールバックが呼ばれる |
+| Hook-20 | useUploadRunner | 異常 | アップロード処理中に通信エラーが発生 | 失敗件数がカウントされエラー情報が保持される |
+| Hook-21 | useUploadRunner | 境界 | 既にアップロード中に再度実行を呼び出す | 二重実行されずスキップされる |
+| Hook-22 | useUploadRunner | 境界 | アップロード中に処理を中断 | 処理が中断され残キューが実行されない |
 
-## Server Actions / API 層
+## アップロード
 
 | ケースID | 対象 | 観点 | 条件 | 期待結果 |
-| --------- | ------------------------- | --- | --------------- | ----------------- |
-| Action-01 | loginAction | 正常 | 有効な認証情報を渡す | ログインが成功しリダイレクトされる |
-| Action-02 | loginAction | 異常 | 認証に失敗 | エラーが返る |
-| Action-03 | createCareRecordAction | 正常 | 有効な記録データを渡す | 記録が作成される |
-| Action-04 | createCareRecordAction | 異常 | API呼び出しが失敗 | エラーが返る |
-| Action-05 | createMediaAction | 正常 | 有効なアップロード情報を渡す | メディアが作成される |
-| Action-06 | deleteMultipleMediaAction | 正常 | 複数メディアIDを渡す | 対象が削除される |
-| Api-01 | getMediaList | 正常 | 検索条件を渡す | メディア一覧が返る |
-| Api-02 | uploadToS3 | 正常 | 署名付きURLとファイルを渡す | アップロードが成功する |
-| Api-03 | uploadToS3 | 異常 | アップロードが失敗 | エラーが送出される |
+| --------- | ---------- | --- | -------------------- | ------------------------ |
+| Upload-01 | uploadToS3 | 正常 | アップロードURLとファイルを渡して実行 | アップロードが実行され、進捗率が正しく通知される |
+| Upload-02 | uploadToS3 | 異常 | S3から4xx/5xxレスポンス | 適切なエラーが送出される |
+| Upload-03 | uploadToS3 | 異常 | ネットワークエラーが発生 | 適切なエラーが送出される |
+| Upload-04 | uploadToS3 | 境界 | アップロード途中でによる中断が発生 | 処理が中断され、中断エラーが送出される |
 
 ## その他テストケース一覧
 
