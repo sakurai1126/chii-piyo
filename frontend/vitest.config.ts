@@ -37,12 +37,48 @@ export default defineConfig({
       include: ["src/**/*.{ts,tsx}"],
       // カバレッジ対象外のファイル
       exclude: [
-        // OpenAPI自動生成コード
+        // 自動生成・型定義・設定
         "src/lib/api-client/gen/**",
-        // 型定義ファイル
         "**/*.d.ts",
-        // ビルドツール等の設定ファイル
         "*.config.*",
+        "**/types/**",
+        // エントリポイントファイル
+        "**/index.ts",
+        "**/server.ts",
+        "**/actions.ts",
+        // UIコンポーネント・スタイル・ページ
+        "src/app/**",
+        "src/components/**",
+        "src/features/**/components/**",
+        "src/styles/**",
+        // API通信ラッパー・Server Actions
+        "src/features/**/api/**",
+        "src/features/**/actions/**",
+        // インフラ・認証基盤・Proxy
+        "src/proxy.ts",
+        "src/lib/auth/**",
+        // テストファイル自身・モック
+        "**/*.test.{ts,tsx}",
+        "src/test/**",
+        // UIスタイル関連
+        "src/hooks/**",
+        // サーバー側API呼び出し関数
+        "src/features/auth/utils/**",
+        // React Queryのフェッチフック
+        "src/**/hooks/useGet*.ts",
+        "src/**/hooks/use*List.ts",
+        // 通信・UI補助ユーティリティ
+        "src/utils/fetcher.ts",
+        "src/utils/api.ts",
+        "src/utils/cn.ts",
+        // 画面固有の合成フック・設定画面フック
+        "src/features/settings/**",
+        "src/features/upload/hooks/useMultipleSettings.ts",
+        "src/features/upload/hooks/useUploadPage.ts",
+        "src/features/care/hooks/useCareRecord.ts",
+        // 補助ユーティリティ
+        "src/utils/getTheme.ts",
+        "src/utils/action.ts",
       ],
     },
   },

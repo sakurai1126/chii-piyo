@@ -1,4 +1,7 @@
-import { test as setup, expect } from "@playwright/test";
+import { test as setup } from "@playwright/test";
+
+import { createLoginPage } from "./pages/login.page";
+import { createTopPage } from "./pages/top.page";
 
 const authFile = "frontend/e2e/.auth/user.json";
 
@@ -10,18 +13,16 @@ setup("authenticate", async ({ page }) => {
     throw new Error("環境変数に認証情報が設定されていません。");
   }
 
-  await page.goto("/login");
+  // ページ操作関数の初期化
+  const loginPage = createLoginPage(page);
+  const topPage = createTopPage(page);
 
-  // フォーム入力とログイン実行
-  await page.getByLabel("メールアドレス").fill(email);
-  await page.getByLabel("パスワード").fill(password);
-  await page.getByRole("button", { name: "ログイン" }).click();
+  // ログイン画面にアクセスしてログイン実行
+  await loginPage.goto();
+  await loginPage.login(email, password);
 
-  // トップページへの遷移を待機
-  await page.waitForURL("/");
-
-  // ログイン後の要素確認
-  await expect(page.getByRole("heading", { name: "アルバム" })).toBeVisible();
+  // ホーム画面のURLおよびサマリー要素が表示されていることを検証
+  await topPage.expectSummaryLoaded();
 
   // 認証状態を保存
   await page.context().storageState({ path: authFile });
