@@ -100,7 +100,11 @@ export const NewSharingGroupEdit = ({ users }: Props) => {
             <Button variant="cancel" onClick={() => setIsNewGroupEdit(false)} disabled={isPending}>
               キャンセル
             </Button>
-            <Button onClick={createAction} disabled={isPending}>
+            <Button
+              onClick={createAction}
+              disabled={isPending}
+              aria-label="共有範囲グループの新規保存"
+            >
               保存
             </Button>
           </div>

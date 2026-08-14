@@ -29,7 +29,10 @@ export const SharingGroupFilter = ({ sharingGroups, updateFilter, currentValue =
 
   // 共有グループ選択時の処理
   return (
-    <div className="bg-background-accent w-full rounded-lg px-7 pt-6 pb-8 @max-md:p-3 @max-md:pb-4">
+    <div
+      className="bg-background-accent w-full rounded-lg px-7 pt-6 pb-8 @max-md:p-3 @max-md:pb-4"
+      aria-label="共有グループ選択フィルター"
+    >
       <div className="flex items-center gap-1.5">
         <Image src={icon} alt="" width={32} height={32} className="h-6.5 w-6.5" />
         <p className="@max-md:text-[13px]">共有範囲</p>
@@ -97,6 +100,7 @@ export const SharingGroupFilter = ({ sharingGroups, updateFilter, currentValue =
           type="button"
           onClick={() => setIsOpen((prev) => !prev)}
           className="text-brown-middle mt-2 -mb-5 flex h-5 w-full justify-center text-sm underline @max-md:-mb-2"
+          aria-label="共有範囲閲覧を開閉する"
         >
           <Image
             src={arrow}

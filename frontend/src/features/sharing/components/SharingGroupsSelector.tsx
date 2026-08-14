@@ -25,11 +25,6 @@ export const SharingGroupsSelector = ({
     <>
       <p className="mt-8 @max-md:mt-4 @max-md:text-[13px]">共有範囲を編集</p>
 
-      {/* 共有グループ0件の表示 */}
-      {sharingGroups.length === 0 && (
-        <p className="mt-3 mr-10 text-sm @max-md:text-xs">共有グループがありません</p>
-      )}
-
       {/* 共有グループ選択 */}
       <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2">
         {/* 共有グループ指定なし（全員公開） */}
