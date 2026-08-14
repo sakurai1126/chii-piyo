@@ -6,7 +6,7 @@ import { createTopPage } from "./pages/top.page";
 // 認証保存セッションを使わず、未ログイン状態でテストを開始する設定
 test.use({ storageState: { cookies: [], origins: [] } });
 
-test.describe("認証シナリオ", () => {
+test.describe("認証関連シナリオ", () => {
   test("E2E-01: 正しい認証情報でログインしホームのサマリーが表示されること", async ({ page }) => {
     const email = process.env.TEST_USER_EMAIL;
     const password = process.env.TEST_USER_PASSWORD;
@@ -16,12 +16,12 @@ test.describe("認証シナリオ", () => {
     }
 
     // ページ操作関数の初期化
-    const loginPage = createLoginPage(page);
-    const topPage = createTopPage(page);
+    const loginPage = createLoginPage({ page });
+    const topPage = createTopPage({ page });
 
     // ログイン画面にアクセスしてログイン実行
     await loginPage.goto();
-    await loginPage.login(email, password);
+    await loginPage.login({ email, password });
 
     // ホーム画面へ遷移しサマリーが表示されたことを検証
     await topPage.expectSummaryLoaded();
@@ -31,8 +31,8 @@ test.describe("認証シナリオ", () => {
     page,
   }) => {
     // ページ操作関数の初期化
-    const loginPage = createLoginPage(page);
-    const topPage = createTopPage(page);
+    const loginPage = createLoginPage({ page });
+    const topPage = createTopPage({ page });
 
     // トップページにアクセス
     await topPage.goto();
@@ -46,11 +46,11 @@ test.describe("認証シナリオ", () => {
     const password = "test";
 
     // ページ操作関数の初期化
-    const loginPage = createLoginPage(page);
+    const loginPage = createLoginPage({ page });
 
     // ログイン画面にアクセスしてログイン実行
     await loginPage.goto();
-    await loginPage.login(email, password);
+    await loginPage.login({ email, password });
 
     // ログインページにいることを検証
     await loginPage.expectLoginPageLanding();

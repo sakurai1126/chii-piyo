@@ -1,11 +1,10 @@
 import { expect, Page } from "@playwright/test";
 
-// トップページの操作オブジェクトを作成
-export const createTopPage = (page: Page) => {
+export const createTopPage = ({ page }: { page: Page }) => {
   // 画面へアクセス
   const goto = async () => {
     await page.goto("/");
-    await page.waitForLoadState("domcontentloaded");
+    await page.waitForLoadState("networkidle");
   };
 
   // ホーム画面のURLおよびサマリー要素が表示されていることを検証
