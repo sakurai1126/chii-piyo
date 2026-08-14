@@ -8,7 +8,7 @@ export const createAlbumPage = ({ page }: { page: Page }) => {
   };
 
   // アルバム作成
-  const createAlbum = async (title: string) => {
+  const createAlbum = async ({ title }: { title: string }) => {
     await page.getByRole("button", { name: "アルバムを新規作成" }).click();
     // モーダル内のinputを指定し入力
     await page
@@ -21,7 +21,7 @@ export const createAlbumPage = ({ page }: { page: Page }) => {
   };
 
   // 作成したアルバムの詳細ページを開く
-  const openAlbum = async (title: string) => {
+  const openAlbum = async ({ title }: { title: string }) => {
     await page.getByRole("link", { name: title }).click();
     await page.waitForLoadState("networkidle");
   };

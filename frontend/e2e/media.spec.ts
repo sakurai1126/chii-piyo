@@ -43,9 +43,9 @@ test.describe("メディア関連シナリオ", () => {
     await albumPage.goto();
 
     // アルバムを作成し詳細ページへ移動
-    const uniqueAlbumTitle = `テストアルバム_${Date.now()}`;
-    await albumPage.createAlbum(uniqueAlbumTitle);
-    await albumPage.openAlbum(uniqueAlbumTitle);
+    const albumTitle = `テストアルバム_${Date.now()}`;
+    await albumPage.createAlbum({ title: albumTitle });
+    await albumPage.openAlbum({ title: albumTitle });
 
     // アルバム詳細ページでメディアを追加
     await albumPage.addMedia();
