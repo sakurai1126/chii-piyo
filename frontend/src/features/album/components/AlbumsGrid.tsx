@@ -72,7 +72,11 @@ export const AlbumsGrid = ({ isEasy, albums, variant = "page" }: Props) => {
           {album.coverMediaUrls.length > 1 ? (
             <AlbumsGridSlide album={album} />
           ) : (
-            <Link href={`/albums/${album.id}`} className="group block overflow-hidden">
+            <Link
+              href={`/albums/${album.id}`}
+              className="group block overflow-hidden"
+              aria-label={album.title}
+            >
               <Image
                 src={album.coverMediaUrls[0] ?? "/images/no-image.svg"}
                 alt=""

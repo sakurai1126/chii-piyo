@@ -12,6 +12,11 @@ export default defineConfig({
   // テストファイルの配置ディレクトリ
   testDir: "./e2e",
 
+  // 通信の不安定等を考慮しアサーションのデフォルトタイムアウトを15秒に設定
+  expect: {
+    timeout: 15 * 1000,
+  },
+
   // DBのデータ競合や同一ユーザーでのセッション競合を防ぐため直列化
   fullyParallel: false,
 
