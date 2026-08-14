@@ -7,6 +7,11 @@ export const createTrashPage = ({ page }: { page: Page }) => {
     await page.waitForLoadState("networkidle");
   };
 
+  const expectPageLoaded = async () => {
+    await expect(page).toHaveURL("/trash");
+    await expect(page.getByRole("heading", { name: "ゴミ箱" })).toBeVisible();
+  };
+
   // ゴミ箱内のメディア数を取得
   const getTrashItemCount = async () => {
     return await page.locator('input[type="checkbox"][id^="trashItem-"]').count();
@@ -43,11 +48,18 @@ export const createTrashPage = ({ page }: { page: Page }) => {
     await expect(page.getByText("メディアを完全に削除しました。")).toBeVisible();
   };
 
+  // 404エラーが表示されていることを検証
+  const expectNotFound = async () => {
+    await expect(page.getByText("404")).toBeVisible();
+  };
+
   return {
     goto,
+    expectPageLoaded,
     getTrashItemCount,
     expectTrashItemCount,
     restoreMedia,
     deleteMedia,
+    expectNotFound,
   };
 };

@@ -7,6 +7,11 @@ export const createCarePage = ({ page }: { page: Page }) => {
     await page.waitForLoadState("networkidle");
   };
 
+  const expectPageLoaded = async () => {
+    await expect(page).toHaveURL("/care");
+    await expect(page.getByRole("button", { name: "食事" })).toBeVisible();
+  };
+
   // 食事記録を登録
   const recordMeal = async ({ note }: { note: string }) => {
     await page.getByRole("button", { name: "食事" }).click();
@@ -22,9 +27,16 @@ export const createCarePage = ({ page }: { page: Page }) => {
     await expect(page.getByText(note)).toBeVisible();
   };
 
+  // 404エラーが表示されていることを検証
+  const expectNotFound = async () => {
+    await expect(page.getByText("404")).toBeVisible();
+  };
+
   return {
     goto,
+    expectPageLoaded,
     recordMeal,
     expectMealRecordInCalendar,
+    expectNotFound,
   };
 };

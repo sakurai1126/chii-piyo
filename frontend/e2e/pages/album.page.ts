@@ -43,11 +43,23 @@ export const createAlbumPage = ({ page }: { page: Page }) => {
     await expect(page.locator('a[href^="/media/"]:has(img)')).toHaveCount(expectedCount);
   };
 
+  // アルバム作成ボタンの表示を検証
+  const expectCreateButtonVisible = async () => {
+    await expect(page.getByRole("button", { name: "アルバムを新規作成" })).toBeVisible();
+  };
+
+  // アルバム作成ボタンの非表示を検証
+  const expectCreateButtonNotVisible = async () => {
+    await expect(page.getByRole("button", { name: "アルバムを新規作成" })).not.toBeVisible();
+  };
+
   return {
     goto,
     createAlbum,
     openAlbum,
     addMedia,
     expectMediaCount,
+    expectCreateButtonVisible,
+    expectCreateButtonNotVisible,
   };
 };

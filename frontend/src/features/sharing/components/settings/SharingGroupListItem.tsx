@@ -97,7 +97,7 @@ export const SharingGroupListItem = ({ users, sharingGroup }: Props) => {
       <div>
         <div className="flex items-center justify-between">
           <div className="flex items-center @max-md:flex-col @max-md:items-start">
-            <p className="w-25 shrink-0 @max-md:text-[13px]">{sharingGroup.name}</p>
+            <p className="w-25 shrink-0 break-all @max-md:text-[13px]">{sharingGroup.name}</p>
             <div className="ml-8 flex flex-wrap gap-x-6 gap-y-2 @max-md:mt-3 @max-md:ml-0 @max-md:gap-x-3">
               {sharingGroup.members.map((member) => (
                 <div className="flex items-center gap-2" key={member.userId}>

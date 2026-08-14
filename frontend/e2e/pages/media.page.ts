@@ -33,11 +33,41 @@ export const createMediaPage = ({ page }: { page: Page }) => {
     await expect(page.getByText("メディアをゴミ箱に移動しました")).toBeVisible();
   };
 
+  // 共有範囲フィルターで絞り込み
+  const filterBySharingGroup = async ({ groupName }: { groupName: string }) => {
+    // 展開ボタンが表示されていればクリックして全展開
+    const expandButton = page.getByRole("button", { name: "共有範囲閲覧を開閉する" });
+    if (await expandButton.isVisible()) {
+      await expandButton.click();
+    }
+
+    // 共有範囲を選択
+    await page
+      .locator('div[aria-label="共有グループ選択フィルター"]')
+      .locator("label")
+      .filter({ hasText: groupName })
+      .locator('input[type="radio"]')
+      .click();
+
+    // 絞り込みによるネットワーク更新を待機
+    await page.waitForLoadState("networkidle");
+  };
+
+  // かんたんモード時のUI簡素化を検証
+  const expectEasyModeApplied = async () => {
+    // タイトル見出しが26pxになっていることを確認
+    await expect(page.locator("h1")).toHaveClass(/text-\[26px\]/);
+    // フィルタリングUIが非表示になっていることを確認
+    await expect(page.locator('div[aria-label="共有グループ選択フィルター"]')).not.toBeVisible();
+  };
+
   return {
     goto,
     expectLoaded,
     getMediaCount,
     expectMediaCount,
     deleteMedia,
+    filterBySharingGroup,
+    expectEasyModeApplied,
   };
 };
