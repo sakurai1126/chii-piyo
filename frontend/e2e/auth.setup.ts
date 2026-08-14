@@ -14,12 +14,12 @@ setup("authenticate", async ({ page }) => {
   }
 
   // ページ操作関数の初期化
-  const loginPage = createLoginPage(page);
-  const topPage = createTopPage(page);
+  const loginPage = createLoginPage({ page });
+  const topPage = createTopPage({ page });
 
   // ログイン画面にアクセスしてログイン実行
   await loginPage.goto();
-  await loginPage.login(email, password);
+  await loginPage.login({ email, password });
 
   // ホーム画面のURLおよびサマリー要素が表示されていることを検証
   await topPage.expectSummaryLoaded();
