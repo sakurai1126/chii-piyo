@@ -20,6 +20,16 @@ export const createUploadPage = ({ page }: { page: Page }) => {
     });
   };
 
+  // 共有範囲を選択
+  const selectSharingGroup = async ({ groupName }: { groupName: string }) => {
+    await page.locator('button[aria-controls^="accordion-"]').click();
+    await page
+      .locator("label")
+      .filter({ hasText: groupName })
+      .locator('input[type="radio"]')
+      .check();
+  };
+
   const upload = async () => {
     // アップロードボタンをクリック
     await page.getByRole("button", { name: "アップロード" }).click();
@@ -31,6 +41,7 @@ export const createUploadPage = ({ page }: { page: Page }) => {
   return {
     goto,
     inputPhoto,
+    selectSharingGroup,
     upload,
   };
 };
