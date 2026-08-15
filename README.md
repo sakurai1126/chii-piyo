@@ -23,6 +23,9 @@ PWA対応とGitHub ActionsによるCI/CDの設定、およびAWSデプロイが�
 
 ## スクリーンショット
 
+大まかに画面構成を示すものであり、より詳細なデザインについては [Figmaの画面設計](https://www.figma.com/design/v2lAv2ROvhmWhJJk2csHhs/Chii-Piyo?m=auto&t=CbgxIJ3xj0RROpLI-6) を参照
+※Figmaは設計段階のものであるため、実際の画面と細部は異なる
+
 メディア管理関連ページ
 ![メディア管理](docs/images/pc-2.webp)
 
