@@ -38,7 +38,7 @@ public class AlbumRepository {
      * @return アルバムエンティティのリスト
      */
     public List<Albums> findAll() {
-        return albumsMapper.select(c -> c.orderBy(id));
+        return albumsMapper.select(c -> c.orderBy(id.descending()));
     }
 
     /**

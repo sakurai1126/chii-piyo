@@ -113,7 +113,7 @@ const groupByYearMonth = (items: MediaResponseDto[]) => {
   const map = new Map<string, MediaResponseDto[]>();
 
   for (const item of items) {
-    const date = new Date(item.createdAt);
+    const date = new Date(item.takenAt ?? item.createdAt);
     const label = `${date.getFullYear()}年${date.getMonth() + 1}月`;
     const list = map.get(label) ?? [];
     list.push(item);

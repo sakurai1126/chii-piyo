@@ -1,7 +1,6 @@
 {
   "name": "chii-piyo",
   "version": "1.0.0",
-  "license": "MIT",
   "author": "shohei sakurai",
   "type": "module",
   "scripts": {
