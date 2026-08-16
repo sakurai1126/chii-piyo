@@ -106,22 +106,22 @@ PWA対応とGitHub ActionsによるCI/CDの設定、およびAWSデプロイが�
 
 | カテゴリ | 技術 |
 | --- | --- |
-| フロントエンド | Next.js 16<br>React 19<br>TypeScript |
-| バックエンド | Spring Boot 4.1.0<br>Java 25 |
+| フロントエンド | Next.js 16 / React 19 / TypeScript |
+| バックエンド | Spring Boot 4.1.0 / Java 25 |
 | API設計 | OpenAPI Generator |
 | ORM | MyBatis Generator |
 | DB | PostgreSQL |
 | ストレージ | AWS S3 |
-| インフラ<br>バックエンド | AWS Lightsail |
-| インフラ<br>フロントエンド | AWS Amplify |
-| 認証 | AWS Cognito<br>Spring Security |
+| インフラ(バックエンド) | AWS Lightsail |
+| インフラ(フロントエンド) | AWS Amplify |
+| 認証 | AWS Cognito / Spring Security |
 | AI | Gemini API |
 | CSS | TailwindCSS |
 | CI/CD | GitHub Actions |
 | コンテナ | Docker |
 | E2Eテスト | Playwright |
-| ユニットテスト<br>フロントエンド | Vitest |
-| ユニットテスト<br>バックエンド | JUnit |
+| ユニットテスト(フロントエンド) | Vitest |
+| ユニットテスト(バックエンド) | JUnit |
 | 静的解析 | SonarQube |
 
 ### 選定理由
