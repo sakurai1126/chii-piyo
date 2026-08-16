@@ -33,7 +33,7 @@ sequenceDiagram
     User->>Browser: メールアドレス・パスワード入力
     Browser->>Next: 認証リクエスト
     Next->>Cognito: Server Action認証リクエスト
-    Cognito-->>Next: JWT（IDトークン・アクセストークン・リフレッシュトークン）
+    Cognito-->>Next: JWT（IDトークン・リフレッシュトークン）
 
     Next-->>Browser: JWTをHttpOnly Cookieにセットしホーム画面にリダイレクト
 ```
@@ -53,9 +53,7 @@ sequenceDiagram
     Browser->>Next: ページリクエスト/Server Action呼び出し
     Next->>Next: Middlewareで JWT検証<br/>署名・有効期限・ユーザー情報
 
-    alt JWT無効・期限切れ
-        Next-->>Browser: ログイン画面にリダイレクト
-    else JWT有効
+    alt JWT有効かつ期限切れ間近でない
         Next->>Spring: APIリクエスト<br/>Authorization: Bearer JWT
         Spring->>Spring: キャッシュ済みJWKで署名検証<br/>有効期限・クレーム確認
 
@@ -66,6 +64,22 @@ sequenceDiagram
             Spring-->>Next: 401 Unauthorized
             Next-->>Browser: ログイン画面にリダイレクト
         end
+    else リフレッシュトークンあり（JWT無効・期限切れ・期限切れ間近 問わず）
+        Next->>Cognito: リフレッシュトークンで再認証
+        Cognito-->>Next: 新しいIDトークン
+        Next->>Next: Cookie更新（id_token、refresh_tokenは既存を維持）
+        Next->>Spring: APIリクエスト<br/>Authorization: Bearer 新JWT
+        Spring->>Spring: キャッシュ済みJWKで署名検証<br/>有効期限・クレーム確認
+
+        alt 検証成功
+            Spring-->>Next: 200 レスポンス
+            Next-->>Browser: HTML/Server Actionレスポンス
+        else 検証失敗
+            Spring-->>Next: 401 Unauthorized
+            Next-->>Browser: ログイン画面にリダイレクト
+        end
+    else リフレッシュトークンなし or リフレッシュ失敗
+        Next-->>Browser: ログイン画面にリダイレクト（Cookie削除）
     end
 ```
 
@@ -97,18 +111,18 @@ sequenceDiagram
     alt アップロード成功
         S3-->>Browser: 200 アップロード完了
         Browser->>Next: ステータス更新リクエスト
-        Next->>Spring: PUT /media/{id}/status（COMPLETED）
+        Next->>Spring: PATCH /media/{id}/status（COMPLETED）
         Spring->>DB: upload_status を COMPLETED に更新
         DB-->>Spring: 更新完了
-        Spring-->>Next: 200 (メディア情報)
+        Spring-->>Next: 204
         Next-->>Browser: アップロード完了表示
     else アップロード失敗
         S3-->>Browser: エラーレスポンス
         Browser->>Next: ステータス更新リクエスト
-        Next->>Spring: PUT /media/{id}/status（FAILED）
+        Next->>Spring: PATCH /media/{id}/status（FAILED）
         Spring->>DB: upload_status を FAILED に更新
         DB-->>Spring: 更新完了
-        Spring-->>Next: 200
+        Spring-->>Next: 204
         Next-->>Browser: エラー表示・リトライ案内
     end
 
@@ -137,7 +151,7 @@ sequenceDiagram
 
     Browser->>Next: 完全削除リクエスト
     Next->>Spring: DELETE /trash/{id}
-    Spring->>DB: 権限チェック（ADMIN権限確認）
+    Spring->>Spring: JWTクレームからADMIN権限確認
 
     alt 権限なし（一般ユーザー等）
         DB-->>Spring: 権限なし
@@ -153,7 +167,7 @@ sequenceDiagram
         Next-->>Browser: ゴミ箱一覧を更新
     end
 
-    Note over User,S3: ゴミ箱を空にする場合は DELETE /trash で全件削除
+    Note over User,S3: ゴミ箱を空にする場合は DELETE /trash/empty で全件削除
 ```
 
 ### タグの更新
@@ -188,7 +202,7 @@ sequenceDiagram
         DB-->>Spring: 更新完了
     end
 
-    Spring-->>Next: 200 OK (最新のタグ一覧)
+    Spring-->>Next: 204
     Next-->>Browser: 更新後のタグ表示
 ```
 
@@ -208,7 +222,7 @@ sequenceDiagram
 
     Browser->>Next: 削除リクエスト
     Next->>Spring: DELETE /albums/{id}
-    Spring->>DB: 権限チェック（ADMIN権限）
+    Spring->>Spring: JWTクレームからADMIN権限確認
 
     alt 権限なし
         DB-->>Spring: 権限なし
@@ -254,7 +268,7 @@ sequenceDiagram
         Spring->>DB: 種別に応じた詳細テーブル(milk_detailsなど)に作成
         DB-->>Spring: 作成完了
     end
-    Spring-->>Next: 201 (育児記録情報)
+    Spring-->>Next: 201
     Next-->>Browser: カレンダーに記録を反映
 ```
 
@@ -299,7 +313,7 @@ sequenceDiagram
     User->>Browser: 内容を変更して保存
 
     Browser->>Next: 更新リクエスト
-    Next->>Spring: PUT /care-records/{id}（更新データ）
+    Next->>Spring: PATCH /care-records/{id}（更新データ）
     rect rgb(240, 240, 240)
         Note over Spring, DB: トランザクション開始
         Spring->>DB: care_records更新
@@ -308,7 +322,7 @@ sequenceDiagram
         DB-->>Spring: 更新完了
     end
 
-    Spring-->>Next: 200 (更新後の育児記録情報)
+    Spring-->>Next: 204
     Next-->>Browser: タイムライン表示を更新
 
     User->>Browser: 記録の削除ボタン押下
