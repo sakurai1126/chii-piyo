@@ -1,4 +1,4 @@
 .next/
 node_modules/
-public/
+# public/
 src/lib/gen/
