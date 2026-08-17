@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>オフライン - ちいぴよ</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      background: #ffffe7;
+      min-height: 100vh;
+      display: grid;
+      place-content: center;
+      color: #333;
+      padding: 20px;
+    }
+
+    .container {
+      background-color: #FFFFEF;
+      border: 1px solid #6F4000;
+      padding: 60px;
+      border-radius: 10px;
+    }
+
+    h1 {
+      font-size: 22px;
+    }
+
+    p {
+      margin-top: 16px;
+    }
+
+    button {
+      width: 200px;
+      height: 40px;
+      margin: 24px auto 0;
+      background: #FDF3DC;
+      outline: none;
+      appearance: none;
+      border: 1px solid #6F4000;
+      border-radius: 30px;
+      color: #6F4000;
+      font-weight: 500;
+    }
+
+    @media screen and (max-width:767px) {
+      .container {
+        padding: 40px 20px;
+      }
+
+      h1 {
+        font-size: 16px;
+      }
+
+      p {
+        font-size: 13px;
+      }
+
+      button {
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>ネットワークに接続されていません</h1>
+    <p>現在オフラインです。インターネット接続を確認してからもう一度お試しください。</p>
+    <button onclick="location.reload()">再読み込み</button>
+  </div>
+</body>
+
+</html>

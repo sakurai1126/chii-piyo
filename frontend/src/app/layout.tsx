@@ -1,9 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { M_PLUS_Rounded_1c, Zen_Maru_Gothic } from "next/font/google";
 import "@/styles/globals.css";
 
 import { ThemeCookieSetter } from "@/components/layout/ThemeCookieSetter";
 import { Providers } from "@/components/layout/providers";
+import { ServiceWorkerRegister } from "@/components/pwa/ServiceWorkerRegister";
 import { Toast } from "@/components/ui/Toast";
 import { cn } from "@/utils/cn";
 import { getTheme } from "@/utils/getTheme";
@@ -26,10 +27,27 @@ const zenMaruGothic = Zen_Maru_Gothic({
   preload: false,
 });
 
-// アプリ全体のメタデータ
+// Viewport の設定
+export const viewport: Viewport = {
+  themeColor: "#ffe875",
+  width: "device-width",
+  initialScale: 1,
+};
+
+// メタデータ設定
 export const metadata: Metadata = {
-  title: "Chii-Piyo",
-  description: "育児記録管理アプリ",
+  title: "ちいぴよ",
+  description: "子育て記録・思い出共有アプリ",
+  // iOS端末でアプリとしてホーム画面に追加した際の表示設定
+  appleWebApp: {
+    // ホーム画面に追加した際に、safariのURLバー等を非表示にしアプリ風の見た目にする
+    capable: true,
+    statusBarStyle: "default",
+    title: "ちいぴよ",
+  },
+  icons: {
+    apple: "/icons/apple-touch-icon.png",
+  },
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -43,6 +61,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       className={cn(mPlusRounded1c.variable, zenMaruGothic.variable, isDarkMode && "dark")}
     >
       <body>
+        <ServiceWorkerRegister />
         {/* ユーザーログイン済かつCookieが消えていた場合、Cookieを再セット */}
         {needsCookieRestore && <ThemeCookieSetter isDarkMode={isDarkMode} />}
         <Providers>
