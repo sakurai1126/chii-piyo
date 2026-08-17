@@ -16,11 +16,13 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) =>
       Promise.all(
-        cacheNames.map((name) => {
-          if (name !== cacheName) {
+        cacheNames
+          .filter((name) => {
+            return name !== cacheName;
+          })
+          .map((name) => {
             return caches.delete(name);
-          }
-        }),
+          }),
       ),
     ),
   );
