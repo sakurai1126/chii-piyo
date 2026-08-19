@@ -1,9 +1,13 @@
+import fs from "node:fs";
 import path from "node:path";
 
 import { defineConfig, devices } from "@playwright/test";
 
-// .env.localから環境変数を読み込み
-process.loadEnvFile(path.resolve(__dirname, ".env.local"));
+// ローカル実行用設定 - .env.localが存在する場合のみ読み込み
+const envPath = path.resolve(__dirname, ".env.local");
+if (fs.existsSync(envPath)) {
+  process.loadEnvFile(envPath);
+}
 
 // 認証情報を保存するファイル
 const storageState = "frontend/e2e/.auth/user.json";
@@ -54,24 +58,6 @@ export default defineConfig({
         storageState,
       },
       // auth.setup.ts で作成した認証情報を利用
-      dependencies: ["setup"],
-    },
-    {
-      name: "firefox",
-      testMatch: "**/*.spec.ts",
-      use: {
-        ...devices["Desktop Firefox"],
-        storageState,
-      },
-      dependencies: ["setup"],
-    },
-    {
-      name: "webkit",
-      testMatch: "**/*.spec.ts",
-      use: {
-        ...devices["Desktop Safari"],
-        storageState,
-      },
       dependencies: ["setup"],
     },
   ],

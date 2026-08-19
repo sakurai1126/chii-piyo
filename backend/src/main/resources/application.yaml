@@ -83,6 +83,8 @@ management:
 app:
   cors:
     allowed-origins: ${ALLOWED_ORIGINS:http://localhost:3000}
+  # 初期管理者メールアドレス ※未設定の場合は空文字
+  admin-email: ${ADMIN_EMAIL:}
 
 server:
   servlet:

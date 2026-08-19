@@ -1,0 +1,71 @@
+name: Frontend CI
+
+on:
+  # プルリクエストが作成・更新されたときをトリガーに設定
+  pull_request:
+    # 以下に該当するファイルの変更に応じて実行
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-ci.yml'
+
+  # mainブランチのpushまたはマージされたときに実行
+  push:
+    branches:
+      - main
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-ci.yml'
+
+jobs:
+  test-and-build:
+    name: フロントエンド テスト＆ビルド
+    # 実行環境のOS
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        # コマンドの実行ディレクトリを指定
+        working-directory: frontend
+
+    steps:
+      - name: リポジトリチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Node.js実行環境のセットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          # npm のキャッシュを有効化
+          cache: 'npm'
+          # キャッシュのキー判定に使用するpackage-lock.jsonをルートのものにならないようfrontendディレクトリ以下に指定
+          cache-dependency-path: frontend/package-lock.json
+
+      # npm ciを使用しpackage-lock.jsonと厳密に一致するバージョンをインストール
+      # --ignore-scripts: パッケージのインストール時スクリプトの自動実行を遮断
+      - name: 依存関係のクリーンインストール
+        run: npm ci --ignore-scripts
+
+      - name: ESLintによる静的解析
+        run: npm run lint
+
+      - name: 単体テストの実行
+        run: npm run test:coverage
+
+      # テスト実行後にVitestのHTMLカバレッジレポートを成果物として保存
+      - name: カバレッジレポートのアップロード
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage-report
+          path: frontend/coverage/
+          retention-days: 7
+
+      # ビルド時には通信は行わないものの環境変数自体は必要なためダミーを指定
+      - name: Next.jsのビルド
+        env:
+          API_BASE_URL: http://example.com
+          COGNITO_REGION: dummy
+          COGNITO_USER_POOL_ID: dummy
+          COGNITO_CLIENT_ID: dummy
+          COGNITO_CLIENT_SECRET: dummy
+          COGNITO_JWKS_URI: https://example.com
+          COGNITO_ISSUER: https://example.com
+        run: npm run build

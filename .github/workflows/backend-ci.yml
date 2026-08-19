@@ -1,0 +1,54 @@
+name: Backend CI
+
+on:
+  # プルリクエストが作成・更新されたときをトリガーに設定
+  pull_request:
+    # 以下に該当するファイルの変更に応じて実行
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-ci.yml'
+
+  # mainブランチのpushまたはマージされたときに実行
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-ci.yml'
+
+jobs:
+  test:
+    name: バックエンド テスト＆ビルド
+    # 実行環境のOS
+    runs-on: ubuntu-latest
+    # ジョブ内の全ステップにおけるデフォルト設定
+    defaults:
+      run:
+        # コマンドの実行ディレクトリを指定
+        working-directory: backend
+
+    steps:
+      - name: リポジトリのチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Java開発環境のセットアップ
+        uses: actions/setup-java@v4
+        with:
+          # Dockerfileにて指定しているJavaの指定に合わせる
+          java-version: '25'
+          distribution: 'corretto'
+          # 依存ライブラリをキャッシュしてビルドを高速化する
+          cache: 'maven'
+
+      - name: ビルド＆テスト実行
+        # バッチモードで起動し対話型プロンプトを無効化しログ出力を最適化
+        run: |
+          mvn -B test
+
+      # テスト実行後にJaCoCoのHTMLカバレッジレポートを成果物として保存
+      - name: カバレッジレポートのアップロード
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage-report
+          path: backend/target/site/jacoco/
+          retention-days: 7

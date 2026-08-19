@@ -1,0 +1,140 @@
+name: E2E Test
+
+# E2Eはテスト間で競合する可能性があるので同一ブランチ/PRで新しいpushがあった場合、進行中の古いCIを自動キャンセル
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  # 手動実行を可能にする
+  workflow_dispatch:
+
+  # プルリクエストが作成・更新されたときをトリガーに設定
+  pull_request:
+    # 以下に該当するファイルの変更に応じて実行
+    paths:
+      - 'frontend/**'
+      - 'backend/**'
+      - '.github/workflows/e2e.yml'
+
+  # mainブランチのpushまたはマージされたときに実行
+  push:
+    branches:
+      - main
+    paths:
+      - 'frontend/**'
+      - 'backend/**'
+      - '.github/workflows/e2e.yml'
+
+jobs:
+  e2e:
+    name: Playwright E2Eテスト
+    # 実行環境のOS
+    runs-on: ubuntu-latest
+
+    # バックエンド用PostgreSQLサービスコンテナ
+    services:
+      postgres:
+        image: postgres:18-alpine
+        # コンテナ起動時に自動作成するDB接続情報
+        env:
+          POSTGRES_DB: chii_piyo_test
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+        ports:
+          - 5432:5432
+        # 接続を受けられるようになってから次に進むようヘルスチェック設定
+        # 10 秒おきに確認を実行する
+        # 5 秒待っても反応がない場合は失敗とみなす
+        # 最大 5 回まで再試行する
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s 
+          --health-timeout 5s 
+          --health-retries 5 
+
+    steps:
+      - name: リポジトリチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Java開発環境のセットアップ
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'corretto'
+          cache: 'maven'
+
+      - name: バックエンドのビルドとバックグラウンド起動
+        working-directory: backend
+        env:
+          # サービスコンテナのDBへ接続先を上書きする
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/chii_piyo_test
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          # E2Eテスト用一般ユーザーを初期管理者として登録
+          ADMIN_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+          # 各種接続情報をSecretsから渡す
+          COGNITO_CLIENT_ID: ${{ secrets.COGNITO_CLIENT_ID }}
+          COGNITO_JWKS_URI: ${{ secrets.COGNITO_JWKS_URI }}
+          COGNITO_ISSUER: ${{ secrets.COGNITO_ISSUER }}
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          AWS_S3_ACCESS_KEY_ID: ${{ secrets.AWS_S3_ACCESS_KEY_ID }}
+          AWS_S3_SECRET_ACCESS_KEY: ${{ secrets.AWS_S3_SECRET_ACCESS_KEY }}
+        # 単体テストをスキップしてパッケージ化しバックグラウンドで起動
+        run: |
+          mvn -B clean package -DskipTests
+          nohup java -jar target/*.jar > backend.log 2>&1 &
+
+      # 起動前にテストが走るのを防止するため、バックエンドが完全に立ち上がるまで最大60秒待機
+      - name: バックエンドの起動完了待機
+        run: |
+          timeout 60s bash -c 'until curl -s http://localhost:8080/api/v1/actuator/health | grep "UP"; do sleep 2; done'
+
+      - name: Node.jsのセットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: フロントエンド依存関係のインストール
+        working-directory: frontend
+        run: npm ci --ignore-scripts
+
+      - name: Playwrightブラウザのインストール
+        working-directory: frontend
+        run: npx --no-install playwright install chromium
+
+      - name: E2Eテストの実行
+        working-directory: frontend
+        env:
+          API_BASE_URL: http://localhost:8080/api/v1
+          COGNITO_REGION: ${{ secrets.COGNITO_REGION }}
+          COGNITO_USER_POOL_ID: ${{ secrets.COGNITO_USER_POOL_ID }}
+          COGNITO_CLIENT_ID: ${{ secrets.COGNITO_CLIENT_ID }}
+          COGNITO_CLIENT_SECRET: ${{ secrets.COGNITO_CLIENT_SECRET }}
+          COGNITO_JWKS_URI: ${{ secrets.COGNITO_JWKS_URI }}
+          COGNITO_ISSUER: ${{ secrets.COGNITO_ISSUER }}
+          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+          TEST_USER_NAME: ${{ secrets.TEST_USER_NAME }}
+          TEST_VIEWER_EMAIL: ${{ secrets.TEST_VIEWER_EMAIL }}
+          TEST_VIEWER_PASSWORD: ${{ secrets.TEST_VIEWER_PASSWORD }}
+        run: npm run test:e2e
+
+      # Playwrightレポートを保存
+      - name: Playwrightレポートのアップロード
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: frontend/playwright-report/
+          retention-days: 7
+
+      # テスト失敗時のみバックエンドのログをCI画面に出力して原因調査できるようにする
+      - name: 失敗した場合バックエンドログの出力
+        if: failure()
+        run: |
+          echo "--- Backend Log ---"
+          cat backend/backend.log
+
