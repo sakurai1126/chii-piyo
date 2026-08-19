@@ -50,6 +50,14 @@ jobs:
       - name: 単体テストの実行
         run: npm run test:coverage
 
+      # テスト実行後にVitestのHTMLカバレッジレポートを成果物として保存
+      - name: カバレッジレポートのアップロード
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage-report
+          path: frontend/coverage/
+          retention-days: 7
+
       # ビルド時には通信は行わないものの環境変数自体は必要なためダミーを指定
       - name: Next.jsのビルド
         env:

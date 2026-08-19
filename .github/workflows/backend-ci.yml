@@ -44,3 +44,11 @@ jobs:
         # バッチモードで起動し対話型プロンプトを無効化しログ出力を最適化
         run: |
           mvn -B test
+
+      # テスト実行後にJaCoCoのHTMLカバレッジレポートを成果物として保存
+      - name: カバレッジレポートのアップロード
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage-report
+          path: backend/target/site/jacoco/
+          retention-days: 7
