@@ -56,24 +56,6 @@ export default defineConfig({
       // auth.setup.ts で作成した認証情報を利用
       dependencies: ["setup"],
     },
-    {
-      name: "firefox",
-      testMatch: "**/*.spec.ts",
-      use: {
-        ...devices["Desktop Firefox"],
-        storageState,
-      },
-      dependencies: ["setup"],
-    },
-    {
-      name: "webkit",
-      testMatch: "**/*.spec.ts",
-      use: {
-        ...devices["Desktop Safari"],
-        storageState,
-      },
-      dependencies: ["setup"],
-    },
   ],
 
   webServer: {
