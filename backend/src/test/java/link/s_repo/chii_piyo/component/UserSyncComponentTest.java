@@ -16,6 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 @ExtendWith(MockitoExtension.class)
 public class UserSyncComponentTest {
@@ -85,5 +86,24 @@ public class UserSyncComponentTest {
                     && user.getRole().equals("VIEWER")
             ));
         }
+
+        @Test
+        @DisplayName("Util-06: ADMIN_EMAILに一致するメールアドレスの場合、ADMIN権限で作成されること")
+        void findOrCreateByCognitoUserId_createAdmin() {
+            // 環境変数で管理者メールアドレスを管理しているフィールドにテスト用の値をセット
+            setField(userSyncComponent, "adminEmail", requestEmail);
+
+            // 取得処理のスタブ化
+            when(userRepository.findByCognitoUserId(requestCognitoUserId))
+                .thenReturn(Optional.empty());
+
+            // 対象の実行
+            Users result = userSyncComponent.findOrCreateByCognitoUserId(
+                requestCognitoUserId, requestEmail);
+
+            // 作成されたユーザーの権限が管理者であることを検証
+            assertThat(result.getRole()).isEqualTo("ADMIN");
+        }
+
     }
 }

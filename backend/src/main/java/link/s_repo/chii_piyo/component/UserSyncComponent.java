@@ -4,8 +4,10 @@ import link.s_repo.chii_piyo.repository.UserRepository;
 import link.s_repo.chii_piyo.model.gen.Users;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 
 /**
@@ -17,6 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserSyncComponent {
     private final UserRepository userRepository;
+
+    @Value("${app.admin-email:}")
+    private String adminEmail;
 
     /**
      * CognitoのユーザーIDでユーザーを検索し、存在しない場合は作成する
@@ -49,7 +54,12 @@ public class UserSyncComponent {
         // 他の値はDDLのデフォルト値と同じものを明示的にセットする
         user.setIsDarkMode(false);
         user.setIsEasyMode(false);
-        user.setRole("VIEWER");
+        if (StringUtils.hasText(adminEmail) && adminEmail.equalsIgnoreCase(email)) {
+            user.setRole("ADMIN");
+            log.info("管理者ユーザーを初期作成しました: email={}", email);
+        } else {
+            user.setRole("VIEWER");
+        }
 
         // DBに保存
         userRepository.save(user);

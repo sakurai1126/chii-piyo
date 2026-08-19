@@ -25,6 +25,7 @@
 | Util-03 | S3KeyGenerator | 境界 | 日本語やパス区切り文字を含むファイル名を渡す | 許可されていない文字がすべて _ にサニタイズされて生成される |
 | Util-04 | UserSyncComponent | 正常 | DBに存在するCognitoユーザーIDを渡す | 既存のユーザー情報がそのまま返る |
 | Util-05 | UserSyncComponent | 正常 | DBに存在しないCognitoユーザーIDを渡す | デフォルト値（ロール等）がセットされた新規ユーザーとして保存され返る |
+| Util-06 | UserSyncComponent | 正常 | ADMIN_EMAILと一致するメールアドレスで初回作成 | ADMINとして保存され返る |
 
 ## 共通例外処理
 
