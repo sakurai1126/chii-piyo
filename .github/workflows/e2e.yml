@@ -103,7 +103,7 @@ jobs:
 
       - name: Playwrightブラウザのインストール
         working-directory: frontend
-        run: npx playwright install --with-deps
+        run: npx --no-install playwright install --with-deps
 
       - name: E2Eテストの実行
         working-directory: frontend
