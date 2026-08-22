@@ -13,6 +13,11 @@ const PUBLIC_PATHS = ["/login"];
  * 署名・Issuer・Audience・有効期限を全て検証する
  */
 export const middleware = async (request: NextRequest) => {
+  console.warn("env check:", {
+    region: process.env.COGNITO_REGION ? "OK" : "MISSING",
+    clientId: process.env.COGNITO_CLIENT_ID ? "OK" : "MISSING",
+  });
+
   const { pathname } = request.nextUrl;
 
   // 公開パスの場合はスキップする
