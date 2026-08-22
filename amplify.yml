@@ -11,6 +11,8 @@ applications:
             # package-lock.json の内容どおりに厳密にインストールされるため npm ciを使う
             # ローカルと CI で同一のバージョンが入ることが保証される
             - npm ci
+            # ビルド時に .env.production へ書き出す
+            - env | grep -e COGNITO_ -e API_BASE_URL >> .env.production
         # アプリケーションのビルド
         build:
           commands:
