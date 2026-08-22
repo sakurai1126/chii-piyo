@@ -1,0 +1,34 @@
+version: 1
+
+applications:
+  # ビルド対象のディレクトリ
+  - appRoot: frontend
+    frontend:
+      phases:
+        # 依存関係のインストール
+        preBuild:
+          commands:
+            # package-lock.json の内容どおりに厳密にインストールされるため npm ciを使う
+            # ローカルと CI で同一のバージョンが入ることが保証される
+            - npm ci
+        # アプリケーションのビルド
+        build:
+          commands:
+            - npm run build
+      artifacts:
+        # 配信対象となる成果物のディレクトリ
+        # SSR を含む構成のためoutではなく.nextを指定
+        baseDirectory: .next
+        files:
+          # 配下の全ファイルを対象とする
+          - "**/*"
+      cache:
+        # ビルド間で保持するディレクトリ
+        # 2回目以降のビルド時間を短縮する目的で指定する
+        paths:
+          # 依存パッケージ
+          # package-lock.json に変更がなければ再ダウンロードを省略できる
+          - node_modules/**/*
+          # Next.js のビルドキャッシュ
+          # 変更のないページの再ビルドを省略できる
+          - .next/cache/**/*
