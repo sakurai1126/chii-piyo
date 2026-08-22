@@ -1,5 +1,8 @@
 name: E2E Test
 
+env:
+  TZ: Asia/Tokyo
+
 # E2Eはテスト間で競合する可能性があるので同一ブランチ/PRで新しいpushがあった場合、進行中の古いCIを自動キャンセル
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
