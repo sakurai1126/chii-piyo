@@ -42,6 +42,9 @@ services:
       - "5432:5432"
     env_file:
       - .env
+    environment:
+      # タイムゾーンを日本時間に設定
+      - TZ=Asia/Tokyo
     volumes:
       - postgres_data:/var/lib/postgresql
     healthcheck:
