@@ -1,0 +1,41 @@
+# 本番用マルチステージビルド
+
+# ビルド用ステージ ---
+FROM amazoncorretto:25-alpine AS builder
+
+WORKDIR /build
+
+# 依存関係の解決に必要なファイルのみを先にコピーして依存関係をダウンロード
+# pom.xmlのみのコピーからインストールすることでキャッシュを利かせソースの変更による不要なダウンロードを避ける
+COPY .mvn .mvn
+COPY mvnw pom.xml ./
+RUN chmod +x mvnw && ./mvnw dependency:go-offline -B
+
+# ソースをコピーしてjarを生成
+# 結合テストがTestcontainers依存でビルド環境にDockerを要求するためテストはスキップ
+COPY src ./src
+RUN ./mvnw clean package -DskipTests -B
+
+# 実行用ステージ ---
+FROM amazoncorretto:25-alpine
+
+# 動画のサムネイル生成にffmpegを使用するためインストール
+# curlはヘルスチェック用にインストール
+# amazoncorrettoはデフォルトでrootユーザーを使用するため非rootユーザーを作成
+RUN apk add --no-cache ffmpeg curl \
+  && addgroup -S spring && adduser -S spring -G spring
+
+# コンテナ内の作業ディレクトリを設定
+WORKDIR /app
+
+# ビルド用ステージからjarファイルをコピー
+COPY --from=builder /build/target/*.jar app.jar
+
+# 非rootユーザーに変更
+USER spring
+
+# コンテナが使用するポートを宣言
+EXPOSE 8080
+
+# アプリケーションを起動
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
