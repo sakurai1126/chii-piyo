@@ -1,11 +1,19 @@
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+
+import { FlatCompat } from "@eslint/eslintrc";
 import { defineConfig, globalIgnores } from "eslint/config";
-import nextVitals from "eslint-config-next/core-web-vitals";
-import nextTs from "eslint-config-next/typescript";
 import prettier from "eslint-config-prettier";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const compat = new FlatCompat({
+  baseDirectory: __dirname,
+});
+
 const eslintConfig = defineConfig([
-  ...nextVitals,
-  ...nextTs,
+  ...compat.extends("next/core-web-vitals", "next/typescript"),
   // Prettierのルールを最後に適用して、他のルールと競合する可能性のあるスタイルルールを無効化する
   prettier,
 
@@ -15,6 +23,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // カバレッジレポートの出力先
+    "coverage/**",
     // OpenAPI Generatorの自動生成コード
     "src/lib/gen/**",
   ]),
