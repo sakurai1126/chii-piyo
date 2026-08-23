@@ -9,10 +9,10 @@ import { verifyIdToken } from "@/lib/auth/verify-jwt";
 const PUBLIC_PATHS = ["/login"];
 
 /**
- * IDトークンの検証を行うproxy
+ * IDトークンの検証を行うmiddleware
  * 署名・Issuer・Audience・有効期限を全て検証する
  */
-export const proxy = async (request: NextRequest) => {
+export const middleware = async (request: NextRequest) => {
   const { pathname } = request.nextUrl;
 
   // 公開パスの場合はスキップする
@@ -104,8 +104,10 @@ const redirectToLogin = (request: NextRequest) => {
   return NextResponse.redirect(url);
 };
 
-// 正規表現でproxyを適用するパスを絞込
+// 正規表現でmiddlewareを適用するパスを絞込
 // _next/static, _next/image, favicon.ico, images配下、その他拡張子を持った静的ファイルは除外する
 export const config = {
+  // AWS SDKを使用するためNode.jsランタイムで実行する
+  runtime: "nodejs",
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)"], // NOSONAR Next.jsのmatcherは静的文字列リテラル必須のためString.rawを使えない
 };

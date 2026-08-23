@@ -18,8 +18,7 @@
 
 ## 開発状況
 
-現在後述のPhase1実装まで完了済み。<br>
-PWA対応とGitHub ActionsによるCI/CDの設定、およびAWSデプロイが直近の予定。
+現在後述のPhase1実装まで完了済み。
 
 ## スクリーンショット
 
@@ -106,7 +105,7 @@ PWA対応とGitHub ActionsによるCI/CDの設定、およびAWSデプロイが�
 
 | カテゴリ | 技術 |
 | --- | --- |
-| フロントエンド | Next.js 16 / React 19 / TypeScript |
+| フロントエンド | Next.js 15 / React 19 / TypeScript |
 | バックエンド | Spring Boot 4.1.0 / Java 25 |
 | API設計 | OpenAPI Generator |
 | ORM | MyBatis Generator |
@@ -126,7 +125,7 @@ PWA対応とGitHub ActionsによるCI/CDの設定、およびAWSデプロイが�
 
 ### 選定理由
 
-**フロントエンド — Next.js 16 / React 19 / TypeScript**
+**フロントエンド — Next.js 15 / React 19 / TypeScript**
 
 - 育児記録の入力や写真へのコメントなど画面上でデータを更新する操作が多いためSPAを採用
 - 制作実務での経験があり、ルーティングや画像最適化も最初から揃っているNext.jsを採用
@@ -254,7 +253,7 @@ frontend/
 │   │   └── auth/ # Cognito連携・セッション管理
 │   ├── utils/ # 共通ユーティリティ
 │   ├── styles/
-│   └── proxy.ts
+│   └── middleware.ts
 ├── e2e/ # Playwrightテスト
 │   └── pages/ # ページオブジェクトモデルでのページ管理
 ├── test/
