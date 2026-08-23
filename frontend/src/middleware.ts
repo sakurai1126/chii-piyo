@@ -13,6 +13,9 @@ const PUBLIC_PATHS = ["/login"];
  * 署名・Issuer・Audience・有効期限を全て検証する
  */
 export const middleware = async (request: NextRequest) => {
+  const redirect = redirectToCustomDomain(request);
+  if (redirect) return redirect;
+
   const { pathname } = request.nextUrl;
 
   // 公開パスの場合はスキップする
@@ -42,50 +45,8 @@ export const middleware = async (request: NextRequest) => {
 
   // IDトークンが期限切れまたは期限切れ間近で、リフレッシュトークンがある場合
   if (refreshTokenValue && idToken) {
-    // リフレッシュ処理
-    try {
-      // JWTをパースして、中身のデータを取り出し
-      const decoded = decodeJwt(idToken);
-
-      // ID(subクレーム)が含まれているか確認
-      if (decoded.sub) {
-        // Cognitoに対してリフレッシュトークンとユーザーID(sub)を送り新しいトークンを要求
-        const result = await cognitoRefresh(refreshTokenValue, decoded.sub);
-        const newIdToken = result.AuthenticationResult?.IdToken;
-
-        // リフレッシュ成功
-        if (newIdToken) {
-          // Server Componentに進む前にCookieを更新する
-
-          // 後続のサーバーコンポーネントが古いトークンを読み取ってしまわないよう、ブラウザからのリクエストのCookieを新しいトークンに書き換え
-          request.cookies.set("id_token", newIdToken);
-          request.cookies.set("refresh_token", refreshTokenValue);
-
-          // 次の処理に更新したリクエストヘッダーを含めつつ、レスポンスオブジェクトを作成
-          const response = NextResponse.next({
-            request: { headers: request.headers },
-          });
-
-          // ブラウザ側に保存させるためのCookieの設定を定義
-          const cookieOptions = {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax" as const,
-            path: "/",
-            maxAge: 60 * 60 * 24 * 30, // 30日
-          };
-
-          // 作成したレスポンスに対して、ブラウザに保存させるCookieをセット
-          response.cookies.set("id_token", newIdToken, cookieOptions);
-          response.cookies.set("refresh_token", refreshTokenValue, cookieOptions);
-
-          // 最終的なレスポンスを返して、リクエストを後続の処理に流す
-          return response;
-        }
-      }
-    } catch (error) {
-      console.error("リフレッシュ失敗:", error);
-    }
+    const refreshed = await refreshSession(request, idToken, refreshTokenValue);
+    if (refreshed) return refreshed;
   }
 
   // 検証失敗時はログインページにリダイレクトしつつCookieを削除する
@@ -96,12 +57,71 @@ export const middleware = async (request: NextRequest) => {
 };
 
 /**
+ * Amplifyデフォルトドメインへのアクセスをカスタムドメインへリダイレクトする
+ * 対象外の場合はnullを返す
+ */
+const redirectToCustomDomain = (request: NextRequest) => {
+  const host = request.headers.get("host");
+  if (host !== "main.dnakxm0y9trz3.amplifyapp.com") return null;
+
+  const url = new URL(request.url);
+  url.protocol = "https:";
+  url.host = "chii-piyo.s-repo.link";
+  url.port = "";
+  return NextResponse.redirect(url, 301);
+};
+
+/**
  * ログインページへのリダイレクトレスポンスを生成する
  */
 const redirectToLogin = (request: NextRequest) => {
   const url = request.nextUrl.clone();
   url.pathname = "/login";
   return NextResponse.redirect(url);
+};
+
+/**
+ * リフレッシュトークンを用いてIDトークンを再取得し、Cookieを更新したレスポンスを返す
+ * リフレッシュできない場合はnullを返す
+ */
+const refreshSession = async (request: NextRequest, idToken: string, refreshTokenValue: string) => {
+  try {
+    // JWTをパースして、中身のデータを取り出し
+    const decoded = decodeJwt(idToken);
+    if (!decoded.sub) return null;
+
+    // Cognitoに対してリフレッシュトークンとユーザーID(sub)を送り新しいトークンを要求
+    const result = await cognitoRefresh(refreshTokenValue, decoded.sub);
+    const newIdToken = result.AuthenticationResult?.IdToken;
+    if (!newIdToken) return null;
+
+    // 後続のサーバーコンポーネントが古いトークンを読み取ってしまわないよう、ブラウザからのリクエストのCookieを新しいトークンに書き換え
+    request.cookies.set("id_token", newIdToken);
+    request.cookies.set("refresh_token", refreshTokenValue);
+
+    // 次の処理に更新したリクエストヘッダーを含めつつ、レスポンスオブジェクトを作成
+    const response = NextResponse.next({
+      request: { headers: request.headers },
+    });
+
+    // ブラウザ側に保存させるためのCookieの設定を定義
+    const cookieOptions = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax" as const,
+      path: "/",
+      maxAge: 60 * 60 * 24 * 30, // 30日
+    };
+
+    // 作成したレスポンスに対して、ブラウザに保存させるCookieをセット
+    response.cookies.set("id_token", newIdToken, cookieOptions);
+    response.cookies.set("refresh_token", refreshTokenValue, cookieOptions);
+
+    return response;
+  } catch (error) {
+    console.error("リフレッシュ失敗:", error);
+    return null;
+  }
 };
 
 // 正規表現でmiddlewareを適用するパスを絞込
