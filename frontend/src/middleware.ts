@@ -13,6 +13,15 @@ const PUBLIC_PATHS = ["/login"];
  * 署名・Issuer・Audience・有効期限を全て検証する
  */
 export const middleware = async (request: NextRequest) => {
+  // AmplifyデフォルトURLから本番環境へのリダイレクト
+  const host = request.headers.get("host");
+  if (host?.endsWith(".amplifyapp.com")) {
+    const url = new URL(request.url);
+    url.host = "chii-piyo.s-repo.link";
+    url.protocol = "https:";
+    return NextResponse.redirect(url, 301);
+  }
+
   const { pathname } = request.nextUrl;
 
   // 公開パスの場合はスキップする
