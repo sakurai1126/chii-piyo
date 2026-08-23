@@ -13,15 +13,8 @@ const PUBLIC_PATHS = ["/login"];
  * 署名・Issuer・Audience・有効期限を全て検証する
  */
 export const middleware = async (request: NextRequest) => {
-  // AmplifyデフォルトURLから本番環境へのリダイレクト
-  const host = request.headers.get("host");
-  if (host?.endsWith(".amplifyapp.com")) {
-    const url = new URL(request.url);
-    url.host = "chii-piyo.s-repo.link";
-    url.port = "";
-    url.protocol = "https:";
-    return NextResponse.redirect(url, 301);
-  }
+  const redirect = redirectToCustomDomain(request);
+  if (redirect) return redirect;
 
   const { pathname } = request.nextUrl;
 
@@ -103,6 +96,21 @@ export const middleware = async (request: NextRequest) => {
   response.cookies.delete("id_token");
   response.cookies.delete("refresh_token");
   return response;
+};
+
+/**
+ * Amplifyデフォルトドメインへのアクセスをカスタムドメインへリダイレクトする
+ * 対象外の場合はnullを返す
+ */
+const redirectToCustomDomain = (request: NextRequest) => {
+  const host = request.headers.get("host");
+  if (host !== "main.dnakxm0y9trz3.amplifyapp.com") return null;
+
+  const url = new URL(request.url);
+  url.protocol = "https:";
+  url.host = "chii-piyo.s-repo.link";
+  url.port = "";
+  return NextResponse.redirect(url, 301);
 };
 
 /**
