@@ -18,6 +18,7 @@ export const middleware = async (request: NextRequest) => {
   if (host?.endsWith(".amplifyapp.com")) {
     const url = new URL(request.url);
     url.host = "chii-piyo.s-repo.link";
+    url.port = "";
     url.protocol = "https:";
     return NextResponse.redirect(url, 301);
   }
