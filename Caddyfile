@@ -1,3 +1,7 @@
-:80 {
+{
+    email {$ACME_EMAIL}
+}
+
+chii-piyo-api.s-repo.link {
     reverse_proxy backend:8080
 }
