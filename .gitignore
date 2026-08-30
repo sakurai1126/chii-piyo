@@ -70,3 +70,7 @@ blob-report/
 
 # その他
 .obsidian
+
+# ログファイル
+logs/
+*.log
