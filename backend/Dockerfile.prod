@@ -22,14 +22,17 @@ FROM amazoncorretto:25-alpine
 # 動画のサムネイル生成にffmpegを使用するためインストール
 # curlはヘルスチェック用にインストール
 # amazoncorrettoはデフォルトでrootユーザーを使用するため非rootユーザーを作成
-RUN apk add --no-cache ffmpeg curl \
-  && addgroup -S spring && adduser -S spring -G spring
+# 編集権限を持たせるためにUIDとGIDを1000に設定しログインユーザーと一致させる
+RUN apk add --no-cache ffmpeg curl && addgroup -g 1000 -S spring && adduser -u 1000 -S spring -G spring
 
 # コンテナ内の作業ディレクトリを設定
 WORKDIR /app
 
 # ビルド用ステージからjarファイルをコピー
 COPY --from=builder /build/target/*.jar app.jar
+
+# ログディレクトリを作成し、所有権を spring ユーザーに変更
+RUN mkdir -p /app/logs && chown -R spring:spring /app
 
 # 非rootユーザーに変更
 USER spring
