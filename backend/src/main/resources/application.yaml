@@ -77,7 +77,8 @@ management:
         include: health
   endpoint:
     health:
-      show-details: always
+      # 認証なしの外部監視向けには基本ステータスのみ返し、詳細は非公開にする
+      show-details: when_authorized
 
 # CORS設定
 app:

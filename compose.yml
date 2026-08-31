@@ -25,11 +25,22 @@ services:
       - ./backend:/app
       # ビルド生成物が格納される target ディレクトリを除外
       - /app/target
+      # ホストの logs ディレクトリにマウント
+      - ./logs:/app/logs
     # postgres コンテナが起動した後にバックエンドを起動する
     depends_on:
       # postgres コンテナのヘルスチェックが成功するまでバックエンドの起動を遅延させる
       postgres:
         condition: service_healthy
+    # Dockerコンテナログの設定
+    logging:
+      # JSONファイルとしてホストに保存
+      driver: "json-file"
+      options:
+        # 1つのログファイルが 10MB に達したら新しいファイルに切り替える
+        max-size: "10m"
+        # 保存するログファイルを最大3ファイルまで保持
+        max-file: "3"
 
   # -----------------------------
   # Database: PostgreSQL
