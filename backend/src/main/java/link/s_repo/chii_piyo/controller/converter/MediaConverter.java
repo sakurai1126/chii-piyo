@@ -4,7 +4,6 @@ import link.s_repo.chii_piyo.model.gen.Media;
 import link.s_repo.chii_piyo.model.gen.MediaNavigationResponseDto;
 import link.s_repo.chii_piyo.model.gen.MediaResponseDto;
 import link.s_repo.chii_piyo.model.gen.TagResponseDto;
-import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
@@ -17,7 +16,7 @@ import java.util.Optional;
 @Component
 public class MediaConverter {
     /**
-     * ediaResponseDtoに変換する
+     * MediaResponseDtoに変換する
      *
      * @param media                 メディアエンティティ
      * @param tags                  メディアに紐づくタグのリスト

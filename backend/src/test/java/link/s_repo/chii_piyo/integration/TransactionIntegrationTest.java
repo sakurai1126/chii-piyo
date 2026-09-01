@@ -4,7 +4,6 @@ import link.s_repo.chii_piyo.IntegrationTestBase;
 import link.s_repo.chii_piyo.component.S3StorageManager;
 import link.s_repo.chii_piyo.model.gen.*;
 import link.s_repo.chii_piyo.repository.*;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +20,6 @@ import tools.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,7 +32,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS) // 非staticで@BeforeAllを使用
-public class TransactionIntegrationTest extends IntegrationTestBase {
+class TransactionIntegrationTest extends IntegrationTestBase {
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired

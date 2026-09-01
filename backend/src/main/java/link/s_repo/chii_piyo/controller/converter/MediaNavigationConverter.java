@@ -2,7 +2,6 @@ package link.s_repo.chii_piyo.controller.converter;
 
 import link.s_repo.chii_piyo.model.gen.Media;
 import link.s_repo.chii_piyo.model.gen.MediaNavigationResponseDto;
-import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
