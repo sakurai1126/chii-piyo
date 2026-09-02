@@ -16,18 +16,18 @@ on:
   pull_request:
     # 以下に該当するファイルの変更に応じて実行
     paths:
-      - 'frontend/**'
-      - 'backend/**'
-      - '.github/workflows/e2e.yml'
+      - "frontend/**"
+      - "backend/**"
+      - ".github/workflows/e2e.yml"
 
   # mainブランチのpushまたはマージされたときに実行
   push:
     branches:
       - main
     paths:
-      - 'frontend/**'
-      - 'backend/**'
-      - '.github/workflows/e2e.yml'
+      - "frontend/**"
+      - "backend/**"
+      - ".github/workflows/e2e.yml"
 
 jobs:
   e2e:
@@ -54,7 +54,7 @@ jobs:
           --health-cmd pg_isready
           --health-interval 10s 
           --health-timeout 5s 
-          --health-retries 5 
+          --health-retries 5
 
     steps:
       - name: リポジトリチェックアウト
@@ -63,9 +63,9 @@ jobs:
       - name: Java開発環境のセットアップ
         uses: actions/setup-java@v4
         with:
-          java-version: '25'
-          distribution: 'corretto'
-          cache: 'maven'
+          java-version: "25"
+          distribution: "corretto"
+          cache: "maven"
 
       - name: バックエンドのビルドとバックグラウンド起動
         working-directory: backend
@@ -97,7 +97,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'npm'
+          cache: "npm"
           cache-dependency-path: frontend/package-lock.json
 
       - name: フロントエンド依存関係のインストール
@@ -123,6 +123,7 @@ jobs:
           TEST_USER_NAME: ${{ secrets.TEST_USER_NAME }}
           TEST_VIEWER_EMAIL: ${{ secrets.TEST_VIEWER_EMAIL }}
           TEST_VIEWER_PASSWORD: ${{ secrets.TEST_VIEWER_PASSWORD }}
+          S3_ORIGIN: ${{ secrets.S3_ORIGIN }}
         run: npm run test:e2e
 
       # Playwrightレポートを保存
@@ -140,4 +141,3 @@ jobs:
         run: |
           echo "--- Backend Log ---"
           cat backend/backend.log
-
