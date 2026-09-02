@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class CoreApiWorkflowIntegrationTest extends IntegrationTestBase {
+class CoreApiWorkflowIntegrationTest extends IntegrationTestBase {
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
@@ -140,7 +140,7 @@ public class CoreApiWorkflowIntegrationTest extends IntegrationTestBase {
     @DisplayName("IT-10: メディアの一覧取得ができること")
     void getMedia() throws Exception {
         // DBに事前のテスト用メディアデータを準備
-        Media media = createMedia();
+        createMedia();
 
         // S3依存のスタブ化
         when(s3StorageManager.generateDownloadPresignedUrl(any(), any())).thenReturn(mockPresignedUrl);

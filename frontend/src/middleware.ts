@@ -9,18 +9,73 @@ import { verifyIdToken } from "@/lib/auth/verify-jwt";
 const PUBLIC_PATHS = ["/login"];
 
 /**
- * IDトークンの検証を行うmiddleware
- * 署名・Issuer・Audience・有効期限を全て検証する
+ * ページ内で読み込みを許可する要素通知と認証処理のミドルウェア
  */
 export const middleware = async (request: NextRequest) => {
-  const redirect = redirectToCustomDomain(request);
-  if (redirect) return redirect;
+  // Amplifyデフォルトドメインへのアクセスをカスタムドメインへリダイレクトする
+  // ボディを返さないためCSPの付与対象外とし、nonce生成前に早期リターンする
+  const domainRedirect = redirectToCustomDomain(request);
+  if (domainRedirect) return domainRedirect;
 
+  // 自分が出力したスクリプトを識別するためのランダム値
+  const nonce = crypto.randomUUID();
+
+  // コンテンツセキュリティポリシーの許可リスト生成
+  const csp = [
+    // 規定値
+    // 自身のオリジンのみ許可
+    "default-src 'self'",
+    // 実行を許可するスクリプト
+    // nonceで自身が出力したものだけを許可し、strict-dynamicによってそこから読み込まれるJSファイルも許可
+    // unsafe-evalは文字列をコードとして実行する処理の許可であり、開発サーバーの自動更新が使用するため開発環境に限定
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${process.env.NODE_ENV !== "production" ? " 'unsafe-eval'" : ""}`,
+    // 適用を許可するスタイル
+    // Next.jsが挿入するインラインスタイルにnonceが付かないため'unsafe-inline'を許可する
+    "style-src 'self' 'unsafe-inline'",
+    // 表示を許可する画像
+    `img-src 'self' blob: data: ${process.env.S3_ORIGIN ?? ""}`,
+    // 再生を許可する動画・音声
+    `media-src 'self' blob: ${process.env.S3_ORIGIN ?? ""}`,
+    // 通信を許可する接続先
+    // S3への署名付きURLでの直接アップロードを許可する
+    `connect-src 'self' ${process.env.S3_ORIGIN ?? ""}`,
+    // 生成を許可する別スレッド実行用Worker
+    // blobは画像圧縮ライブラリの画像リサイズ用
+    "worker-src 'self' blob:",
+    // PDF等の外部ファイルを埋め込むobject/embed要素を禁止
+    "object-src 'none'",
+    // フォームの送信先を自オリジンに限定する
+    "form-action 'self'",
+    // 他サイトからのframe埋め込みを禁止し、クリックジャッキングを防ぐ
+    "frame-ancestors 'none'",
+    // http指定のリソースをhttpsに置き換えて読み込む
+    "upgrade-insecure-requests",
+  ].join("; ");
+
+  // Next.js自身のスクリプトがブロックされ画面が表示されないのを防ぐためリクエストヘッダーにCSPを付与
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-nonce", nonce);
+  requestHeaders.set("Content-Security-Policy", csp);
+
+  // 認証処理
+  const response = await handleAuth(request, requestHeaders);
+
+  // ブラウザへ許可リストを通知
+  response.headers.set("Content-Security-Policy", csp);
+
+  return response;
+};
+
+/**
+ * IDトークンの検証を行う
+ * 署名・Issuer・Audience・有効期限を全て検証する
+ */
+const handleAuth = async (request: NextRequest, requestHeaders: Headers) => {
   const { pathname } = request.nextUrl;
 
   // 公開パスの場合はスキップする
   if (PUBLIC_PATHS.some((p) => pathname.startsWith(p))) {
-    return NextResponse.next();
+    return NextResponse.next({ request: { headers: requestHeaders } });
   }
 
   // IDトークンとリフレッシュトークンの取得
@@ -40,12 +95,12 @@ export const middleware = async (request: NextRequest) => {
 
   // IDトークンが有効、かつ期限切れ間近でない場合はそのまま通す
   if (isVerified && !isTokenExpiringSoon(idToken!)) {
-    return NextResponse.next();
+    return NextResponse.next({ request: { headers: requestHeaders } });
   }
 
   // IDトークンが期限切れまたは期限切れ間近で、リフレッシュトークンがある場合
   if (refreshTokenValue && idToken) {
-    const refreshed = await refreshSession(request, idToken, refreshTokenValue);
+    const refreshed = await refreshSession(request, requestHeaders, idToken, refreshTokenValue);
     if (refreshed) return refreshed;
   }
 
@@ -84,7 +139,12 @@ const redirectToLogin = (request: NextRequest) => {
  * リフレッシュトークンを用いてIDトークンを再取得し、Cookieを更新したレスポンスを返す
  * リフレッシュできない場合はnullを返す
  */
-const refreshSession = async (request: NextRequest, idToken: string, refreshTokenValue: string) => {
+const refreshSession = async (
+  request: NextRequest,
+  requestHeaders: Headers,
+  idToken: string,
+  refreshTokenValue: string,
+) => {
   try {
     // JWTをパースして、中身のデータを取り出し
     const decoded = decodeJwt(idToken);
@@ -101,7 +161,7 @@ const refreshSession = async (request: NextRequest, idToken: string, refreshToke
 
     // 次の処理に更新したリクエストヘッダーを含めつつ、レスポンスオブジェクトを作成
     const response = NextResponse.next({
-      request: { headers: request.headers },
+      request: { headers: requestHeaders },
     });
 
     // ブラウザ側に保存させるためのCookieの設定を定義
