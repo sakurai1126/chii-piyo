@@ -19,6 +19,7 @@ import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -77,6 +78,13 @@ public class SecurityConfig {
                 .jwt(jwt -> jwt.jwtAuthenticationConverter(customJwtAuthConverter))
                 .authenticationEntryPoint(customAuthEntryPoint)
                 .accessDeniedHandler(customAccessDeniedHandler)
+            )
+            // JSONのみを返すAPIサーバーのため一切のリソース読み込みとframe埋め込みを禁止させる
+            // URLに含まれる情報の外部漏洩を防ぐためリファラも制限
+            .headers(headers -> headers
+                .contentSecurityPolicy(csp ->
+                    csp.policyDirectives("default-src 'none'; frame-ancestors 'none'"))
+                .referrerPolicy(rp -> rp.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.NO_REFERRER))
             );
 
         return http.build();
