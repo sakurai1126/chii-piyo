@@ -24,7 +24,9 @@ export const TopMedia = ({ isEasy, favoriteData, mediaData, users }: Props) => {
     mainMedia = Array.from({ length: 6 }, (_, i) => mainMedia[i % mainMedia.length]);
   }
 
-  const today = new Date();
+  const now = new Date();
+  const jstString = now.toLocaleString("en-US", { timeZone: "Asia/Tokyo" });
+  const today = new Date(jstString);
   const birthday = new Date("2025-08-06");
 
   // 生後日数の計算
