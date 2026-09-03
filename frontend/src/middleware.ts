@@ -6,7 +6,7 @@ import { isTokenExpiringSoon } from "@/lib/auth/session";
 import { verifyIdToken } from "@/lib/auth/verify-jwt";
 
 // ログインページなどの公開パス
-const PUBLIC_PATHS = ["/login"];
+const PUBLIC_PATHS = ["/login", "/manifest.webmanifest"];
 
 /**
  * ページ内で読み込みを許可する要素通知と認証処理のミドルウェア

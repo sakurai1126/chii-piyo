@@ -24,7 +24,9 @@ export const TopMedia = ({ isEasy, favoriteData, mediaData, users }: Props) => {
     mainMedia = Array.from({ length: 6 }, (_, i) => mainMedia[i % mainMedia.length]);
   }
 
-  const today = new Date();
+  const now = new Date();
+  const jstString = now.toLocaleString("en-US", { timeZone: "Asia/Tokyo" });
+  const today = new Date(jstString);
   const birthday = new Date("2025-08-06");
 
   // 生後日数の計算
@@ -58,7 +60,7 @@ export const TopMedia = ({ isEasy, favoriteData, mediaData, users }: Props) => {
                 style={{ animationDelay: `-${30 - index * 5}s` }}
               >
                 <Image
-                  src={media.thumbnailPresignedUrl ?? "/images/no-thumbnail.png"}
+                  src={media.presignedUrl ?? "/images/no-thumbnail.png"}
                   alt=""
                   className="bg-background h-full w-full object-cover"
                   width={570}

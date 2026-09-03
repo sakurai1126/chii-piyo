@@ -29,6 +29,7 @@ import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -67,6 +68,7 @@ public class MediaControllerTest extends BaseControllerTest {
     private Media createMockMedia(Long mockMediaId) {
         Media media = new Media();
         media.setId(mockMediaId);
+        media.setS3Key("media/sample.jpg");
         media.setThumbnailS3Key("thumbnails/sample.jpg");
         media.setOriginalFilename("sample.jpg");
         return media;
@@ -129,7 +131,7 @@ public class MediaControllerTest extends BaseControllerTest {
 
             // 単体のレスポンス変換処理のスタブ化
             when(mediaConverter.toMediaResponseDto(
-                eq(media), isNull(), isNull(), any(), anyBoolean(), eq(mockCommentCount),
+                eq(media), isNull(), any(URI.class), any(), anyBoolean(), eq(mockCommentCount),
                 isNull(), isNull(), isNull(), isNull(), any()
             )).thenReturn(response);
 
@@ -172,7 +174,7 @@ public class MediaControllerTest extends BaseControllerTest {
 
             // メディア・お気に入り判定・コメント件数が整形されてConverterに渡ること
             verify(mediaConverter).toMediaResponseDto(
-                eq(media), isNull(), isNull(), any(), eq(true), eq(mockCommentCount),
+                eq(media), isNull(), any(URI.class), any(URI.class), eq(true), eq(mockCommentCount),
                 isNull(), isNull(), isNull(), isNull(), any());
 
             // 総件数がConverterに渡ること
@@ -282,7 +284,7 @@ public class MediaControllerTest extends BaseControllerTest {
 
             // お気に入り判定がtrueで呼ばれていることの検証
             verify(mediaConverter).toMediaResponseDto(
-                eq(media), isNull(), isNull(), any(), eq(true), eq(mockCommentCount),
+                eq(media), isNull(), any(URI.class), any(URI.class), eq(true), eq(mockCommentCount),
                 isNull(), isNull(), isNull(), isNull(), any());
         }
 
@@ -319,12 +321,12 @@ public class MediaControllerTest extends BaseControllerTest {
                 .param("offset", "0")
                 .param("limit", "20"));
 
-            // サムネイルS3キーがnullの場合はgenerateDownloadPresignedUrlが呼ばれていないことを確認
-            verify(s3StorageManager, never()).generateDownloadPresignedUrl(any(), any());
+            // サムネイル用は呼ばれず、通常サイズ用の1回のみ呼ばれたことを確認
+            verify(s3StorageManager, times(1)).generateDownloadPresignedUrl(any(), any());
 
             // ConverterにthumbnailPresignedUrlとしてnullが渡っていることを検証
             verify(mediaConverter).toMediaResponseDto(
-                eq(media), isNull(), isNull(), isNull(), eq(true), eq(mockCommentCount),
+                eq(media), isNull(), any(), isNull(), eq(true), eq(mockCommentCount),
                 isNull(), isNull(), isNull(), isNull(), any());
         }
     }

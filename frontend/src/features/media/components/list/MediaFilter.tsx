@@ -161,10 +161,10 @@ export const MediaFilter = ({ isEasy, tags, sharingGroups, showMediaCount = fals
                 )}
               </svg>
             </button>
-            {searchParams.size > 0 && (
+            {searchParams.size > 0 && isOpen && (
               <Button
                 variant="cancel"
-                className="text-note-gray dark:text-line-gray mt-3 ml-auto block w-60"
+                className="text-note-gray dark:text-line-gray mt-3 ml-auto block w-60 @max-md:mb-4"
                 onClick={paramsReset}
               >
                 検索条件をリセット
