@@ -190,6 +190,10 @@ public class MediaController implements MediaManagementApi {
         // コンバータでMediaResponseDtoのリストに変換する
         List<MediaResponseDto> responseMediaList = mediaList.stream()
             .map(media -> {
+                URI presignedUrl = media.getS3Key() != null
+                    ? s3StorageManager.generateDownloadPresignedUrl(media.getS3Key(), media.getOriginalFilename())
+                    : null;
+
                 URI thumbnailPresignedUrl = media.getThumbnailS3Key() != null
                     ? s3StorageManager.generateDownloadPresignedUrl(media.getThumbnailS3Key(),
                     media.getOriginalFilename())
@@ -206,7 +210,7 @@ public class MediaController implements MediaManagementApi {
                 return mediaConverter.toMediaResponseDto(
                     media,
                     null,
-                    null,
+                    presignedUrl,
                     thumbnailPresignedUrl,
                     isFavoriteMedia,
                     commentCount,

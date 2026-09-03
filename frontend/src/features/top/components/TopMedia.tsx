@@ -58,7 +58,7 @@ export const TopMedia = ({ isEasy, favoriteData, mediaData, users }: Props) => {
                 style={{ animationDelay: `-${30 - index * 5}s` }}
               >
                 <Image
-                  src={media.thumbnailPresignedUrl ?? "/images/no-thumbnail.png"}
+                  src={media.presignedUrl ?? "/images/no-thumbnail.png"}
                   alt=""
                   className="bg-background h-full w-full object-cover"
                   width={570}
