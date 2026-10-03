@@ -11,7 +11,7 @@
       "bash -c 'cd frontend && npx eslint --fix --no-error-on-unmatched-pattern $@' --",
       "bash -c 'cd frontend && npx prettier --write $@' --"
     ],
-    "frontend/**/*.{json,css,md}": [
+    "frontend/**/*.{mjs,js,json,css,md}": [
       "bash -c 'cd frontend && npx prettier --write $@' --"
     ]
   },
