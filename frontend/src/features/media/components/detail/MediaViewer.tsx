@@ -199,12 +199,12 @@ export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
           )}
         </div>
       )}
-      <div className="@max-md:mt-5 @max-md:flex @max-md:items-center @max-md:justify-between @max-md:px-5">
+      <div className="@max-md:mt-5 @max-md:gap-3 @max-md:px-5">
         {isModal ? (
           <Button
             variant="cancel"
             onClick={() => router.back()}
-            className="mx-auto mt-10 block @max-md:m-0"
+            className="mx-auto mt-10 block @max-md:mt-0"
           >
             戻る
           </Button>

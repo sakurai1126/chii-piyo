@@ -16,7 +16,7 @@ export const MediaKindFilter = ({ updateFilter, currentValue = "" }: Props) => {
         <Image src={icon} alt="" width={32} height={32} className="h-6.5 w-6.5" />
         <p className="@max-md:text-[13px]">写真/動画</p>
       </div>
-      <div className="mt-3 flex gap-2">
+      <div className="mt-3 flex flex-wrap gap-2">
         <label
           htmlFor={`allMedia-${uid}`}
           className="has-checked:border-accent-orange has-checked:bg-accent-orange-back has-checked:text-brown-middle border-line-gray bg-light-dark flex cursor-pointer items-center gap-2 rounded-lg border py-1.5 pr-5 pl-3 transition-all @max-md:py-1"

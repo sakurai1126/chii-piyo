@@ -44,26 +44,26 @@ export const Members = async ({ isAdmin, currentUser, users, sharingGroups }: Pr
         {users.map((user, index) => (
           <div
             className={cn(
-              "py-4 pr-5 pl-7 @max-md:p-5",
+              "relative py-4 pr-5 pl-7 @max-md:px-3 @max-md:py-5 @max-md:pt-10",
               index > 0 && "border-brown-dark/50 border-t",
             )}
             key={user.id}
           >
             <div className="flex justify-between">
               <div className="flex items-center gap-6">
-                <div className="h-20 w-20 shrink-0 rounded-full bg-[linear-gradient(100deg,#FFC0AB_35%,#FFF829_65%)] p-px">
+                <div className="h-20 w-20 shrink-0 rounded-full bg-[linear-gradient(100deg,#FFC0AB_35%,#FFF829_65%)] p-px @max-md:h-15 @max-md:w-15">
                   <div className="rounded-full bg-white">
                     <Image
                       src={user.presignedIconUrl || "/images/no-image.svg"}
                       alt=""
                       width={80}
                       height={80}
-                      className="aspect-square h-full w-full rounded-full object-cover"
+                      className="aspect-square h-full w-full rounded-full object-cover @max-md:h-15 @max-md:w-15"
                     />
                   </div>
                 </div>
                 <div className="grid gap-1">
-                  <p className="text-sm @max-md:text-[13px]">
+                  <p className="text-sm break-all @max-md:text-[13px]">
                     表示名：
                     <br className="@md:hidden" />
                     {user.displayName}

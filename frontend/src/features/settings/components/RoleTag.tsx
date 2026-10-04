@@ -13,7 +13,7 @@ import roleChangeIcon from "../assets/role-change.svg";
 
 // 共通クラス定義
 const baseClass =
-  "flex h-7 w-20 items-center justify-center rounded-3xl border text-xs font-medium";
+  "flex h-7 w-20 items-center justify-center rounded-3xl border text-xs font-medium shrink-0 @max-md:absolute @max-md:top-3 @max-md:right-3";
 const buttonClass = "group cursor-pointer transition-all hover:w-25 hover:gap-1 hover:text-white";
 
 // 権限の表示/変更

@@ -85,14 +85,19 @@ export const Profile = ({ isEasy, currentUser }: Props) => {
           </div>
           <div className="w-full">
             <div>
-              <div className={cn("flex", isEasy ? "flex-col" : "items-center gap-6 @max-md:gap-4")}>
+              <div
+                className={cn(
+                  "flex flex-wrap",
+                  isEasy ? "flex-col" : "items-center gap-6 @max-md:gap-2",
+                )}
+              >
                 <p className={cn(isEasy ? "text-[18px] font-medium" : "@max-md:text-[13px]")}>
                   表示名：{user.displayName}
                 </p>
                 <button
                   type="button"
                   className={cn(
-                    "cursor-pointer text-xs underline transition-all hover:opacity-70",
+                    "cursor-pointer text-xs text-nowrap underline transition-all hover:opacity-70",
                     isEasy ? "mt-2 w-fit text-[13px]" : "@max-md:text-[10px]",
                   )}
                   onClick={() => setIsNameChangeMode(true)}
@@ -132,7 +137,7 @@ export const Profile = ({ isEasy, currentUser }: Props) => {
             <p
               className={cn(
                 "mt-2 break-all",
-                isEasy ? "text-[16px] font-medium" : "@max-md:mt-1 @max-md:text-[13px]",
+                isEasy ? "text-[16px] font-medium" : "@max-md:mt-2 @max-md:text-[13px]",
               )}
             >
               メールアドレス：

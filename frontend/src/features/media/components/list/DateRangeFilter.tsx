@@ -21,7 +21,7 @@ export const DateRangeFilter = ({ updateFilter, currentStartDate, currentEndDate
         <input
           type="date"
           className={cn(
-            "focus:outline-brown-light border-line-gray bg-light-dark h-9 w-35 rounded-sm border px-3 text-sm @max-md:h-9 @max-md:w-[calc(50%-15px)] @max-md:text-xs dark:outline-none",
+            "focus:outline-brown-light border-line-gray bg-light-dark h-9 w-35 rounded-sm border px-3 text-sm @max-md:h-9 @max-md:w-[calc(50%-15px)] @max-md:px-1.5 @max-md:text-xs dark:outline-none",
             !currentStartDate && "text-line-gray",
           )}
           value={currentStartDate}
@@ -33,7 +33,7 @@ export const DateRangeFilter = ({ updateFilter, currentStartDate, currentEndDate
         <input
           type="date"
           className={cn(
-            "focus:outline-brown-light border-line-gray bg-light-dark h-9 w-35 rounded-sm border px-3 text-sm @max-md:h-9 @max-md:w-[calc(50%-15px)] @max-md:text-xs dark:outline-none",
+            "focus:outline-brown-light border-line-gray bg-light-dark h-9 w-35 rounded-sm border px-3 text-sm @max-md:h-9 @max-md:w-[calc(50%-15px)] @max-md:px-1.5 @max-md:text-xs dark:outline-none",
             !currentEndDate && "text-line-gray",
           )}
           value={currentEndDate}

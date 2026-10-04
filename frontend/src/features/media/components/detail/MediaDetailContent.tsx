@@ -44,7 +44,7 @@ export const MediaDetailContent = async ({ id, isModal = false }: Props) => {
       )}
     >
       <p className="hidden">Media ID: {id}</p>
-      <div className="flex gap-10 @max-lg:mx-auto @max-lg:max-w-150 @max-lg:flex-col @max-lg:items-center">
+      <div className="flex gap-10 @max-lg:mx-auto @max-lg:max-w-150 @max-lg:flex-col @max-lg:items-center @max-md:gap-3">
         {/* 画像、動画表示 */}
         <MediaViewer isEasy={isEasy} media={media} isModal={isModal} users={users} />
 
