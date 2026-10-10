@@ -70,7 +70,7 @@ export const useChangeSettings = ({ currentUser }: Props) => {
    *
    * 成功/失敗はトーストで通知
    */
-  const iconUpload = async () => {
+  const iconUpload = () => {
     startTransition(async () => {
       try {
         // バリデーション
@@ -126,7 +126,7 @@ export const useChangeSettings = ({ currentUser }: Props) => {
    *
    * 成功/失敗はトーストで通知
    */
-  const nameChange = async () => {
+  const nameChange = () => {
     if (!newName) {
       toast.error("新しい表示名を入力してください");
       return;
@@ -156,7 +156,7 @@ export const useChangeSettings = ({ currentUser }: Props) => {
    *
    * 成功/失敗はトーストで通知
    */
-  const darkModeChange = async () => {
+  const darkModeChange = () => {
     startTransition(async () => {
       try {
         // DBへ送る値とCookieやclassへ反映する値がずれないよう変更後の値を変数化
@@ -192,7 +192,7 @@ export const useChangeSettings = ({ currentUser }: Props) => {
    *
    * 成功/失敗はトーストで通知
    */
-  const easyModeChange = async () => {
+  const easyModeChange = () => {
     startTransition(async () => {
       try {
         const updatedUser = await updateProfileAction({ isEasyMode: !isEasyMode });

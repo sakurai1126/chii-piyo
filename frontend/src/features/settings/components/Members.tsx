@@ -15,7 +15,7 @@ type Props = {
   sharingGroups?: SharingGroupResponseDto[];
 };
 
-export const Members = async ({ isAdmin, currentUser, users, sharingGroups }: Props) => {
+export const Members = ({ isAdmin, currentUser, users, sharingGroups }: Props) => {
   const sharingGroupMap = new Map<number, string>();
   sharingGroups?.forEach((sharingGroup) => {
     sharingGroupMap.set(sharingGroup.id, sharingGroup.name);
