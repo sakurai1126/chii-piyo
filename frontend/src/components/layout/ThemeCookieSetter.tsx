@@ -12,7 +12,7 @@ type Props = {
  */
 export const ThemeCookieSetter = ({ isDarkMode }: Props) => {
   useEffect(() => {
-    document.cookie = `theme=${isDarkMode ? "dark" : "light"}; path=/; max-age=604800`;
+    document.cookie = `theme=${isDarkMode ? "dark" : "light"}; path=/; max-age=604800; SameSite=Lax; Secure`;
   }, [isDarkMode]);
 
   return null;

@@ -159,26 +159,24 @@ export const useChangeSettings = ({ currentUser }: Props) => {
   const darkModeChange = async () => {
     startTransition(async () => {
       try {
-        const updatedUser = await updateProfileAction({ isDarkMode: !isDarkMode });
+        // DBへ送る値とCookieやclassへ反映する値がずれないよう変更後の値を変数化
+        const nextIsDarkMode = !isDarkMode;
+        const updatedUser = await updateProfileAction({ isDarkMode: nextIsDarkMode });
         if (updatedUser.success) {
           // Cookieに保存(有効期限:7日間)
-          document.cookie = `theme=${user.isDarkMode ? "light" : "dark"}; path=/; max-age=604800; SameSite=Lax; Secure`;
+          document.cookie = `theme=${nextIsDarkMode ? "dark" : "light"}; path=/; max-age=604800; SameSite=Lax; Secure`;
 
           // htmlタグのクラスを操作してクライアント側に即時反映
-          if (user.isDarkMode) {
-            document.documentElement.classList.remove("dark");
-          } else {
-            document.documentElement.classList.add("dark");
-          }
+          document.documentElement.classList.toggle("dark", nextIsDarkMode);
 
-          setUser({
-            ...user,
-            isDarkMode: !user.isDarkMode,
-          });
+          setUser((prev) => ({
+            ...prev,
+            isDarkMode: nextIsDarkMode,
+          }));
 
-          setIsDarkMode(!user.isDarkMode);
+          setIsDarkMode(nextIsDarkMode);
 
-          toast.success(`ダークモード表示を${user.isDarkMode ? "OFF" : "ON"}にしました`);
+          toast.success(`ダークモード表示を${nextIsDarkMode ? "ON" : "OFF"}にしました`);
         } else {
           toast.error("ダークモード表示の変更に失敗しました");
         }
