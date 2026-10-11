@@ -121,6 +121,7 @@ public class MediaServiceTest {
 
             // モックデータの作成
             Media mockMedia = new Media();
+            mockMedia.setUploadStatus("COMPLETED");
             Long mockUserId = 2L;
 
             // 取得処理のスタブ化
@@ -302,7 +303,7 @@ public class MediaServiceTest {
             mockMedia.setFileSize(mockFileSize);
 
             // 取得処理のスタブ化
-            when(mediaRepository.findUnscopedById(requestMediaId)).thenReturn(Optional.of(mockMedia));
+            when(mediaRepository.findUnscopedByIdForUpdate(requestMediaId)).thenReturn(Optional.of(mockMedia));
             when(s3StorageManager.objectExists(mockS3Key)).thenReturn(true);
 
             // 対象の実行
@@ -326,7 +327,7 @@ public class MediaServiceTest {
             mockMedia.setUploadedBy(requestUserId);
 
             // 取得処理のスタブ化
-            when(mediaRepository.findUnscopedById(requestMediaId)).thenReturn(Optional.of(mockMedia));
+            when(mediaRepository.findUnscopedByIdForUpdate(requestMediaId)).thenReturn(Optional.of(mockMedia));
 
             // 対象の実行
             mediaService.updateUploadStatus(requestMediaId, requestUserId, requestUploadStatus);
@@ -348,7 +349,7 @@ public class MediaServiceTest {
             String requestUploadStatus = "COMPLETED";
 
             // 取得処理のスタブ化
-            when(mediaRepository.findUnscopedById(requestMediaId)).thenReturn(Optional.empty());
+            when(mediaRepository.findUnscopedByIdForUpdate(requestMediaId)).thenReturn(Optional.empty());
 
             // 対象を実行し例外が吐かれるか確認
             assertThatThrownBy(() -> mediaService.updateUploadStatus(requestMediaId, requestUserId, requestUploadStatus))
@@ -373,7 +374,7 @@ public class MediaServiceTest {
             mockMedia.setUploadedBy(9L);
 
             // 取得処理のスタブ化
-            when(mediaRepository.findUnscopedById(requestMediaId)).thenReturn(Optional.of(mockMedia));
+            when(mediaRepository.findUnscopedByIdForUpdate(requestMediaId)).thenReturn(Optional.of(mockMedia));
 
             // 対象を実行し例外が吐かれるか確認
             assertThatThrownBy(() -> mediaService.updateUploadStatus(requestMediaId, requestUserId, requestUploadStatus))
@@ -399,7 +400,7 @@ public class MediaServiceTest {
             mockMedia.setS3Key(mockS3Key);
 
             // 取得処理のスタブ化
-            when(mediaRepository.findUnscopedById(requestMediaId)).thenReturn(Optional.of(mockMedia));
+            when(mediaRepository.findUnscopedByIdForUpdate(requestMediaId)).thenReturn(Optional.of(mockMedia));
             when(s3StorageManager.objectExists(mockS3Key)).thenReturn(false);
 
             // 対象を実行し例外が吐かれるか確認

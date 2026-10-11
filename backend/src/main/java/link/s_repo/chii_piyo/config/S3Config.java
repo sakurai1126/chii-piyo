@@ -9,6 +9,8 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.time.Duration;
+
 /**
  * AWS S3クライアントとS3Presignerの設定クラス
  * application.yamlからAWSの認証情報とリージョンを読み込み、S3ClientとS3Presignerを構築する
@@ -38,6 +40,11 @@ public class S3Config {
                 StaticCredentialsProvider.create(
                     AwsBasicCredentials.create(accessKey, secretKey)
                 )
+            )
+            // 未完了アップロードの削除はS3削除中も行ロックを保持するため、S3が無応答でもリトライを含めて5分で打ち切る。
+            .overrideConfiguration(c -> c
+                .apiCallAttemptTimeout(Duration.ofSeconds(60))
+                .apiCallTimeout(Duration.ofMinutes(5))
             )
             .build();
     }

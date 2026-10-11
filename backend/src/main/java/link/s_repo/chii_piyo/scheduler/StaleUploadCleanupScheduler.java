@@ -43,14 +43,19 @@ public class StaleUploadCleanupScheduler {
     /**
      * 完了しないまま放置されたアップロードを定期的に削除する
      */
-    @Scheduled(fixedDelayString = "${upload.cleanup.interval-ms}")
+    @Scheduled(cron = "${upload.cleanup.cron}", zone = "Asia/Tokyo")
     @Transactional
     public void cleanupStaleUploads() {
-        // 削除対象のメディアを取得
+        // 削除対象のメディアをロック付きで取得する。トランザクション終了まで完了通知による更新は待機する
         OffsetDateTime threshold = OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(graceMinutes);
         List<Media> targets = mediaRepository.findStaleUploads(threshold, BATCH_SIZE);
 
         if (targets.isEmpty()) return;
+
+        // 上限ちょうどの場合は残りが翌日に持ち越されるため、未完了の蓄積に気付けるよう警告を出す
+        if (targets.size() >= BATCH_SIZE) {
+            log.warn("未完了のアップロードが1回の処理上限 {} 件に達しました。残りは次回に持ち越されます。", BATCH_SIZE);
+        }
 
         // 削除対象のメディアIDとS3キーを抽出
         List<Long> mediaIds = targets.stream().map(Media::getId).toList();

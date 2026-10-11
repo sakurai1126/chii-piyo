@@ -51,7 +51,8 @@ public class MediaRepository {
 
     /**
      * メディアをID指定で複数件取得する<br>
-     * (ゴミ箱にあるデータは除外)
+     * (ゴミ箱にあるデータは除外)<br>
+     * 更新や削除前の存在チェックに使うため、アップロード中や失敗のメディアも含む
      *
      * @param ids    対象のメディアのIDリスト
      * @param userId 現在のユーザーID
@@ -59,7 +60,7 @@ public class MediaRepository {
      */
     public List<Media> findByIds(List<Long> ids, Long userId) {
         return mediaMapper.select(c -> c
-            .where(MediaDynamicSqlSupport.id, isIn(ids), andNotInTrash(), andUploadCompleted(),
+            .where(MediaDynamicSqlSupport.id, isIn(ids), andNotInTrash(),
                 andSharingGroupFilter(userId))
         );
     }
@@ -115,6 +116,20 @@ public class MediaRepository {
      */
     public Optional<Media> findUnscopedById(Long id) {
         return mediaMapper.selectByPrimaryKey(id);
+    }
+
+    /**
+     * 対象メディアを行ロック付きでID指定取得する<br>
+     * ゴミ箱にあるデータも含む<br>
+     * 未完了アップロードの定期削除と完了通知が同じ行を同時に扱わないよう、トランザクションの終了までロックを保持する
+     *
+     * @param id 対象のメディアID
+     */
+    public Optional<Media> findUnscopedByIdForUpdate(Long id) {
+        return mediaMapper.selectOne(c -> c
+            .where(MediaDynamicSqlSupport.id, isEqualTo(id))
+            .forUpdate()
+        );
     }
 
     /**
@@ -443,7 +458,9 @@ public class MediaRepository {
 
     /**
      * 一定時間を過ぎてもアップロードが完了していないメディアを取得する<br>
-     * 署名付きURLの有効期限を過ぎているため、以降に本体がアップロードされることはない
+     * 署名付きURLの有効期限を過ぎているため、以降に本体がアップロードされることはない<br>
+     * 取得した行はトランザクションの終了までロックし、削除前に完了通知でCOMPLETEDへ更新されるのを防ぐ<br>
+     * 完了通知が処理中の行は待たずに対象から外し、次回の実行に回す
      *
      * @param threshold この日時より前に作成されたものを対象とする
      * @param limit     取得件数の上限
@@ -454,6 +471,8 @@ public class MediaRepository {
             .where(uploadStatus, isIn("PROCESSING", "FAILED"))
             .and(MediaDynamicSqlSupport.createdAt, isLessThan(threshold))
             .limit(limit)
+            .forUpdate()
+            .skipLocked()
         );
     }
 
