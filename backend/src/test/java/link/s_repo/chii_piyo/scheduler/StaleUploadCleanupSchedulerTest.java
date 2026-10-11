@@ -59,7 +59,7 @@ public class StaleUploadCleanupSchedulerTest {
         Long mockMediaId = 1L;
 
         @Test
-        @DisplayName("Sched-07: 未完了のメディアが存在する場合、S3オブジェクトを先に削除してから関連データとメディアを削除すること")
+        @DisplayName("Sched-07: 未完了のメディアが存在する場合、S3オブジェクトを削除してステータスを変更にし、レコードは削除しないこと")
         void cleanupStaleUploads_success() {
             // モックデータの作成
             String mockS3Key = "media/image.png";
@@ -76,14 +76,16 @@ public class StaleUploadCleanupSchedulerTest {
             // 対象の実行
             staleUploadCleanupScheduler.cleanupStaleUploads();
 
-            // S3削除がDB削除より先に呼ばれていることの確認
-            InOrder inOrder = inOrder(s3StorageManager, mediaCommentRepository, favoriteRepository,
-                tagRepository, mediaRepository);
+            // S3削除がステータス更新より先に呼ばれていることの確認
+            InOrder inOrder = inOrder(s3StorageManager, mediaRepository);
             inOrder.verify(s3StorageManager).deleteObjects(List.of(mockS3Key, mockThumbnailS3Key));
-            inOrder.verify(mediaCommentRepository).deleteByMediaIds(List.of(mockMediaId));
-            inOrder.verify(favoriteRepository).deleteByMediaIds(List.of(mockMediaId));
-            inOrder.verify(tagRepository).deleteMediaTagsByMediaIds(List.of(mockMediaId));
-            inOrder.verify(mediaRepository).deleteByIds(List.of(mockMediaId));
+            inOrder.verify(mediaRepository).markDeleting(List.of(mockMediaId));
+
+            // 遅れて完了する転送を回収できるよう、同じ実行ではレコードを削除しないことの確認
+            verify(mediaRepository, never()).deleteByIds(any());
+            verify(mediaCommentRepository, never()).deleteByMediaIds(any());
+            verify(favoriteRepository, never()).deleteByMediaIds(any());
+            verify(tagRepository, never()).deleteMediaTagsByMediaIds(any());
         }
 
         @Test
@@ -121,11 +123,37 @@ public class StaleUploadCleanupSchedulerTest {
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("S3削除エラー");
 
-            // レコードが残り次回再試行されるよう、DB削除が呼ばれていないことの確認
+            // ステータスが変わらず次回再試行されるよう、更新と削除が呼ばれていないことの確認
+            verify(mediaRepository, never()).markDeleting(any());
             verify(mediaCommentRepository, never()).deleteByMediaIds(any());
             verify(favoriteRepository, never()).deleteByMediaIds(any());
             verify(tagRepository, never()).deleteMediaTagsByMediaIds(any());
             verify(mediaRepository, never()).deleteByIds(any());
+        }
+
+        @Test
+        @DisplayName("Sched-10: DELETINGのメディアが存在する場合、S3オブジェクトを再削除してから関連データとメディアを削除すること")
+        void cleanupStaleUploads_deleteMarked() {
+            // モックデータの作成
+            String mockS3Key = "media/image.png";
+            Media mockMedia = new Media();
+            mockMedia.setId(mockMediaId);
+            mockMedia.setS3Key(mockS3Key);
+
+            // 取得処理のスタブ化
+            when(mediaRepository.findDeletingUploads(anyLong())).thenReturn(List.of(mockMedia));
+
+            // 対象の実行
+            staleUploadCleanupScheduler.cleanupStaleUploads();
+
+            // S3削除がDB削除より先に呼ばれていることの確認
+            InOrder inOrder = inOrder(s3StorageManager, mediaCommentRepository, favoriteRepository,
+                tagRepository, mediaRepository);
+            inOrder.verify(s3StorageManager).deleteObjects(List.of(mockS3Key));
+            inOrder.verify(mediaCommentRepository).deleteByMediaIds(List.of(mockMediaId));
+            inOrder.verify(favoriteRepository).deleteByMediaIds(List.of(mockMediaId));
+            inOrder.verify(tagRepository).deleteMediaTagsByMediaIds(List.of(mockMediaId));
+            inOrder.verify(mediaRepository).deleteByIds(List.of(mockMediaId));
         }
     }
 }
