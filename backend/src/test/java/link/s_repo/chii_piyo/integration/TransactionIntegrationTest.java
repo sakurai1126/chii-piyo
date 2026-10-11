@@ -4,6 +4,7 @@ import link.s_repo.chii_piyo.IntegrationTestBase;
 import link.s_repo.chii_piyo.component.S3StorageManager;
 import link.s_repo.chii_piyo.model.gen.*;
 import link.s_repo.chii_piyo.repository.*;
+import link.s_repo.chii_piyo.service.MediaService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,8 +25,10 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -35,6 +38,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class TransactionIntegrationTest extends IntegrationTestBase {
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private MediaService mediaService;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -238,6 +243,33 @@ class TransactionIntegrationTest extends IntegrationTestBase {
             // 作成したメディアおよびアルバムをクリーンアップ
             mediaRepository.deleteById(media.getId());
             albumRepository.deleteById(album.getId());
+        }
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @DisplayName("IT-18: 本体が存在しないメディアを完了にしようとして例外が発生してもFAILEDへの更新がされること")
+    void updateUploadStatusBodyMissing() {
+        // 未完了のメディアを作成
+        Media media = createMedia();
+        media.setUploadStatus("PROCESSING");
+        mediaRepository.update(media);
+
+        try {
+            // S3に本体が存在しない状態を設定
+            when(s3StorageManager.objectExists(media.getS3Key())).thenReturn(false);
+
+            // 例外発生を検証
+            assertThatThrownBy(() -> mediaService.updateUploadStatus(media.getId(), testUser.getId(), "COMPLETED"))
+                .isInstanceOf(IllegalArgumentException.class);
+
+            // サービスのトランザクションとは別に読み直し、noRollbackForによりFAILEDが残っていることを検証
+            Media reloadedMedia = mediaRepository.findUnscopedById(media.getId()).orElse(null);
+            assertThat(reloadedMedia).isNotNull();
+            assertThat(reloadedMedia.getUploadStatus()).isEqualTo("FAILED");
+        } finally {
+            // 作成したメディアをクリーンアップ
+            mediaRepository.deleteById(media.getId());
         }
     }
 }
