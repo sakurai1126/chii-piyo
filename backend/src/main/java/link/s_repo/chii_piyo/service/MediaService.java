@@ -159,7 +159,8 @@ public class MediaService {
      * @param userId       実行ユーザーID
      * @param uploadStatus 更新後のステータス (COMPLETED / FAILED / PROCESSING)
      */
-    @Transactional
+    // 本体が無い場合のFAILED更新を、400応答のための例外でロールバックさせないために指定する
+    @Transactional(noRollbackFor = IllegalArgumentException.class)
     public void updateUploadStatus(Long mediaId, Long userId, String uploadStatus) {
         // 対象メディアを取得
         // 生成に必須の処理のためゴミ箱フィルターはなし
@@ -171,11 +172,19 @@ public class MediaService {
             throw new ResourceAccessDeniedException("このメディアを更新する権限がありません mediaId=" + mediaId);
         }
 
+        // 本体が無いまま完了扱いになると壊れたメディアが表示されるため、S3上の存在を確認し無ければFAILEDにする
+        boolean missingBody = "COMPLETED".equals(uploadStatus)
+            && !s3StorageManager.objectExists(media.getS3Key());
+
         // ステータスのみを更新
-        media.setUploadStatus(uploadStatus);
+        media.setUploadStatus(missingBody ? "FAILED" : uploadStatus);
 
         // updateByPrimaryKeySelectiveでnullカラムをスキップして更新
         mediaRepository.update(media);
+
+        if (missingBody) {
+            throw new IllegalArgumentException("アップロードされたファイルが見つかりません mediaId=" + mediaId);
+        }
 
         // COMPLETEDに変わったところからサムネイル生成を非同期で起動
         if ("COMPLETED".equals(uploadStatus)) {

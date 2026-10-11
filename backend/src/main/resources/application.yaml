@@ -69,6 +69,15 @@ thumbnail:
   max-image-bytes: 22020096  # 21MB
   max-video-bytes: 110100480  # 105MB
 
+# 未完了アップロードの掃除設定
+upload:
+  cleanup:
+    # 掃除の実行間隔（ミリ秒）
+    interval-ms: 3600000  # 1時間
+    # 作成からこの時間を過ぎても完了していないものを削除対象とする（分）
+    # 署名付きURLの有効期限15分に余裕を持たせ、アップロード中の行を消さないようにする
+    grace-minutes: 60
+
 # アプリケーションの管理エンドポイントの設定
 management:
   endpoints:

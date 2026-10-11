@@ -9,6 +9,8 @@ import software.amazon.awssdk.core.exception.SdkException;
 import software.amazon.awssdk.services.s3.model.Delete;
 import software.amazon.awssdk.services.s3.model.DeleteObjectsRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
+import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 import software.amazon.awssdk.services.s3.model.ObjectIdentifier;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
@@ -117,6 +119,26 @@ public class S3StorageManager {
             throw new IllegalStateException("URIの生成に失敗しました", e);
         } catch (SdkException e) {
             throw e; // SdkException はそのまま伝播
+        }
+    }
+
+    /**
+     * S3上にオブジェクトが存在するかを確認する<br>
+     * 署名付きURLでの直接アップロードはサーバーから結果が見えないため、完了の申告が事実かを確かめるために使う
+     *
+     * @param s3Key S3オブジェクトキー
+     * @return 存在する場合true
+     */
+    public boolean objectExists(String s3Key) {
+        if (!StringUtils.hasText(s3Key)) {
+            throw new IllegalArgumentException("s3Keyがnullまたは空です");
+        }
+        try {
+            // S3オブジェクトが存在するかを確認する
+            s3Client.headObject(HeadObjectRequest.builder().bucket(s3Bucket).key(s3Key).build());
+            return true;
+        } catch (NoSuchKeyException e) {
+            return false;
         }
     }
 
