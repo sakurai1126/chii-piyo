@@ -24,6 +24,7 @@
 | MediaCtrl-16 | deleteMultipleMedia | 正常 | 管理者で複数メディアIDを渡す | 204が返る |
 | MediaCtrl-17 | deleteMultipleMedia | 異常 | 存在しないメディアIDを含める | 404が返る |
 | MediaCtrl-18 | deleteMultipleMedia | 異常 | 一般ユーザーで削除 | 403が返る |
+| MediaCtrl-19 | updateMediaUploadStatus | 異常 | S3に本体が存在しないメディアにCOMPLETEDを渡す | 400が返る |
 
 ## ユーザー管理
 

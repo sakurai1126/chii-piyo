@@ -9,8 +9,11 @@ import software.amazon.awssdk.core.exception.SdkException;
 import software.amazon.awssdk.services.s3.model.Delete;
 import software.amazon.awssdk.services.s3.model.DeleteObjectsRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
+import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 import software.amazon.awssdk.services.s3.model.ObjectIdentifier;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
@@ -30,6 +33,9 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class S3StorageManager {
+    // アップロード用署名付きURLの有効期限。未完了アップロードの掃除対象の判定にも使うため定数にしている
+    public static final Duration UPLOAD_URL_EXPIRY = Duration.ofMinutes(15);
+
     // 署名付きURL生成用オブジェクト
     private final S3Presigner s3Presigner;
     private final S3Client s3Client;
@@ -64,7 +70,7 @@ public class S3StorageManager {
 
         // PutObjectRequestを元に、署名付きURLを生成するためのPutObjectPresignRequestを作成
         PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
-            .signatureDuration(Duration.ofMinutes(15)) // 有効期限設定
+            .signatureDuration(UPLOAD_URL_EXPIRY) // 有効期限設定
             .putObjectRequest(objectRequest)
             .build();
 
@@ -117,6 +123,31 @@ public class S3StorageManager {
             throw new IllegalStateException("URIの生成に失敗しました", e);
         } catch (SdkException e) {
             throw e; // SdkException はそのまま伝播
+        }
+    }
+
+    /**
+     * S3上にオブジェクトが存在するかを確認する<br>
+     * 署名付きURLでの直接アップロードはサーバーから結果が見えないため、完了の申告が事実かを確かめるために使う
+     *
+     * @param s3Key S3オブジェクトキー
+     * @return 存在する場合true
+     */
+    public boolean objectExists(String s3Key) {
+        if (!StringUtils.hasText(s3Key)) {
+            throw new IllegalArgumentException("s3Keyがnullまたは空です");
+        }
+        try {
+            // S3オブジェクトが存在するかを確認する
+            s3Client.headObject(HeadObjectRequest.builder().bucket(s3Bucket).key(s3Key).build());
+            return true;
+        } catch (NoSuchKeyException e) {
+            return false;
+        } catch (S3Exception e) {
+            if (e.statusCode() == 404) {
+                return false;
+            }
+            throw e;
         }
     }
 

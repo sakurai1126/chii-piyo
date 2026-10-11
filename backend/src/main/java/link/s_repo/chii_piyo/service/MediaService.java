@@ -60,14 +60,18 @@ public class MediaService {
     }
 
     /**
-     * メディアをID指定で複数件取得する
+     * メディアをID指定で複数件取得する<br>
+     * 本体が存在しない可能性のある未完了のメディアは含まない
      *
      * @param ids 対象のメディアのIDリスト
      * @return メディアデータリスト
      */
     @Transactional(readOnly = true)
     public List<Media> getMediabyIds(List<Long> ids) {
-        return mediaRepository.findByIds(ids, currentUserProvider.getUserId());
+        // findByIdsは一括更新などの存在チェックにも使われ未完了を含むため、完了済みへの絞り込みを行う
+        return mediaRepository.findByIds(ids, currentUserProvider.getUserId()).stream()
+            .filter(media -> "COMPLETED".equals(media.getUploadStatus()))
+            .toList();
     }
 
     /**
@@ -159,23 +163,48 @@ public class MediaService {
      * @param userId       実行ユーザーID
      * @param uploadStatus 更新後のステータス (COMPLETED / FAILED / PROCESSING)
      */
-    @Transactional
+    // 本体が無い場合のFAILED更新を、400応答のための例外でロールバックさせないために指定する
+    @Transactional(noRollbackFor = IllegalArgumentException.class)
     public void updateUploadStatus(Long mediaId, Long userId, String uploadStatus) {
         // 対象メディアを取得
         // 生成に必須の処理のためゴミ箱フィルターはなし
-        Media media = mediaRepository.findUnscopedById(mediaId)
+        // 未完了アップロードの定期削除と競合するため行ロックを取り処理を待つ。
+        // 削除済みなら存在しない扱いにして完了更新を防ぐ
+        Media media = mediaRepository.findUnscopedByIdForUpdate(mediaId)
             .orElseThrow(() -> new ResourceNotFoundException("メディアが見つかりません mediaId=" + mediaId));
+
+        // 定期削除の一段階目を終えたメディアは、遅れて転送が完了しても復活させず存在しない扱いにする
+        if ("DELETING".equals(media.getUploadStatus())) {
+            throw new ResourceNotFoundException("メディアが見つかりません mediaId=" + mediaId);
+        }
 
         // アップロード者本人かを確認
         if (!media.getUploadedBy().equals(userId)) {
             throw new ResourceAccessDeniedException("このメディアを更新する権限がありません mediaId=" + mediaId);
         }
 
+        // 完了済みのメディアは再送や遅延した通知で表示中のメディアを壊さないよう保護する
+        // 同じCOMPLETEDの再送は何もせず、サムネイル生成も重複して起動しない。それ以外への変更は拒否する
+        if ("COMPLETED".equals(media.getUploadStatus())) {
+            if ("COMPLETED".equals(uploadStatus)) {
+                return;
+            }
+            throw new IllegalArgumentException("完了済みのメディアのステータスは変更できません mediaId=" + mediaId);
+        }
+
+        // 本体が無いまま完了扱いになると壊れたメディアが表示されるため、S3上の存在を確認し無ければFAILEDにする
+        boolean missingBody = "COMPLETED".equals(uploadStatus)
+            && !s3StorageManager.objectExists(media.getS3Key());
+
         // ステータスのみを更新
-        media.setUploadStatus(uploadStatus);
+        media.setUploadStatus(missingBody ? "FAILED" : uploadStatus);
 
         // updateByPrimaryKeySelectiveでnullカラムをスキップして更新
         mediaRepository.update(media);
+
+        if (missingBody) {
+            throw new IllegalArgumentException("アップロードされたファイルが見つかりません mediaId=" + mediaId);
+        }
 
         // COMPLETEDに変わったところからサムネイル生成を非同期で起動
         if ("COMPLETED".equals(uploadStatus)) {

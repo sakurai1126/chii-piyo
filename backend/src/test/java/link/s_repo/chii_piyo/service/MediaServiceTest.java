@@ -121,6 +121,7 @@ public class MediaServiceTest {
 
             // モックデータの作成
             Media mockMedia = new Media();
+            mockMedia.setUploadStatus("COMPLETED");
             Long mockUserId = 2L;
 
             // 取得処理のスタブ化
@@ -302,7 +303,8 @@ public class MediaServiceTest {
             mockMedia.setFileSize(mockFileSize);
 
             // 取得処理のスタブ化
-            when(mediaRepository.findUnscopedById(requestMediaId)).thenReturn(Optional.of(mockMedia));
+            when(mediaRepository.findUnscopedByIdForUpdate(requestMediaId)).thenReturn(Optional.of(mockMedia));
+            when(s3StorageManager.objectExists(mockS3Key)).thenReturn(true);
 
             // 対象の実行
             mediaService.updateUploadStatus(requestMediaId, requestUserId, requestUploadStatus);
@@ -325,7 +327,7 @@ public class MediaServiceTest {
             mockMedia.setUploadedBy(requestUserId);
 
             // 取得処理のスタブ化
-            when(mediaRepository.findUnscopedById(requestMediaId)).thenReturn(Optional.of(mockMedia));
+            when(mediaRepository.findUnscopedByIdForUpdate(requestMediaId)).thenReturn(Optional.of(mockMedia));
 
             // 対象の実行
             mediaService.updateUploadStatus(requestMediaId, requestUserId, requestUploadStatus);
@@ -347,7 +349,7 @@ public class MediaServiceTest {
             String requestUploadStatus = "COMPLETED";
 
             // 取得処理のスタブ化
-            when(mediaRepository.findUnscopedById(requestMediaId)).thenReturn(Optional.empty());
+            when(mediaRepository.findUnscopedByIdForUpdate(requestMediaId)).thenReturn(Optional.empty());
 
             // 対象を実行し例外が吐かれるか確認
             assertThatThrownBy(() -> mediaService.updateUploadStatus(requestMediaId, requestUserId, requestUploadStatus))
@@ -372,7 +374,7 @@ public class MediaServiceTest {
             mockMedia.setUploadedBy(9L);
 
             // 取得処理のスタブ化
-            when(mediaRepository.findUnscopedById(requestMediaId)).thenReturn(Optional.of(mockMedia));
+            when(mediaRepository.findUnscopedByIdForUpdate(requestMediaId)).thenReturn(Optional.of(mockMedia));
 
             // 対象を実行し例外が吐かれるか確認
             assertThatThrownBy(() -> mediaService.updateUploadStatus(requestMediaId, requestUserId, requestUploadStatus))
@@ -380,6 +382,36 @@ public class MediaServiceTest {
 
             // 各処理が呼ばれていないことを確認
             verify(mediaRepository, never()).update(any());
+            verify(thumbnailGenerator, never()).generateThumbnailAsync(any(), any(), any(), any(), any());
+        }
+
+        @Test
+        @DisplayName("Media-22: S3に本体が存在しないままCOMPLETEDを申告した場合FAILEDで保存されること")
+        void updateUploadStatus_bodyMissing() {
+            // リクエストデータの作成
+            Long requestMediaId = 1L;
+            Long requestUserId = 2L;
+            String requestUploadStatus = "COMPLETED";
+
+            // モックデータの作成
+            String mockS3Key = "media/image.png";
+            Media mockMedia = new Media();
+            mockMedia.setUploadedBy(requestUserId);
+            mockMedia.setS3Key(mockS3Key);
+
+            // 取得処理のスタブ化
+            when(mediaRepository.findUnscopedByIdForUpdate(requestMediaId)).thenReturn(Optional.of(mockMedia));
+            when(s3StorageManager.objectExists(mockS3Key)).thenReturn(false);
+
+            // 対象を実行し例外が吐かれるか確認
+            assertThatThrownBy(() -> mediaService.updateUploadStatus(requestMediaId, requestUserId, requestUploadStatus))
+                .isInstanceOf(IllegalArgumentException.class);
+
+            // COMPLETEDではなくFAILEDで保存されていることを確認
+            verify(mediaRepository).update(mockMedia);
+            assertThat(mockMedia.getUploadStatus()).isEqualTo("FAILED");
+
+            // サムネイル生成が呼ばれていないことを確認
             verify(thumbnailGenerator, never()).generateThumbnailAsync(any(), any(), any(), any(), any());
         }
     }

@@ -28,6 +28,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -475,7 +476,37 @@ public class MediaControllerTest extends BaseControllerTest {
                 // ステータスコード 204 No Contentであることを確認
                 .andExpect(status().isNoContent());
 
-            // コンバーター処理で呼ばれた引数が値と一致しているか検証
+            // サービス層で呼ばれた引数が値と一致しているか検証
+            verify(mediaService).updateUploadStatus(eq(mockMediaId), eq(mockCurrentUserId),
+                eq(MediaUploadStatusRequestDto.UploadStatusEnum.COMPLETED.getValue()));
+        }
+
+        @Test
+        @WithMockUser
+        @DisplayName("MediaCtrl-19: S3に本体が存在しないままCOMPLETEDを申告した場合400が返ること")
+        void updateMediaUploadStatus_bodyMissing() throws Exception {
+            // モックデータの作成
+            Long mockCurrentUserId = 1L;
+            Long mockMediaId = 2L;
+
+            // リクエストボディの作成
+            MediaUploadStatusRequestDto request = new MediaUploadStatusRequestDto()
+                .uploadStatus(MediaUploadStatusRequestDto.UploadStatusEnum.COMPLETED);
+
+            // ログインユーザーID取得と、本体なしによるサービス層の例外のスタブ化
+            when(currentUserProvider.getUserId()).thenReturn(mockCurrentUserId);
+            doThrow(new IllegalArgumentException("アップロードされたファイルが見つかりません"))
+                .when(mediaService).updateUploadStatus(eq(mockMediaId), eq(mockCurrentUserId),
+                    eq(MediaUploadStatusRequestDto.UploadStatusEnum.COMPLETED.getValue()));
+
+            // PATCHリクエストの送信
+            mockMvc.perform(patch("/media/{id}/status", mockMediaId)
+                    .contentType("application/json;charset=UTF-8")
+                    .content(objectMapper.writeValueAsString(request)))
+                // ステータスコード 400 Bad Requestであることを確認
+                .andExpect(status().isBadRequest());
+
+            // サービス層で呼ばれた引数が値と一致しているか検証
             verify(mediaService).updateUploadStatus(eq(mockMediaId), eq(mockCurrentUserId),
                 eq(MediaUploadStatusRequestDto.UploadStatusEnum.COMPLETED.getValue()));
         }

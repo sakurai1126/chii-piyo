@@ -44,13 +44,15 @@ public class MediaRepository {
      */
     public Optional<Media> findById(Long id, Long userId) {
         return mediaMapper.selectOne(c -> c
-            .where(MediaDynamicSqlSupport.id, isEqualTo(id), andNotInTrash(), andSharingGroupFilter(userId))
+            .where(MediaDynamicSqlSupport.id, isEqualTo(id), andNotInTrash(), andUploadCompleted(),
+                andSharingGroupFilter(userId))
         );
     }
 
     /**
      * メディアをID指定で複数件取得する<br>
-     * (ゴミ箱にあるデータは除外)
+     * (ゴミ箱にあるデータは除外)<br>
+     * 更新や削除前の存在チェックに使うため、アップロード中や失敗のメディアも含む
      *
      * @param ids    対象のメディアのIDリスト
      * @param userId 現在のユーザーID
@@ -58,7 +60,8 @@ public class MediaRepository {
      */
     public List<Media> findByIds(List<Long> ids, Long userId) {
         return mediaMapper.select(c -> c
-            .where(MediaDynamicSqlSupport.id, isIn(ids), andNotInTrash(), andSharingGroupFilter(userId))
+            .where(MediaDynamicSqlSupport.id, isIn(ids), andNotInTrash(),
+                andSharingGroupFilter(userId))
         );
     }
 
@@ -113,6 +116,20 @@ public class MediaRepository {
      */
     public Optional<Media> findUnscopedById(Long id) {
         return mediaMapper.selectByPrimaryKey(id);
+    }
+
+    /**
+     * 対象メディアを行ロック付きでID指定取得する<br>
+     * ゴミ箱にあるデータも含む<br>
+     * 未完了アップロードの定期削除と完了通知が同じ行を同時に扱わないよう、トランザクションの終了までロックを保持する
+     *
+     * @param id 対象のメディアID
+     */
+    public Optional<Media> findUnscopedByIdForUpdate(Long id) {
+        return mediaMapper.selectOne(c -> c
+            .where(MediaDynamicSqlSupport.id, isEqualTo(id))
+            .forUpdate()
+        );
     }
 
     /**
@@ -207,7 +224,8 @@ public class MediaRepository {
     public List<Media> findPreviousMedia(Long id, Long userId) {
         return mediaMapper.select(c -> c
             // IDが小さいものが前のメディアになるため、ID < 対象IDで絞り込む
-            .where(MediaDynamicSqlSupport.id, isLessThan(id), andNotInTrash(), andSharingGroupFilter(userId))
+            .where(MediaDynamicSqlSupport.id, isLessThan(id), andNotInTrash(), andUploadCompleted(),
+                andSharingGroupFilter(userId))
             // ID降順で対象に近いものから順番に2件取得する
             .orderBy(MediaDynamicSqlSupport.id.descending())
             .limit(2)
@@ -225,7 +243,8 @@ public class MediaRepository {
     public List<Media> findNextMedia(Long id, Long userId) {
         return mediaMapper.select(c -> c
             // IDが大きいものが後のメディアになるため、ID > 対象IDで絞り込む
-            .where(MediaDynamicSqlSupport.id, isGreaterThan(id), andNotInTrash(), andSharingGroupFilter(userId))
+            .where(MediaDynamicSqlSupport.id, isGreaterThan(id), andNotInTrash(), andUploadCompleted(),
+                andSharingGroupFilter(userId))
             // ID昇順で対象から順番に取得する
             .orderBy(MediaDynamicSqlSupport.id)
             .limit(2)
@@ -242,7 +261,7 @@ public class MediaRepository {
     public List<Media> findByAlbumIds(List<Long> albumIds, Long userId) {
         return mediaMapper.select(
             c -> c.where(MediaDynamicSqlSupport.albumId, isIn(albumIds), andNotInTrash(),
-                andSharingGroupFilter(userId))
+                andUploadCompleted(), andSharingGroupFilter(userId))
         );
     }
 
@@ -390,6 +409,9 @@ public class MediaRepository {
             conditions.add(andSharingGroupFilter(mediaSearchCriteria.currentUserId()));
         }
 
+        // 本体のアップロードが完了していないメディアは表示しない
+        conditions.add(andUploadCompleted());
+
         // ゴミ箱のテーブル内に存在しないもののみで限定する
         conditions.add(
             and(MediaDynamicSqlSupport.id, isNotIn(
@@ -435,6 +457,55 @@ public class MediaRepository {
     }
 
     /**
+     * 一定時間を過ぎてもアップロードが完了していないメディアを取得する<br>
+     * 署名付きURLの有効期限と転送猶予を過ぎているため、以降に本体がアップロードされることはない<br>
+     * 取得した行はトランザクションの終了までロックし、削除前に完了通知でCOMPLETEDへ更新されるのを防ぐ<br>
+     * 完了通知が処理中の行は待たずに対象から外し、次回の実行に回す
+     *
+     * @param threshold この日時より前に作成されたものを対象とする
+     * @param limit     取得件数の上限
+     * @return 対象のメディアエンティティリスト
+     */
+    public List<Media> findStaleUploads(OffsetDateTime threshold, Long limit) {
+        return mediaMapper.select(c -> c
+            .where(uploadStatus, isIn("PROCESSING", "FAILED"))
+            .and(MediaDynamicSqlSupport.createdAt, isLessThan(threshold))
+            .limit(limit)
+            .forUpdate()
+            .skipLocked()
+        );
+    }
+
+    /**
+     * 自動削除実行処理の一段階目の削除を終え、マークされたメディアを取得する
+     *
+     * @param limit 取得件数の上限
+     * @return 対象のメディアエンティティリスト
+     */
+    public List<Media> findDeletingUploads(Long limit) {
+        return mediaMapper.select(c -> c
+            .where(uploadStatus, isEqualTo("DELETING"))
+            .limit(limit)
+            .forUpdate()
+            .skipLocked()
+        );
+    }
+
+    /**
+     * 指定したメディアのアップロードステータスをDELETINGに更新する<br>
+     * 署名付きURLの失効前に始まった転送が後から完了しても完了通知で復活させないために使う
+     *
+     * @param ids 対象のメディアIDリスト
+     */
+    public void markDeleting(List<Long> ids) {
+        mediaMapper.update(c -> c
+            .set(uploadStatus).equalTo("DELETING")
+            .set(MediaDynamicSqlSupport.updatedAt).equalTo(OffsetDateTime.now(ZoneOffset.UTC))
+            .where(MediaDynamicSqlSupport.id, isIn(ids))
+        );
+    }
+
+    /**
      * thumbnail_s3_key を更新する
      *
      * @param media          対象のメディアエンティティ
@@ -457,5 +528,15 @@ public class MediaRepository {
             select(TrashItemsDynamicSqlSupport.mediaId)
                 .from(TrashItemsDynamicSqlSupport.trashItems)
         ));
+    }
+
+    /**
+     * 「AND upload_status = COMPLETED」を返す共通メソッド<br>
+     * 本体が存在しない可能性のあるメディアを表示対象から外すために使う
+     *
+     * @return アップロードが完了したメディアの条件
+     */
+    private AndOrCriteriaGroup andUploadCompleted() {
+        return and(uploadStatus, isEqualTo("COMPLETED"));
     }
 }

@@ -49,6 +49,10 @@
 | Sched-04 | TrashCleanupScheduler | 異常 | 削除中に例外が発生 | ログ出力して正常終了する |
 | Sched-05 | ThumbnailRetryScheduler | 正常 | サムネイル未生成のメディアが存在する | 対象の件数分サムネイル生成処理が呼び出される |
 | Sched-06 | ThumbnailRetryScheduler | 境界 | サムネイル未生成のメディアが存在しない | サムネイル生成処理は呼ばれず正常終了する |
+| Sched-07 | StaleUploadCleanupScheduler | 正常 | 未完了のメディアが存在する | S3削除の後にDELETINGへ更新され、メディアと関連データは削除されない |
+| Sched-08 | StaleUploadCleanupScheduler | 境界 | 未完了のメディアが存在しない | 削除処理が呼ばれず正常終了する |
+| Sched-09 | StaleUploadCleanupScheduler | 異常 | S3削除中に例外が発生 | DELETINGへの更新とDB削除は行われず例外が伝播する |
+| Sched-10 | StaleUploadCleanupScheduler | 正常 | DELETINGのメディアが存在する | S3の再削除の後に関連データとメディアが削除される |
 
 ## その他テストケース一覧
 

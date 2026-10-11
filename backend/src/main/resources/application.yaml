@@ -69,6 +69,15 @@ thumbnail:
   max-image-bytes: 22020096  # 21MB
   max-video-bytes: 110100480  # 105MB
 
+# 未完了アップロードの掃除設定
+upload:
+  cleanup:
+    # 掃除の実行時刻のcron式
+    # 削除中は対象行をロックするため夜間に固定し、4時のゴミ箱掃除とずらす
+    cron: "0 0 3 * * *"  # 毎日3時
+    # 署名付きURLの有効期限（15分）を過ぎてからさらにこの時間（分）待って、完了していないものを削除対象とする
+    grace-minutes: 45
+
 # アプリケーションの管理エンドポイントの設定
 management:
   endpoints:

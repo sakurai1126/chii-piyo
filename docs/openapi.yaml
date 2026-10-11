@@ -2062,6 +2062,7 @@ components:
             - PROCESSING
             - COMPLETED
             - FAILED
+            - DELETING
           example: COMPLETED
         addFavoriteUserIds:
           type: array

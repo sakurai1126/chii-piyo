@@ -12,7 +12,7 @@
 | Media-04 | countMedia | 正常 | 検索条件を渡す | 条件に合致する件数が返る |
 | Media-05 | getMediaList | 正常 | 検索条件を渡す | 条件に合致するメディア一覧が返る |
 | Media-06 | createMedia | 正常 | 有効なアップロード情報を渡す | メディアが登録されPre-signed URLが発行される |
-| Media-07 | updateUploadStatus | 正常 | 自身のメディアIDとステータスを渡す | アップロードステータスが更新される |
+| Media-07 | updateUploadStatus | 正常 | S3に本体が存在する自身のメディアIDとCOMPLETEDを渡す | アップロードステータスが更新される |
 | Media-08 | updateUploadStatus | 正常 | COMPLETED以外のステータスを渡す | generateThumbnailAsyncが呼ばれない |
 | Media-09 | updateUploadStatus | 異常 | 存在しない、または権限外のIDを渡す | ResourceNotFoundExceptionの例外がスローされる |
 | Media-10 | updateUploadStatus | 異常 | 他ユーザーのメディアを更新しようとする | ResourceAccessDeniedExceptionの例外がスローされる |
@@ -27,6 +27,7 @@
 | Media-19 | updateMediaBatch | 異常 | 存在しないタグIDが含まれている | ResourceNotFoundExceptionの例外がスローされる |
 | Media-20 | getTrashItemAndMedia | 正常 | 有効なゴミ箱データを渡す | ゴミ箱データに紐づくメディアが返る |
 | Media-21 | getTrashItemAndMedia | 境界 | 空のゴミ箱データを渡す | 空の結果が返る |
+| Media-22 | updateUploadStatus | 異常 | S3に本体が存在しないメディアにCOMPLETEDを渡す | FAILEDで保存されIllegalArgumentExceptionがスローされ、サムネイル生成処理が呼ばれない |
 
 ## コメント管理
 
