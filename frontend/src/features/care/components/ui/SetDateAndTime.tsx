@@ -12,7 +12,7 @@ export const SetDateAndTime = ({ date, time, setDate, setTime, isPending }: Prop
   return (
     <>
       <p className="mt-5 font-medium">日時</p>
-      <div className="mt-1 flex items-center gap-4">
+      <div className="mt-1 flex flex-wrap items-center gap-4">
         <input
           type="time"
           className="text-2xl font-medium tracking-widest outline-0 @max-md:text-2xl"

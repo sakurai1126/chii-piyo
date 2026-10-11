@@ -1,0 +1,52 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./mvnw test *)",
+      "Bash(npm run test *)",
+      "Bash(npm run test:e2e *)",
+      "Bash(npm run test:coverage *)",
+      "Bash(npx vitest *)",
+      "Bash(npx playwright test *)"
+    ],
+    "deny": [
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(git reset *)",
+      "Bash(git rebase *)",
+      "Bash(git restore *)",
+      "Bash(git rm *)",
+      "Bash(git clean *)",
+      "Bash(rm *)",
+      "Bash(rmdir *)",
+      "Read(.env)",
+      "Read(.env.*)",
+      "Read(!.env.example)",
+      "Edit(**/gen/**)",
+      "Edit(/docs/openapi.yaml)",
+      "Edit(/frontend/openapi.yaml)",
+      "Edit(/backend/src/main/resources/openapi.yaml)"
+    ],
+    "ask": [
+      "Bash(npm install *)",
+      "Bash(npm uninstall *)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/prettier.mjs\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  },
+  "env": {
+    "CLAUDE_CODE_USE_POWERSHELL_TOOL": "0"
+  }
+}

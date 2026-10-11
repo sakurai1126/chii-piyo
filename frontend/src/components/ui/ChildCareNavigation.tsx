@@ -48,7 +48,7 @@ export const ChildCareNavigation = async ({ currentPage }: Props) => {
         <Link
           href="/first-records"
           className={cn(
-            "grid h-12 w-40 place-content-center rounded-lg font-medium @max-md:h-10 @max-md:w-auto @max-md:px-2 @max-md:text-xs dark:text-white",
+            "grid h-12 w-40 place-content-center rounded-lg font-medium text-nowrap @max-md:h-10 @max-md:w-auto @max-md:px-2 @max-md:text-xs dark:text-white",
             currentPage === "first" ? variantStyles["current"] : variantStyles["other"],
             isEasy && "@max-md:text-sm",
           )}

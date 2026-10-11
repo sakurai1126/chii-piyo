@@ -53,7 +53,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   // ダークモードの設定を取得
-  // およびCookie再セットの必要（ユーザーログイン済かつCookieがない状態）があるかの判定
+  // およびCookie再セットの必要（ユーザーログイン済かつCookieがない、またはDBと異なる状態）があるかの判定
   const { isDarkMode, needsCookieRestore } = await getTheme();
 
   return (

@@ -95,7 +95,7 @@ export const SharingGroupListItem = ({ users, sharingGroup }: Props) => {
   return (
     <div className="border-brown-dark/50 border-t px-8 py-4 @max-lg:px-4 @max-md:flex-col @max-md:items-start @max-md:px-5">
       <div>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between">
           <div className="flex items-center @max-md:flex-col @max-md:items-start">
             <p className="w-25 shrink-0 break-all @max-md:text-[13px]">{sharingGroup.name}</p>
             <div className="ml-8 flex flex-wrap gap-x-6 gap-y-2 @max-md:mt-3 @max-md:ml-0 @max-md:gap-x-3">

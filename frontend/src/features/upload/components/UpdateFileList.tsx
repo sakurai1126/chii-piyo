@@ -53,7 +53,10 @@ export const UpdateFileList = ({
   return (
     <div className="mt-15 @max-md:mt-10">
       <div
-        className={cn("flex items-start justify-between", isEasy && "flex-col items-center gap-3")}
+        className={cn(
+          "flex flex-wrap items-start justify-between",
+          isEasy && "flex-col items-center gap-3",
+        )}
       >
         <p className={cn("text-xl font-medium @max-md:text-sm", isEasy && "@max-md:text-[18px]")}>
           アップロードするファイル

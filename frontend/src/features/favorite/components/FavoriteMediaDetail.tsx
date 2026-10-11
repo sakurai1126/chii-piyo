@@ -45,7 +45,7 @@ export const FavoriteMediaDetail = ({ media, users }: Props) => {
   };
 
   return (
-    <div className="flex items-start gap-2">
+    <div className="mt-5 ml-auto flex w-fit items-start gap-2">
       <div className="flex -space-x-2">
         {media.addFavoriteUserIds?.map((id) => (
           <div

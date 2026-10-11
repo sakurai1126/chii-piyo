@@ -12,7 +12,7 @@ type Props = {
 
 export const Modal = ({ children, className }: Readonly<Props>) => {
   return (
-    <RemoveScroll>
+    <RemoveScroll allowPinchZoom>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

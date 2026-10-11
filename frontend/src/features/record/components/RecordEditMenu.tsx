@@ -118,7 +118,7 @@ export const RecordEditMenu = ({
       </div>
 
       {/* ボタン */}
-      <div className="mt-5 ml-auto flex w-fit gap-5 @max-md:mt-7">
+      <div className="mt-5 ml-auto flex w-fit gap-5 @max-md:mt-7 @max-md:max-w-full">
         <Button variant="cancel" onClick={cancelEdit} disabled={isPending}>
           キャンセル
         </Button>

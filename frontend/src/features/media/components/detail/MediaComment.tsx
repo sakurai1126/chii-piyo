@@ -111,7 +111,7 @@ export const MediaComment = ({ mediaId, isEasy, comments, currentUser, users }: 
                     <div>
                       <div
                         className={cn(
-                          "flex items-center gap-2",
+                          "flex flex-wrap items-center gap-2",
                           isEasy && "flex-col-reverse items-start",
                         )}
                       >
@@ -134,7 +134,7 @@ export const MediaComment = ({ mediaId, isEasy, comments, currentUser, users }: 
                       </div>
                       <p
                         className={cn(
-                          "mt-2 text-sm @max-md:mt-1 @max-md:text-xs",
+                          "mt-2 text-sm @max-md:mt-3 @max-md:text-xs",
                           isEasy && "@max-md:text-[16px]",
                         )}
                       >

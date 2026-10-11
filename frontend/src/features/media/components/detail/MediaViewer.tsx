@@ -31,13 +31,13 @@ export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
   const router = useRouter();
   const [modeExpansion, setModeExpansion] = useState<boolean>(false);
   return (
-    <div className="w-125 shrink-0 @max-xl:w-110 @max-md:w-full">
+    <div className="w-125 shrink-0 @max-xl:w-110 @max-lg:w-full">
       {/* 拡大モード */}
       {modeExpansion && (
         <div className="fixed top-0 left-0 z-1000 grid h-full w-full place-content-center bg-black">
           <button
             type="button"
-            className="fixed top-5 right-5 cursor-pointer transition-all hover:opacity-50 @max-md:hidden"
+            className="fixed top-5 right-5 cursor-pointer transition-all hover:opacity-50 @max-md:top-3 @max-md:right-3"
             onClick={() => setModeExpansion(false)}
           >
             <Image src={shrink} alt="" width={25} height={25} />
@@ -140,10 +140,10 @@ export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
             {/* 拡大 */}
             <button
               type="button"
-              className="absolute top-4 right-5 cursor-pointer transition-all hover:opacity-70 @max-md:hidden"
+              className="absolute top-4 right-5 cursor-pointer transition-all hover:opacity-70 @max-md:top-3 @max-md:right-3"
               onClick={() => setModeExpansion(true)}
             >
-              <Image src={zoom} alt="" width={30} height={30} />
+              <Image src={zoom} alt="" width={30} height={30} className="@max-md:h-6 @max-md:w-6" />
             </button>
             {/* ダウンロード */}
             <a
@@ -199,12 +199,12 @@ export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
           )}
         </div>
       )}
-      <div className="@max-md:mt-5 @max-md:flex @max-md:items-center @max-md:justify-between @max-md:px-5">
+      <div className="@max-md:mt-5 @max-md:gap-3 @max-md:px-5">
         {isModal ? (
           <Button
             variant="cancel"
             onClick={() => router.back()}
-            className="mx-auto mt-10 block @max-md:m-0"
+            className="mx-auto mt-10 block @max-md:mt-0"
           >
             戻る
           </Button>
@@ -213,7 +213,7 @@ export const MediaViewer = ({ isEasy, media, isModal, users }: Props) => {
             variant="link"
             styleVariant="cancel"
             href="/media"
-            className="mt-10 @max-md:m-0"
+            className="mt-10 @max-md:m-0 @max-md:mx-auto"
           >
             メディア一覧
           </AccentButton>
