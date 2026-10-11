@@ -48,6 +48,19 @@ export const useUploadRunner = ({ onItemUpdate, onAllComplete }: UseUploadParams
     };
   }, []);
 
+  // アップロード中にタブを閉じると本体が届かないまま未完了のレコードが残るため、離脱前に確認を出す
+  useEffect(() => {
+    if (!isUploading) return;
+
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [isUploading]);
+
   // 1ファイル分のアップロード処理
   // アップロード時はこの関数を並列実行する
   const uploadOneFile = useCallback(
