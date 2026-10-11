@@ -33,6 +33,9 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class S3StorageManager {
+    // アップロード用署名付きURLの有効期限。未完了アップロードの掃除対象の判定にも使うため定数にしている
+    public static final Duration UPLOAD_URL_EXPIRY = Duration.ofMinutes(15);
+
     // 署名付きURL生成用オブジェクト
     private final S3Presigner s3Presigner;
     private final S3Client s3Client;
@@ -67,7 +70,7 @@ public class S3StorageManager {
 
         // PutObjectRequestを元に、署名付きURLを生成するためのPutObjectPresignRequestを作成
         PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
-            .signatureDuration(Duration.ofMinutes(15)) // 有効期限設定
+            .signatureDuration(UPLOAD_URL_EXPIRY) // 有効期限設定
             .putObjectRequest(objectRequest)
             .build();
 

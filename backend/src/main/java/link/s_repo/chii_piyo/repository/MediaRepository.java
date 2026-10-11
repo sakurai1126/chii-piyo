@@ -458,7 +458,7 @@ public class MediaRepository {
 
     /**
      * 一定時間を過ぎてもアップロードが完了していないメディアを取得する<br>
-     * 署名付きURLの有効期限を過ぎているため、以降に本体がアップロードされることはない<br>
+     * 署名付きURLの有効期限と転送猶予を過ぎているため、以降に本体がアップロードされることはない<br>
      * 取得した行はトランザクションの終了までロックし、削除前に完了通知でCOMPLETEDへ更新されるのを防ぐ<br>
      * 完了通知が処理中の行は待たずに対象から外し、次回の実行に回す
      *
@@ -473,6 +473,35 @@ public class MediaRepository {
             .limit(limit)
             .forUpdate()
             .skipLocked()
+        );
+    }
+
+    /**
+     * 自動削除実行処理の一段階目の削除を終え、マークされたメディアを取得する
+     *
+     * @param limit 取得件数の上限
+     * @return 対象のメディアエンティティリスト
+     */
+    public List<Media> findDeletingUploads(Long limit) {
+        return mediaMapper.select(c -> c
+            .where(uploadStatus, isEqualTo("DELETING"))
+            .limit(limit)
+            .forUpdate()
+            .skipLocked()
+        );
+    }
+
+    /**
+     * 指定したメディアのアップロードステータスをDELETINGに更新する<br>
+     * 署名付きURLの失効前に始まった転送が後から完了しても完了通知で復活させないために使う
+     *
+     * @param ids 対象のメディアIDリスト
+     */
+    public void markDeleting(List<Long> ids) {
+        mediaMapper.update(c -> c
+            .set(uploadStatus).equalTo("DELETING")
+            .set(MediaDynamicSqlSupport.updatedAt).equalTo(OffsetDateTime.now(ZoneOffset.UTC))
+            .where(MediaDynamicSqlSupport.id, isIn(ids))
         );
     }
 

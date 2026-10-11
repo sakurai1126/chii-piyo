@@ -173,6 +173,11 @@ public class MediaService {
         Media media = mediaRepository.findUnscopedByIdForUpdate(mediaId)
             .orElseThrow(() -> new ResourceNotFoundException("メディアが見つかりません mediaId=" + mediaId));
 
+        // 定期削除の一段階目を終えたメディアは、遅れて転送が完了しても復活させず存在しない扱いにする
+        if ("DELETING".equals(media.getUploadStatus())) {
+            throw new ResourceNotFoundException("メディアが見つかりません mediaId=" + mediaId);
+        }
+
         // アップロード者本人かを確認
         if (!media.getUploadedBy().equals(userId)) {
             throw new ResourceAccessDeniedException("このメディアを更新する権限がありません mediaId=" + mediaId);
