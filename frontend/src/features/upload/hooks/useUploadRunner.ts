@@ -56,8 +56,44 @@ export const useUploadRunner = ({ onItemUpdate, onAllComplete }: UseUploadParams
       event.preventDefault();
     };
     window.addEventListener("beforeunload", handleBeforeUnload);
+
+    // next/linkによるクライアント遷移ではbeforeunloadが発火せず遷移するとアンマウントで中断されてしまう
+    // App Routerには遷移イベントがないため、リンクのクリックをキャプチャ段階で拾ってNextのハンドラより先に止める
+    const handleLinkClick = (event: MouseEvent) => {
+      // 新規タブ等で開く操作や右クリックでのコンテキストメニューからの操作は現在のアップロードに影響しないため対象外
+      if (event.defaultPrevented || event.button !== 0) return;
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+      // クリックされた要素がリンクかどうかを判定する
+      const anchor = (event.target as Element | null)?.closest?.("a[href]");
+      if (!(anchor instanceof HTMLAnchorElement)) return;
+      // リンクが新しいタブで開かれる場合やダウンロードリンクの場合は警告しない
+      if ((anchor.target && anchor.target !== "_self") || anchor.hasAttribute("download")) return;
+
+      // 同一ページ内のハッシュ移動などアンマウントを伴わない遷移は警告しない
+      const destination = new URL(anchor.href, window.location.href);
+      if (
+        destination.origin === window.location.origin &&
+        destination.pathname === window.location.pathname &&
+        destination.search === window.location.search
+      ) {
+        return;
+      }
+
+      if (
+        !window.confirm(
+          "アップロード中です。ページを移動するとアップロードが中断されます。移動しますか?",
+        )
+      ) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    };
+    document.addEventListener("click", handleLinkClick, true);
+
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
+      document.removeEventListener("click", handleLinkClick, true);
     };
   }, [isUploading]);
 
