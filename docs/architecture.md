@@ -23,7 +23,7 @@ graph TB
 
 
     subgraph "外部サービス"
-        Gemini["Gemini API"]
+        AI["AI API"]
     end
 
 
@@ -34,7 +34,7 @@ graph TB
     SpringBoot -->|"JWT検証"| Cognito
     SpringBoot -->|"Pre-signed URL発行"| S3
     Browser -->|"直接アップロード"| S3
-    SpringBoot -->|"テキスト生成"| Gemini
+    SpringBoot -->|"テキスト生成"| AI
 ```
 
 ## レイヤー構成
@@ -94,7 +94,7 @@ graph TB
     end
 
     subgraph "外部サービス"
-        Gemini["Gemini API"]
+        AI["AI API"]
     end
 
     subgraph "ソースコード管理・CI/CD"
@@ -109,7 +109,7 @@ graph TB
     SpringBoot --> PostgreSQL
     SpringBoot --> S3
     SpringBoot --> Cognito
-    SpringBoot --> Gemini
+    SpringBoot --> AI
     GitHub -->|"push検知・自動ビルド"| NextJS
     GHA -->|"デプロイ"| SpringBoot
 ```
