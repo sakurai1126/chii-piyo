@@ -85,7 +85,7 @@ export const useUploadMediaState = () => {
       let failedCount = 0;
       for (const file of uploadTargets) {
         try {
-          converted.push(await convertHeicToJpeg(file));
+          converted.push(await convertHeicToJpeg(file)); // NOSONAR 並列にすると端末のメモリを圧迫するため1件ずつ直列で処理する
         } catch {
           failedCount++;
         }

@@ -2,7 +2,12 @@
 // HEICのまま保存するとAndroidやWindowsのブラウザで表示できず、サーバー側のサムネイル生成も失敗するため保存形式をJPEGに統一する
 
 // iOSではHEICのMIMEタイプが空になることがあるため、拡張子でも判定する
-const HEIC_MIME_TYPES = ["image/heic", "image/heif", "image/heic-sequence", "image/heif-sequence"];
+const HEIC_MIME_TYPES = new Set([
+  "image/heic",
+  "image/heif",
+  "image/heic-sequence",
+  "image/heif-sequence",
+]);
 const HEIC_EXTENSION = /\.(heic|heif)$/i;
 
 // 元画像の劣化を避けるため最高品質で変換する
@@ -12,7 +17,7 @@ const JPEG_QUALITY = 1;
  * ファイルがHEIC/HEIFかどうかを判定する
  */
 export const isHeicFile = (file: File): boolean => {
-  return HEIC_MIME_TYPES.includes(file.type.toLowerCase()) || HEIC_EXTENSION.test(file.name);
+  return HEIC_MIME_TYPES.has(file.type.toLowerCase()) || HEIC_EXTENSION.test(file.name);
 };
 
 /**
