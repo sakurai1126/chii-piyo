@@ -281,7 +281,8 @@ public class MediaServiceTest {
         @DisplayName("Media-23: HEIC/HEIF形式のメディアを作成しようとすると例外が発生し保存されないこと")
         void createMedia_heic_throwsException() {
             // HEIC/HEIFの各MIMEタイプで拒否されることを確認
-            for (String heicContentType : List.of("image/heic", "image/HEIF", "image/heic-sequence")) {
+            for (String heicContentType : List.of("image/heic", "image/HEIF", "image/heic-sequence",
+                "image/heic; charset=binary", "IMAGE/Heif ;q=0.8")) {
                 assertThatThrownBy(() -> mediaService.createMedia(
                     1L, "PHOTO", "image.heic", heicContentType, 300L, 100, 200, LocalDate.now(), null, null))
                     .isInstanceOf(IllegalArgumentException.class);
