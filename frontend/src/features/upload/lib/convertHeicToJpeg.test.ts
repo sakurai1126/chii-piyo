@@ -50,6 +50,9 @@ describe("convertHeicToJpeg", () => {
     // MIMEタイプで判定される場合
     expect(isHeicFile(new File(["x"], "a.dat", { type: "image/heic" }))).toBe(true);
     expect(isHeicFile(new File(["x"], "a.dat", { type: "image/heif" }))).toBe(true);
+    // パラメータや空白が付いていても種別部分で判定される場合
+    expect(isHeicFile(new File(["x"], "a.dat", { type: "image/heic; charset=binary" }))).toBe(true);
+    expect(isHeicFile(new File(["x"], "a.dat", { type: " IMAGE/HEIF ;q=1" }))).toBe(true);
     // typeが空でも拡張子で判定される場合
     expect(isHeicFile(new File(["x"], "a.HEIC", { type: "" }))).toBe(true);
     expect(isHeicFile(new File(["x"], "a.heif", { type: "" }))).toBe(true);

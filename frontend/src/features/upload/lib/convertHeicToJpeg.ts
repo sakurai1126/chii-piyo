@@ -17,7 +17,9 @@ const JPEG_QUALITY = 1;
  * ファイルがHEIC/HEIFかどうかを判定する
  */
 export const isHeicFile = (file: File): boolean => {
-  return HEIC_MIME_TYPES.has(file.type.toLowerCase()) || HEIC_EXTENSION.test(file.name);
+  // "image/heic; charset=binary" のようにパラメータや空白が付くと完全一致で取りこぼすため、種別部分だけを取り出して比較する
+  const mimeType = file.type.split(";")[0].trim().toLowerCase();
+  return HEIC_MIME_TYPES.has(mimeType) || HEIC_EXTENSION.test(file.name);
 };
 
 /**
