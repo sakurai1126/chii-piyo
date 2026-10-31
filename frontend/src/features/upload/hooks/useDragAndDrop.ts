@@ -2,6 +2,8 @@
 
 import { useRef, useState } from "react";
 
+import { isImageFile } from "../lib/convertHeicToJpeg";
+
 type UseDragAndDropParams = {
   onFilesAdd: (files: File[]) => void;
   acceptTypes: "image" | "video";
@@ -47,7 +49,10 @@ export const useDragAndDrop = ({ onFilesAdd, acceptTypes }: UseDragAndDropParams
     dragCounter.current = 0;
     setIsDragging(false);
     // 画像および動画ファイルのみをフィルタリングしてonFilesAddを呼び出す
-    const files = [...e.dataTransfer.files].filter((f) => f.type.startsWith(`${acceptTypes}/`));
+    // 画像はiOSのHEICのようにtypeが空のものも拾うため拡張子込みで判定する
+    const files = [...e.dataTransfer.files].filter((f) =>
+      acceptTypes === "image" ? isImageFile(f) : f.type.startsWith("video/"),
+    );
     if (files.length) onFilesAdd(files);
   };
 

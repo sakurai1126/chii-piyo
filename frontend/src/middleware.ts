@@ -28,7 +28,8 @@ export const middleware = async (request: NextRequest) => {
     // 実行を許可するスクリプト
     // nonceで自身が出力したものだけを許可し、strict-dynamicによってそこから読み込まれるJSファイルも許可
     // unsafe-evalは文字列をコードとして実行する処理の許可であり、開発サーバーの自動更新が使用するため開発環境に限定
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${process.env.NODE_ENV !== "production" ? " 'unsafe-eval'" : ""}`,
+    // wasm-unsafe-evalはHEIC変換ライブラリのWebAssembly実行に必要で、文字列のコード実行は許可しない
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'wasm-unsafe-eval'${process.env.NODE_ENV !== "production" ? " 'unsafe-eval'" : ""}`,
     // 適用を許可するスタイル
     // Next.jsが挿入するインラインスタイルにnonceが付かないため'unsafe-inline'を許可する
     "style-src 'self' 'unsafe-inline'",

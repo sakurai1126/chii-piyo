@@ -7,6 +7,7 @@ import { cn } from "@/utils/cn";
 
 import icon from "../assets/image-icon.svg";
 import { useDragAndDrop } from "../hooks/useDragAndDrop";
+import { isImageFile } from "../lib/convertHeicToJpeg";
 
 type Props = {
   isEasy: boolean;
@@ -26,7 +27,7 @@ export const ImageUploader = ({ isEasy, onFilesAdd, maxFiles, maxSize }: Props) 
     // ファイルが選択されたときにonFilesAddを呼び出しHooks内のuseStateにファイルとURLをセットする
     if (e.target.files) {
       // 画像ファイルのみをフィルタリングしてonFilesAddを呼び出す
-      const files = [...e.target.files].filter((f) => f.type.startsWith("image/"));
+      const files = [...e.target.files].filter(isImageFile);
       if (files.length) onFilesAdd(files);
     }
     // 同じファイルを連続で選択したときもonFilesAddが呼ばれるようにinputの値をリセットする

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { toast } from "@/components/ui/Toast";
 
+import { convertHeicToJpeg } from "../lib/convertHeicToJpeg";
 import { ItemState, UploadMedia, UploadMetadata } from "../types";
 
 // アップロードの上限値とサイズ制限値
@@ -70,7 +71,19 @@ export const useUploadMediaState = () => {
     }
 
     try {
-      const newItems = await Promise.all(uploadTargets.map(loadImageFile));
+      // HEICはAndroid等で表示できないためJPEGに変換する
+      const converted: File[] = [];
+      for (const file of uploadTargets) {
+        converted.push(await convertHeicToJpeg(file));
+      }
+
+      // JPEG変換で元より大きくなることがあるため、変換後のサイズで上限を再検証する
+      const convertedValid = converted.filter((f) => f.size <= MAX_IMAGE_SIZE_BYTES);
+      if (convertedValid.length < converted.length) {
+        toast.error(`${limits.MAX_IMAGE_SIZE_MB}MBを超える画像はスキップされました`);
+      }
+
+      const newItems = await Promise.all(convertedValid.map(loadImageFile));
       setItems((prev) => [...prev, ...newItems]);
     } catch {
       toast.error("画像の読み込みに失敗しました");
