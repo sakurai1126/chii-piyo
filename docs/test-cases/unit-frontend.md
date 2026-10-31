@@ -92,6 +92,7 @@
 | Hook-20 | useUploadRunner | 異常 | アップロード処理中に通信エラーが発生 | 失敗件数がカウントされエラー情報が保持される |
 | Hook-21 | useUploadRunner | 境界 | 既にアップロード中に再度実行を呼び出す | 二重実行されずスキップされる |
 | Hook-22 | useUploadRunner | 境界 | アップロード中に処理を中断 | 処理が中断され残キューが実行されない |
+| Hook-23 | useUploadMediaState | 正常 | typeが空のHEIC画像を追加 | JPEGに変換されて一覧に追加される |
 
 ## アップロード
 
@@ -101,6 +102,16 @@
 | Upload-02 | uploadToS3 | 異常 | S3から4xx/5xxレスポンス | 適切なエラーが送出される |
 | Upload-03 | uploadToS3 | 異常 | ネットワークエラーが発生 | 適切なエラーが送出される |
 | Upload-04 | uploadToS3 | 境界 | アップロード途中でによる中断が発生 | 処理が中断され、中断エラーが送出される |
+
+## 画像変換
+
+| ケースID | 対象 | 観点 | 条件 | 期待結果 |
+| --------- | ---------- | --- | -------------------- | ------------------------ |
+| Convert-01 | convertHeicToJpeg | 正常 | HEIC画像を渡す | JPEGに変換され、拡張子とMIMEタイプがJPEGになる |
+| Convert-02 | convertHeicToJpeg | 境界 | typeが空で拡張子がheicの画像を渡す | HEICとして判定されJPEGに変換される |
+| Convert-03 | convertHeicToJpeg | 正常 | HEIC以外の画像を渡す | 変換されず元のファイルがそのまま返る |
+| Convert-04 | isImageFile | 境界 | typeが空のHEIC、PNG、動画を渡す | HEICとPNGは画像と判定され、動画は除外される |
+| Convert-05 | isHeicFile | 境界 | MIMEタイプがheic/heif、typeが空で拡張子のみheic/heif、JPEGを渡す | MIMEタイプまたは拡張子がHEIC/HEIFの場合のみtrueが返る |
 
 ## その他テストケース一覧
 
