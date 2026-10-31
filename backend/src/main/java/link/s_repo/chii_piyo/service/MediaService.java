@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -38,6 +39,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class MediaService {
+    // image/heic, image/heif, image/heic-sequence, image/heif-sequence を大文字小文字を区別せず判定する
+    private static final Pattern HEIC_CONTENT_TYPE = Pattern.compile("image/hei[cf](-sequence)?", Pattern.CASE_INSENSITIVE);
+
     private final MediaRepository mediaRepository;
     private final S3StorageManager s3StorageManager;
     private final ThumbnailGenerator thumbnailGenerator;
@@ -127,6 +131,11 @@ public class MediaService {
         Long albumId,
         Long sharingGroupId
     ) {
+        // HEIC/HEIFはAndroidなどで表示できずサムネイルも生成できないため、フロントでJPEGに変換されていない場合は受け付けない
+        if (contentType != null && HEIC_CONTENT_TYPE.matcher(contentType).matches()) {
+            throw new IllegalArgumentException("HEIC/HEIF形式は未対応です。JPEGに変換してください contentType=" + contentType);
+        }
+
         // S3キーを生成
         String s3Key = s3KeyGenerator.buildS3Key("media", originalFilename);
 
