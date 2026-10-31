@@ -13,6 +13,10 @@ vi.mock("@/components/ui/Toast", () => ({
   },
 }));
 
+vi.mock("heic-to/csp", () => ({
+  heicTo: vi.fn().mockResolvedValue(new Blob(["jpeg"], { type: "image/jpeg" })),
+}));
+
 // JSDOMで動作しないブラウザ機能のモック設定
 beforeAll(() => {
   // ファイル読み込み時などに使用されるObjectURLをモック定義
@@ -51,6 +55,22 @@ describe("useUploadMediaState", () => {
     // 追加されたファイルが存在することを確認
     expect(result.current.items).toHaveLength(1);
     expect(result.current.items[0].file.name).toBe("image.png");
+  });
+
+  it("Hook-23: HEIC画像を追加するとJPEGに変換されて一覧に追加されること", async () => {
+    // iOSではHEICのtypeが空になることがあるため、typeを空にして拡張子で判定させる
+    const heicFile = new File(["heic"], "IMG_0001.HEIC", { type: "" });
+
+    // 仮想コンポーネントを用意しカスタムフックを実行
+    const { result } = renderHook(() => useUploadMediaState());
+
+    // HEICファイルを追加
+    await act(async () => result.current.setImageAndUrl([heicFile]));
+
+    // 追加されたファイルがJPEGに変換されていることを確認
+    expect(result.current.items).toHaveLength(1);
+    expect(result.current.items[0].file.name).toBe("IMG_0001.jpg");
+    expect(result.current.items[0].file.type).toBe("image/jpeg");
   });
 
   it("Hook-15: 30枚の上限を超える画像を追加すると上限分のみ追加され超過分はスキップされること", async () => {

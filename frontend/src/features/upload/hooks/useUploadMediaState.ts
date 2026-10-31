@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { toast } from "@/components/ui/Toast";
 
+import { convertHeicToJpeg } from "../lib/convertHeicToJpeg";
 import { ItemState, UploadMedia, UploadMetadata } from "../types";
 
 // アップロードの上限値とサイズ制限値
@@ -34,6 +35,10 @@ export const useUploadMediaState = () => {
     itemsRef.current = items;
   }, [items]);
 
+  // 変換や読み込み中でまだitemsに入っていない画像の枚数
+  // 変換の完了を待つ間に別の選択が始まっても、同じ残件数を見て上限を超えないよう予約として差し引く
+  const pendingImageCountRef = useRef(0);
+
   // useCallbackで関数をメモ化して、子コンポーネントへの不要な再レンダリングを防止
 
   /**
@@ -52,7 +57,8 @@ export const useUploadMediaState = () => {
     const currentImageCount = itemsRef.current.filter((i) =>
       i.file.type.startsWith("image/"),
     ).length;
-    const remaining = limits.MAX_UPLOAD_IMAGE_LIMIT - currentImageCount;
+    const remaining =
+      limits.MAX_UPLOAD_IMAGE_LIMIT - currentImageCount - pendingImageCountRef.current;
 
     const uploadTargets = sizeValidFiles.slice(0, remaining);
 
@@ -69,11 +75,41 @@ export const useUploadMediaState = () => {
       );
     }
 
+    // 続く処理中に他の選択が割り込んでも、予約済みの枚数を考慮して上限を超えないようにする
+    pendingImageCountRef.current += uploadTargets.length;
+
     try {
-      const newItems = await Promise.all(uploadTargets.map(loadImageFile));
+      // HEICはAndroid等で表示できないためJPEGに変換する
+      // 1件の変換失敗で選択全体を中止しないよう、失敗したファイルだけスキップして残りを処理する
+      const converted: File[] = [];
+      let failedCount = 0;
+      for (const file of uploadTargets) {
+        try {
+          converted.push(await convertHeicToJpeg(file)); // NOSONAR 並列にすると端末のメモリを圧迫するため1件ずつ直列で処理する
+        } catch {
+          failedCount++;
+        }
+      }
+
+      // 失敗した件数があればまとめて通知する
+      if (failedCount > 0) {
+        toast.error(`${failedCount}枚の画像の変換に失敗したためスキップされました`);
+      }
+
+      // JPEG変換で元より大きくなることがあるため、変換後のサイズで上限を再検証する
+      const convertedValid = converted.filter((f) => f.size <= MAX_IMAGE_SIZE_BYTES);
+      if (convertedValid.length < converted.length) {
+        toast.error(`${limits.MAX_IMAGE_SIZE_MB}MBを超える画像はスキップされました`);
+      }
+
+      const newItems = await Promise.all(convertedValid.map(loadImageFile));
+      // 変換後の画像をitemsRefに反映してからレンダリング用のstateを更新することで、予約済み枚数との整合性を保つ
+      itemsRef.current = [...itemsRef.current, ...newItems];
       setItems((prev) => [...prev, ...newItems]);
     } catch {
       toast.error("画像の読み込みに失敗しました");
+    } finally {
+      pendingImageCountRef.current -= uploadTargets.length;
     }
   }, []);
 

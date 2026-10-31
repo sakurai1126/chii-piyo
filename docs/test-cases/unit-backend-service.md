@@ -28,6 +28,7 @@
 | Media-20 | getTrashItemAndMedia | 正常 | 有効なゴミ箱データを渡す | ゴミ箱データに紐づくメディアが返る |
 | Media-21 | getTrashItemAndMedia | 境界 | 空のゴミ箱データを渡す | 空の結果が返る |
 | Media-22 | updateUploadStatus | 異常 | S3に本体が存在しないメディアにCOMPLETEDを渡す | FAILEDで保存されIllegalArgumentExceptionがスローされ、サムネイル生成処理が呼ばれない |
+| Media-23 | createMedia | 異常 | HEIC/HEIFのcontentTypeをパラメータ付きや大文字小文字混在も含めて渡す | IllegalArgumentExceptionがスローされ、メディア登録とPre-signed URL発行が行われない |
 
 ## コメント管理
 

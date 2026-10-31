@@ -18,6 +18,8 @@ import link.s_repo.chii_piyo.repository.TagRepository;
 import link.s_repo.chii_piyo.security.CurrentUserProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.InvalidMediaTypeException;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -38,6 +41,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class MediaService {
+    private static final Set<String> HEIC_SUBTYPES = Set.of("heic", "heif", "heic-sequence", "heif-sequence");
+
     private final MediaRepository mediaRepository;
     private final S3StorageManager s3StorageManager;
     private final ThumbnailGenerator thumbnailGenerator;
@@ -127,6 +132,11 @@ public class MediaService {
         Long albumId,
         Long sharingGroupId
     ) {
+        // HEIC/HEIFはAndroidなどで表示できずサムネイルも生成できないため、フロントでJPEGに変換されていない場合は受け付けない
+        if (isHeicContentType(contentType)) {
+            throw new IllegalArgumentException("HEIC/HEIF形式は未対応です。JPEGに変換してください contentType=" + contentType);
+        }
+
         // S3キーを生成
         String s3Key = s3KeyGenerator.buildS3Key("media", originalFilename);
 
@@ -153,6 +163,26 @@ public class MediaService {
         URI presignedUrl = s3StorageManager.generateUploadPresignedUrl(s3Key, contentType);
 
         return new CreateMediaResult(media, presignedUrl);
+    }
+
+    /**
+     * contentTypeがHEIC/HEIFかを判定する<br>
+     * charsetなどのパラメータ付きでも拒否できるよう、全体一致ではなくtypeとsubtypeで比較する
+     *
+     * @param contentType MIMEタイプ
+     * @return HEIC/HEIFの場合true
+     */
+    private boolean isHeicContentType(String contentType) {
+        if (contentType == null) {
+            return false;
+        }
+        try {
+            // パラメータの書式が不正でもHEICを通さないよう、パラメータを除いたtype/subtypeだけをパースする
+            MediaType mediaType = MediaType.parseMediaType(contentType.split(";", 2)[0].trim());
+            return "image".equals(mediaType.getType()) && HEIC_SUBTYPES.contains(mediaType.getSubtype());
+        } catch (InvalidMediaTypeException e) {
+            return false;
+        }
     }
 
     /**
