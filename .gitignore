@@ -74,3 +74,12 @@ blob-report/
 # ログファイル
 logs/
 *.log
+
+# terraform 関連ファイル
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfplan
+crash.log
+crash.*.log
