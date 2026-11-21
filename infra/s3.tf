@@ -13,12 +13,17 @@ locals {
       allowed_origins = ["http://localhost:3000"]
     }
   }
+
+  # 共通化のためメディアとログ用をまとめて all_buckets に格納
+  all_buckets = merge(aws_s3_bucket.media, { logs = aws_s3_bucket.logs })
 }
 
 # S3バケットを作成
 resource "aws_s3_bucket" "media" {
   for_each = local.media_buckets
   bucket   = each.value.name
+  # アカウント専用の名前空間に作成
+  bucket_namespace = "account-regional"
 
   # 誤操作によるバケット削除を防ぐ
   lifecycle {
@@ -39,8 +44,8 @@ resource "aws_s3_bucket_versioning" "media" {
 
 # サーバーサイド暗号化を有効化して、保存データの安全性を確保する
 resource "aws_s3_bucket_server_side_encryption_configuration" "media" {
-  for_each = local.media_buckets
-  bucket   = aws_s3_bucket.media[each.key].id
+  for_each = local.all_buckets
+  bucket   = local.all_buckets[each.key].id
 
   # バケットに対する暗号化ルールを設定する
   rule {
@@ -57,8 +62,8 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "media" {
 
 # ACLを無効化し、アクセス制御をIAMポリシーに一本化する（AWS規定値）
 resource "aws_s3_bucket_ownership_controls" "media" {
-  for_each = local.media_buckets
-  bucket   = aws_s3_bucket.media[each.key].id
+  for_each = local.all_buckets
+  bucket   = local.all_buckets[each.key].id
 
   # バケットの所有権を強制し、ACLによるアクセス制御を無効化する
   rule {
@@ -68,8 +73,8 @@ resource "aws_s3_bucket_ownership_controls" "media" {
 
 # メディアは署名付きURLでのみ配信するため公開設定を全て拒否する（AWS規定値）
 resource "aws_s3_bucket_public_access_block" "media" {
-  for_each = local.media_buckets
-  bucket   = aws_s3_bucket.media[each.key].id
+  for_each = local.all_buckets
+  bucket   = local.all_buckets[each.key].id
 
   # 公開アクセスを全てブロック
   block_public_acls       = true
@@ -80,7 +85,7 @@ resource "aws_s3_bucket_public_access_block" "media" {
 
 # HTTPでのアクセスを全て拒否する
 data "aws_iam_policy_document" "media_https_only" {
-  for_each = local.media_buckets
+  for_each = local.all_buckets
 
   # 暗号化されていない通信からの全操作を拒否する
   statement {
@@ -94,8 +99,8 @@ data "aws_iam_policy_document" "media_https_only" {
     }
     # バケット自体とバケット内の全オブジェクトが対象
     resources = [
-      aws_s3_bucket.media[each.key].arn,
-      "${aws_s3_bucket.media[each.key].arn}/*",
+      local.all_buckets[each.key].arn,
+      "${local.all_buckets[each.key].arn}/*",
     ]
     # HTTPS以外のリクエストが対象
     condition {
@@ -114,6 +119,20 @@ resource "aws_s3_bucket_policy" "media" {
 
   # パブリックアクセスブロック適用前にポリシーを付与すると拒否される場合があるため順序を固定する
   depends_on = [aws_s3_bucket_public_access_block.media]
+}
+
+# 写真への不正アクセスや流出を後から追えるよう、全リクエストをログ用バケットへ記録する
+resource "aws_s3_bucket_logging" "media" {
+  for_each = local.media_buckets
+  bucket   = aws_s3_bucket.media[each.key].id
+
+  # 出力先のログ用バケット
+  target_bucket = aws_s3_bucket.logs.id
+  # 本番と開発のログが混ざらないようバケットごとにプレフィックスを分ける
+  target_prefix = "${each.key}/"
+
+  # 配信許可のポリシーが無い状態で設定すると初回のログが捨てられるため順序を固定する
+  depends_on = [aws_s3_bucket_policy.logs]
 }
 
 # ブラウザから直接アップロード・表示するためにフロントのオリジンを許可する
@@ -205,6 +224,76 @@ resource "aws_s3_bucket_lifecycle_configuration" "storage" {
     # 旧バージョンが無くなった削除マーカーを削除する
     expiration {
       expired_object_delete_marker = true
+    }
+  }
+}
+
+# メディアバケットのアクセスログを保存するS3バケットの設定
+# ログ配信元をこのアカウントのバケットに限定するためアカウントIDを参照する
+data "aws_caller_identity" "current" {}
+
+# ログ用バケットを作成
+# 自身のログを取る警告をNOSONARで抑制
+resource "aws_s3_bucket" "logs" { # NOSONAR
+  bucket = "chii-piyo-logs-569946568026-ap-northeast-1-an"
+  # アカウント専用の名前空間に作成
+  bucket_namespace = "account-regional"
+}
+
+# HTTPS限定のポリシーにログ配信の許可を加える
+data "aws_iam_policy_document" "logs" {
+  # メディアバケットと共通のHTTPS限定の文を引き継ぐ
+  source_policy_documents = [data.aws_iam_policy_document.media_https_only["logs"].json]
+
+  # S3のログ配信サービスにメディアバケットのログの書き込みだけを許可する
+  statement {
+    sid     = "AllowS3ServerAccessLogs"
+    effect  = "Allow"
+    actions = ["s3:PutObject"]
+    # S3のログ配信サービスが対象
+    principals {
+      type        = "Service"
+      identifiers = ["logging.s3.amazonaws.com"]
+    }
+    # ログ用バケット内の全オブジェクトが対象
+    resources = ["${aws_s3_bucket.logs.arn}/*"]
+    # 他アカウントのバケットからログを書き込まれないよう配信元を自アカウントに限定する
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceAccount"
+      values   = [data.aws_caller_identity.current.account_id]
+    }
+    # 自アカウント内でもメディアバケット以外からの配信は受け付けない
+    condition {
+      test     = "ArnLike"
+      variable = "aws:SourceArn"
+      values   = [for b in aws_s3_bucket.media : b.arn]
+    }
+  }
+}
+
+# ログ配信の許可とHTTPS限定のポリシーをバケットに付与する
+resource "aws_s3_bucket_policy" "logs" {
+  bucket = aws_s3_bucket.logs.id
+  policy = data.aws_iam_policy_document.logs.json
+
+  # パブリックアクセスブロック適用前にポリシーを付与すると拒否される場合があるため順序を固定する
+  depends_on = [aws_s3_bucket_public_access_block.media]
+}
+
+# 問題に気付くまでの猶予として90日分のログを残し、それ以降は削除して費用を抑える
+resource "aws_s3_bucket_lifecycle_configuration" "logs" {
+  bucket = aws_s3_bucket.logs.id
+
+  # 90日経過したログを削除する
+  rule {
+    id     = "delete-logs-after-90days"
+    status = "Enabled"
+    # バケット内の全オブジェクトが対象
+    filter {}
+    # 90日経過したらオブジェクトを削除する
+    expiration {
+      days = 90
     }
   }
 }
