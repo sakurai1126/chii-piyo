@@ -78,6 +78,44 @@ resource "aws_s3_bucket_public_access_block" "media" {
   restrict_public_buckets = true
 }
 
+# HTTPでのアクセスを全て拒否する
+data "aws_iam_policy_document" "media_https_only" {
+  for_each = local.media_buckets
+
+  # 暗号化されていない通信からの全操作を拒否する
+  statement {
+    sid     = "DenyInsecureTransport"
+    effect  = "Deny"
+    actions = ["s3:*"]
+    # 誰からのリクエストであってもHTTPなら拒否する
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+    # バケット自体とバケット内の全オブジェクトが対象
+    resources = [
+      aws_s3_bucket.media[each.key].arn,
+      "${aws_s3_bucket.media[each.key].arn}/*",
+    ]
+    # HTTPS以外のリクエストが対象
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+      values   = ["false"]
+    }
+  }
+}
+
+# HTTPS限定のポリシーをバケットに付与する
+resource "aws_s3_bucket_policy" "media" {
+  for_each = local.media_buckets
+  bucket   = aws_s3_bucket.media[each.key].id
+  policy   = data.aws_iam_policy_document.media_https_only[each.key].json
+
+  # パブリックアクセスブロック適用前にポリシーを付与すると拒否される場合があるため順序を固定する
+  depends_on = [aws_s3_bucket_public_access_block.media]
+}
+
 # ブラウザから直接アップロード・表示するためにフロントのオリジンを許可する
 resource "aws_s3_bucket_cors_configuration" "media" {
   for_each = local.media_buckets
