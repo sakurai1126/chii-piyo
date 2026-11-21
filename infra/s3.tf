@@ -212,6 +212,30 @@ resource "aws_s3_bucket_lifecycle_configuration" "storage" {
     }
   }
 
+  # アプリが削除したメディアは旧バージョンとして無期限に残り課金され続けるため、復元期間を過ぎたら削除する
+  # DBバックアップの保持期間30日以内のダンプを戻しても参照先のメディアを復元できるよう同じ30日とする
+  dynamic "rule" {
+    # アプリが書き込む写真・動画、サムネイル、プロフィール画像が対象
+    for_each = ["media/", "thumbnails/", "profile/"]
+    content {
+      id     = "expire-noncurrent-${trimsuffix(rule.value, "/")}"
+      status = "Enabled"
+
+      # 対象プレフィックス配下のオブジェクトが対象
+      filter {
+        prefix = rule.value
+      }
+      # 現行バージョンは消さず、旧バージョンが無くなった削除マーカーだけを削除する
+      expiration {
+        expired_object_delete_marker = true
+      }
+      # 旧バージョンになってから30日経過したら削除する
+      noncurrent_version_expiration {
+        noncurrent_days = 30
+      }
+    }
+  }
+
   # 旧バージョンが消えた後に残る削除マーカーを掃除する
   rule {
     id     = "cleanup-backup-delete-markers"
