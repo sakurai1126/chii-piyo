@@ -10,4 +10,14 @@ terraform {
       version = "~> 6.0"
     }
   }
+
+  # state の保存先
+  backend "s3" {
+    bucket = "chii-piyo-tfstate-569946568026-ap-northeast-1-an"
+    # state を分割しても同じバケットに並べられるようプロジェクト名の配下に配置
+    key    = "chii-piyo/terraform.tfstate"
+    region = "ap-northeast-1"
+    # 同時実行による state の破損を防ぐため排他制御する
+    use_lockfile = true
+  }
 }
