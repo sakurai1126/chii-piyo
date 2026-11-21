@@ -149,5 +149,24 @@ resource "aws_s3_bucket_lifecycle_configuration" "storage" {
     expiration {
       days = 30
     }
+    # バージョニング有効下では実体が旧バージョンとして残り続けるため削除する
+    noncurrent_version_expiration {
+      noncurrent_days = 1
+    }
+  }
+
+  # 旧バージョンが消えた後に残る削除マーカーを掃除する
+  rule {
+    id     = "cleanup-backup-delete-markers"
+    status = "Enabled"
+
+    # バックアップ対象のオブジェクトが対象
+    filter {
+      prefix = "backups/postgres/"
+    }
+    # 旧バージョンが無くなった削除マーカーを削除する
+    expiration {
+      expired_object_delete_marker = true
+    }
   }
 }
