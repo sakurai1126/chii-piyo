@@ -20,5 +20,6 @@ resource "aws_route53_record" "api" {
   name    = "chii-piyo-api.s-repo.link"
   type    = "A"
   ttl     = 300
-  records = ["18.176.172.45"]
+  # IP の二重管理を避けるため Lightsail の静的 IP を参照する
+  records = [aws_lightsail_static_ip.prod.ip_address]
 }
