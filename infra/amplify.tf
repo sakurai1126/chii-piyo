@@ -32,9 +32,9 @@ resource "aws_amplify_app" "frontend" {
   # 検索結果やブックマークに既定ドメインが残らないよう、middleware より手前の配信側でも転送する
   custom_rule {
     # 自分自身の属性は参照できないため、既定ドメインは値で指定する
-    source = "https://main.dnakxm0y9trz3.amplifyapp.com/<*>"
+    source = "https://main.dnakxm0y9trz3.amplifyapp.com"
     status = "301"
-    target = "https://chii-piyo.s-repo.link/<*>"
+    target = "https://chii-piyo.s-repo.link"
   }
 
   # アプリ作成時にコンソールが設定した既定のルール
