@@ -10,8 +10,8 @@ on:
       - "backend/**"
       - "compose.prod.yml"
       - ".github/workflows/backend-cd.yml"
-
-
+  # JDKの脆弱性対応などコードを変更せずにイメージを作り直したい場合に手動で実行
+  workflow_dispatch:
 
 jobs:
   build-and-push:
@@ -32,7 +32,7 @@ jobs:
         uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f
 
       - name: GHCR へのログイン
-        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
